@@ -72,6 +72,10 @@ elseif ($_GET["p"] == "current")
 {
 	include "../qa/admin_current.php";
 }
+elseif ($_GET["p"] == "stats")
+{
+	include "../qa/admin_stats.php";
+}
 elseif ($_GET["p"] == "report")
 {
 	include "../qa/admin_report.php";
