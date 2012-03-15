@@ -1,0 +1,49 @@
+<script type="text/javascript">
+window.onload=function(){
+	setTimeout(enableIt,0000)
+}
+
+var prelink = "../script/script_tpv.php?campaign=<? echo $_GET['campaign']; ?>&plan=<? echo $_GET['plan']; ?>&alias=<? echo $_GET['alias']; ?>&id=<? echo $_GET['id']; ?>&page=";
+var page = "<? echo $_GET['page']; ?>";
+
+function enableIt(){
+	if (document.getElementById('Btn_Next') != null)
+	{
+		document.getElementById('Btn_Next').style.display = 'inline';
+	}
+	if (document.getElementById('Btn_Back') != null)
+	{
+		document.getElementById('Btn_Back').style.display = 'inline';
+	}
+}
+
+function Back()
+{
+	page--;
+	document.getElementById('image_load').style.display = 'inline';
+	if (document.getElementById('Btn_Next') != null)
+	{
+		document.getElementById('Btn_Next').style.display = 'none';
+	}
+	document.getElementById('Btn_Back').style.display = 'none';
+	document.getElementById('Btn_Cancel').style.display = 'none';
+	var link = prelink+page;
+
+	window.location = link;
+}
+
+function Next()
+{
+	page++;
+	document.getElementById('image_load').style.display = 'inline';
+	document.getElementById('Btn_Next').style.display = 'none';
+	document.getElementById('Btn_Cancel').style.display = 'none';
+	if (document.getElementById('Btn_Back') != null)
+	{
+		document.getElementById('Btn_Back').style.display = 'none';
+	}
+	var link = prelink+page;
+
+	window.location = link;
+}
+</script>

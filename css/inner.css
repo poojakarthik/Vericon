@@ -1,0 +1,414 @@
+@charset "utf-8";
+/* CSS Document */
+*{
+margin:0px;
+padding:0px;
+}
+
+html {
+    overflow-y: scroll;
+}
+
+#main_wrapper{
+width:964px;
+margin-left:auto;
+margin-right:auto;
+background-image:url('../images/back_bg.png');
+background-repeat:repeat-y;
+min-height:700px;
+}
+
+#logout{
+background-image:url('../images/loggedin_bg.png');
+background-repeat:no-repeat;
+float:right;
+text-decoration:none;
+display:block;
+width:178px;
+height:58px;
+margin-top:-55px;
+margin-right:63px;
+font-family:Tahoma, Geneva, sans-serif;
+font-size:11px;
+color:#666;
+}
+
+#logout a{
+text-decoration:none;
+font-family:Tahoma, Geneva, sans-serif;
+font-size:11px;
+color:#39F;
+cursor:pointer;
+}
+
+#logout a:visited{
+color:#39F;
+}
+
+#innerpage_logo{
+padding-top:20px;
+padding-left:110px;
+overflow:hidden;
+width:300px;
+}
+
+h1 { font-size: 1.2em; margin: .6em 0; }
+
+#get_sale_table{
+	width:574px;
+	height:88px;
+	background-image:url('../images/getsale_bg.png');
+	background-repeat:no-repeat;
+	margin-left:auto;
+	margin-right:auto;
+	margin-top:50px;
+	color:#999;
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:12px;
+}
+
+#get_sale_table table td{
+margin-left:auto;
+margin-right:auto;
+padding-top:25px;
+padding-left:22px;
+padding-right:6px;
+
+
+}
+
+#text{
+width:740px;
+min-height:100px;
+margin-left:auto;
+margin-right:auto;
+margin-top:5px;
+font-family:Tahoma, Geneva, sans-serif;
+font-size:12px;
+color:#666666;
+padding:10px;
+line-height:1.5em;
+}
+
+input{
+	border:1px solid #c6c6c6;
+	height:25px;
+}
+
+
+.get_sale_btn{
+	background-image:url('../images/getsale_btn.png');
+	background-repeat:no-repeat;
+	height:32px;
+	width:121px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+.get_sale_btn:hover{
+	background-image:url('../images/getsale_btn_hover.png');
+	background-repeat:no-repeat;
+	cursor:pointer;
+}
+#script_text{
+width:740px;
+min-height:100px;
+margin-left:auto;
+margin-right:auto;
+margin-top:20px;
+border-top:1px dotted #999;
+border-bottom:1px dotted #999;
+font-family:Tahoma, Geneva, sans-serif;
+font-size:12px;
+color:#666666;
+padding:10px;
+line-height:1.5em;
+}
+	
+#script_text2{
+font-family:Tahoma, Geneva, sans-serif;
+font-size:13px;
+color:#666666;
+height:335px;
+line-height:1.5em;
+}
+
+#script_text2 table{
+font-family:Tahoma, Geneva, sans-serif;
+font-size:13px;
+color:#666666;
+line-height:1.5em;
+}
+
+.back{
+background-image:url('../images/back_btn.png');
+background-repeat:no-repeat;
+height:25px;
+width:67px;
+display:block;
+border:none;
+background-color:transparent;
+}
+.next{
+background-image:url('../images/next_btn.png');
+background-repeat:no-repeat;
+height:25px;
+width:67px;
+display:block;
+padding-left:10px;
+border:none;
+background-color:transparent;
+}
+	
+.back:hover{
+background-image:url('../images/back_hover_btn.png');
+cursor:pointer;
+}
+
+.next:hover{
+background-image:url('../images/next_hover_btn.png');
+cursor:pointer;
+}
+
+.newer{
+background-image:url('../images/newer_btn.png');
+background-repeat:no-repeat;
+height:26px;
+width:79px;
+display:block;
+border:none;
+background-color:transparent;
+}
+.older{
+background-image:url('../images/older_btn.png');
+background-repeat:no-repeat;
+height:26px;
+width:79px;
+display:block;
+padding-left:10px;
+border:none;
+background-color:transparent;
+}
+	
+.newer:hover{
+background-image:url('../images/newer_btn_hover.png');
+cursor:pointer;
+}
+
+.older:hover{
+background-image:url('../images/older_btn_hover.png');
+cursor:pointer;
+}
+
+.load{
+background-image:url('../images/load_script_btn.png');
+background-repeat:no-repeat;
+height:32px;
+width:102px;
+display:block;
+border:none;
+background-color:transparent;
+}
+
+.load:hover{
+background-image:url('../images/load_script_btn_hover.png');
+cursor:pointer;
+}
+
+#script_options{
+width:758px;
+height:213px;
+background-image:url('../images/script_options_bg.png');
+background-repeat:no-repeat;
+margin-left:auto;
+margin-right:auto;
+margin-top:10px;
+}
+
+#export_script{
+width:758px;
+height:213px;
+background-image:url('../images/export_script_bg.png');
+background-repeat:no-repeat;
+margin-left:auto;
+margin-right:auto;
+margin-top:10px;
+}
+
+.script_table{
+padding:15px;
+}
+
+.export_script_table{
+padding:20px;
+}
+
+.script_table2{
+padding:20px;
+padding-top:0px;
+margin-top:-10px;
+}
+
+.script_table2 td{
+padding-bottom:17px;
+}
+
+select {
+   padding: 5px;
+   width:auto;
+   border: 1px solid #ccc;
+   font-family:Tahoma, Geneva, sans-serif;
+   height: 30px;
+   margin: 5px;
+}
+
+#footer{
+width:964px;
+height:65px;
+background-image:url('../images/footer_bg.png');
+background-repeat:no-repeat;
+margin-left:auto;
+margin-right:auto;
+text-align:center;
+font-family:Tahoma, Geneva, sans-serif;
+font-size:10px;
+color:#999;
+}
+
+/* ################# Menu ################# */
+
+#menu{
+width:840px;
+height:60px;
+margin-left:auto;
+margin-right:auto;
+margin-top:15px;
+background-image:url('../images/menu_bg.png');
+background-repeat:no-repeat;
+text-align:center;
+padding-top:12px;
+font-family:Tahoma, Geneva, sans-serif;
+font-size:11px;
+color:#717171;
+text-decoration:none;
+}
+
+#menu a{
+font-family:Tahoma, Geneva, sans-serif;
+font-size:11px;
+color:#717171;
+text-decoration:none;
+padding-left:25px;
+padding-right:25px;
+}
+
+#menu table{
+margin-left:auto;
+margin-right:auto;
+margin-top:5px;
+}
+
+.ddsmoothmenu{
+background: none; /*background of menu bar (default state)*/
+display:inline-block;
+}
+
+.ddsmoothmenu ul{
+z-index:100;
+margin: 0;
+padding: 0;
+list-style-type: none;
+}
+
+/*Top level list items*/
+.ddsmoothmenu ul li{
+position: relative;
+display: inline;
+float: left;
+}
+
+/*Top level menu link items style*/
+.ddsmoothmenu ul li a{
+display: block;
+background: none; /*background of menu items (default state)*/
+color:#666;
+padding: 8px 10px;
+text-decoration: none;
+}
+
+.ddsmoothmenu ul li a:link, .ddsmoothmenu ul li a:visited{
+color:#666;
+}
+
+.ddsmoothmenu ul li a.selected{ /*CSS class that's dynamically added to the currently active menu items' LI A element*/
+background-image:url('../images/menu_bg2.png');
+color:#666;
+}
+
+.ddsmoothmenu ul li a:hover{
+background-image:url('../images/menu_bg2.png'); /*background of menu items during onmouseover (hover state)*/
+color:#666;
+}
+	
+/*1st sub level menu*/
+.ddsmoothmenu ul li ul{
+background-image:url('../images/menu_bg2.png');
+position: absolute;
+left: 0;
+display: none; /*collapse all sub menus to begin with*/
+visibility: hidden;
+}
+
+/*Sub level menu list items (undo style from Top level List Items)*/
+.ddsmoothmenu ul li ul li{
+display: list-item;
+float: none;
+}
+
+/*All subsequent sub menu levels vertical offset after 1st level sub menu */
+.ddsmoothmenu ul li ul li ul{
+top: 0;
+}
+
+/* Sub level menu links style */
+.ddsmoothmenu ul li ul li a{
+font: normal 13px Verdana;
+width: 75px; /*width of sub menus*/
+padding: 5px;
+margin: 0;
+border-top-width: 0;
+border-bottom: 1px solid gray;
+}
+
+/* Holly Hack for IE \*/
+* html .ddsmoothmenu{height: 1%;} /*Holly Hack for IE7 and below*/
+
+
+/* ######### CSS classes applied to down and right arrow images  ######### */
+
+.downarrowclass{
+position: absolute;
+top: 12px;
+right: 7px;
+}
+
+.rightarrowclass{
+position: absolute;
+top: 6px;
+right: 5px;
+}
+
+/* ######### CSS for shadow added to sub menus  ######### */
+
+.ddshadow{ /*shadow for NON CSS3 capable browsers*/
+position: absolute;
+left: 0;
+top: 0;
+width: 0;
+height: 0;
+background: silver;
+}
+
+.toplevelshadow{ /*shadow opacity for NON CSS3 capable browsers. Doesn't work in IE*/
+opacity: 0.8;
+}

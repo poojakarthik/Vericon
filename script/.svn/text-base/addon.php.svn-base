@@ -1,0 +1,25 @@
+<html>
+<head>
+<link rel=StyleSheet href="source/style.css" type="text/css">
+</head>
+<body>
+<p><b><span style="color:#000080;">If your stated line is a duet line, a standard charge of $6 including GST will apply. If not, the line will be charged as an additional add–on line.</span></b></p>
+<p><b><u><span style="color:#008000;"> </span></u></b></p>
+<p><b><u><span style="color:#008000;">FOR ADDITIONAL LINES (ADD-ON)</span></u></b></p>
+<p><span style="color:#008000;"></span></p>
+<table cellspacing="0" cellpadding="0pt" style="table-layout:fixed;border-collapse:collapse;">
+<tr align="left" valign="top">
+<td style="padding-right:4.9pt;padding-left:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;">
+<p>Line rental is $39.95 per line.</p>
+<p><span style="color:#008000;">Your local calls are 20c per call/fax.</span></p>
+<p><span style="color:#008000;">National calls/faxes are 20c per minute with a 39c flagfall and capped at $1.10 for 30 mins.</span></p>
+<p><span style="color:#008000;">Calls to mobiles are 33c per minute with a 39c flagfall and capped at $1.35 for 10 mins.</span></p>
+<p><b><u><span style="color:#000080;">All charges include GST</span></u></b></p>
+<p><b><span style="color:#FF0000;">Please confirm that you accept these rates by saying a clear YES.</span></b></p>
+<p><b><u>CUSTOMER MUST SAY <span style="color:#FF0000;">YES</span></u></b></p>
+</td>
+</tr>
+</table><br>
+<input type=button value="Close Window" onClick="javascript:window.close();">
+</body>
+</html>

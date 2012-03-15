@@ -1,0 +1,314 @@
+<?php 
+
+//convert plans
+if ($plan == "\$59.95 12 Month Contract")
+{
+    $plan = "TC059";
+}
+elseif ($plan == "\$64.95 No Contract")
+{
+    $plan = "TN064";
+}
+elseif ($plan == "\$69.95 12 Month Contract")
+{
+    $plan = "TC069";
+}
+elseif ($plan == "\$74.95 No Contract")
+{
+    $plan = "TN074";
+}
+elseif ($plan == "\$99.95 No Contract")
+{
+    $plan = "TN099";
+}
+elseif ($plan == "\$129.95 12 Month Contract")
+{
+    $plan = "TC129";
+}
+elseif ($plan == "\$139.95 No Contract")
+{
+    $plan = "TN139";
+}
+elseif ($plan == "ADSL 15GB 24 Month Contract")
+{
+    $plan = "AC015";
+}
+elseif ($plan == "ADSL 500GB 24 Month Contract")
+{
+    $plan = "AC500";
+}
+elseif ($plan == "ADSL Unlimited 24 Month Contract")
+{
+    $plan = "AC999";
+}
+elseif ($plan == "Wireless 2GB 24 Month Contract")
+{
+    $plan = "WC002";
+}
+elseif ($plan == "Wireless 4GB 24 Month Contract")
+{
+    $plan = "WC004";
+}
+elseif ($plan == "Wireless 6GB 24 Month Contract")
+{
+    $plan = "WC006";
+}
+elseif ($plan == "Wireless 8GB 24 Month Contract")
+{
+    $plan = "WC008";
+}
+elseif ($plan == "Bundle \$89.95 24 Month Contract")
+{
+    $plan = "BC089";
+}
+elseif ($plan == "Bundle \$102.95 24 Month Contract")
+{
+    $plan = "BC102";
+}
+elseif ($plan == "Bundle \$104.95 24 Month Contract")
+{
+    $plan = "BC104";
+}
+elseif ($plan == "Bundle \$119.95 24 Month Contract")
+{
+    $plan = "BC119";
+}
+elseif ($plan == "Bundle \$129.95 24 Month Contract")
+{
+    $plan = "BC129";
+}
+elseif ($plan == "Bundle \$132.95 24 Month Contract")
+{
+    $plan = "BC132";
+}
+elseif ($plan == "Bundle \$134.95 24 Month Contract")
+{
+    $plan = "BC134";
+}
+elseif ($plan == "Bundle \$142.95 24 Month Contract")
+{
+    $plan = "BC142";
+}
+elseif ($plan == "Bundle \$144.95 24 Month Contract")
+{
+    $plan = "BC144";
+}
+elseif ($plan == "Bundle \$159.95 24 Month Contract")
+{
+    $plan = "BC159";
+}
+else
+{
+	$plan = "";
+}
+
+
+//convert campaign names
+if ($campaign == "Complete_Telecom_B")
+{
+    $campaign = "Complete Telecom";
+    $campaign_name = "Complete Telecom Business";
+    $campaign_check = "CT_B";
+    $website = "<a href=\"http://www.completetelecom.com.au\" target=\"new\">www.completetelecom.com.au</a>";
+    $number = "1300 895 699";
+}
+elseif ($campaign == "Complete_Telecom_R")
+{
+    $campaign = "Complete Telecom";
+    $campaign_name = "Complete Telecom Residential";
+    $campaign_check = "CT_R";
+    $website = "<a href=\"http://www.completetelecom.com.au\" target=\"new\">www.completetelecom.com.au</a>";
+    $number = "1300 895 699";
+}
+elseif ($campaign == "Fairtalk_B")
+{
+    $campaign = "Fairtalk";
+    $campaign_name = "Fairtalk Business";
+    $campaign_check = "FT_B";
+    $website = "<a href=\"http://www.fairtalk.com.au\" target=\"new\">www.fairtalk.com.au</a>";
+    $number = "1300 750 799";
+}
+elseif ($campaign == "Fairtalk_R")
+{
+    $campaign = "Fairtalk";
+    $campaign_name = "Fairtalk Residential";
+    $campaign_check = "FT_R";
+    $website = "<a href=\"http://www.fairtalk.com.au\" target=\"new\">www.fairtalk.com.au</a>";
+    $number = "1300 750 799";
+}
+elseif ($campaign == "Ourtel_B")
+{
+    $campaign = "Ourtel";
+    $campaign_name = "Ourtel Business";
+    $campaign_check = "OT_B";
+    $website = "<a href=\"http://www.ourtel.com.au\" target=\"new\">www.ourtel.com.au</a>";
+    $number = "1300 605 955";
+}
+elseif ($campaign == "Ourtel_R")
+{
+    $campaign = "Ourtel";
+    $campaign_name = "Ourtel Residential";
+    $campaign_check = "OT_R";
+    $website = "<a href=\"http://www.ourtel.com.au\" target=\"new\">www.ourtel.com.au</a>";
+    $number = "1300 605 955";
+}
+elseif ($campaign == "SimplyTel_B")
+{
+    $campaign = "Simplytel";
+    $campaign_name = "Simplytel Business";
+    $campaign_check = "ST_B";
+    $website = "<a href=\"http://www.simplytel.com.au\" target=\"new\">www.simplytel.com.au</a>";
+    $number = "1300 822 955";
+}
+elseif ($campaign == "SimplyTel_R")
+{
+    $campaign = "Simplytel";
+    $campaign_name = "Simplytel Residential";
+    $campaign_check = "ST_R";
+    $website = "<a href=\"http://www.simplytel.com.au\" target=\"new\">www.simplytel.com.au</a>";
+    $number = "1300 822 955";
+}
+elseif ($campaign == "TimeTelecom_B")
+{
+    $campaign = "Time Telecom";
+    $campaign_name = "Time Telecom Business";
+    $campaign_check = "TT_B";
+    $website = "<a href=\"http://www.timetelecom.com.au\" target=\"new\">www.timetelecom.com.au</a>";
+    $number = "1300 858 463";
+}
+elseif ($campaign == "TimeTelecom_R")
+{
+    $campaign = "Time Telecom";
+    $campaign_name = "Time Telecom Residential";
+    $campaign_check = "TT_R";
+    $website = "<a href=\"http://www.timetelecom.com.au\" target=\"new\">www.timetelecom.com.au</a>";
+    $number = "1300 858 463";
+}
+elseif ($campaign == "Touchtel_B")
+{
+    $campaign = "Touchtel";
+    $campaign_name = "Touchtel Business";
+    $campaign_check = "TO_B";
+    $website = "<a href=\"http://www.touchtel.com.au\" target=\"new\">www.touchtel.com.au</a>";
+    $number = "1300 861 855";
+}
+elseif ($campaign == "Touchtel_R")
+{
+    $campaign = "Touchtel";
+    $campaign_name = "Touchtel Residential";
+    $campaign_check = "TO_R";
+    $website = "<a href=\"http://www.touchtel.com.au\" target=\"new\">www.touchtel.com.au</a>";
+    $number = "1300 861 855";
+}
+elseif ($campaign == "ValueTel_B")
+{
+    $campaign = "Valuetel";
+    $campaign_name = "Valuetel Business";
+    $campaign_check = "VT_B";
+    $website = "<a href=\"http://www.valuetel.com.au\" target=\"new\">www.valuetel.com.au</a>";
+    $number = "1300 751 833";
+}
+elseif ($campaign == "ValueTel_R")
+{
+    $campaign = "Valuetel";
+    $campaign_name = "Valuetel Residential";
+    $campaign_check = "VT_R";
+    $website = "<a href=\"http://www.valuetel.com.au\" target=\"new\">www.valuetel.com.au</a>";
+    $number = "1300 751 833";
+}
+elseif ($campaign == "Yourtel_B")
+{
+    $campaign = "Yourtel";
+    $campaign_name = "Yourtel Business";
+    $campaign_check = "YT_B";
+    $website = "<a href=\"http://www.yourtel.com.au\" target=\"new\">www.yourtel.com.au</a>";
+    $number = "1300 456 322";
+}
+elseif ($campaign == "Yourtel_R")
+{
+    $campaign = "Yourtel";
+    $campaign_name = "Yourtel Residential";
+    $campaign_check = "YT_R";
+    $website = "<a href=\"http://www.yourtel.com.au\" target=\"new\">www.yourtel.com.au</a>";
+    $number = "1300 456 322";
+}
+
+//retain dropdown value
+switch ($campaign_name)
+{
+case "Complete Telecom Business":
+$CT_B="selected";
+break;
+case "Complete Telecom Residential":
+$CT_R="selected";
+break;
+case "Fairtalk Business":
+$FT_B="selected";
+break;
+case "Fairtalk Residential":
+$FT_R="selected";
+break;
+case "Ourtel Business":
+$OT_B="selected";
+break;
+case "Ourtel Residential":
+$OT_R="selected";
+break;
+case "Simplytel Business":
+$ST_B="selected";
+break;
+case "Simplytel Residential":
+$ST_R="selected";
+break;
+case "Time Telecom Business":
+$TT_B="selected";
+break;
+case "Time Telecom Residential":
+$TT_R="selected";
+break;
+case "Touchtel Business":
+$TO_B="selected";
+break;
+case "Touchtel Residential":
+$TO_R="selected";
+break;
+case "Valuetel Business":
+$VT_B="selected";
+break;
+case "Valuetel Residential":
+$VT_R="selected";
+break;
+case "Yourtel Business":
+$YT_B="selected";
+break;
+case "Yourtel Residential":
+$YT_R="selected";
+break;
+}
+
+switch ($pl[1])
+{
+case "$59.95 12 Month Contract":
+$TC059="selected";
+break;
+case "$64.95 No Contract":
+$TN064="selected";
+break;
+case "$69.95 12 Month Contract":
+$TC069="selected";
+break;
+case "$74.95 No Contract":
+$TN074="selected";
+break;
+case "$99.95 No Contract":
+$TN099="selected";
+break;
+case "$129.95 12 Month Contract":
+$TC129="selected";
+break;
+case "$139.95 No Contract":
+$TN139="selected";
+break;
+}
+
+?>

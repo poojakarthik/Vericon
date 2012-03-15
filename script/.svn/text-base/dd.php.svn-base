@@ -1,0 +1,73 @@
+<html>
+<head>
+<link rel=StyleSheet href="source/style.css" type="text/css">
+</head>
+<body>
+<?php
+//declare variables
+$campaign = $_GET['campaign'];
+$website = "";
+
+include ("source/convert.php");
+
+echo "<p>Do you agree to have either your credit card, or your bank account direct debited each month for any usage on your <b>$campaign</b> account?</p>";
+?>
+
+<p><b>->CUSTOMER MUST SAY <span style="color:#FF0000;">YES</span></b></p><br>
+<p>Do you agree to receive a monthly e-mail telephone bill, which you’ll receive in the 2nd week of the month?</p>
+<p><b>->CUSTOMER MUST SAY <span style="color:#FF0000;">YES</span></b></p><br>
+<p>Please state your preferred email address?</p>
+<p><i><span style="color:#FF0000;">CUSTOMER WILL ADVISE. Spell back to customer slowly to confirm.</span></i></p><br>
+<p>Which account do you prefer, Credit Card or Bank Account?</p><br>
+<p><b><u><span style="font-family:'Arial';color:#000080;">DEBIT TYPE</span></u></b></p>
+<table cellspacing="0" cellpadding="0pt" style="width:360pt;table-layout:fixed;border-collapse:collapse;margin-left:138.6pt;">
+<tr align="left" valign="top">
+<td style="width:180pt;padding-right:4.9pt;padding-left:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;">
+<p><b><span style="font-family:'Arial';color:#000080;">Credit Card</span></b></p>
+</td>
+<td style="width:180pt;padding-right:4.9pt;padding-left:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;">
+<p><b><span style="font-family:'Arial';color:#000080;">Bank Account</span></b></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style="width:124.2pt;padding-right:4.9pt;padding-left:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;">
+<span style="color:#000080;"><p>Please state the Card type<br>
+<b>VISA, MASTERCARD, DINERS or AMEX</b></p></span>
+<span style="color:#FF0000;"><b>Repeat the card type back</b></span><br>
+<span style="color:#000080;"><p>Please state the number as it appears on the Card</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the name as it appears on the card</p></span>
+<span style="color:#FF0000;"><b>Repeat, even spell the name back</b></span><br>
+<span style="color:#000080;"><p>Please state the expiry date on the card</p></span>
+<span style="color:#FF0000;"><b>Repeat the expiry date back</b></span><br>
+<span style="color:#000080;"><p>Please state the CVV number (last 3 digits on the back of the card for VISA or MASTERCARD, last 4 digits for AMEX or DINERS)</p></span>
+<span style="color:#FF0000;"><b>Repeat the CVV back</b></span><br>
+<p><b><u><span style="font-family:'Arial';font-size:9pt;"></span></u></b><b><u><span style="font-family:'Arial';font-size:9pt;color:#FF0000;"></span></u></b></p>
+<p><span style="font-family:'Arial';font-size:10pt;color:#000080;"> </span></p>
+</td>
+<td style="width:124.2pt;padding-right:4.9pt;padding-left:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;">
+<span style="color:#000080;"><p>Please name the Financial Institution</p></span>
+<span style="color:#FF0000;"><b>Repeat the Institution back</b></span><br>
+<span style="color:#000080;"><p>Please state the type of Bank Account<br>
+(Savings, Credit, Cheque)</p></span>
+<span style="color:#FF0000;"><b>Repeat the Account type back</b></span><br>
+<span style="color:#000080;"><p>Please state the BSB number</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the Account number</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the name on the account as it appears on your bank statement</p></span>
+<span style="color:#FF0000;"><b>Repeat the name back</b></span><br>
+<p><span style="font-family:'Arial';font-size:10pt;color:#000080;"> </span></p>
+<p><span style="font-family:'Arial';font-size:9pt;color:#000080;"> </span></p>
+<p><b><u><span style="font-family:'Arial';font-size:9pt;"></span></u></b><b><u><span style="font-family:'Arial';font-size:9pt;color:#FF0000;"></span></u></b></p>
+<p><span style="font-family:'Arial';font-size:10pt;color:#000080;"> </span></p>
+</td>
+</tr>
+</table><br>
+
+<?php
+echo "<p>To check the authenticity of your banking details <b>$campaign</b> will debit a dollar from your account which will be credited back to your account within 7 working days. <b>" . $campaign . "’s</b> terms and conditions for providing this telecommunications service and Direct Debit set-up to you are available for viewing or downloading at our website at $website.</p>";
+?>
+<input type=button value="Close Window" onClick="javascript:window.close();">
+</body>
+</html>

@@ -1,0 +1,116 @@
+<?php
+include "../auth/iprestrict.php";
+include "../js/self-js.php";
+?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>VeriCon :: Self Verification :: Roster</title>
+<link rel="shortcut icon" href="../images/vericon.ico">
+<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
+<link rel="stylesheet" href="../jquery/development-bundle/themes/custom-theme/jquery.ui.all.css">
+<script src="../jquery/development-bundle/jquery-1.6.2.js"></script>
+<link rel="stylesheet" href="../jquery/development-bundle/demos/demos.css">
+<style>
+div#users-contain table { margin: 1em 0; border-collapse: collapse; }
+div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .4em 10px; }
+</style>
+</head>
+
+<body>
+<div id="main_wrapper">
+
+<?php
+include "../source/header.php";
+include "../source/self_menu.php";
+?>
+
+<div id="text">
+
+<p><img src="../images/this_week_header.png" width="100" height="25" style="margin-left:3px;" /></p>
+<p><img src="../images/line.png" width="740" height="9" alt="line" /></p>
+<div id="users-contain" class="ui-widget" style="margin-left:3px;">
+<table id="users" class="ui-widget ui-widget-content" width="60%" style="margin-top:3px;">
+<thead>
+<tr class="ui-widget-header ">
+<th>Day</th>
+<th>Date</th>
+<th>Start</th>
+<th>End</th>
+</tr>
+</thead>
+<tbody align="center">
+<?php
+$week_number = date("W");
+$q = mysql_query("SELECT * FROM roster WHERE agent = '$ac[user]' AND WEEK(date) = '$week_number' ORDER BY date ASC") or die(mysql_error());
+while ($roster = mysql_fetch_assoc($q))
+{
+	echo "<tr>";
+	echo "<td>" . date("l", strtotime($roster["date"]))."</td>";
+    echo "<td>" . date("d/m/Y", strtotime($roster["date"]))."</td>";
+	echo "<td>" . date("h:i A", strtotime($roster["start"])) . "</td>";
+	echo "<td>" . date("h:i A", strtotime($roster["end"])) . "</td>";
+	echo "</tr>";
+}
+?>
+</tbody>
+</table>
+</div>
+
+<p><img src="../images/next_week_header.png" width="105" height="25" style="margin-left:3px;" /></p>
+<p><img src="../images/line.png" width="740" height="9" alt="line" /></p>
+<?php
+$week_number2 = date("W")+1;
+$q2 = mysql_query("SELECT * FROM roster WHERE agent = '$ac[user]' AND WEEK(date) = '$week_number2' ORDER BY date ASC") or die(mysql_error());
+if (mysql_num_rows < 5)
+{
+?>
+<input type="button" value="Enter Availablity" />
+<?php
+}
+else
+{
+?>
+<div id="users-contain" class="ui-widget" style="margin-left:3px;">
+<table id="users" class="ui-widget ui-widget-content" width="80%" style="margin-top:3px;">
+<thead>
+<tr class="ui-widget-header ">
+<th>Day</th>
+<th>Date</th>
+<th>Available Start</th>
+<th>Available End</th>
+<th>Start</th>
+<th>End</th>
+</tr>
+</thead>
+<tbody align="center">
+<?php
+while ($roster2 = mysql_fetch_assoc($q2))
+{
+	echo "<tr>";
+	echo "<td>" . date("l", strtotime($roster2["date"]))."</td>";
+    echo "<td>" . date("d/m/Y", strtotime($roster2["date"]))."</td>";
+	echo "<td>" . date("h:i A", strtotime($roster2["av_start"])) . "</td>";
+	echo "<td>" . date("h:i A", strtotime($roster2["av_end"])) . "</td>";
+	echo "<td>" . date("h:i A", strtotime($roster2["start"])) . "</td>";
+	echo "<td>" . date("h:i A", strtotime($roster2["end"])) . "</td>";
+	echo "</tr>";
+}
+?>
+</tbody>
+</table>
+</div>
+<?php
+}
+?>
+
+</div>
+
+</div>
+
+<?php
+include "../source/footer.php";
+?>
+
+</body>
+</html>

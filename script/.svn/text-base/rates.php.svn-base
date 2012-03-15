@@ -1,0 +1,286 @@
+<script> //PSTN
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:450,
+		height:350,
+		modal: true,
+		buttons: {
+			"OK": function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+</script>
+<script> //ADSL
+$(function() {
+	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
+
+	$( "#dialog-confirm2" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:450,
+		height:320,
+		modal: true,
+		buttons: {
+			"OK": function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+</script>
+<script> //Bundle
+$(function() {
+	$( "#dialog:ui-dialog3" ).dialog( "destroy" );
+
+	$( "#dialog-confirm3" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:450,
+		height:420,
+		modal: true,
+		buttons: {
+			"OK": function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+</script>
+<script> //Display plan rates
+function PSTN(plan,fee,contract,local,national,mobile,etf)
+{
+	$('.plan').html(plan);
+	$('.fee').html(fee);
+	$('.contract').html(contract);
+	$('.local').html(local);
+	$('.national').html(national);
+	$('.mobile').html(mobile);
+	$('.etf').html(etf);
+	$( "#dialog-confirm" ).dialog( "open" );
+}
+function ADSL(plan,fee,contract,setup,data,etf)
+{
+	$('.plan').html(plan);
+	$('.fee').html(fee);
+	$('.contract').html(contract);
+	$('.setup').html(setup);
+	$('.data').html(data);
+	$('.etf').html(etf);
+	$( "#dialog-confirm2" ).dialog( "open" );
+}
+function Bundle(plan,fee,contract,setup,local,national,mobile,data,etf)
+{
+	$('.plan').html(plan);
+	$('.fee').html(fee);
+	$('.contract').html(contract);
+	$('.setup').html(setup);
+	$('.local').html(local);
+	$('.national').html(national);
+	$('.mobile').html(mobile);
+	$('.data').html(data);
+	$('.etf').html(etf);
+	$( "#dialog-confirm3" ).dialog( "open" );
+}
+</script>
+
+<div id="dialog-confirm" title="Plan Rates">
+	<p class="rates">
+		<h1 class="plan"></h1>
+        <img src="../images/line.png" width="420" height="9" alt="line" />
+        <table width="420" cellspacing="0" cellpadding="5">
+        <tr>
+        <td width="60" height="35"><div align="center"><strong><img src="../images/planfee_icon.jpg" width="23" height="23" /></strong></div></td>
+        <td width="150" height="35"><b>Plan Fee</b></td>
+        <td width="210" height="35"><p class="fee"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/contract_icon_orange.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Contract Length</b></td>
+        <td width="210" height="35"><p class="contract"></p></td>
+        </tr>
+        
+        <tr>
+        <td height="35"><div align="center"><img src="../images/localcalls_icon_transparent.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Local Calls</b></td>
+        <td width="210" height="35"><p class="local"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/localcalls_icon_transparent.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>National Calls</b></td>
+        <td width="210" height="35"><p class="national"></p></td>
+        </tr>
+        
+        <tr>
+        <td height="35"><div align="center"><img src="../images/mobilecappedcalls_icon_oran.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Mobile Calls</b></td>
+        <td width="210" height="35"><p class="mobile"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/businesshours_icon_tranpare.png" alt="img" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Early Termination Fee</b></td>
+        <td width="210" height="35"><p class="etf"></p></td>
+        </tr>
+        </table>
+    </p>
+</div>
+
+<div id="dialog-confirm2" title="Plan Rates">
+	<p class="rates">
+		<h1 class="plan"></h1>
+        <img src="../images/line.png" width="420" height="9" alt="line" />
+        <table width="420" cellspacing="0" cellpadding="5">
+        <tr>
+        <td width="60" height="35"><div align="center"><strong><img src="../images/planfee_icon.jpg" width="23" height="23" /></strong></div></td>
+        <td width="150" height="35"><b>Plan Fee</b></td>
+        <td width="210" height="35"><p class="fee"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/contract_icon_orange.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Contract Length</b></td>
+        <td width="210" height="35"><p class="contract"></p></td>
+        </tr>
+        
+        <tr>
+        <td height="35"><div align="center"><img src="../images/data_icon.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Setup Fee</b></td>
+        <td width="210" height="35"><p class="setup"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/download_icon.png" width="30" height="31" /></div></td>
+        <td width="150" height="35"><b>Internet Data</b></td>
+        <td width="210" height="35"><p class="data"></p></td>
+        </tr>
+        
+        <tr>
+        <td height="35"><div align="center"><img src="../images/businesshours_icon_tranpare.png" alt="img" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Early Termination Fee</b></td>
+        <td width="210" height="35"><p class="etf"></p></td>
+        </tr>
+        </table>
+    </p>
+</div>
+
+<div id="dialog-confirm3" title="Plan Rates">
+	<p class="rates">
+		<h1 class="plan"></h1>
+        <img src="../images/line.png" width="420" height="9" alt="line" />
+        <table width="420" cellspacing="0" cellpadding="5">
+        <tr>
+        <td width="60" height="35"><div align="center"><strong><img src="../images/planfee_icon.jpg" width="23" height="23" /></strong></div></td>
+        <td width="150" height="35"><b>Plan Fee</b></td>
+        <td width="210" height="35"><p class="fee"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/contract_icon_orange.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Contract Length</b></td>
+        <td width="210" height="35"><p class="contract"></p></td>
+        </tr>
+        
+        <tr>
+        <td height="35"><div align="center"><img src="../images/data_icon.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Setup Fee</b></td>
+        <td width="210" height="35"><p class="setup"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/localcalls_icon_transparent.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Local Calls</b></td>
+        <td width="210" height="35"><p class="local"></p></td>
+        </tr>
+        
+        <tr>
+        <td height="35"><div align="center"><img src="../images/localcalls_icon_transparent.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>National Calls</b></td>
+        <td width="210" height="35"><p class="national"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/mobilecappedcalls_icon_oran.png" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Mobile Calls</b></td>
+        <td width="210" height="35"><p class="mobile"></p></td>
+        </tr>
+        
+        <tr>
+        <td height="35"><div align="center"><img src="../images/download_icon.png" width="30" height="31" /></div></td>
+        <td width="150" height="35"><b>Internet Data</b></td>
+        <td width="210" height="35"><p class="data"></p></td>
+        </tr>
+        
+        <tr bgcolor="#EFEFEF">
+        <td height="35"><div align="center"><img src="../images/businesshours_icon_tranpare.png" alt="img" width="32" height="33" /></div></td>
+        <td width="150" height="35"><b>Early Termination Fee</b></td>
+        <td width="210" height="35"><p class="etf"></p></td>
+        </tr>
+        </table>
+    </p>
+</div>
+
+<p><img src="../images/pstn_rates_header.png" width="120" height="25" /></p>
+<p><img src="../images/line.png" width="740" height="9" /></p><br />
+
+<table>
+<tr>
+<td><input type="button" onClick="PSTN('PSTN $59.95','$59.95 per month (Inc GST)','12 Month Contract','Included','99c per call','99c per call','$199')" class="TC059"></td>
+<td><input type="button" onClick="PSTN('PSTN $64.95','$64.95 per month (Inc GST)','No Contract','Included','99c per call','99c per call','$99 unless 30 days notice')" class="TN064"></td>
+<td><input type="button" onClick="PSTN('PSTN $69.95','$69.95 per month (Inc GST)','12 Month Contract','Included','Included','99c per call','$199 (No Risk Offer)')" class="TC069"></td>
+<td><input type="button" onClick="PSTN('PSTN $74.95','$74.95 per month (Inc GST)','No Contract','Included','Included','99c per call','$99 unless 30 days notice')" class="TN074"></td>
+</tr>
+<tr>
+<td><input type="button" onClick="PSTN('PSTN $99.95','$99.95 per month (Inc GST)','No Contract','Included','Included','20c per call','$99 unless 30 days notice')" class="TN099"></td>
+<td><input type="button" onClick="PSTN('PSTN $129.95','$129.95 per month (Inc GST)','12 Month Contract','Included','Included','Included','$199 (No Risk Offer)')" class="TC129"></td>
+<td><input type="button" onClick="PSTN('PSTN $139.95','$139.95 per month (Inc GST)','No Contract','Included','Included','Included','$99 unless 30 days notice')" class="TN139"></td>
+<td><input type="button" onClick="PSTN('PSTN $39.95','$39.95 per month (Inc GST)','Inhertits from main plan','20c per call','20c per call with a 39c flagfall and capped at $1.10 for 30 minutes','33c per call with a 39c flagfall and capped at $1.35 for 10 minutes','Inhertits from main plan')" class="TN039"></td>
+</tr>
+</table>
+<br>
+
+<p><img src="../images/adsl_rates_header.png" width="120" height="25" /></p>
+<p><img src="../images/line.png" width="740" height="9" /></p><br />
+
+<table>
+<tr>
+<td><input type="button" onClick="ADSL('ADSL 15GB','$59.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','15GB','$199')" class="AC015"></td>
+<td><input type="button" onClick="ADSL('ADSL 500GB','Metro: $72.95 per month (Inc GST)<br>Regional: $82.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','500GB','$199')" class="AC500"></td>
+<td><input type="button" onClick="ADSL('ADSL Unlimited','Metro: $74.95 per month (Inc GST)<br>Regional: $84.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Unlimited','$199')" class="AC999"></td>
+</tr>
+</table>
+<br>
+
+<p><img src="../images/bundle_rates_header.png" width="135" height="25" /></p>
+<p><img src="../images/line.png" width="740" height="9" /></p><br />
+
+<table>
+<tr>
+<td><input type="button" onClick="Bundle('Bundle $89.95','$89.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','29c per call','99c per call','99c per call','15GB','$199 per service')" class="BC089"></td>
+<td><input type="button" onClick="Bundle('Bundle $102.95','$102.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','29c per call','99c per call','99c per call','500GB','$199 per service')" class="BC102"></td>
+<td><input type="button" onClick="Bundle('Bundle $104.95','$104.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','29c per call','99c per call','99c per call','Unlimited','$199 per service')" class="BC104"></td>
+</tr>
+<tr>
+<td><input type="button" onClick="Bundle('Bundle $119.95','$119.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Included','99c per call','99c per call','15GB','$199 per service')" class="BC119"></td>
+<td><input type="button" onClick="Bundle('Bundle $132.95','$132.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Included','99c per call','99c per call','500GB','$199 per service')" class="BC132"></td>
+<td><input type="button" onClick="Bundle('Bundle $134.95','$134.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Included','99c per call','99c per call','Unlimited','$199 per service')" class="BC134"></td>
+<td width="150px"></td>
+<td><input type="button" onClick="Bundle('Bundle $159.95','$159.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Included','Included','Included','Unlimited','$199 per service')" class="BC159"></td>
+</tr>
+<tr>
+<td><input type="button" onClick="Bundle('Bundle $129.95','$129.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Included','Included','99c per call','15GB','$199 per service')" class="BC129"></td>
+<td><input type="button" onClick="Bundle('Bundle $142.95','$142.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Included','Included','99c per call','500GB','$199 per service')" class="BC142"></td>
+<td><input type="button" onClick="Bundle('Bundle $144.95','$144.95 per month (Inc GST)','24 Month Contract','$99 (includes Modem, Connection and Delivery fee)','Included','Included','99c per call','Unlimited','$199 per service')" class="BC144"></td>
+</tr>
+</table>
+<br>
