@@ -231,14 +231,14 @@
 <file name="done_btn.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="done_btn_hover.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="down.gif" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
-<file name="down.png" server="vericon.com.au//var/vericon/" local="129748417180000000" remote="129748672670000000" />
+<file name="down.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="download_icon.jpg" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="download_icon.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="edit_scripts_header.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="export_script_bg.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="export_scripts_header.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
-<file name="footer_bg.png" server="vericon.com.au//var/vericon/" local="129728927420000000" remote="129748672670000000" />
-<file name="footer_bg_old.png" server="vericon.com.au//var/vericon/" local="129729021060000000" remote="129748672670000000" />
+<file name="footer_bg.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
+<file name="footer_bg_old.png" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="form_bg.jpg" server="vericon.com.au//var/vericon/" local="129748672670000000" remote="129748672670000000" />
 <file name="form_bg.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
 <file name="get_sale_btn.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
@@ -249,7 +249,7 @@
 <file name="help_bg.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
 <file name="hold_header.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
 <file name="international_rates_header.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
-<file name="ivr_body_bg.jpg" server="vericon.com.au//var/vericon/" local="129742143120000000" remote="129748672680000000" />
+<file name="ivr_body_bg.jpg" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
 <file name="ivr_check_header.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
 <file name="line.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
 <file name="line_bg.png" server="vericon.com.au//var/vericon/" local="129748672680000000" remote="129748672680000000" />
@@ -300,7 +300,7 @@
 <file name="queued_sales_header.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="radio_bg.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="radio_selected_bg.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
-<file name="resi_fill_bg.png" server="vericon.com.au//var/vericon/" local="129720063140000000" remote="129748672690000000" />
+<file name="resi_fill_bg.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="sale_details_header.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="sale_details_header2.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="sale_stats_header.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
@@ -311,7 +311,7 @@
 <file name="script_options_bg.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="script_options_heading.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="search_btn.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
-<file name="search_btn_2.png" server="vericon.com.au//var/vericon/" local="129743887360000000" remote="129748672690000000" />
+<file name="search_btn_2.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="search_btn_hover.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="search_btn_hover_2.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
 <file name="select_bg.png" server="vericon.com.au//var/vericon/" local="129748672690000000" remote="129748672690000000" />
@@ -346,7 +346,7 @@
 <file name="verification_script_header2.png" server="vericon.com.au//var/vericon/" local="129748672700000000" remote="129748672700000000" />
 <file name="webmail_icon.png" server="vericon.com.au//var/vericon/" local="129748672700000000" remote="129748672700000000" />
 <file name="welcome_bg.png" server="vericon.com.au//var/vericon/" local="129748672700000000" remote="129748672700000000" />
-<file name="plan_btn_bg.png" server="vericon.com.au//var/vericon/" local="129749535220000000" remote="129749874160000000" />
+<file name="plan_btn_bg.png" server="vericon.com.au//var/vericon/" local="129749874160000000" remote="129749874160000000" />
 <file name="plan_btn_hover_bg.png" server="vericon.com.au//var/vericon/" local="129749874160000000" remote="129749874160000000" />
 <file name="plan_btn_bg.png" server="test.vericon.com.au:8822//var/vericon/" local="129749535220000000" remote="129749535220000000" />
 <file name="plan_btn_hover_bg.png" server="test.vericon.com.au:8822//var/vericon/" local="129749535230000000" remote="129749535230000000" />

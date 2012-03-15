@@ -8,7 +8,7 @@
 <file name="index.php" server="test.vericon.com.au:8822//var/vericon/" local="129707197330000000" remote="129707197330000000" />
 <file name="rates.php" server="test.vericon.com.au:8822//var/vericon/" local="129749531248476686" remote="129749797580000000" />
 <file name="scripts.php" server="test.vericon.com.au:8822//var/vericon/" local="129748672650000000" remote="129749797510000000" />
-<file name="admin.php" server="vericon.com.au//var/vericon/" local="129707197280000000" remote="129748672650000000" />
+<file name="admin.php" server="vericon.com.au//var/vericon/" local="129748672650000000" remote="129748672650000000" />
 <file name="admin_announcements.php" server="vericon.com.au//var/vericon/" local="129748672650000000" remote="129748672650000000" />
 <file name="admin_submit.php" server="vericon.com.au//var/vericon/" local="129749806440000000" remote="129749806440000000" />
 <file name="admin_users.php" server="vericon.com.au//var/vericon/" local="129748672650000000" remote="129748672650000000" />
