@@ -61,8 +61,9 @@ if($access_level == "Admin")
   <ul>
   <li><a href="../tpv/admin.php?p=announcements">ANNOUNCEMENTS</a></li>
   <li><a href="../tpv/admin.php?p=users">USERS</a></li>
-  <li><a href="../tpv/admin.php?p=scripts">SCRIPTS</a></li>
+  <li><a href="../tpv/admin.php?p=stats">SALE STATS</a></li>
   <li><a href="../tpv/admin.php?p=search">SEARCH</a></li>
+  <li><a href="../tpv/admin.php?p=scripts">SCRIPTS</a></li>
   </ul>
 </li>
 <?php

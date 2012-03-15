@@ -23,6 +23,7 @@ include "../auth/admin_access.php";
 <script src="../jquery/development-bundle/ui/jquery.ui.dialog.js"></script>
 <script src="../jquery/development-bundle/ui/jquery.effects.core.js"></script>
 <script src="../jquery/development-bundle/ui/jquery.ui.autocomplete.js"></script>
+<script src="../jquery/development-bundle/ui/jquery.ui.accordion.js"></script>
 <script type="text/javascript" src="../js/jquery.jqtransform.js"></script>
 <script type="text/javascript" src="../js/admin.js"></script>
 <link rel="stylesheet" href="../jquery/development-bundle/demos/demos.css">
@@ -71,6 +72,10 @@ if ($_GET["p"] == "announcements")
 elseif ($_GET["p"] == "users")
 {
 	include "../tpv/admin_users.php";
+}
+elseif ($_GET["p"] == "stats")
+{
+	include "../tpv/admin_stats.php";
 }
 elseif ($_GET["p"] == "details")
 {
