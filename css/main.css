@@ -128,6 +128,23 @@
 	background-color:transparent;
 }
 
+.melbourne_portal:hover
+{
+	background-image:url('../images/melbourne_portal_btn_hover.png');
+	cursor:pointer;
+}
+
+.melbourne_portal
+{
+	background-image:url('../images/melbourne_portal_btn.png');
+	background-repeat:no-repeat;
+	height:76px;
+	width:132px;
+	display:block;
+	border:none;
+	background-color:transparent;
+}
+
 .operations_portal:hover
 {
 	background-image:url('../images/operations_portal_btn_hover.png');

@@ -108,7 +108,7 @@ function Mobile()
 
 window.onload=function()
 {
-	setTimeout(enableIt,3000)
+	setTimeout(enableIt,1000)
 	if ( $( "#mobile" ) != null && $( "#mobile" ).val() == "N/A" )
 	{
 		$( "#no_mobile" ).prop("checked", true);

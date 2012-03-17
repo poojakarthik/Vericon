@@ -106,6 +106,10 @@ mysql_select_db('vericon');
 	cursor:pointer;
 }
 
+html {
+	overflow-y: auto;
+}
+
 div#users-contain table { margin: 1em 0; border-collapse: collapse; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 </style>
@@ -413,7 +417,7 @@ $end1 = '</td>
 <table width="100%" style="margin-top:10px;">
 <tr valign="middle"><td width="33.33%" align="left">';
 
-$back = '<input type="button" onClick="Back()" style="display: none;" id="Btn_Back" class="back" />';
+$back = '<input type="button" onClick="Back()" id="Btn_Back" class="back" />';
 
 $cancel_btn = '</td><td width="33.33%" align="center"><input type="button" id="Btn_Cancel" onClick="parent.Cancel()" class="cancel" /><img src="../images/loading.gif" id="image_load" style="display:none;"></td>';
 

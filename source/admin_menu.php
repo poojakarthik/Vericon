@@ -28,7 +28,8 @@ ddsmoothmenu.init({
   <li><a href="../cs/index.php" target="_blank">CS PORTAL</a></li>
   <li><a href="../qa/index.php" target="_blank">QA PORTAL</a></li>
   <li><a href="../sales/index.php" target="_blank">SALES PORTAL</a></li>
-  <li><a href="../self/index.php" target="_blank">SELF PORTAL</a></li>
+  <li><a href="../melbourne/index.php" target="_blank">MELB PORTAL</a></li>
+  <li><a href="../operations/index.php" target="_blank">OPS PORTAL</a></li>
   <li><a href="../tpv/index.php" target="_blank">TPV PORTAL</a></li>
   </ul>
 </li>
