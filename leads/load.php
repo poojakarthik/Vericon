@@ -1,4 +1,15 @@
+<?PHP include "../auth/iprestrict.php"; ?>
+
 <?PHP
+function valData($d){
+  if(strlen($d[1])!=26){
+    echo $d[0],"\t",$d[1],"\t",$d[2],"\tBad Row\n";  
+    return false;
+  }
+
+  return true;
+}
+
 function loadData(){
 
   if($_FILES["file"]["err"] > 0) return 'FILE';
@@ -14,7 +25,9 @@ function loadData(){
   echo "<pre>";
   $i=0;
   while($d = fgetcsv($f,0,',')){
-    if(strlen($d[1])!=26) echo $d[0],"\t",$d[1],"\t",$d[2],"\tBad Row\n";
+    if(valData($d)){
+      //INSERT Query Here
+    }
     $i++;
   }
   echo "</pre>";
@@ -29,6 +42,7 @@ function loadData(){
 <title>VeriCon :: Leads</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
+<?PHP include "../source/jquery.php"; ?>
 </head>
 
 <body>
@@ -54,11 +68,9 @@ if ($_POST){
 <h1>Incorrect File Format!</h1>
 <?php endif; ?>
 
-
 <?php if ($err == 'OK'): ?>
 <h1>Done!</h1>
 <?php endif; ?>
-
 
 <?php if (!$_POST || $err != 'OK'): ?>
 <form action="" method="post" enctype="multipart/form-data">
@@ -68,10 +80,10 @@ if ($_POST){
 <?php endif; ?>
 
 </div>
-
 </div> 
 <?php
 include "../source/footer.php";
 ?>
 </body>
 </html>
+
