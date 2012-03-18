@@ -7,9 +7,9 @@ include "../auth/iprestrict.php";
 <title>VeriCon :: Admin :: Logged In Users</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<link rel="stylesheet" href="../jquery/development-bundle/themes/custom-theme/jquery.ui.all.css">
-<script src="../jquery/development-bundle/jquery-1.6.2.js"></script>
-<link rel="stylesheet" href="../jquery/development-bundle/demos/demos.css">
+<?php
+include "../source/jquery.php";
+?>
 <style>
 	div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
 	div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }

@@ -101,29 +101,15 @@ elseif ($action == "physical")
 {
 	$physical = $_GET["physical"];
 	
-	if ($physical == "")
-	{
-		echo "Please enter the customer's physical address";
-	}
-	else
-	{
-		mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
-		echo "submitted";
-	}
+	mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
+	echo "submitted";
 }
 elseif ($action == "postal")
 {
 	$postal = $_GET["postal"];
 	
-	if ($postal == "")
-	{
-		echo "Please enter the customer's postal address";
-	}
-	else
-	{
-		mysql_query("UPDATE sales_customers SET postal = '" . mysql_escape_string($postal) . "' WHERE id = '$id'") or die(mysql_error());
-		echo "submitted";
-	}
+	mysql_query("UPDATE sales_customers SET postal = '" . mysql_escape_string($postal) . "' WHERE id = '$id'") or die(mysql_error());
+	echo "submitted";
 }
 elseif ($action == "mobile")
 {

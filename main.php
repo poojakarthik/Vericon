@@ -8,7 +8,9 @@ include "auth/iprestrict.php";
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
 <link rel="stylesheet" href="../css/main.css" type="text/css"/>
-<script src="../jquery/development-bundle/jquery-1.6.2.js"></script>
+<?php
+include "source/jquery.php";
+?>
 </head>
 
 <body>

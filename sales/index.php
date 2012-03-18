@@ -9,16 +9,9 @@ $cam = mysql_fetch_assoc($q);
 <title>VeriCon :: Sales</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<link rel="stylesheet" href="../jquery/development-bundle/demos/demos.css">
-<link rel="stylesheet" href="../jquery/development-bundle/themes/custom-theme/jquery.ui.all.css">
-<script src="../jquery/development-bundle/jquery-1.6.2.js"></script>
-<script src="../jquery/development-bundle/external/jquery.bgiframe-2.1.2.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.core.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.widget.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.mouse.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.button.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.dialog.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.position.js"></script>
+<?php
+include "../source/jquery.php";
+?>
 </head>
 
 <body>

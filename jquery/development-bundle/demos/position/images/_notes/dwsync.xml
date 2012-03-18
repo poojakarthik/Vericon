@@ -1,9 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="earth.jpg" server="test.vericon.com.au:8822//var/vericon/" local="129707182064806277" remote="129707200310000000" />
-<file name="flight.jpg" server="test.vericon.com.au:8822//var/vericon/" local="129707182064876284" remote="129707200330000000" />
-<file name="rocket.jpg" server="test.vericon.com.au:8822//var/vericon/" local="129707182064846281" remote="129707200340000000" />
-<file name="earth.jpg" server="vericon.com.au//var/vericon/" local="129748672730000000" remote="129748672730000000" />
-<file name="flight.jpg" server="vericon.com.au//var/vericon/" local="129748672730000000" remote="129748672730000000" />
-<file name="rocket.jpg" server="vericon.com.au//var/vericon/" local="129748672730000000" remote="129748672730000000" />
+<file name="earth.jpg" server="vericon.com.au//var/vericon/" local="129765251521421284" remote="129765252060000000" />
+<file name="flight.jpg" server="vericon.com.au//var/vericon/" local="129765251521541291" remote="129765252060000000" />
+<file name="rocket.jpg" server="vericon.com.au//var/vericon/" local="129765251521651298" remote="129765252060000000" />
 </dwsync>

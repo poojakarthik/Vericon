@@ -8,19 +8,9 @@ include "../auth/admin_access.php";
 <title>VeriCon :: Customer Care :: Admin</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<link rel="stylesheet" href="../jquery/development-bundle/themes/custom-theme/jquery.ui.all.css">
-<script src="../jquery/development-bundle/jquery-1.6.2.js"></script>
-<script src="../jquery/development-bundle/external/jquery.bgiframe-2.1.2.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.core.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.widget.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.mouse.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.button.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.draggable.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.position.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.resizable.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.ui.dialog.js"></script>
-<script src="../jquery/development-bundle/ui/jquery.effects.core.js"></script>
-<link rel="stylesheet" href="../jquery/development-bundle/demos/demos.css">
+<?php
+include "../source/jquery.php";
+?>
 <style>
 	label { margin-right:3px; }
 	input.text { margin-bottom:12px; width:95%; padding: .4em; font-family:Tahoma, Geneva, sans-serif;
