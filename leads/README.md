@@ -1,6 +1,6 @@
 #LEADS MANAGEMENT
 
-![Flow](docs/flow.png)
+![Flow](https://github.com/SBTelecom/VeriCon/raw/leads/leads/docs/flow.png)
 
 ##TODO
 
