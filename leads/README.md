@@ -1,5 +1,7 @@
 #LEADS MANAGEMENT
 
+![Flow](docs/flow.png)
+
 ##TODO
 
 

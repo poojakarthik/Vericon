@@ -21,14 +21,16 @@ include "../source/leads_menu.php";
 ?>
 
 <div id="text">
+<pre>
 <?PHP
-  $q = mysql_query("SELECT * FROM leads_request WHERE status = 'OPEN'") || die(mysql_error());
+  $q = mysql_query("SELECT * FROM leads_request WHERE status = 'OPEN'") or die(mysql_error());
 
 while($d = mysql_fetch_row($q)){
-  echo "$d[0]";
+  echo "$d[0]\t$d[1]\t$d[2]\t$d[3]\t$d[5]\t$d[6]\n";
 }
 
 ?>
+</pre>
 </div>
 
 </div> 
