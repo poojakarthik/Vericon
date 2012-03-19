@@ -1,0 +1,62 @@
+digraph G{
+	compound=true;
+	rankdir="LR";
+	fontname="Monospace";
+	fontsize=8;
+	labeljust="l";
+	node [shape=box,color=blue,fontname="Monospace",fontsize=8];
+
+	subgraph cluster_sql{
+		 label="MySQL";
+		 "Table: leads" [shape=hexagon];
+		 "Table: leads_request" [shape=hexagon];
+		 "Table: leads_cc_log" [shape=hexagon];
+		 "Table: leads_cc_update" [shape=hexagon];
+		 "View: leads_cc_stats" [shape=hexagon];
+
+	}
+
+	subgraph cluster_index{
+		 label="index.php";
+		 "View: leads_cc_stats" -> "Display Stats";
+	}
+
+	subgraph cluster_load{
+		 label="load.php";
+		 "Load Leads" [shape=ellipse];
+		 "Load Leads" -> "Valadate Header" -> "Valadate Rows" -> "Table: leads";
+	}
+
+	subgraph cluster_wash{
+		 label="wash.php";
+		 "Wash Leads" [shape=ellipse];
+		 "Download" [shape=ellipse];
+		 "Upload" [shape=ellipse];
+
+		 "Table: leads"-> "Query Expired" -> "Download" -> "Wash Leads" -> "Upload" -> "Valadate" -> "Table: leads"
+	}
+
+	subgraph cluster_req{
+		 label="req.php";
+		 "CC Request" [shape=ellipse];
+		 "Action" [shape=ellipse];
+		 "CC Request" -> "Table: leads_request" -> "Action" -> "Table: leads";
+		 "Action" -> "Table: leads_request";
+	}
+
+	subgraph cluster_cron{
+		 label="CRONTAB";
+		 "Recalc CC Lists"
+	}
+
+	subgraph cluster_api{
+		 label="ViciDial API";
+		 "Push Log" -> "Table: leads_cc_log";
+		 "Table: leads_cc_update" -> "Pull Updates";
+	}
+
+	"Table: leads" -> "Recalc CC Lists";
+	"Table: leads_cc_log" -> "Recalc CC Lists" -> "Table: leads_cc_update";
+	
+}
+
