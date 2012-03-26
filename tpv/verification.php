@@ -729,6 +729,13 @@ function DD(campaign,website)
 	$( "#dialog-form5" ).dialog( "open" );
 }
 </script>
+<script>
+function Edit_Details(id)
+{
+	var l = "../tpv/edit.php?id=" + id;
+	window.open(l,'edit_details','menubar=no,scrollbars=yes,width=1000px,height=900px,left=1px,top=1px');
+}
+</script>
 </head>
 
 <body>

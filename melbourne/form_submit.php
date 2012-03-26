@@ -62,7 +62,7 @@ elseif ($method == "add")
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM sales_packages_temp WHERE cli = '" . mysql_escape_string($cli) . "'");
 	$check2 = mysql_fetch_row($ch2);
 	
-	$ch3 = mysql_query("SELECT COUNT(cli) FROM active_clis WHERE cli = '" . mysql_escape_string($cli) . "' AND (status = 'A' OR status = 'P' OR status = 'J' OR status = 'T' OR status = 'U' OR status = 'W')");
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '" . mysql_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
 	$ch4 = mysql_query("SELECT COUNT(cli) FROM sales_packages WHERE cli = '" . mysql_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
@@ -74,7 +74,7 @@ elseif ($method == "add")
 	}
 	elseif ($check3[0] != 0)
 	{
-		echo "CLI already active within Time Group";
+		echo "CLI is on the SCT DNC list";
 	}
 	elseif ($check2[0] != 0 || $check4[0] != 0)
 	{
@@ -172,10 +172,6 @@ elseif ($method == "submit")
 	elseif ($last == "")
 	{
 		echo "Please enter the customer's last name";
-	}
-	elseif ($mobile == "")
-	{
-		echo "Please enter the customer's mobile number";
 	}
 	elseif ($id_type == "Medicare Card" && !preg_match("/^[0-9]{10}$/",$id_num))
 	{

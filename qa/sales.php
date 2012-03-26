@@ -146,7 +146,6 @@ while ($centres = mysql_fetch_row($q))
 <p><img src="../images/sale_details_header2.png" width="125" height="25" style="margin-left:3px;" />
 <select id="display_type" onchange="Display_Type()" style="height:auto; margin:0; padding:0; width:85px; float:right; margin-right:10px;">
 <option value="pending">Pending</option>
-<option value="approved">Approved</option>
 <option value="rejected">Rejected</option>
 </select></p>
 <p><img src="../images/line.png" width="740" height="9" /></p>

@@ -136,7 +136,14 @@ if($page == 17)
 
 if($page == 18)
 {
-	echo $internet["18_ADSL"];
+	if ($plan == "AC999")
+	{
+		echo $internet["18_ADSL_U"];
+	}
+	else
+	{
+		echo $internet["18_ADSL"];
+	}
 	$next_btn = $next_default;
 }
 
@@ -176,6 +183,7 @@ if($page == 23)
 if($page == 24)
 {
 	echo $internet[25];
+	echo $input["edit_details"];
 	$next_btn = '<td width="33.33%" align="right"><input type="button" onClick="parent.Submit()" style="display: none;" id="Btn_Next" class="submit" /></td>';
 }
 

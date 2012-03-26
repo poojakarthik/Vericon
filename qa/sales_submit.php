@@ -161,53 +161,6 @@ elseif ($method == "pending")
 		}
 	}
 }
-elseif ($method == "approved")
-{
-	$centre = $_GET["centre"];
-	$team = $_GET["team"];
-	$date = $_GET["date"];
-	
-	if ($centre == "CC12")
-	{
-		$q = mysql_query("SELECT * FROM teams WHERE team = '$team'") or die(mysql_error());
-		
-		while ($team_agent = mysql_fetch_row($q))
-		{
-			$q1 = mysql_query("SELECT * FROM qa_customers WHERE status = 'Approved' AND agent = '$team_agent[0]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
-			
-			if (mysql_num_rows($q1) == 0)
-			{
-				
-			}
-			else
-			{
-				while ($data = mysql_fetch_assoc($q1))
-				{
-					echo "<tr>";
-					echo "<td><a href='../qa/process.php?id=$data[id]'>" . $data["id"] . "</a></td>";
-					echo "<td>" . $data["lead_id"] . "</td>";
-					echo "<td>" . $data["campaign"] . "</td>";
-					echo "<td>" . $data["type"] . "</td>";
-					echo "</tr>";
-				}
-			}
-		}
-	}
-	else
-	{
-		$q = mysql_query("SELECT id FROM qa_customers WHERE status = 'Approved' AND centre = '$centre' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
-		
-		while ($data = mysql_fetch_assoc($q))
-		{
-			echo "<tr>";
-			echo "<td><a href='../qa/process.php?id=$data[id]'>" . $data["id"] . "</a></td>";
-			echo "<td>" . $data["lead_id"] . "</td>";
-			echo "<td>" . $data["campaign"] . "</td>";
-			echo "<td>" . $data["type"] . "</td>";
-			echo "</tr>";
-		}
-	}
-}
 elseif ($method == "rejected")
 {
 	$centre = $_GET["centre"];

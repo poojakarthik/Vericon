@@ -60,7 +60,7 @@ elseif (mysql_num_rows($q1) != 1)
 	header("Location: ../index.php");
 	exit;
 }
-elseif (preg_match("/admin/",$p) || $_SERVER[PHP_SELF] == "/main.php")
+elseif (preg_match("/admin/",$p) || $_SERVER[PHP_SELF] == "/main.php" || $_SERVER[PHP_SELF] == "/update.php")
 {
 	
 }
@@ -69,6 +69,11 @@ elseif ($acc[$d[1]] != true)
 	header("Location: ../index.php");
 	exit;
 }
+/*elseif ($ac["type"] == "Self")
+{
+	header("Location: ../update.php");
+	exit;
+}*/
 
 $access_level = $ac["access"];
 

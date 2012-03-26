@@ -280,8 +280,9 @@ function Cancel()
 }
 </script>
 <script> //submit form
-function Submit()
-{
+$(function() {
+	$( "#dialog:ui-dialog8" ).dialog( "destroy" );
+	
 	var id = "<?php echo $_GET["id"]; ?>",
 		agent = "<?php echo $user[0]; ?>",
 		centre = "<?php echo $ac["centre"]; ?>",
@@ -301,26 +302,63 @@ function Submit()
 		id_num = $( "#id_num" ),
 		abn = $( "#abn" ),
 		abn_status = $( ".abn_status" ),
-		position = $( "#position" );
-		
-		if ($('#postal_same').attr('checked'))
-		{
-			postal = $( "#physical" );
-		}
-	
-	$.get("form_submit.php?method=submit", { id: id, agent: agent, centre: centre, campaign: campaign.html(), type: type.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), billing: billing.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val()},
-	function(data) {
-		if (data.substring(0,9) == "submitted")
-		{
-			$( ".sale_submitted" ).html(data.substring(9));
-			$( "#dialog-confirm4" ).dialog( "open" );
-		}
-		else
-		{
-			$( ".error4" ).html(data);
-			$( "#dialog-confirm3" ).dialog( "open" );
+		position = $( "#position" ),
+		dialled = $( "#dialled" ),
+		notes = $( "#notes" );
+
+	$( "#dialog-form8" ).dialog({
+		autoOpen: false,
+		height: 200,
+		width: 350,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		buttons: {
+			"Submit": function() {
+				if (!( /^0[23478][0-9]{8}$/i.test( dialled.val() )))
+				{
+					$( "#dialog-form8" ).dialog( "close" );
+					$( ".error4" ).html("Please enter a valid phone number!");
+					$( "#dialog-confirm3" ).dialog( "open" );
+				}
+				else
+				{
+					if ($('#postal_same').attr('checked'))
+					{
+						postal = $( "#physical" );
+					}
+					
+					var note = "Dialled Number: " + dialled.val() + " -- " + notes.val();
+					
+					$.get("form_submit.php?method=submit", { id: id, agent: agent, centre: centre, campaign: campaign.html(), type: type.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), billing: billing.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), notes: note },
+					function(data) {
+						if (data.substring(0,9) == "submitted")
+						{
+							$( "#dialog-form8" ).dialog( "close" );
+							$( ".sale_submitted" ).html(data.substring(9));
+							$( "#dialog-confirm4" ).dialog( "open" );
+						}
+						else
+						{
+							$( "#dialog-form8" ).dialog( "close" );
+							$( ".error4" ).html(data);
+							$( "#dialog-confirm3" ).dialog( "open" );
+						}
+					});
+				}
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		},
+		close: function() {
 		}
 	});
+});
+
+function Submit()
+{
+	$( "#dialog-form8" ).dialog( "open" );
 }
 </script>
 <script> //error dialog
@@ -942,6 +980,19 @@ while ($b_plan = mysql_fetch_assoc($qp))
 <div id="dialog-confirm7" title="GNAF Override">
 	<p class="error7">&nbsp;</p>
     Password <input type="password" id="override_password" size="15" value="" />
+</div>
+
+<div id="dialog-form8" title="Notes">
+	<table width="100%" height="100%">
+    <tr>
+    <td width="80px">Dialled Number<span style="color:#ff0000;">*</span> </td>
+    <td><input type="text" id="dialled" size="15" style="margin:0; height:20px;" /></td>
+    </tr>
+    <tr>
+    <td>Notes </td>
+    <td><textarea id="notes" style="width:100%; height:75px; resize:none;"></textarea></td>
+    </tr>
+    </table>
 </div>
 
 <?php

@@ -77,6 +77,23 @@ include "../source/jquery.php";
 	cursor:pointer;
 }
 
+.edit_details
+{
+	background-image:url('../images/edit_btn.png');
+	background-repeat:no-repeat;
+	height:30px;
+	width:102px;
+	border:none;
+	background-color:transparent;
+	margin-top:10px;
+}
+
+.edit_details:hover
+{
+	background-image:url('../images/edit_btn_hover.png');
+	cursor:pointer;
+}
+
 .search
 {
 	background-image:url('../images/search_btn_2.png');
@@ -372,7 +389,7 @@ while ($b_plan = mysql_fetch_assoc($qp))
 </div>
 
 <div style="display:none;">
-<img src="../images/back_hover_btn.png" /><img src="../images/next_hover_btn.png" /><img src="../images/add_package_btn_hover.png" /><img src="../images/submit_form_btn_hover.png" /><img src="../images/cancel_btn_hover.png" /><img src="../images/loading.gif"><img src="../images/dd_btn_hover.png">
+<img src="../images/back_hover_btn.png" /><img src="../images/next_hover_btn.png" /><img src="../images/add_package_btn_hover.png" /><img src="../images/submit_form_btn_hover.png" /><img src="../images/cancel_btn_hover.png" /><img src="../images/loading.gif"><img src="../images/dd_btn_hover.png"><img src="../images/edit_btn_hover.png">
 </div>
 
 <?php

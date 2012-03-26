@@ -245,8 +245,12 @@ while ($lines = mysql_fetch_assoc($q2))
 }
 ?>
 <tr>
+<td>Agent Notes</td>
+<td><textarea rows="3" readonly="readonly" style="width:375px; resize:none;"><?php echo $data["agentNotes"]; ?></textarea></td>
+</tr>
+<tr>
 <td>Comments</td>
-<td><textarea rows="3" style="width:375px; resize:none;"><?php echo $data["tpvNotes"]; ?></textarea></td>
+<td><textarea rows="3" readonly="readonly" style="width:375px; resize:none;"><?php echo $data["tpvNotes"]; ?></textarea></td>
 </tr>
 </table>
 <?php

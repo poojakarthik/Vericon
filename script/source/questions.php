@@ -349,6 +349,17 @@ $internet["18_ADSL"] = "<p>We ask you to note that:</p>
 <p>Do you understand this?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
+$internet["18_ADSL_U"] = "<p>We ask you to note that:</p>
+<ul>
+<li>Your internet ADSL speed will be up to 8mbps / ADSL2+ up to 20mbps.</li>
+<li>Actual speeds may vary as many factors affect speed such as internet traffic, your hardware and software, the source of your download and your location.</li>
+<li>Where plan is upgraded between months a new plan cost is charged for that current month and for remainder of the contract term if not changed.</li>
+<li>Your internet may be disconnected from your current supplier for a short period while internet services are ported to us.</li>
+<li>Once your internet account is reassigned to us, you may lose any existing email address that your present internet provider has offered you.</li>
+</ul>
+<p>Do you understand this?</p>
+<p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
+
 $internet["18_Wireless"] = "<p>We ask you to note that:</p>
 <ul>
 <li>Your internet speed will be up to 3.6mbps.</li>

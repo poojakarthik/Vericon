@@ -32,7 +32,7 @@ $(function() {
 
 	$( "#dialog-form2" ).dialog({
 		autoOpen: false,
-		height: 450,
+		height: 500,
 		width: 500,
 		modal: true,
 		resizable: false,

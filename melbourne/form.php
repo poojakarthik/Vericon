@@ -948,7 +948,7 @@ while ($b_plan = mysql_fetch_assoc($qp))
 if ($_GET["id"] == "")
 {
 ?>
-<div id="get_sale_table" style="margin-top:75px;">
+<div id="get_sale_table" style="margin-top:15px; margin-bottom:15px;">
 <form onsubmit="event.preventDefault()">
     <table>
         <tr>
@@ -959,7 +959,46 @@ if ($_GET["id"] == "")
     </table>
 </form>
     <center><p class="error" style="color:#C00;"></p></center>
-</div>  
+</div> 
+<br />
+<p><img src="../images/submitted_sales_header.png" width="165" height="25" style="margin-left:3px;" /></p>
+<p><img src="../images/line.png" width="715" height="9" /></p>
+<div id="users-contain" class="ui-widget" style="width:100%; margin-left:3px; margin-top:-5px;">
+<table id="users" class="ui-widget ui-widget-content" width="95%">
+<thead>
+<tr class="ui-widget-header ">
+<th>Sale ID</th>
+<th>Status</th>
+<th>Date/Time</th>
+<th>Customer Name</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$week = date("W");
+$sq = mysql_query("SELECT * FROM sales_customers WHERE agent = '$ac[user]' AND WEEK(timestamp) = '$week' ORDER BY timestamp DESC") or die(mysql_error());
+if (mysql_num_rows($sq) == 0)
+{
+	echo "<tr>";
+	echo "<td colspan='4'><center>No Sales Submitted!</center></td>";
+	echo "</tr>";
+}
+else
+{
+	while ($sales_data = mysql_fetch_assoc($sq))
+	{
+		echo "<tr>";
+		echo "<td>" . $sales_data["id"] . "</td>";
+		echo "<td>" . $sales_data["status"] . "</td>";
+		echo "<td>" . date("d/m/Y H:i", strtotime($sales_data["timestamp"])) . "</td>";
+		echo "<td>" . $sales_data["firstname"] . " " . $sales_data["lastname"] . "</td>";
+		echo "</tr>";
+	}
+}
+?>
+</tbody>
+</table>
+</div> 
 <?php
 }
 else

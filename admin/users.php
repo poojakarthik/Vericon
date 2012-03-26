@@ -346,10 +346,10 @@ include "../source/admin_menu.php";
 <option>Admin</option>
 <option>CCT</option>
 <option>CS</option>
-<option>Melbourne</option>
 <option>Operations</option>
 <option>QA</option>
 <option>Sales</option>
+<option>Self</option>
 <option>TPV</option>
 </select></td></tr>
 <tr><td>Access Level<span style="color:#ff0000;">*</span> </td>
@@ -395,10 +395,10 @@ while ($centres = mysql_fetch_assoc($q0))
 <option>Admin</option>
 <option>CCT</option>
 <option>CS</option>
-<option>Melbourne</option>
 <option>Operations</option>
 <option>QA</option>
 <option>Sales</option>
+<option>Self</option>
 <option>TPV</option>
 </select></td></tr>
 <tr><td>Access Level<span style="color:#ff0000;">*</span> </td>

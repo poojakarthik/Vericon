@@ -1,6 +1,6 @@
 <script type="text/javascript">
 window.onload=function(){
-	setTimeout(enableIt,3000)
+	setTimeout(enableIt,4000)
 }
 
 var prelink = "../script/script.php?t=<? echo $_GET['t']; ?>&campaign=<? echo $_GET['campaign']; ?>&plan=<? echo $_GET['plan']; ?>&page=";

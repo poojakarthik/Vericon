@@ -10,13 +10,13 @@
 <file name="resi_c.php" server="test.vericon.com.au:8822//var/vericon/" local="129744623131146735" remote="129744623540000000" />
 <file name="resi_nc.php" server="test.vericon.com.au:8822//var/vericon/" local="129749027062604882" remote="129749797550000000" />
 <file name="resi_wireless.php" server="test.vericon.com.au:8822//var/vericon/" local="129744629720417062" remote="129744630130000000" />
-<file name="bus_adsl.php" server="vericon.com.au//var/vericon/" local="129748672820000000" remote="129748672820000000" />
-<file name="bus_bundle.php" server="vericon.com.au//var/vericon/" local="129749033820000000" remote="129749033820000000" />
+<file name="bus_adsl.php" server="vericon.com.au//var/vericon/" local="129767838344730295" remote="129767838470000000" />
+<file name="bus_bundle.php" server="vericon.com.au//var/vericon/" local="129767837983209617" remote="129767838110000000" />
 <file name="bus_c.php" server="vericon.com.au//var/vericon/" local="129749033820000000" remote="129749033820000000" />
 <file name="bus_nc.php" server="vericon.com.au//var/vericon/" local="129749033820000000" remote="129749033820000000" />
 <file name="bus_wireless.php" server="vericon.com.au//var/vericon/" local="129748672820000000" remote="129748672820000000" />
-<file name="resi_adsl.php" server="vericon.com.au//var/vericon/" local="129748672820000000" remote="129748672820000000" />
-<file name="resi_bundle.php" server="vericon.com.au//var/vericon/" local="129749033820000000" remote="129749033820000000" />
+<file name="resi_adsl.php" server="vericon.com.au//var/vericon/" local="129767838415044316" remote="129767838550000000" />
+<file name="resi_bundle.php" server="vericon.com.au//var/vericon/" local="129767838140248599" remote="129767838270000000" />
 <file name="resi_c.php" server="vericon.com.au//var/vericon/" local="129749033820000000" remote="129749033820000000" />
 <file name="resi_nc.php" server="vericon.com.au//var/vericon/" local="129749033820000000" remote="129749033820000000" />
 <file name="resi_wireless.php" server="vericon.com.au//var/vericon/" local="129748672830000000" remote="129748672830000000" />

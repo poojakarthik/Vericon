@@ -62,7 +62,7 @@ elseif ($method == "add")
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM sales_packages_temp WHERE cli = '" . mysql_escape_string($cli) . "'");
 	$check2 = mysql_fetch_row($ch2);
 	
-	$ch3 = mysql_query("SELECT COUNT(cli) FROM active_clis WHERE cli = '" . mysql_escape_string($cli) . "' AND (status = 'A' OR status = 'P' OR status = 'J' OR status = 'T' OR status = 'U' OR status = 'W')");
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '" . mysql_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
 	$ch4 = mysql_query("SELECT COUNT(cli) FROM sales_packages WHERE cli = '" . mysql_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
@@ -74,7 +74,7 @@ elseif ($method == "add")
 	}
 	elseif ($check3[0] != 0)
 	{
-		echo "CLI already active within Time Group";
+		echo "CLI is on the SCT DNC list";
 	}
 	elseif ($check2[0] != 0 || $check4[0] != 0)
 	{
@@ -117,6 +117,7 @@ elseif ($method == "submit")
 	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
 	$position = $_GET["position"];
+	$notes = $_GET["notes"];
 	
 	$q4 = mysql_query("SELECT * FROM sales_packages_temp WHERE lead_id = '$lead_id'");
 	
@@ -252,6 +253,8 @@ elseif ($method == "submit")
 		$timestamp = date("Y-m-d H:i:s");		
 		
 		mysql_query("INSERT INTO sales_customers (id,status,industry,lead_id,timestamp,approved_timestamp,agent,centre,campaign,type,title,firstname,middlename,lastname,dob,email,mobile,billing,welcome,physical,postal,id_type,id_num,abn,position) VALUES ('$id','Approved','SELF','$lead_id','$timestamp','$timestamp','$agent','$centre','$campaign','$type','$title','" . mysql_escape_string($first) . "','" . mysql_escape_string($middle) . "','" . mysql_escape_string($last) . "','" . mysql_escape_string($dob) . "','" . mysql_escape_string($email) . "','" . mysql_escape_string($mobile) . "','$billing','$billing','$physical','$postal','" . mysql_escape_string($id_type) . "','" . mysql_escape_string($id_num) . "','" . mysql_escape_string($abn) . "','" . mysql_escape_string($position) . "')") or die(mysql_error());
+		
+		mysql_query("INSERT INTO tpv_notes (id,status,lead_id,centre,verifier,note) VALUES ('$id','Approved','$lead_id','$centre','$agent','". mysql_escape_string($notes) . "')") or die(mysql_error());
 		
 		while ($p = mysql_fetch_assoc($q4))
 		{

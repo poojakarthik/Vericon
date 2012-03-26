@@ -128,7 +128,14 @@ if($page == 1)
     
     if($page == 18)
     {
-        echo $internet["18_ADSL"];
+        if ($plan == "BC099" || $plan == "BC124" || $plan == "BC134" || $plan == "BC149")
+		{
+			echo $internet["18_ADSL_U"];
+		}
+		else
+		{
+			echo $internet["18_ADSL"];
+		}
     }
 	
 	if($page == 19)

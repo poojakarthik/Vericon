@@ -52,6 +52,11 @@ include "../js/self-js.php";
 	background-image:url('../images/dd_btn_hover.png');
 	cursor:pointer;
 }
+
+html
+{
+	overflow-y: auto;
+}
 </style>
 </head>
 <body>

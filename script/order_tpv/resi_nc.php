@@ -164,6 +164,7 @@ if($page == 19)
 if($page == 20)
 {
 	echo $landline[23];
+	echo $input["edit_details"];
 	$next_btn = '<td width="33.33%" align="right"><input type="button" onClick="parent.Submit()" style="display: none;" id="Btn_Next" class="submit" /></td>';
 }
 

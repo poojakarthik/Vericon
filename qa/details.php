@@ -842,6 +842,18 @@ else
 		echo "<script>window.location = '../qa/sales.php';</script>";
 	}
 	
+	if (substr($data["physical"],0,2) == "GA") {
+		$physical_method = "GNAF";
+	} else {
+		$physical_method = "Manual";
+	}
+	
+	if (substr($data["postal"],0,2) == "GA") {
+		$postal_method = "GNAF";
+	} else {
+		$postal_method = "Manual";
+	}
+	
 	switch ($data["title"])
 	{
 		case "Mr":
@@ -1080,7 +1092,7 @@ window.onload=function()
 </tr>
 <tr>
 <td>Agent </td>
-<td><b><?php echo $data["agent"] . " (" . $data2["alias"] . ")"; ?></b></td>
+<td><b><?php echo $data2["first"] . " " . $data2["last"] . " (" . $data["agent"] . ")"; ?></b></td>
 </tr>
 <tr>
 <td>Centre </td>
@@ -1099,22 +1111,25 @@ window.onload=function()
 <td width="50%" valign="top">
 <table border="0" width="100%">
 <tr>
-<td colspan="2"><img src="../images/customer_address_header.png" width="136" height="15" /></td>
+<td colspan="3"><img src="../images/customer_address_header.png" width="136" height="15" /></td>
 </tr>
 <tr>
-<td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
+<td colspan="3"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
 </tr>
 <tr>
 <td width="85px"><a onclick="Physical()" style="cursor:pointer; text-decoration:underline;">Physical</a><span style="color:#ff0000;">*</span> </td>
-<td><input type="text" size="35" id="display_physical" readonly /><input type="hidden" id="physical" value="<?php echo $data["physical"]; ?>" /></td>
+<td colspan="2"><b><?php echo $physical_method; ?></b></td>
+</tr>
+<tr>
+<td colspan="3"><input type="text" size="50" id="display_physical" readonly /><input type="hidden" id="physical" value="<?php echo $data["physical"]; ?>" /></td>
 </tr>
 <tr>
 <td><a onclick="Postal()" class="postal_open" style="cursor:pointer; text-decoration:underline;">Postal</a><span style="color:#ff0000;">*</span> </td>
-<td><input type="text" size="35" id="display_postal" readonly /><input type="hidden" id="postal" value="<?php echo $data["postal"]; ?>" /></td>
+<td><b><?php echo $postal_method; ?></b></td>
+<td align="right"><p style="margin-right:50px;"><input type="checkbox" id="postal_same" onclick="Same_Address()" style="height:auto;" /> Same as Above</p></td>
 </tr>
 <tr>
-<td></td>
-<td><input type="checkbox" id="postal_same" onclick="Same_Address()" style="height:auto;" /> Same as Above</td>
+<td colspan="3"><input type="text" size="50" id="display_postal" readonly /><input type="hidden" id="postal" value="<?php echo $data["postal"]; ?>" /></td>
 </tr>
 </table>
 </td>

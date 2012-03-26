@@ -55,7 +55,7 @@ function Cancel()
 if ($_GET["id"] == "")
 {
 ?>
-<div id="get_sale_table" style="margin-top:75px; margin-bottom:75px;">
+<!--<div id="get_sale_table" style="margin-top:75px; margin-bottom:75px;">
 <form onsubmit="event.preventDefault()">
     <table>
         <tr>
@@ -66,7 +66,7 @@ if ($_GET["id"] == "")
     </table>
 </form>
     <center><p class="error" style="color:#C00;"></p></center>
-</div>
+</div>-->
 <p><img src="../images/sales_export_header.png" width="135" height="25" /></p>
 <p><img src="../images/line.png" width="740" height="9" /></p><br />
 

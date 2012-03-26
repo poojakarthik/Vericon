@@ -278,4 +278,6 @@ $input["lines"] = $line . "<div class='demo'><div id='users-contain' class='ui-w
 <input type='button' onclick='Add_Package()' class='addpackage' />
 </div></div>";
 
+$input["edit_details"] = "<input type='button' onclick='parent.Edit_Details(\"$id\")' class='edit_details' />";
+
 ?>

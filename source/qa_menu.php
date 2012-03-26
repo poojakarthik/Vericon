@@ -19,7 +19,6 @@ if($access_level == "Admin")
   <ul>
   <li><a href="../qa/admin.php?p=users">USERS</a></li>
   <li><a href="../qa/admin.php?p=current">LOGGED IN</a></li>
-  <li><a href="../qa/admin.php?p=stats">CENTRE STATS</a></li>
   <li><a href="../qa/admin.php?p=report">REPORT</a></li>
   </ul>
 </li>

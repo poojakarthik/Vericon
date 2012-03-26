@@ -34,7 +34,7 @@ elseif ($method == "add") //add package
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM sales_packages WHERE cli = '$cli' AND WEEK(timestamp) = '$week'");
 	$check2 = mysql_fetch_row($ch2);
 	
-	$ch3 = mysql_query("SELECT COUNT(cli) FROM active_clis WHERE cli = '$cli' AND (status = 'A' OR status = 'P')");
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '" . mysql_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
 	if (!preg_match("/^0[2378][0-9]{8}$/",$cli))
@@ -43,7 +43,7 @@ elseif ($method == "add") //add package
 	}
 	elseif ($check3[0] != 0)
 	{
-		echo "CLI already active with Time Group";
+		echo "CLI is on the SCT DNC list";
 	}
 	elseif ($check2[0] != 0)
 	{
@@ -65,7 +65,7 @@ elseif ($method == "edit") //edit package
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM sales_packages WHERE cli = '$cli'");
 	$check2 = mysql_fetch_row($ch2);
 	
-	$ch3 =  mysql_query("SELECT COUNT(cli) FROM active_clis WHERE cli = '" . mysql_escape_string($cli) . "' AND (status = 'A' OR status = 'P' OR status = 'J' OR status = 'T' OR status = 'U' OR status = 'W')");
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '" . mysql_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
 	if (!preg_match("/^0[2378][0-9]{8}$/",$cli))
@@ -74,7 +74,7 @@ elseif ($method == "edit") //edit package
 	}
 	elseif ($check3[0] != 0)
 	{
-		echo "CLI already active with Time Group";
+		echo "CLI is on the SCT DNC list";
 	}
 	elseif ($check2[0] != 0 && $cli != $cli2)
 	{

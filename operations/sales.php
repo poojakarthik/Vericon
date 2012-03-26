@@ -108,7 +108,7 @@ for ($i = 0; $i < count($centres); $i++)
 <option>Sanu</option>
 </select></td>
 <td>Date</td>
-<td width="120px"><input type='text' size='11' id='datepicker2' readonly='readonly' value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
+<td width="120px"><input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
 <td><input type="button" onclick="Display()" class="search" value="" /></td>
 </tr>
 </table>
