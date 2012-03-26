@@ -9,9 +9,10 @@ ddsmoothmenu.init({
 <div id="menu">
 <div id="smoothmenu1" class="ddsmoothmenu">
 <ul>
-<li><a href="../leads/index.php">HOME</a></li><li style="padding-top:8px;">|</li>
-<li><a href="#">ITEM</a></li><li style="padding-top:8px;">|</li>
-<li><a href="#">ITEM</a></li>
+<li><a href="../leads/index.php">Home</a></li><li style="padding-top:8px;">|</li>
+<li><a href="../leads/load.php">Load Leads</a></li><li style="padding-top:8px;">|</li>
+<li><a href="../leads/wash.php">Wash Leads</a></li><li style="padding-top:8px;">|</li>
+<li><a href="../leads/req.php">Requests</a></li>
 </ul>
 </div>
 </div>
