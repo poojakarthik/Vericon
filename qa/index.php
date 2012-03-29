@@ -65,8 +65,7 @@ $(function() {
 </table>
 <div id="display">
 <script>
-var user = "<?php echo $ac["user"] ?>",
-	date = $( "#datepicker" );
+var date = $( "#datepicker" );
 
 $( "#display" ).load('stats_display.php?date=' + date.val());
 </script>

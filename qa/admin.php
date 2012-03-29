@@ -60,9 +60,13 @@ elseif ($_GET["p"] == "current")
 {
 	include "../qa/admin_current.php";
 }
-elseif ($_GET["p"] == "report")
+elseif ($_GET["p"] == "process")
 {
-	include "../qa/admin_report.php";
+	include "../qa/admin_process.php";
+}
+elseif ($_GET["p"] == "rejections")
+{
+	include "../qa/admin_rejection.php";
 }
 else
 {

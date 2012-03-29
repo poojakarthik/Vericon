@@ -381,4 +381,7 @@
 <file name="plans_btn_hover.png" server="vericon.com.au//var/vericon/" local="129760076760000000" remote="129760076760000000" />
 <file name="melbourne_portal_btn.png" server="vericon.com.au//var/vericon/" local="129764217112982444" remote="129764222960000000" />
 <file name="melbourne_portal_btn_hover.png" server="vericon.com.au//var/vericon/" local="129764216591459736" remote="129764222960000000" />
+<file name="dsr_report_header.png" server="vericon.com.au//var/vericon/" local="129774641125841991" remote="129774641590000000" />
+<file name="rejection_report_header.png" server="vericon.com.au//var/vericon/" local="129774689365962708" remote="129774689940000000" />
+<file name="sales_report_header.png" server="vericon.com.au//var/vericon/" local="129774689465570356" remote="129774689940000000" />
 </dwsync>

@@ -25,7 +25,8 @@ include "../source/manuals_menu.php";
 <p><img src="../images/video_tutorials_header.png" width="160" height="25" /></p>
 <p><img src="../images/line.png" width="740" height="9" /></p><br />
 
-<p>Test</p>
+<p>Coming Soon</p><Br />
+<p>Click on "USER MANUAL" to view the PDF format</p>
 
 </div>
 

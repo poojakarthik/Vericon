@@ -11,7 +11,7 @@ if ($centre["access"] != "Admin" || $_GET["user"] == "" || mysql_num_rows($q0) =
 }
 elseif ($centre["centre"] == "CC12")
 {
-	if ($_GET["user"] == "dsad001")
+	if ($_GET["user"] == "dsad001" || $_GET["user"] == "ddem001")
 	{
 		$team = "Damith";
 	}
@@ -28,7 +28,7 @@ elseif ($centre["centre"] == "CC12")
 		$team = "Sanu";
 	}
 	
-	$header = "Sale ID" . "\t" . "Campaign" . "\t" . "Type" . "\t" . "Agent" . "\t" . "Lead ID" . "\t";
+	$header = "Sale ID" . "," . "Campaign" . "," . "Type" . "," . "Agent" . "," . "Lead ID";
 	
 	$q = mysql_query("SELECT * FROM teams WHERE team = '$team'") or die(mysql_error());
 	
@@ -44,13 +44,13 @@ elseif ($centre["centre"] == "CC12")
 		{
 			while ($sales = mysql_fetch_row($q1))
 			{
-				$data .= $sales[0] . "\t";
-				$data .= $sales[1] . "\t";
-				$data .= $sales[2] . "\t";
+				$data .= "\"" . $sales[0] . "\",";
+				$data .= "\"" . $sales[1] . "\",";
+				$data .= "\"" . $sales[2] . "\",";
 				$q2 = mysql_query("SELECT first,last FROM auth WHERE user = '$sales[3]'") or die(mysql_error());
 				$name = mysql_fetch_row($q2);
-				$data .= $name[0] . " " . $name[1] . "\t";
-				$data .= $sales[4] . "\t";
+				$data .= "\"" . $name[0] . " " . $name[1] . "\",";
+				$data .= "\"" . $sales[4] . "\"";
 				$data .= "\n";
 			}
 		}
@@ -58,7 +58,7 @@ elseif ($centre["centre"] == "CC12")
 	
 	$date = date("d_m_Y");
 	
-	$filename = $team . "_" .$centre["centre"] . "_Sales_" . $date . ".xls";
+	$filename = $team . "_" .$centre["centre"] . "_Sales_" . $date . ".csv";
 	
 	header("Content-type: application/x-msdownload");
 	header("Content-Disposition: attachment; filename=$filename");
@@ -68,7 +68,7 @@ elseif ($centre["centre"] == "CC12")
 }
 else
 {
-	$header = "Sale ID" . "\t" . "Campaign" . "\t" . "Type" . "\t" . "Agent" . "\t" . "Lead ID" . "\t";
+	$header = "Sale ID" . "," . "Campaign" . "," . "Type" . "," . "Agent" . "," . "Lead ID";
 	
 	$q1 = mysql_query("SELECT id,campaign,type,agent,lead_id FROM sales_customers WHERE centre = '$centre[centre]' AND status = 'Approved' AND DATE(timestamp) = '" . date("Y-m-d") . "'") or die(mysql_error());
 	
@@ -80,20 +80,20 @@ else
 	{
 		while ($sales = mysql_fetch_row($q1))
 		{
-			$data .= $sales[0] . "\t";
-			$data .= $sales[1] . "\t";
-			$data .= $sales[2] . "\t";
+			$data .= "\"" . $sales[0] . "\",";
+			$data .= "\"" . $sales[1] . "\",";
+			$data .= "\"" . $sales[2] . "\",";
 			$q2 = mysql_query("SELECT first,last FROM auth WHERE user = '$sales[3]'") or die(mysql_error());
 			$name = mysql_fetch_row($q2);
-			$data .= $name[0] . " " . $name[1] . "\t";
-			$data .= $sales[4] . "\t";
+			$data .= "\"" . $name[0] . " " . $name[1] . "\",";
+			$data .= "\"" . $sales[4] . "\"";
 			$data .= "\n";
 		}
 	}
 	
 	$date = date("d_m_Y");
 	
-	$filename = $centre["centre"] . "_Sales_" . $date . ".xls";
+	$filename = $centre["centre"] . "_Sales_" . $date . ".csv";
 	
 	header("Content-type: application/x-msdownload");
 	header("Content-Disposition: attachment; filename=$filename");

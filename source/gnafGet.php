@@ -138,7 +138,7 @@ elseif ($type == "manual")
 	$suburb = $_GET["suburb"];
 	$street = $_GET["street"];
 	
-	$q0 = mysql_query("SELECT state FROM gnaf WHERE postcode = '$postcode' GROUP BY state") or die(mysql_error());
+	$q0 = mysql_query("SELECT state FROM gnaf WHERE postcode = '$postcode' AND LOCALITY_NAME = '" . mysql_escape_string($suburb) . "' GROUP BY state") or die(mysql_error());
 	$state = mysql_fetch_row($q0);
 	
 	$q1 = mysql_query("SELECT COUNT(id) FROM address WHERE id LIKE 'MA%'") or die(mysql_error());

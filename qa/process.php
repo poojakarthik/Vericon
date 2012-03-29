@@ -223,20 +223,20 @@ function Approve_Sale()
 		$( ".error2" ).html("Please check that the DSR details are correct!");
 		$( "#dialog-confirm2" ).dialog( "open" );
 	}
-	else if (plan == 0)
+	else if (plans == 0)
 	{
-		$( ".error2" ).html("Please check that the DSR plan details are correct!");
+		$( ".error2" ).html("Please check that the Plan details are correct!");
 		$( "#dialog-confirm2" ).dialog( "open" );
 	}
 	else
-	{	
+	{
 		$.get("process_submit.php?method=approve", { id: id, verifier: verifier, lead_id: lead_id.html(), lead: lead, recording: recording, details: details },
 		function(data) {
-			if (data == "done")
+			if (data == 1)
 			{
 				$.get("dsr_submit.php", { id: id, account_status: account_status.val(), adsl_status: adsl_status.val(), wireless_status: wireless_status.val(), building_type: building_type.val(), building_number: building_number.val(), building_number_suffix: building_number_suffix.val(), building_name: building_name.val(), street_number_start: street_number_start.val(), street_number_end: street_number_end.val(), street_name: street_name.val(), street_type: street_type.val(), suburb: suburb.val(), state: state.val(), postcode: postcode.val(), po_box_number: po_box_number.val(), mail_street_number: mail_street_number.val(), mail_street: mail_street.val(), mail_suburb: mail_suburb.val(), mail_state: mail_state.val(), mail_postcode: mail_postcode.val(), contract_months: contract_months.val(), credit_offered: credit_offered.val(), payway: payway.val(), direct_debit: direct_debit.val(), additional_information: additional_information.val(), billing_comment: billing_comment.val(), provisioning_comment: provisioning_comment.val(), mobile_comment: mobile_comment.val(), other_comment: other_comment.val(), cli_1: cli_1.val(), plan_1: plan_1.val(), cli_2: cli_2.val(), plan_2: plan_2.val(), cli_3: cli_3.val(), plan_3: plan_3.val(), cli_4: cli_4.val(), plan_4: plan_4.val(), cli_5: cli_5.val(), plan_5: plan_5.val(), cli_6: cli_6.val(), plan_6: plan_6.val(), cli_7: cli_7.val(), plan_7: plan_7.val(), cli_8: cli_8.val(), plan_8: plan_8.val(), cli_9: cli_9.val(), plan_9: plan_9.val(), cli_10: cli_10.val(), plan_10: plan_10.val(), msn_1: msn_1.val(), mplan_1: mplan_1.val(), msn_2: msn_2.val(), mplan_2: mplan_2.val(), msn_3: msn_3.val(), mplan_3: mplan_3.val(), wmsn_1: wmsn_1.val(), wplan_1: wplan_1.val(), wmsn_2: wmsn_2.val(), wplan_2: wplan_2.val(), acli: acli.val(), aplan: aplan.val(), bundle: bundle.val(), account_name: account_name.val() },
 				function(data) {
-					if (data == "done")
+					if (data == 1)
 					{
 						window.location = "sales.php";
 					}
@@ -294,17 +294,10 @@ $(function() {
 				}
 				else
 				{
-					$.get("process_submit.php?method=reject", { id: id, verifier: verifier, status: status.val(), reason: reason.val() },
+					$.get("process_submit.php?method=reject",{id: id, verifier: verifier, status: status.val(), reason: reason.val() },
 					function(data) {
-						if (data == "done")
-						{
-							$( "#dialog-form" ).dialog( "close" );
-							window.location = "sales.php";
-						}
-						else
-						{
-							updateTips(data);
-						}
+						$( "#dialog-form" ).dialog( "close" );
+						window.location = "sales.php";
 					});
 				}
 			},

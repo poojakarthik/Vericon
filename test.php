@@ -32,7 +32,7 @@ function linuxUptime() {
 <div id="text" class="demo">
 
 <p><img src="../images/server_dashboard_header.png" width="190" height="25" /></p>
-<p><img src="../images/line.png" width="740" height="9" /></p><br />
+<p><img src="../images/line.png" width="740" height="9" /></p>
 
 <table width="100%" style="border:1px solid black;">
 <tr>
@@ -64,6 +64,18 @@ function linuxUptime() {
 </tr>
 </table>
 
+<table width="100%">
+<tr>
+<td width="25%"></td>
+<td width="25%"></td>
+<td width="25%"></td>
+<td width="25%"></td>
+</tr>
+</table>
+
+<?php
+echo date("F", strtotime("2012-03-01"));
+?>
 </div>
 
 </div> 
