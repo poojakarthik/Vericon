@@ -53,7 +53,7 @@ if ($method == "approve")
 		$q1 = mysql_query("SELECT * FROM customers WHERE sale_id = '$id'") or die(mysql_error());
 		if (mysql_num_rows($q1) == 0)
 		{
-			$pre_id = date("y") . str_pad(date("z"),3,"0",STR_PAD_LEFT);
+			$pre_id = date("y", strtotime($data["approved_timestamp"])) . str_pad(date("z", strtotime($data["approved_timestamp"])),3,"0",STR_PAD_LEFT);
 			$q2 = mysql_query("SELECT COUNT(id) FROM customers WHERE id LIKE '$pre_id%'");
 			$num = mysql_fetch_row($q2);
 			
@@ -100,7 +100,7 @@ if ($method == "reject")
 		}
 		else
 		{
-			mysql_query("UPDATE qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', rejection_reason = '" . mysql_escape_string($reason) . "'") or die(mysql_error());
+			mysql_query("UPDATE qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 			echo "submitted";
 		}
 	}

@@ -14,7 +14,7 @@ while ($c = mysql_fetch_row($q))
 
 $cen = implode(',', $centres);
 ?>
-<center><img src="../operations/chart.php?centre=<?php echo $cen; ?>&date=<?php echo $date; ?>" /></center>
+<center><img src="../operations/chart.php?centre=<?php echo $cen; ?>&date1=<?php echo $date; ?>&date2=<?php echo $date; ?>" /></center>
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content">
 <thead>

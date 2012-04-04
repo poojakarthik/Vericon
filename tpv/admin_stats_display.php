@@ -12,13 +12,13 @@ mysql_select_db('vericon');
 
 $date = $_GET["date"];
 
-$cen = "CC02,CC03,CC04,CC06,CC07,CC09,CC10,CC11,CC15,CC16,CC22,CC40";
+$cen = "CC02,CC03,CC04,CC05,CC06,CC07,CC09,CC10,CC11,CC15,CC16,CC22,CC40";
 $centres = explode(",",$cen);
 ?>
 <div id="accordion">
 <h3><a href="#section1"><img src="../images/call_conversion_header.png" width="120" height="15" style="margin-left:3px;" /></a></h3>
 <div>
-<center><img src="../operations/chart2.php?centre=<?php echo $cen; ?>&date=<?php echo $date; ?>" /></center>
+<center><img src="../operations/chart2.php?centre=<?php echo $cen; ?>&date1=<?php echo $date; ?>&date2=<?php echo $date; ?>" /></center>
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content">
 <thead>
@@ -72,7 +72,7 @@ echo "</tr>";
 </div>
 <h3><a href="#section2"><img src="../images/customer_conversion_header.png" width="160" height="15" /></a></h3>
 <div>
-<center><img src="../operations/chart.php?centre=<?php echo $cen; ?>&date=<?php echo $date; ?>" /></center>
+<center><img src="../operations/chart.php?centre=<?php echo $cen; ?>&date1=<?php echo $date; ?>&date2=<?php echo $date; ?>" /></center>
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content">
 <thead>

@@ -25,6 +25,8 @@ if ($centre == "CC12")
 		$team = "Sanu";
 	}
 	
+	$header = "Agent,Centre,Date of Sale,Campaign,Type,Lead ID,Reason";
+	
 	$q = mysql_query("SELECT * FROM teams WHERE team = '$team'") or die(mysql_error());
 	while ($team_agent = mysql_fetch_row($q))
 	{
@@ -35,7 +37,7 @@ if ($centre == "CC12")
 			{
 				$data .= "\"" . $da["agent"] . "\",";
 				$data .= "\"" . $da["centre"] . "\",";
-				$data .= "\"" . date("d/m/Y", $da["agent"]) . "\",";
+				$data .= "\"" . date("d/m/Y", strtotime($da["sale_timestamp"])) . "\",";
 				$data .= "\"" . $da["campaign"] . "\",";
 				$data .= "\"" . $da["type"] . "\",";
 				$data .= "=\"" . $da["lead_id"] . "\",";
@@ -55,12 +57,11 @@ elseif ($centre == "All")
 	{
 		$data .= "\"" . $da["agent"] . "\",";
 		$data .= "\"" . $da["centre"] . "\",";
-		$data .= "\"" . date("d/m/Y", $da["agent"]) . "\",";
+		$data .= "\"" . date("d/m/Y", strtotime($da["sale_timestamp"])) . "\",";
 		$data .= "\"" . $da["campaign"] . "\",";
 		$data .= "\"" . $da["type"] . "\",";
 		$data .= "=\"" . $da["lead_id"] . "\",";
-		$data .= "\"" . $da["rejection_reason"] . "\"";
-		$date .= "\n";
+		$data .= "\"" . $da["rejection_reason"] . "\"\n";
 	}
 }
 else
@@ -73,7 +74,7 @@ else
 	{
 		$data .= "\"" . $da["agent"] . "\",";
 		$data .= "\"" . $da["centre"] . "\",";
-		$data .= "\"" . date("d/m/Y", $da["agent"]) . "\",";
+		$data .= "\"" . date("d/m/Y", strtotime($da["sale_timestamp"])) . "\",";
 		$data .= "\"" . $da["campaign"] . "\",";
 		$data .= "\"" . $da["type"] . "\",";
 		$data .= "=\"" . $da["lead_id"] . "\",";
@@ -87,7 +88,6 @@ if ($centre == "CC12")
 	$centre = $centre . "_" . $team;
 }
 $filename = "Rejection_Report_" . $date . "_" . $centre . ".csv";
-
 header("Content-type: application/x-msdownload");
 header("Content-Disposition: attachment; filename=$filename");
 header("Pragma: no-cache");

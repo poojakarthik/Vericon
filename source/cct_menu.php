@@ -10,7 +10,7 @@ ddsmoothmenu.init({
 <div id="smoothmenu1" class="ddsmoothmenu">
 <ul>
 <li><a href="../cct/index.php">HOME</a></li><li style="padding-top:8px;">|</li>
-<li><a href="../cct/forms.php">FORMS</a></li><li style="padding-top:8px;">|</li>
+<li><a href="../cct/customers.php">CUSTOMERS</a></li><li style="padding-top:8px;">|</li>
 <li><a href="../cct/rates.php">RATES</a></li></li><li style="padding-top:8px;">|</li>
 <li><a href="../cct/extensions.php">EXTENSIONS</a></li>
 <?php

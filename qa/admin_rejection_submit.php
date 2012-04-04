@@ -66,7 +66,7 @@ if ($method == "stats")
 			$total_sales = mysql_fetch_row($q);
 			$q5 = mysql_query("SELECT COUNT(id) FROM sales_customers WHERE status = 'Rework' AND campaign = '$campaign[0]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$reworks = mysql_fetch_row($q5);
-			$q1e = mysql_query("SELECT id FROM qa_customers WHERE status = 'Approved' AND campaign = '$campaign[0]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
+			$q1e = mysql_query("SELECT id FROM qa_customers WHERE campaign = '$campaign[0]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
 			if (mysql_num_rows($q1e) != 0)
 			{
 				while ($ex = mysql_fetch_row($q1e))
@@ -104,7 +104,7 @@ if ($method == "stats")
 			$total_sales = mysql_fetch_row($q);
 			$q5 = mysql_query("SELECT COUNT(id) FROM sales_customers WHERE status = 'Rework' AND centre = '$centre' AND campaign = '$campaign[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$reworks = mysql_fetch_row($q5);
-			$q1e = mysql_query("SELECT id FROM qa_customers WHERE status = 'Approved' AND centre = '$centre' AND campaign = '$campaign[$i]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
+			$q1e = mysql_query("SELECT id FROM qa_customers WHERE centre = '$centre' AND campaign = '$campaign[$i]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
 			if (mysql_num_rows($q1e) != 0)
 			{
 				while ($ex = mysql_fetch_row($q1e))

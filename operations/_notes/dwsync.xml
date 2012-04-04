@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <dwsync>
-<file name="index.php" server="vericon.com.au//var/vericon/" local="129765257769568658" remote="129765257840000000" />
-<file name="stats.php" server="vericon.com.au//var/vericon/" local="129772143495282190" remote="129772143640000000" />
-<file name="chart.php" server="vericon.com.au//var/vericon/" local="129757527990000000" remote="129757527990000000" />
-<file name="display.php" server="vericon.com.au//var/vericon/" local="129772141989866026" remote="129772142130000000" />
-<file name="chart2.php" server="vericon.com.au//var/vericon/" local="129757547630000000" remote="129757547630000000" />
-<file name="sales.php" server="vericon.com.au//var/vericon/" local="129772143894832926" remote="129772144040000000" />
-<file name="sales_display.php" server="vericon.com.au//var/vericon/" local="129762592270000000" remote="129762592270000000" />
+<file name="index.php" server="vericon.com.au//var/vericon/" local="129765293840000000" remote="129765293840000000" />
+<file name="stats.php" server="vericon.com.au//var/vericon/" local="129778301850000000" remote="129778301850000000" />
+<file name="chart.php" server="vericon.com.au//var/vericon/" local="129778303363637019" remote="129778303540000000" />
+<file name="chart2.php" server="vericon.com.au//var/vericon/" local="129778301190000000" remote="129778301190000000" />
+<file name="sales.php" server="vericon.com.au//var/vericon/" local="129772180040000000" remote="129772180040000000" />
+<file name="sales_display.php" server="vericon.com.au//var/vericon/" local="129762628270000000" remote="129762628270000000" />
+<file name="report.php" server="vericon.com.au//var/vericon/" local="129778304735251192" remote="129778304910000000" />
+<file name="report_display.php" server="vericon.com.au//var/vericon/" local="129778335450000000" remote="129778335450000000" />
+<file name="display.php" server="vericon.com.au//var/vericon/" local="129779115590331710" remote="129779115780000000" />
 </dwsync>

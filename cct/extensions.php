@@ -43,132 +43,162 @@ include "../source/cct_menu.php";
 <p><img src="../images/line.png" width="740" height="9" /></p><br />
 
 <div id="tabs">
-	<ul>
-		<li><a href="#billing">Billing</a></li>
-        <li><a href="#collections">Collections</a></li>
-		<li><a href="#prov-data">Provisioning - Data</a></li>
-		<li><a href="#prov-voice">Provisioning - Voice</a></li>
-	</ul>
-	<div id="prov-voice">
-		<div id="users-contain" class="ui-widget">
-            <table id="users" class="ui-widget ui-widget-content">
-                <thead>
-                    <tr class="ui-widget-header ">
-                        <th>Name</th>
-                        <th>Extension</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>General</td>
-                        <td>331</td>
-                    </tr>
-                    <tr>
-                        <td>Alina</td>
-                        <td>5201</td>
-                    </tr>
-                    <tr>
-                        <td>Beau</td>
-                        <td>5203</td>
-                    </tr>
-                    <tr>
-                        <td>Varun</td>
-                        <td>5205</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-	</div>
-    <div id="prov-data">
-		<div id="users-contain" class="ui-widget">
-            <table id="users" class="ui-widget ui-widget-content">
-                <thead>
-                    <tr class="ui-widget-header ">
-                        <th>Name</th>
-                        <th>Extension</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>General</td>
-                        <td>332</td>
-                    </tr>
-                    <tr>
-                        <td>Wes</td>
-                        <td>5210</td>
-                    </tr>
-                    <tr>
-                        <td>Justin</td>
-                        <td>5213</td>
-                    </tr>
-                    <tr>
-                        <td>Johnny</td>
-                        <td>5214</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="billing">
-		<div id="users-contain" class="ui-widget">
-            <table id="users" class="ui-widget ui-widget-content">
-                <thead>
-                    <tr class="ui-widget-header ">
-                        <th>Name</th>
-                        <th>Extension</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>General</td>
-                        <td>303</td>
-                    </tr>
-                    <tr>
-                        <td>Nandani</td>
-                        <td>5305</td>
-                    </tr>
-                    <tr>
-                        <td>Hamsa</td>
-                        <td>5302</td>
-                    </tr>
-                    <tr>
-                        <td>Sam</td>
-                        <td>5303</td>
-                    </tr>
-                    <tr>
-                        <td>Tim</td>
-                        <td>5304</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-    <div id="collections">
-		<div id="users-contain" class="ui-widget">
-            <table id="users" class="ui-widget ui-widget-content">
-                <thead>
-                    <tr class="ui-widget-header ">
-                        <th>Name</th>
-                        <th>Extension</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <tr>
-                        <td>General</td>
-                        <td>9305</td>
-                    </tr>
-                    <tr>
-                        <td>Aaron</td>
-                        <td>2055</td>
-                    </tr>
-                    <tr>
-                        <td>Stacey</td>
-                        <td>130 OR 2056</td>
-                    </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+<ul>
+<li><a href="#billing">Billing</a></li>
+<li><a href="#collections">Collections</a></li>
+<li><a href="#prov-data">Provisioning - Data</a></li>
+<li><a href="#prov-voice">Provisioning - Voice</a></li>
+</ul>
+<div id="prov-voice">
+<div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="margin-top:0;">
+<thead>
+<tr class="ui-widget-header ">
+<th>Name</th>
+<th>Extension</th>
+<th>Initials</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General</td>
+<td>331</td>
+<td></td>
+</tr>
+<tr>
+<td>Alina</td>
+<td>5201</td>
+<td>ALS</td>
+</tr>
+<tr>
+<td>Beau</td>
+<td>5203</td>
+<td>BEA</td>
+</tr>
+<tr>
+<td>Dion</td>
+<td>5205</td>
+<td>DID</td>
+</tr>
+<tr>
+<td>Hayden</td>
+<td>5204</td>
+<td>HAQ</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="prov-data">
+<div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="margin-top:0;">
+<thead>
+<tr class="ui-widget-header ">
+<th>Name</th>
+<th>Extension</th>
+<th>Initials</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General</td>
+<td>332</td>
+<td></td>
+</tr>
+<tr>
+<td>Amardeep</td>
+<td>5213</td>
+<td>AMK</td>
+</tr>
+<tr>
+<td>Neha</td>
+<td>5212</td>
+<td>NEY</td>
+</tr>
+<tr>
+<td>Johnny</td>
+<td>5211</td>
+<td>JON</td>
+</tr>
+<tr>
+<td>Wes</td>
+<td>5210</td>
+<td>WEH</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="billing">
+<div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="margin-top:0;">
+<thead>
+<tr class="ui-widget-header ">
+<th>Name</th>
+<th>Extension</th>
+<th>Initials</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General</td>
+<td>303</td>
+<td></td>
+</tr>
+<tr>
+<td>Hamsa</td>
+<td>5302</td>
+<td>HAN</td>
+</tr>
+<tr>
+<td>Nandani</td>
+<td>5305</td>
+<td>NAJ</td>
+</tr>
+<tr>
+<td>Sam</td>
+<td>5303</td>
+<td>SAF</td>
+</tr>
+<tr>
+<td>Tim</td>
+<td>5304</td>
+<td>TIO</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="collections">
+<div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="margin-top:0;">
+<thead>
+<tr class="ui-widget-header ">
+<th>Name</th>
+<th>Extension</th>
+<th>Initials</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>General</td>
+<td>9305</td>
+<td></td>
+</tr>
+<tr>
+<td>Anabella</td>
+<td>134</td>
+<td>MEM</td>
+</tr>
+<tr>
+<td>Stacey</td>
+<td>130</td>
+<td>STV</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
 </div>
 
 </div>

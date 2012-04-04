@@ -1,5 +1,5 @@
 <div id="innerpage_logo">
-<a href="../" style="border-style:none;"><img src="../images/logo.png"  width="252" height="65" alt="logo" /></a>
+<a href="../"><img src="../images/logo.png"  width="252" height="65" alt="logo" style="border-style:none;" /></a>
 </div>
 <script type="text/javascript">
 function Logout()

@@ -123,7 +123,7 @@ while ($campaign = mysql_fetch_row($q))
 	$q2 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Rework' AND campaign = '$campaign[0]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 	$rework = mysql_num_rows($q2);
 	
-	$q3e = mysql_query("SELECT id FROM qa_customers WHERE status = 'Approved' AND campaign = '$campaign[0]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
+	$q3e = mysql_query("SELECT id FROM qa_customers WHERE campaign = '$campaign[0]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
 	if (mysql_num_rows($q3e) != 0)
 	{
 		while ($ex = mysql_fetch_row($q3e))
@@ -152,6 +152,11 @@ while ($campaign = mysql_fetch_row($q))
 	echo "</tr>";
 }
 ?>
+<tr>
+<td colspan="6" style="text-align:right;">
+<a href="sales_export.php?date=<?php echo $date; ?>" style="color:inherit;">Download - Sales_Export_<?php echo date("d.m.Y", strtotime($date)); ?>.csv</a>
+</td>
+</tr>
 </tbody>
 </table>
 </div>

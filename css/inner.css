@@ -9,6 +9,10 @@ html {
     overflow-y: scroll;
 }
 
+img {
+	border-style:none;
+}
+
 #main_wrapper{
 width:964px;
 margin-left:auto;

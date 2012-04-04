@@ -5,7 +5,8 @@ include("../lib/pChart/pChart.class");
 
 $centre = $_GET["centre"];
 $query = "centre = '$centre'";
-$date = $_GET["date"];
+$date1 = $_GET["date1"];
+$date2 = $_GET["date2"];
 $centres = explode(",",$centre);
 
 mysql_connect('localhost','vericon','18450be');
@@ -15,11 +16,11 @@ mysql_select_db('vericon');
 $DataSet = new pData;
 for ($i = 0; $i < count($centres); $i++)
 {
-	$q = mysql_query("SELECT * FROM tpv_notes WHERE status = 'Approved' AND centre = '$centres[$i]' AND DATE(timestamp) = '$date'") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM tpv_notes WHERE status = 'Approved' AND centre = '$centres[$i]' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 	$approved = mysql_num_rows($q);
-	$q2 = mysql_query("SELECT * FROM tpv_notes WHERE status = 'Declined' AND centre = '$centres[$i]' AND DATE(timestamp) = '$date'") or die(mysql_error());
+	$q2 = mysql_query("SELECT * FROM tpv_notes WHERE status = 'Declined' AND centre = '$centres[$i]' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 	$declined = mysql_num_rows($q2);
-	$q3 = mysql_query("SELECT * FROM tpv_notes WHERE status = 'Line Issue' AND centre = '$centres[$i]' AND DATE(timestamp) = '$date'") or die(mysql_error());
+	$q3 = mysql_query("SELECT * FROM tpv_notes WHERE status = 'Line Issue' AND centre = '$centres[$i]' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 	$line_issue = mysql_num_rows($q3);
 	
 	$DataSet->AddPoint(array($approved),"Serie1");
