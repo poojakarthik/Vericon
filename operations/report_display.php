@@ -74,8 +74,8 @@ for ($i = 0; $i < count($centres); $i++)
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $vero_approved . "</td>";
 		echo "<td style='text-align:center;'>" . $rework . "</td>";
-		echo "<td style='text-align:center;'>" . $approved[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $rejected[0] . "</td>";
+		echo "<td style='text-align:center;'>" . $approved[0] . "</td>";
 		echo "</tr>";
 	}
 }
@@ -86,8 +86,8 @@ if (array_sum($captive) > 0)
 	echo "<td colspan='2' style='text-align:right;'><b>Total</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_vero_approved . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_rework . "</b></td>";
-	echo "<td style='text-align:center;'><b>" . $total_processed . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_rejected . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_processed . "</b></td>";
 	echo "</tr>";
 	echo "</tbody>";
 }
@@ -152,8 +152,8 @@ for ($i = 0; $i < count($centres); $i++)
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $vero_approved . "</td>";
 		echo "<td style='text-align:center;'>" . $rework . "</td>";
-		echo "<td style='text-align:center;'>" . $approved[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $rejected[0] . "</td>";
+		echo "<td style='text-align:center;'>" . $approved[0] . "</td>";
 		echo "</tr>";
 	}
 }
@@ -164,8 +164,8 @@ if (array_sum($outsourced) > 0)
 	echo "<td colspan='2' style='text-align:right;'><b>Total</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_vero_approved . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_rework . "</b></td>";
-	echo "<td style='text-align:center;'><b>" . $total_processed . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_rejected . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_processed . "</b></td>";
 	echo "</tr>";
 	echo "</tbody>";
 }
@@ -230,8 +230,8 @@ for ($i = 0; $i < count($centres); $i++)
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $vero_approved . "</td>";
 		echo "<td style='text-align:center;'>" . $rework . "</td>";
-		echo "<td style='text-align:center;'>" . $approved[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $rejected[0] . "</td>";
+		echo "<td style='text-align:center;'>" . $approved[0] . "</td>";
 		echo "</tr>";
 	}
 }
@@ -242,8 +242,8 @@ if (array_sum($self) > 0)
 	echo "<td colspan='2' style='text-align:right;'><b>Total</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_vero_approved . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_rework . "</b></td>";
-	echo "<td style='text-align:center;'><b>" . $total_processed . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_rejected . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_processed . "</b></td>";
 	echo "</tr>";
 	echo "</tbody>";
 }
