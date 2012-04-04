@@ -93,15 +93,30 @@ if ($method == "reject")
 		$data = mysql_fetch_assoc($q);
 		
 		$qc = mysql_query("SELECT * FROM qa_customers WHERE id = '$id'") or die(mysql_error());
-		if (mysql_fetch_row($qc) == 0)
+		$check = mysql_fetch_assoc($qc);
+		
+		if (mysql_num_rows($qc) == 0)
 		{
 			mysql_query("INSERT INTO qa_customers (id, status, lead_id, timestamp, verifier, sale_timestamp, agent, centre, campaign, type, rejection_reason) VALUES ('$id', 'Rejected', '$data[lead_id]', '$timestamp', '$verifier', '$data[approved_timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_escape_string($reason) . "')") or die(mysql_error());
 			echo "submitted";
 		}
 		else
 		{
-			mysql_query("UPDATE qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
-			echo "submitted";
+			if ($check["status"] == "Approved")
+			{
+				$q4 = mysql_query("SELECT id FROM customers WHERE sale_id = '$id'") or die(mysql_error());
+				$aid = mysql_fetch_row($q4);
+				
+				mysql_query("UPDATE tmp_dsr SET Account_Status = 'Cancelled' WHERE Sale_ID = '$aid[0]'") or die(mysql_error());
+				
+				mysql_query("UPDATE qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+				echo "submitted";
+			}
+			else
+			{
+				mysql_query("UPDATE qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+				echo "submitted";
+			}
 		}
 	}
 	elseif ($status == "Rework")
