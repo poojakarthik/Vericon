@@ -4,8 +4,8 @@
 <file name="display.php" server="test.vericon.com.au:8822//var/vericon/" local="129742158490000000" remote="129742158490000000" />
 <file name="end.php" server="test.vericon.com.au:8822//var/vericon/" local="129729942430000000" remote="129729942430000000" />
 <file name="init.php" server="test.vericon.com.au:8822//var/vericon/" local="129729942500000000" remote="129729942500000000" />
-<file name="check.php" server="vericon.com.au//var/vericon/" local="129760741630000000" remote="129760741630000000" />
-<file name="display.php" server="vericon.com.au//var/vericon/" local="129751356800000000" remote="129751356800000000" />
+<file name="check.php" server="vericon.com.au//var/vericon/" local="129787705540000000" remote="129787705540000000" />
+<file name="display.php" server="vericon.com.au//var/vericon/" local="129787737890649762" remote="129787738170000000" />
 <file name="end.php" server="vericon.com.au//var/vericon/" local="129748708700000000" remote="129748708700000000" />
 <file name="init.php" server="vericon.com.au//var/vericon/" local="129748708700000000" remote="129748708700000000" />
 </dwsync>

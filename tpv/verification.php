@@ -248,6 +248,7 @@ $(function() {
 function Edit_Package(cli,plan)
 {
 	$( "#edit_cli" ).val(cli);
+	$( "#edit_plan" ).load("plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#edit_cli').val());
 	$( "#edit_plan" ).val(plan);
 	$( "#original_edit_cli" ).val(cli);
 	$( "#dialog-form4" ).dialog( "open" );
@@ -736,6 +737,19 @@ function Edit_Details(id)
 	window.open(l,'edit_details','menubar=no,scrollbars=yes,width=1000px,height=900px,left=1px,top=1px');
 }
 </script>
+<script>
+function Plan_Dropdown()
+{
+	$( "#add_plan" ).val("");
+	$( "#add_plan" ).load("plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#add_cli').val());
+}
+</script>
+<script>
+function Plan_Dropdown_Edit()
+{
+	$( "#edit_plan" ).load("plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#edit_cli').val());
+}
+</script>
 </head>
 
 <body>
@@ -756,41 +770,12 @@ include "../source/tpv_menu.php";
 <table>
 <tr>
 <td width="50px">CLI </td>
-<td><input type="text" size="15" id="add_cli" style="margin-top:0px;" /></td>
+<td><input type="text" size="15" id="add_cli" onchange="Plan_Dropdown()" style="margin-top:0px;" /></td>
 </tr>
 <tr>
 <td>Plan </td>
 <td><select id="add_plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
 <option></option>
-<option disabled="disabled">--- Landline ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Landline'");
-
-while ($l_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $l_plan["name"] . "</option>";
-}
-?>
-<option>Addon</option>
-<option>Duet</option>
-<option disabled="disabled">--- Internet ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'ADSL'");
-
-while ($a_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $a_plan["name"] . "</option>";
-}
-?>
-<option disabled="disabled">--- Bundle ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Bundle'");
-
-while ($b_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $b_plan["name"] . "</option>";
-}
-?>
 </select></td>
 </tr>
 </table>
@@ -802,41 +787,12 @@ while ($b_plan = mysql_fetch_assoc($qp))
 <table>
 <tr>
 <td width="50px">CLI </td>
-<td><input type="text" size="15" id="edit_cli" style="margin-top:0px;" /></td>
+<td><input type="text" size="15" id="edit_cli" onchange="Plan_Dropdown_Edit()" style="margin-top:0px;" /></td>
 </tr>
 <tr>
 <td>Plan </td>
 <td><select id="edit_plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
 <option></option>
-<option disabled="disabled">--- Landline ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Landline'");
-
-while ($l_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $l_plan["name"] . "</option>";
-}
-?>
-<option>Addon</option>
-<option>Duet</option>
-<option disabled="disabled">--- Internet ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'ADSL'");
-
-while ($a_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $a_plan["name"] . "</option>";
-}
-?>
-<option disabled="disabled">--- Bundle ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Bundle'");
-
-while ($b_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $b_plan["name"] . "</option>";
-}
-?>
 </select></td>
 </tr>
 </table>
@@ -1360,8 +1316,23 @@ $q8 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id'") or die (mysq
 if (mysql_num_rows($q8) == 1)
 {
 	$pack = mysql_fetch_assoc($q8);
+	$q1 = mysql_query("SELECT name FROM plan_matrix WHERE id = '$pack[plan]'") or die(mysql_error());
+	$package_name = mysql_fetch_row($q1);
+	
+	if ($package_name[0] == "ADSL $54.95 24 Month Contract" || $package_name[0] == "ADSL $64.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL 15GB 24 Month Contract";
+	}
+	elseif ($package_name[0] == "ADSL $67.95 24 Month Contract" || $package_name[0] == "ADSL $77.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL 500GB 24 Month Contract";
+	}
+	elseif ($package_name[0] == "ADSL $69.95 24 Month Contract" || $package_name[0] == "ADSL $79.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL Unlimited 24 Month Contract";
+	}
 ?>
-<input type="hidden" id="plan" value="<?php echo $pack["plan"] ?>" />
+<input type="hidden" id="plan" value="<?php echo $package_name[0] ?>" />
 <?php
 }
 else
@@ -1371,7 +1342,23 @@ else
 <?php
 while ($package2 = mysql_fetch_assoc($q8))
 {
-	echo "<option>" . $package2["plan"] . "</option>";
+	$q1 = mysql_query("SELECT name FROM plan_matrix WHERE id = '$package2[plan]'") or die(mysql_error());
+	$package_name = mysql_fetch_row($q1);
+	
+	if ($package_name[0] == "ADSL $54.95 24 Month Contract" || $package_name[0] == "ADSL $64.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL 15GB 24 Month Contract";
+	}
+	elseif ($package_name[0] == "ADSL $67.95 24 Month Contract" || $package_name[0] == "ADSL $77.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL 500GB 24 Month Contract";
+	}
+	elseif ($package_name[0] == "ADSL $69.95 24 Month Contract" || $package_name[0] == "ADSL $79.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL Unlimited 24 Month Contract";
+	}
+	
+	echo "<option>" . $package_name[0] . "</option>";
 }
 ?>
 </select>

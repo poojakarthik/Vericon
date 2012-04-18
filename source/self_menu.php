@@ -65,6 +65,9 @@ if($access_level == "Admin")
   <?php if ($ac["centre"] == "CC12") { ?>
   <li><a href="../self/admin.php?p=teams">TEAMS</a></li>
   <?php } ?>
+  <?php if ($ac["centre"] == "CC33") { ?>
+  <li><a href="../self/admin.php?p=timesheet">TIMESHEET</a></li>
+  <?php } ?>
   <li><a href="../self/admin.php?p=current">LOGGED IN</a></li>
   <li><a href="../self/admin.php?p=details">SALE DETAILS</a></li>
   <li><a href="../self/admin.php?p=roster&m=d">ROSTER</a></li>

@@ -34,7 +34,7 @@ elseif ($centre["centre"] == "CC12")
 	
 	while ($team_agent = mysql_fetch_row($q))
 	{
-		$q1 = mysql_query("SELECT id,campaign,type,agent,lead_id FROM sales_customers WHERE agent = '$team_agent[0]' AND status = 'Approved' AND DATE(timestamp) = '" . date("Y-m-d") . "'") or die(mysql_error());
+		$q1 = mysql_query("SELECT id,campaign,type,agent,lead_id FROM sales_customers WHERE agent = '$team_agent[0]' AND status = 'Approved' AND DATE(approved_timestamp) = '" . date("Y-m-d") . "'") or die(mysql_error());
 		
 		if (mysql_num_rows($q1) == 0)
 		{
@@ -70,7 +70,7 @@ else
 {
 	$header = "Sale ID" . "," . "Campaign" . "," . "Type" . "," . "Agent" . "," . "Lead ID";
 	
-	$q1 = mysql_query("SELECT id,campaign,type,agent,lead_id FROM sales_customers WHERE centre = '$centre[centre]' AND status = 'Approved' AND DATE(timestamp) = '" . date("Y-m-d") . "'") or die(mysql_error());
+	$q1 = mysql_query("SELECT id,campaign,type,agent,lead_id FROM sales_customers WHERE centre = '$centre[centre]' AND status = 'Approved' AND DATE(approved_timestamp) = '" . date("Y-m-d") . "'") or die(mysql_error());
 	
 	if (mysql_num_rows($q1) == 0)
 	{

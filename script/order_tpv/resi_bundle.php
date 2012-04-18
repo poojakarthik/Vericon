@@ -110,6 +110,10 @@ if($page == 17)
 	$q4 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id'") or die(mysql_error());
 	while ($plan_rate = mysql_fetch_assoc($q4))
 	{
+		$q = mysql_query("SELECT name FROM plan_matrix WHERE id = '$plan_rate[plan]'") or die(mysql_error());
+		$plan_name = mysql_fetch_row($q);
+		$plan_rate["plan"] = $plan_name[0];
+		
 		if($pl[$plan_rate["plan"]] == 0)
 		{
 			if($plan_rate["plan"] == "Bundle $84.95 24 Month Contract")
@@ -173,10 +177,6 @@ if($page == 17)
 				echo $landline["104.95"];
 			}
 			elseif($plan_rate["plan"] == "Addon")
-			{
-				echo $landline["addon1"];
-			}
-			elseif($plan_rate["plan"] == "Duet")
 			{
 				echo $landline["duet"];
 			}

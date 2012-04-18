@@ -72,6 +72,4 @@ setTimeout("doUptime()",1000);
 <div id="uptime" style="font-weight:bold;"><?php echo $staticUptime; ?></div>
 
 </body>
-<br>
-Pandora FMS - Zabbix - The Bug Genie
 </html>

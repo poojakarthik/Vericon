@@ -276,6 +276,7 @@ $input["lines"] = $line . "<div class='demo'><div id='users-contain' class='ui-w
 </tbody>
 </table>
 <input type='button' onclick='Add_Package()' class='addpackage' />
+<input type='hidden' id='type' value='$data[type]'>
 </div></div>";
 
 $input["edit_details"] = "<input type='button' onclick='parent.Edit_Details(\"$id\")' class='edit_details' />";

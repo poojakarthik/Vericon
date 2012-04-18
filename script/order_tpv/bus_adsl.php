@@ -110,17 +110,21 @@ if($page == 17)
 	$q4 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id'") or die(mysql_error());
 	while ($plan_rate = mysql_fetch_assoc($q4))
 	{
+		$q = mysql_query("SELECT name FROM plan_matrix WHERE id = '$plan_rate[plan]'") or die(mysql_error());
+		$plan_name = mysql_fetch_row($q);
+		$plan_rate["plan"] = $plan_name[0];
+		
 		if($pl[$plan_rate["plan"]] == 0)
 		{
-			if($plan_rate["plan"] == "ADSL 15GB 24 Month Contract")
+			if($plan_rate["plan"] == "ADSL \$54.95 24 Month Contract" || $plan_rate["plan"] == "ADSL \$64.95 24 Month Contract")
 			{
 				echo $internet["15GB"];
 			}
-			elseif($plan_rate["plan"] == "ADSL 500GB 24 Month Contract")
+			elseif($plan_rate["plan"] == "ADSL \$67.95 24 Month Contract" || $plan_rate["plan"] == "ADSL \$77.95 24 Month Contract")
 			{
 				echo $internet["500GB"];
 			}
-			elseif($plan_rate["plan"] == "ADSL Unlimited 24 Month Contract")
+			elseif($plan_rate["plan"] == "ADSL \$69.95 24 Month Contract" || $plan_rate["plan"] == "ADSL \$79.95 24 Month Contract")
 			{
 				echo $internet["Unlimited"];
 			}

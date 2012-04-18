@@ -24,14 +24,15 @@
 <file name="admin_users.php" server="vericon.com.au//var/vericon/" local="129748708840000000" remote="129748708840000000" />
 <file name="export.php" server="vericon.com.au//var/vericon/" local="129748983820000000" remote="129748983820000000" />
 <file name="index.php" server="vericon.com.au//var/vericon/" local="129765299810000000" remote="129765299810000000" />
-<file name="packages.php" server="vericon.com.au//var/vericon/" local="129748708840000000" remote="129748708840000000" />
+<file name="packages.php" server="vericon.com.au//var/vericon/" local="129784210610000000" remote="129784210610000000" />
 <file name="rates.php" server="vericon.com.au//var/vericon/" local="129765300370000000" remote="129765300370000000" />
-<file name="verification.php" server="vericon.com.au//var/vericon/" local="129767694260000000" remote="129767694260000000" />
+<file name="verification.php" server="vericon.com.au//var/vericon/" local="129784932330000000" remote="129784932330000000" />
 <file name="verification_submit.php" server="vericon.com.au//var/vericon/" local="129767884200000000" remote="129767884200000000" />
 <file name="admin_details.php" server="vericon.com.au//var/vericon/" local="129756644550000000" remote="129756644550000000" />
-<file name="admin_edit.php" server="vericon.com.au//var/vericon/" local="129756644680000000" remote="129756644680000000" />
+<file name="admin_edit.php" server="vericon.com.au//var/vericon/" local="129784246294653379" remote="129784246500000000" />
 <file name="admin_stats.php" server="vericon.com.au//var/vericon/" local="129766074120000000" remote="129766074120000000" />
 <file name="admin_stats_display.php" server="vericon.com.au//var/vericon/" local="129778982076192568" remote="129778982270000000" />
 <file name="edit.php" server="vericon.com.au//var/vericon/" local="129767695550000000" remote="129767695550000000" />
 <file name="edit_submit.php" server="vericon.com.au//var/vericon/" local="129767689100000000" remote="129767689100000000" />
+<file name="plans.php" server="vericon.com.au//var/vericon/" local="129784212750000000" remote="129784212750000000" />
 </dwsync>

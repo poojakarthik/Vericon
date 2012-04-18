@@ -260,7 +260,7 @@
 <file name="loadform_btn_hover.png" server="vericon.com.au//var/vericon/" local="129748708680000000" remote="129748708680000000" />
 <file name="loading.gif" server="vericon.com.au//var/vericon/" local="129748708680000000" remote="129748708680000000" />
 <file name="localcalls_icon_transparent.png" server="vericon.com.au//var/vericon/" local="129748708680000000" remote="129748708680000000" />
-<file name="loggedin_bg.png" server="vericon.com.au//var/vericon/" local="129748708680000000" remote="129748708680000000" />
+<file name="loggedin_bg.png" server="vericon.com.au//var/vericon/" local="129786937720876105" remote="129786999740000000" />
 <file name="login_btn.png" server="vericon.com.au//var/vericon/" local="129748708680000000" remote="129748708680000000" />
 <file name="login_btn_hover.png" server="vericon.com.au//var/vericon/" local="129748708680000000" remote="129748708680000000" />
 <file name="logo.png" server="vericon.com.au//var/vericon/" local="129748708680000000" remote="129748708680000000" />
@@ -384,4 +384,14 @@
 <file name="dsr_report_header.png" server="vericon.com.au//var/vericon/" local="129774677590000000" remote="129774677590000000" />
 <file name="rejection_report_header.png" server="vericon.com.au//var/vericon/" local="129774725940000000" remote="129774725940000000" />
 <file name="sales_report_header.png" server="vericon.com.au//var/vericon/" local="129774725940000000" remote="129774725940000000" />
+<file name="ajax-loader.gif" server="vericon.com.au//var/vericon/" local="129786667483200278" remote="129786671710000000" />
+<file name="leads_dashboard_header.png" server="vericon.com.au//var/vericon/" local="129786853774561277" remote="129786854290000000" />
+<file name="details_icon.png" server="vericon.com.au//var/vericon/" local="129786918305735695" remote="129786922460000000" />
+<file name="export_excel_icon.png" server="vericon.com.au//var/vericon/" local="129786917245261032" remote="129786922460000000" />
+<file name="leads_portal_btn.png" server="vericon.com.au//var/vericon/" local="129787046895069467" remote="129787047850000000" />
+<file name="leads_portal_btn_hover.png" server="vericon.com.au//var/vericon/" local="129787047042823229" remote="129787047850000000" />
+<file name="trigger_btn.png" server="vericon.com.au//var/vericon/" local="129790273584973491" remote="129790274120000000" />
+<file name="trigger_btn_hover.png" server="vericon.com.au//var/vericon/" local="129790273737337838" remote="129790274120000000" />
+<file name="centre_timesheet_header.png" server="vericon.com.au//var/vericon/" local="129791163744401678" remote="129791164880000000" />
+<file name="centre_breakdown_header.png" server="vericon.com.au//var/vericon/" local="129792069700429399" remote="129792070350000000" />
 </dwsync>

@@ -10,24 +10,65 @@ if ($method == "get")
 	$centre = $_GET["centre"];
 	$date1 = date("Y-m-d");
 	$date2 = date("Y-m-d", strtotime("+1 week"));
+	$lead_id = substr($id,1,9);
 	
-	mysql_connect('localhost','vericon','18450be');
-	mysql_select_db('vericon');
-
-	$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$check2 = mysql_fetch_row($q1);
+	if ($centre == "")
+	{
+		$q = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$lead_id%'") or die(mysql_error());
+		$check = mysql_fetch_assoc($q);
 	
-	if (!preg_match("/^0[2378][0-9]{8}$/",$id))
-	{
-		echo "Invalid ID!";
-	}
-	elseif ($check2[0] != 0)
-	{
-		echo "Customer already submitted within this data period!";
+		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
+		$check1 = mysql_fetch_row($q1);
+		
+		$q2 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
+		$check2 = mysql_fetch_row($q2);
+	
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		{
+			echo "Invalid Lead ID!";
+		}
+		elseif (mysql_num_rows($q) == 0)
+		{
+			echo "Lead is not in the data packet!";
+		}
+		elseif ($check["centre"] != $centre && $check["centre"] != "ROHAN")
+		{
+			echo "Lead is not in the data packet!";
+		}
+		elseif ($check2[0] != 0)
+		{
+			echo "Customer is on the SCT DNC!";
+		}
+		elseif (time() < strtotime($check["issue_date"]) || time() > strtotime($check["expiry_date"]))
+		{
+			echo "Lead has expired!";
+		}
+		elseif ($check1[0] != 0)
+		{
+			echo "Customer already submitted within this data period!";
+		}
+		else
+		{
+			echo "valid";
+		}
 	}
 	else
 	{
-		echo "valid";
+		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$check2 = mysql_fetch_row($q1);
+		
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		{
+			echo "Invalid ID!";
+		}
+		elseif ($check2[0] != 0)
+		{
+			echo "Customer already submitted within this data period!";
+		}
+		else
+		{
+			echo "valid";
+		}
 	}
 }
 elseif ($method == "load")

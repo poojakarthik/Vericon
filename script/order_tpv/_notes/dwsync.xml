@@ -8,12 +8,12 @@
 <file name="resi_bundle.php" server="test.vericon.com.au:8822//var/vericon/" local="129749031909234882" remote="129749797550000000" />
 <file name="resi_c.php" server="test.vericon.com.au:8822//var/vericon/" local="129749029684039882" remote="129749797550000000" />
 <file name="resi_nc.php" server="test.vericon.com.au:8822//var/vericon/" local="129749030359789882" remote="129749797560000000" />
-<file name="bus_adsl.php" server="vericon.com.au//var/vericon/" local="129767871010000000" remote="129767871010000000" />
-<file name="bus_bundle.php" server="vericon.com.au//var/vericon/" local="129767873250000000" remote="129767873250000000" />
-<file name="bus_c.php" server="vericon.com.au//var/vericon/" local="129767693100000000" remote="129767693100000000" />
-<file name="bus_nc.php" server="vericon.com.au//var/vericon/" local="129767693160000000" remote="129767693160000000" />
-<file name="resi_adsl.php" server="vericon.com.au//var/vericon/" local="129767872350000000" remote="129767872350000000" />
-<file name="resi_bundle.php" server="vericon.com.au//var/vericon/" local="129767873410000000" remote="129767873410000000" />
-<file name="resi_c.php" server="vericon.com.au//var/vericon/" local="129767693450000000" remote="129767693450000000" />
-<file name="resi_nc.php" server="vericon.com.au//var/vericon/" local="129767696610000000" remote="129767696610000000" />
+<file name="bus_adsl.php" server="vericon.com.au//var/vericon/" local="129784241120000000" remote="129784241120000000" />
+<file name="bus_bundle.php" server="vericon.com.au//var/vericon/" local="129784234810000000" remote="129784234810000000" />
+<file name="bus_c.php" server="vericon.com.au//var/vericon/" local="129784232550000000" remote="129784232550000000" />
+<file name="bus_nc.php" server="vericon.com.au//var/vericon/" local="129784232280000000" remote="129784232280000000" />
+<file name="resi_adsl.php" server="vericon.com.au//var/vericon/" local="129784241228450053" remote="129784241430000000" />
+<file name="resi_bundle.php" server="vericon.com.au//var/vericon/" local="129784237099840786" remote="129784237310000000" />
+<file name="resi_c.php" server="vericon.com.au//var/vericon/" local="129784237510000000" remote="129784237510000000" />
+<file name="resi_nc.php" server="vericon.com.au//var/vericon/" local="129784237568140253" remote="129784237770000000" />
 </dwsync>

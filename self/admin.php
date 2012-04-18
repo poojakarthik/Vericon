@@ -50,6 +50,10 @@ elseif ($_GET["p"] == "details")
 {
 	include "../self/admin_details.php";
 }
+elseif ($_GET["p"] == "timesheet")
+{
+	include "../self/admin_timesheet.php";
+}
 elseif ($_GET["p"] == "roster")
 {
 	include "../self/admin_roster.php";

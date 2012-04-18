@@ -202,6 +202,7 @@ $(function() {
 function Edit_Package(cli,plan)
 {
 	$( "#edit_cli" ).val(cli);
+	$( "#edit_plan" ).load("plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#edit_cli').val());
 	$( "#edit_plan" ).val(plan);
 	$( "#original_edit_cli" ).val(cli);
 	$( "#dialog-form4" ).dialog( "open" );
@@ -619,6 +620,20 @@ function Manual_P()
 	$( "#gnaf_p" ).attr('style','display:none;');
 }
 </script>
+<script>
+function Plan_Dropdown()
+{
+	$( "#plan" ).val("");
+	$( "#plan" ).load("plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#cli').val());
+}
+</script>
+<script>
+function Plan_Dropdown_Edit()
+{
+	$( "#edit_plan" ).load("plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#edit_cli').val());
+}
+</script>
+
 
 <div style="display:none;">
 <img src="../images/getsale_btn_hover.png" /><img src="../images/submit_form_btn_hover.png" /><img src="../images/cancel_form_btn_hover.png" /><img src="../images/add_package_btn_hover.png" /><img src="../images/search_btn_2.png" /><img src="../images/search_btn_hover_2.png" />
@@ -668,40 +683,11 @@ switch ($status[0])
 <table>
 <tr>
 <td width="50px">CLI </td>
-<td><input type="text" size="15" id="cli" style="margin-top:0px;" /></td>
+<td><input type="text" size="15" id="cli" onchange="Plan_Dropdown()" style="margin-top:0px;" /></td>
 </tr>
 <td>Plan </td>
 <td><select id="plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
 <option></option>
-<option disabled="disabled">--- Landline ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Landline'");
-
-while ($l_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $l_plan["name"] . "</option>";
-}
-?>
-<option>Addon</option>
-<option>Duet</option>
-<option disabled="disabled">--- Internet ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'ADSL'");
-
-while ($a_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $a_plan["name"] . "</option>";
-}
-?>
-<option disabled="disabled">--- Bundle ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Bundle'");
-
-while ($b_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $b_plan["name"] . "</option>";
-}
-?>
 </select></td>
 </tr>
 </table>
@@ -717,41 +703,12 @@ while ($b_plan = mysql_fetch_assoc($qp))
 <table>
 <tr>
 <td width="50px">CLI </td>
-<td><input type="text" size="15" id="edit_cli" style="margin-top:0px;" /></td>
+<td><input type="text" size="15" id="edit_cli" onchange="Plan_Dropdown_Edit()" style="margin-top:0px;" /></td>
 </tr>
 <tr>
 <td>Plan </td>
 <td><select id="edit_plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
 <option></option>
-<option disabled="disabled">--- Landline ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE type = 'Landline'");
-
-while ($l_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $l_plan["name"] . "</option>";
-}
-?>
-<option>Addon</option>
-<option>Duet</option>
-<option disabled="disabled">--- Internet ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE type = 'ADSL'");
-
-while ($a_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $a_plan["name"] . "</option>";
-}
-?>
-<option disabled="disabled">--- Bundle ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE type = 'Bundle'");
-
-while ($b_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $b_plan["name"] . "</option>";
-}
-?>
 </select></td>
 </tr>
 </table>
@@ -1147,6 +1104,7 @@ window.onload=function()
 }
 </script>
 <input type="hidden" id="lead_id" value="<?php echo $data["lead_id"]; ?>" />
+<input type="hidden" id="type" value="<?php echo $data["type"]; ?>" />
 <table border="0" width="100%">
 <tr>
 <td width="50%" valign="top">

@@ -73,9 +73,20 @@ function linuxUptime() {
 </tr>
 </table>
 
-<?php
-echo date("F", strtotime("2012-03-01"));
-?>
+<script>
+var unix_timestamp = "<?php echo time(); ?>";
+
+setInterval(function() {
+	unix_timestamp++;
+    var date = new Date(unix_timestamp*1000);
+	var formattedTime = $.datepicker.formatDate('dd/mm/yy', date) + " " + date.getHours() + ":" + date.getMinutes() + " " + date.get;
+	
+	$( ".test" ).html(formattedTime);
+	}, 1000);
+</script>
+
+<?php echo date("") ?><span class="test"></p>
+
 </div>
 
 </div> 

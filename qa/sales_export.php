@@ -6,7 +6,7 @@ $date = $_GET["date"];
 
 $header = "Sale ID,Campaign,Type,Agent,Centre,CLI_1,Plan_1,CLI_2,Plan_2,CLI_3,Plan_3,CLI_4,Plan_4,CLI_5,Plan_5,CLI_6,Plan_6,CLI_7,Plan_7,CLI_8,Plan_8,CLI_9,Plan_9,CLI_10,Plan_10";
 
-$q1 = mysql_query("SELECT id,campaign,type,agent,centre FROM sales_customers WHERE status = 'Approved' AND DATE(timestamp) = '" . $date . "'") or die(mysql_error());
+$q1 = mysql_query("SELECT id,campaign,type,agent,centre FROM sales_customers WHERE status = 'Approved' AND DATE(approved_timestamp) = '" . $date . "'") or die(mysql_error());
 
 if (mysql_num_rows($q1) != 0)
 {

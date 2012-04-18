@@ -14,8 +14,16 @@ if ($user == "")
 $q = mysql_query("SELECT * FROM auth WHERE user = '$user'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
 
-$username = strtolower($data["first"]) . strtolower(substr($data["last"],0,1));
-$password = strtolower($data["first"]) . "pass";
+if ($user == "dsir001")
+{
+	$username = strtolower($data["first"]) . strtolower(substr($data["last"],0,2));
+	$password = strtolower($data["first"]) . "pass";
+}
+else
+{
+	$username = strtolower($data["first"]) . strtolower(substr($data["last"],0,1));
+	$password = strtolower($data["first"]) . "pass";
+}
 
 $link = "http://mail.telgroup.com.au/zimbra/?loginOp=login&username=" . $username . "&password=" . $password . "&client=preferred";
 header("Location: $link");

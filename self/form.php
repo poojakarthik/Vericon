@@ -718,6 +718,13 @@ function Override()
 	$( "#dialog-confirm7" ).dialog( "open" );
 }
 </script>
+<script>
+function Plan_Dropdown()
+{
+	$( "#plan" ).val("");
+	$( "#plan" ).load("plans.php?type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
+}
+</script>
 </head>
 
 <body>
@@ -778,40 +785,11 @@ for ($i = 0; $i < $camlength; $i++)
 <table>
 <tr>
 <td width="50px">CLI </td>
-<td><input type="text" size="15" id="cli" style="margin-top:0px;" /></td>
+<td><input type="text" size="15" id="cli" onchange="Plan_Dropdown()" style="margin-top:0px;" /></td>
 </tr>
 <td>Plan </td>
 <td><select id="plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
 <option></option>
-<option disabled="disabled">--- Landline ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Landline'");
-
-while ($l_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $l_plan["name"] . "</option>";
-}
-?>
-<option>Addon</option>
-<option>Duet</option>
-<option disabled="disabled">--- Internet ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'ADSL'");
-
-while ($a_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $a_plan["name"] . "</option>";
-}
-?>
-<option disabled="disabled">--- Bundle ---</option>
-<?php
-$qp = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND type = 'Bundle'");
-
-while ($b_plan = mysql_fetch_assoc($qp))
-{
-	echo "<option>" . $b_plan["name"] . "</option>";
-}
-?>
 </select></td>
 </tr>
 </table>
@@ -1025,12 +1003,12 @@ else
 	if (!preg_match("/^0[2378][0-9]{8}$/",$id))
 	{
 		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Invalid Lead ID')");
-		echo "<script>window.location = '../sales/form.php';</script>";
+		echo "<script>window.location = '../self/form.php';</script>";
 	}
 	elseif ($check[0] != 0)
 	{
 		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Lead ID already submitted')");
-		echo "<script>window.location = '../sales/form.php';</script>";
+		echo "<script>window.location = '../self/form.php';</script>";
 	}
 	
 	$q4 = mysql_query("SELECT * FROM sales_customers_temp WHERE lead_id = '$id'") or die(mysql_error());

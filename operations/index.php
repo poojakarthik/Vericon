@@ -11,9 +11,50 @@ include "../auth/iprestrict.php";
 include "../source/jquery.php";
 ?>
 <style>
-div#users-contain table { margin: 1em 0; border-collapse: collapse; }
-div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+div#users-contain table { margin: 1em 0; margin-bottom:0; border-collapse: collapse; }
+div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+div#users-contain table td { border: 1px solid #eee; padding: .1em 10px; text-align: left; }
 </style>
+<script>
+$(function() {
+	$( "#datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.gif",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		altField: "#datepicker2",
+		altFormat: "dd/mm/yy",
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "0d",
+		onSelect: function(dateText, inst) {
+			var user = "<?php echo $ac["user"] ?>",
+				date2 = $( "#datepicker3" );
+			
+			$( "#display" ).load('display.php?user=' + user + '&date1=' + dateText + '&date2=' + date2.val());
+		}});
+});
+</script>
+<script>
+$(function() {
+	$( "#datepicker3" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.gif",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		altField: "#datepicker4",
+		altFormat: "dd/mm/yy",
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "0d",
+		onSelect: function(dateText, inst) {
+			var user = "<?php echo $ac["user"] ?>",
+				date1 = $( "#datepicker" );
+			
+			$( "#display" ).load('display.php?user=' + user + '&date1=' + date1.val() + '&date2=' + dateText);
+		}});
+});
+</script>
 </head>
 
 <body>
@@ -29,55 +70,22 @@ include "../source/operations_menu.php";
 
 <div id="text">
 
-<?php
-$q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
-$cen = mysql_fetch_row($q);
-$centres = explode(",",$cen[0]);
-$date = date("Y-m-d");
-?>
-<center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content">
-<thead>
-<tr class="ui-widget-header ">
-<th>Centre</th>
-<th>Campaign</th>
-<th>Agents</th>
-<th>Sales</th>
-<th>Sales Per Agent</th>
+<table width="99%">
+<tr>
+<td align="right">
+<input type='text' size='9' id='datepicker2' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /> to <input type='text' size='9' id='datepicker4' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker3' value='<?php echo date("Y-m-d"); ?>' />
+</td>
 </tr>
-</thead>
-<tbody>
-<?php
-for ($i = 0; $i < count($centres); $i++)
-{
-	$total_agents = 0;
-	$q1 = mysql_query("SELECT campaign FROM centres WHERE centre = '$centres[$i]'") or die(mysql_error());
-	$campaign = mysql_fetch_row($q1);
-	
-	$q2a = mysql_query("SELECT user FROM auth WHERE centre = '$centres[$i]' AND status = 'Enabled'") or die(mysql_error());
-	while ($agent = mysql_fetch_row($q2a))
-	{
-		$q2 = mysql_query("SELECT * FROM log_login WHERE user = '$agent[0]' AND DATE(timestamp) = '$date' GROUP BY user") or die(mysql_error());
-		$total_agents += mysql_num_rows($q2);
-	}
-	
-	$q3 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
-	$sales = mysql_num_rows($q3);
-	
-	$spa = $sales / $total_agents;
-	
-	echo "<tr>";
-	echo "<td>" . $centres[$i] . "</td>";
-	echo "<td>" . $campaign[0] . "</td>";
-	echo "<td style='text-align:center;'>" . $total_agents . "</td>";
-	echo "<td style='text-align:center;'>" . $sales . "</td>";
-	echo "<td style='text-align:center;'>" . round($spa,2) . "</td>";
-	echo "</tr>";
-}
-?>
-</tbody>
 </table>
-</div></center>
+<div id="display">
+<script>
+var user = "<?php echo $ac["user"] ?>",
+	date1 = $( "#datepicker" );
+	date2 = $( "#datepicker3" );
+
+$( "#display" ).load('display.php?user=' + user + '&date1=' + date1.val() + '&date2=' + date2.val());
+</script>
+</div>
 
 </div>
 

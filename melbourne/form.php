@@ -1004,21 +1004,46 @@ else
 else
 {
 	$id = $_GET["id"];
-	$date1 = date("Y-m-d");
-	$date2 = date("Y-m-d", strtotime("+1 week"));
+	$less_id = substr($id,1,9);
+	
+	$q6 = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$less_id%'") or die(mysql_error());
+	$check = mysql_fetch_assoc($q6);
 
-	$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$check = mysql_fetch_row($q5);
+	$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
+	$check1 = mysql_fetch_row($q5);
+	
+	$q7 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
+	$check2 = mysql_fetch_row($q7);
 
 	if (!preg_match("/^0[2378][0-9]{8}$/",$id))
 	{
 		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Invalid Lead ID')");
-		echo "<script>window.location = '../sales/form.php';</script>";
+		echo "<script>window.location = '../melbourne/form.php';</script>";
+	}
+	elseif (mysql_num_rows($q6) == 0)
+	{
+		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Not in Data Packet')");
+		echo "<script>window.location = '../melbourne/form.php';</script>";
+	}
+	elseif ($check["centre"] != $centre)
+	{
+		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Wrong Centre')");
+		echo "<script>window.location = '../melbourne/form.php';</script>";
+	}
+	elseif ($check2[0] != 0)
+	{
+		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','SCT DNC')");
+		echo "<script>window.location = '../melbourne/form.php';</script>";
+	}
+	elseif (time() < strtotime($check["issue_date"]) || time() > strtotime($check["expiry_date"]))
+	{
+		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Expired Lead')");
+		echo "<script>window.location = '../melbourne/form.php';</script>";
 	}
 	elseif ($check[0] != 0)
 	{
-		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Lead ID already submitted')");
-		echo "<script>window.location = '../sales/form.php';</script>";
+		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Lead already submitted')");
+		echo "<script>window.location = '../melbourne/form.php';</script>";
 	}
 	
 	$q4 = mysql_query("SELECT * FROM sales_customers_temp WHERE lead_id = '$id'") or die(mysql_error());

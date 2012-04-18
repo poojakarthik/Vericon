@@ -49,6 +49,23 @@
 	cursor:pointer;
 }
 
+.leads_portal
+{
+	background-image:url('../images/leads_portal_btn.png');
+	background-repeat:no-repeat;
+	height:76px;
+	width:132px;
+	display:block;
+	border:none;
+	background-color:transparent;
+}
+
+.leads_portal:hover
+{
+	background-image:url('../images/leads_portal_btn_hover.png');
+	cursor:pointer;
+}
+
 .sales_portal
 {
 	background-image:url('../images/sales_portal_btn.png');

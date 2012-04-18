@@ -384,6 +384,9 @@ $(function() {
 
 function Plans()
 {
+	var id = "<?php echo $_GET['id']; ?>";
+	$( "#packages2" ).load('packages.php?id=' + id);
+	
 	$( "#dialog-form4" ).dialog( "open" );
 }
 </script>
@@ -541,6 +544,10 @@ $q2 = mysql_query("SELECT plan FROM sales_packages WHERE sid = '$id'") or die(my
 $contract_months = 0;
 while ($planc = mysql_fetch_row($q2))
 {
+	$q1 = mysql_query("SELECT name FROM plan_matrix WHERE id = '$planc[0]'") or die(mysql_error());
+	$plan_name = mysql_fetch_row($q1);
+	$planc[0] = $plan_name[0];
+	
 	if (preg_match("/24 Month Contract/", $planc[0]))
 	{
 		$contract = 24;
@@ -876,7 +883,23 @@ for ($i = 1; $i <= 2; $i++)
 $qp = mysql_query("SELECT plan FROM sales_packages WHERE sid = '$id'") or die(mysql_error());
 while ($plan = mysql_fetch_row($qp))
 {
-	echo "<option>" . $plan[0] . "</option>";
+	$q1 = mysql_query("SELECT name FROM plan_matrix WHERE id = '$plan[0]'") or die(mysql_error());
+	$package_name = mysql_fetch_row($q1);
+	
+	if ($package_name[0] == "ADSL $54.95 24 Month Contract" || $package_name[0] == "ADSL $64.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL 15GB 24 Month Contract";
+	}
+	elseif ($package_name[0] == "ADSL $67.95 24 Month Contract" || $package_name[0] == "ADSL $77.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL 500GB 24 Month Contract";
+	}
+	elseif ($package_name[0] == "ADSL $69.95 24 Month Contract" || $package_name[0] == "ADSL $79.95 24 Month Contract")
+	{
+		$package_name[0] = "ADSL Unlimited 24 Month Contract";
+	}
+	
+	echo "<option>" . $package_name[0] . "</option>";
 }
 ?>
 </select><input type="button" onclick="Load_Script()" class="loadscript" /></td>

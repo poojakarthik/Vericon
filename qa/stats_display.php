@@ -4,7 +4,7 @@ mysql_select_db('vericon');
 
 $date = $_GET["date"];
 
-$q = mysql_query("SELECT centre FROM centres WHERE centre != 'TPV' ORDER BY centre ASC") or die(mysql_error());
+$q = mysql_query("SELECT centre FROM centres WHERE status = 'Active' ORDER BY centre ASC") or die(mysql_error());
 $ci = 0;
 while ($c = mysql_fetch_row($q))
 {

@@ -18,7 +18,9 @@ else
 	{
 		echo "<tr>";
 		echo "<td>" . $package["cli"] . "</td>";
-		echo "<td>" . $package["plan"] . "</td>";
+		$q1 = mysql_query("SELECT name FROM plan_matrix WHERE id = '$package[plan]'") or die(mysql_error());
+		$package_name = mysql_fetch_row($q1);
+		echo "<td>" . $package_name[0] . "</td>";
 		echo "</tr>";
 	}
 }
