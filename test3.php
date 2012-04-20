@@ -68,7 +68,6 @@ setTimeout("doUptime()",1000);
 </head>
 <body onLoad="doUptime();">
 
-<!-- Uses the DIV tag, but SPAN can be used as well -->
 <div id="uptime" style="font-weight:bold;"><?php echo $staticUptime; ?></div>
 
 </body>
