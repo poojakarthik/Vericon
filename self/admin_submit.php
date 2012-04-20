@@ -164,23 +164,4 @@ elseif ($method == "get") //get sale
 		echo "valid";
 	}
 }
-elseif ($p == "teams")
-{
-	if ($method == "assign")
-	{
-		$user = $_GET["username"];
-		$team = $_GET["team"];
-		
-		$q = mysql_query("SELECT * FROM teams WHERE user = '$user'") or die(mysql_error());
-		if (mysql_num_rows($q) == "0")
-		{
-			mysql_query("INSERT INTO teams (user,team) VALUES ('$user','$team')") or die(mysql_error());
-		}
-		else
-		{
-			mysql_query("UPDATE teams SET team = '$team' WHERE user = '$user' LIMIT 1") or die(mysql_error());
-		}
-		echo "assigned";
-	}
-}
 ?>

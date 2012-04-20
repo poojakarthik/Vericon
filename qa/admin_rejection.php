@@ -13,27 +13,13 @@ $(function() {
 });
 </script>
 <script>
-function Teams()
-{
-	if ($( "#centre" ).val() == "CC12")
-	{
-		$( "#teams" ).removeAttr('style');
-	}
-	else
-	{
-		$( "#teams" ).attr('style','display:none;');
-	}
-}
-</script>
-<script>
 function Display()
 {
 	var centre = $( "#centre" ),
-		team = $( "#team" ),
 		date = $( "#datepicker" );
 		
-	$( "#stats" ).load('admin_rejection_submit.php?method=stats&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
-	$( "#download" ).load('admin_rejection_submit.php?method=download&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
+	$( "#stats" ).load('admin_rejection_submit.php?method=stats&centre=' + centre.val() + '&date=' + date.val());
+	$( "#download" ).load('admin_rejection_submit.php?method=download&centre=' + centre.val() + '&date=' + date.val());
 }
 </script>
 <p><img src="../images/rejection_report_header.png" width="170" height="25" style="margin-left:3px;" /></p>
@@ -42,10 +28,10 @@ function Display()
 <table style="margin-top:5px;">
 <tr>
 <td>Centre </td>
-<td width="80px"><select id="centre" onchange="Teams()" style="height:20px; margin:0; padding:0; width:70px;">
+<td width="80px"><select id="centre" style="height:20px; margin:0; padding:0; width:70px;">
 <option>All</option>
 <?php
-$q = mysql_query("SELECT * FROM centres WHERE centre != 'TPV' ORDER BY centre ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM centres WHERE status = 'Active' ORDER BY centre ASC") or die(mysql_error());
 while ($centres = mysql_fetch_row($q))
 {
 	echo "<option>" . $centres[0] . "</option>";
@@ -53,13 +39,6 @@ while ($centres = mysql_fetch_row($q))
 ?>
 </select>
 </td>
-<td width="80px" id="teams" style="display:none;"><select id="team" style="height:20px; margin:0; padding:0; width:70px;">
-<option></option>
-<option>Damith</option>
-<option>Daniel</option>
-<option>Liam</option>
-<option>Sanu</option>
-</select></td>
 <td>Date</td>
 <td width="120px"><input type='text' size='11' id='datepicker2' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
 <td><input type="button" onclick="Display()" class="search" value="" /></td>
@@ -82,10 +61,9 @@ while ($centres = mysql_fetch_row($q))
 <tbody id="stats">
 <script>
 var centre = $( "#centre" ),
-	team = $( "#team" ),
 	date = $( "#datepicker" );
 
-$( "#stats" ).load('admin_rejection_submit.php?method=stats&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
+$( "#stats" ).load('admin_rejection_submit.php?method=stats&centre=' + centre.val() + '&date=' + date.val());
 </script>
 </tbody>
 </table>
@@ -95,9 +73,8 @@ $( "#stats" ).load('admin_rejection_submit.php?method=stats&centre=' + centre.va
 <div id="download">
 <script>
 var centre = $( "#centre" ),
-	team = $( "#team" ),
 	date = $( "#datepicker" );
 
-$( "#download" ).load('admin_rejection_submit.php?method=download&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
+$( "#download" ).load('admin_rejection_submit.php?method=download&centre=' + centre.val() + '&date=' + date.val());
 </script>
 </div>

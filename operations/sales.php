@@ -45,26 +45,12 @@ $(function() {
 });
 </script>
 <script>
-function Teams()
-{
-	if ($( "#centre" ).val() == "CC12")
-	{
-		$( "#teams" ).removeAttr('style');
-	}
-	else
-	{
-		$( "#teams" ).attr('style','display:none;');
-	}
-}
-</script>
-<script>
 function Display()
 {
 	var centre = $( "#centre" ),
-		team = $( "#team" ),
 		date = $( "#datepicker" );
 		
-	$( "#details" ).load('sales_display.php?method=sales&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
+	$( "#details" ).load('sales_display.php?method=sales&centre=' + centre.val() + '&date=' + date.val());
 	
 	$( "#results" ).removeAttr('style');
 }
@@ -87,7 +73,7 @@ include "../source/operations_menu.php";
 <table style="margin-top:5px;">
 <tr>
 <td>Centre </td>
-<td width="80px"><select id="centre" onchange="Teams()" style="height:auto; margin:0; padding:0; width:70px;">
+<td width="80px"><select id="centre" style="height:auto; margin:0; padding:0; width:70px;">
 <option></option>
 <?php
 $q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
@@ -100,13 +86,6 @@ for ($i = 0; $i < count($centres); $i++)
 ?>
 </select>
 </td>
-<td width="80px" id="teams" style="display:none;"><select id="team" style="height:auto; margin:0; padding:0; width:70px;">
-<option></option>
-<option>Damith</option>
-<option>Daniel</option>
-<option>Liam</option>
-<option>Sanu</option>
-</select></td>
 <td>Date</td>
 <td width="120px"><input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
 <td><input type="button" onclick="Display()" class="search" value="" /></td>
