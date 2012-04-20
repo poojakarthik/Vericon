@@ -130,21 +130,26 @@ elseif ($method == "Agent")
 	{
 		$date = date('Y-m-d', strtotime(date("Y", strtotime($we)) . "W" . date("W", strtotime($we)) . $day));
 		
-		$q1 = mysql_query("SELECT hours FROM timesheet WHERE user = '$agent' AND date = '$date'") or die(mysql_error());
-		$h = mysql_fetch_row($q1);
-		if ($h[0] == "") { $hours = 0; } else { $hours = $h[0]; }
+		$q1 = mysql_query("SELECT * FROM timesheet WHERE user = '$agent' AND date = '$date'") or die(mysql_error());
+		$h = mysql_fetch_assoc($q1);
+		if ($h["hours"] == "") { $hours = 0; } else { $hours = $h["hours"]; }
 		$total_hours += $hours;
 		
-		$q2 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$agent' AND approved_timestamp = '$date' AND status = 'Approved'") or die(mysql_error());
+		$q2 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$agent' AND DATE(approved_timestamp) = '$date' AND status = 'Approved'") or die(mysql_error());
 		$sales = mysql_num_rows($q2);
 		$total_sales += $sales;
 		
-		$sph = $sales / $data["hours"];
+		if ($h["start"] == "") { $start = "-"; } else { $start = date("H:i", strtotime($h["start"])); }
+		if ($h["end"] == "") { $end = "-"; } else { $end = date("H:i", strtotime($h["end"])); }
+		
+		$sph = $sales / $hours;
 		
 		if ($sph < 0.15) { $grade = "D"; } elseif ($sph < 0.2) { $grade = "C"; } elseif ($sph < 0.25) { $grade = "B"; } else { $grade = "A"; }
 		
 		echo "<tr>";
 		echo "<td>" . date("d/m/Y", strtotime($date)) . "</td>";
+		echo "<td style='text-align:center;'>" . $start . "</td>";
+		echo "<td style='text-align:center;'>" . $end . "</td>";
 		echo "<td style='text-align:center;'>" . $hours . "</td>";
 		echo "<td style='text-align:center;'>" . $sales . "</td>";
 		echo "<td style='text-align:center;'>" . number_format($sph,2) . "</td>";
@@ -158,6 +163,8 @@ elseif ($method == "Agent")
 	
 	echo "<tr>";
 	echo "<td><b>Total</b></td>";
+	echo "<td style='text-align:center;'><b>-</b></td>";
+	echo "<td style='text-align:center;'><b>-</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_hours  . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . $total_sales . "</b></td>";
 	echo "<td style='text-align:center;'><b>" . number_format($total_sph,2) . "</b></td>";
