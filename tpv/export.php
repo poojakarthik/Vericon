@@ -150,5 +150,8 @@ elseif ($plan[0] == 'B')
 }
 
 ?>
+<script>
+window.close();
+</script>
 </body>
 </html>

@@ -32,7 +32,7 @@ while ($campaign = mysql_fetch_row($q))
 <option>--- Plan ---</option>
 <option disabled="disabled">--- Landline ---</option>
 <?php
-$q0 = mysql_query("SELECT * FROM plan_matrix WHERE type = 'Landline'");
+$q0 = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND rating = 'Business' AND type = 'PSTN' AND name != 'Addon' ORDER BY id ASC");
 
 while ($l_plan = mysql_fetch_assoc($q0))
 {
@@ -40,17 +40,11 @@ while ($l_plan = mysql_fetch_assoc($q0))
 }
 ?>
 <option disabled="disabled">--- Internet ---</option>
-<?php
-$q0 = mysql_query("SELECT * FROM plan_matrix WHERE type = 'ADSL' OR type = 'Wireless'");
-
-while ($a_plan = mysql_fetch_assoc($q0))
-{
-	echo "<option>" . $a_plan["name"] . "</option>";
-}
-?>
+<option>ADSL 15GB 24 Month Contract</option>
+<option>ADSL Unlimited 24 Month Contract</option>
 <option disabled="disabled">--- Bundle ---</option>
 <?php
-$q0 = mysql_query("SELECT * FROM plan_matrix WHERE type = 'Bundle'");
+$q0 = mysql_query("SELECT * FROM plan_matrix WHERE status = 'Active' AND rating = 'Business' AND type = 'Bundle' ORDER BY id ASC");
 
 while ($b_plan = mysql_fetch_assoc($q0))
 {

@@ -79,10 +79,10 @@ while ($agent = mysql_fetch_assoc($q))
 <thead>
 <tr class="ui-widget-header ">
 <th align="left">Name</th>
-<th width="20%"><select id="method" style="border:0; height:auto; margin:0; padding:0; width:75px; background:none; color:#EAF5F7; font-weight:bold;" onchange="Top_Ten()">
-<option>Today</option>
-<option>Week</option>
-<option>Overall</option>
+<th width="20%"><select id="method" style="border:0; height:auto; margin:0; padding:0; width:75px; background:none; -webkit-appearance: none; color:#EAF5F7; font-weight:bold;" onchange="Top_Ten()">
+<option style="background-color:#2191c0;">Today</option>
+<option style="background-color:#2191c0;">Week</option>
+<option style="background-color:#2191c0;">Overall</option>
 </select></th>
 </tr>
 </thead>

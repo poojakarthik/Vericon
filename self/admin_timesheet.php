@@ -4,6 +4,23 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .ui-dialog .ui-dialog2 .ui-state-error { padding: .3em; }
 .error2 { border: 1px solid transparent; padding: 0.3em; }
 
+.export
+{
+	background-image:url('../images/export_btn.png');
+	background-repeat:no-repeat;
+	height:30px;
+	width:102px;
+	border:none;
+	background-color:transparent;
+	margin-left:10px;
+}
+
+.export:hover
+{
+	background-image:url('../images/export_btn_hover.png');
+	cursor:pointer;
+}
+
 .edit
 {
 	background-image:url('../images/edit_btn.png');
@@ -11,7 +28,6 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 	height:30px;
 	width:102px;
 	border:none;
-	float: right;
 	background-color:transparent;
 	margin-right:10px;
 }
@@ -29,7 +45,6 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 	height:30px;
 	width:102px;
 	border:none;
-	float: right;
 	background-color:transparent;
 	margin-right:10px;
 }
@@ -59,6 +74,7 @@ $(function() {
 
 			$( "#timesheet_view" ).load('admin_timesheet_get.php?centre=' + centre + '&date=' + dateText);
 			$( "#edit_btn").removeAttr("style");
+			$( "#export_btn").removeAttr("style");
 			$( "#done_btn").attr("style","display:none;");
 		}});
 });
@@ -89,7 +105,17 @@ function Done()
 
 	$( "#timesheet_view" ).load('admin_timesheet_get.php?centre=' + centre + '&date=' + date.val());
 	$( "#edit_btn").removeAttr("style");
+	$( "#export_btn").removeAttr("style");
 	$( "#done_btn").attr("style","display:none;");
+}
+</script>
+<script>
+function Export()
+{
+	date = $( "#datepicker" ),
+		centre = "<?php echo $ac["centre"] ?>";
+
+	window.location = 'admin_timesheet_export.php?centre=' + centre + '&date=' + date.val();
 }
 </script>
 <script> //edit view
@@ -103,6 +129,7 @@ function Edit_View()
 		{
 			$( "#timesheet_view" ).load('admin_timesheet_edit.php?method=view&centre=' + centre + '&date=' + date.val());
 			$( "#edit_btn").attr("style","display:none;");
+			$( "#export_btn").attr("style","display:none;");
 			setTimeout( function () { $( "#done_btn").removeAttr("style"); },2000);
 		}
 		else
@@ -154,6 +181,7 @@ $(function() {
 						$( "#timesheet_view" ).load('admin_timesheet_edit.php?method=view&centre=' + centre + '&date=' + date.val());
 						$( "#done_btn").removeAttr("style");
 						$( "#edit_btn").attr("style","display:none;");
+						$( "#export_btn").attr("style","display:none;");
 					}
 					else
 					{
@@ -186,6 +214,10 @@ function Edit(user)
 	$( "#dialog-form" ).dialog( "open" );
 }
 </script>
+
+<div style="display:none;">
+<img src="../images/export_btn_hover.png" /><img src="../images/edit_form_btn_hover.png" /><img src="../images/done_form_btn_hover.png" />
+</div>
 
 <div id="dialog-confirm" title="Error">
     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span class="error"></span></p>
@@ -294,5 +326,9 @@ $( "#timesheet_view" ).load('admin_timesheet_get.php?centre=' + centre + '&date=
 </tbody>
 </table>
 </div></center>
-<input type="button" id="edit_btn" onClick="Edit_View()" class="edit">
-<input type="button" id="done_btn" onClick="Done()" class="done" style="display:none;">
+<table width="100%">
+<tr>
+<td align="left"><input type="button" id="export_btn" onClick="Export()" class="export"></td>
+<td align="right"><input type="button" id="edit_btn" onClick="Edit_View()" class="edit"><input type="button" id="done_btn" onClick="Done()" class="done" style="display:none;"></td>
+</tr>
+</table>

@@ -8,7 +8,7 @@ $q = mysql_query("SELECT * FROM international ORDER BY country ASC") or die(mysq
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <title>VeriCon :: International Call Rates</title>
-<link rel="shortcut icon" href="./images/vericon.ico">
+<link rel="shortcut icon" href="../images/vericon.ico">
 <style>
 .international_table{
 	font-family:Calibri;
