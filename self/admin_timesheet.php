@@ -112,7 +112,7 @@ function Done()
 <script>
 function Export()
 {
-	date = $( "#datepicker" ),
+	var date = $( "#datepicker" ),
 		centre = "<?php echo $ac["centre"] ?>";
 
 	window.location = 'admin_timesheet_export.php?centre=' + centre + '&date=' + date.val();
