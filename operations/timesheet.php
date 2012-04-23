@@ -257,7 +257,7 @@ if ($_GET["agent"] == "")
 <div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
 <?php //captive
-$total_hours = 0;
+/*$total_hours = 0;
 $total_sales = 0;
 for ($i = 0; $i < count($centres); $i++)
 {
@@ -330,7 +330,7 @@ if (array_sum($captive) > 0)
 	echo "<td style='text-align:center;'><b>" . $total_grade . "</b></td>";
 	echo "</tr>";
 	echo "</tbody>";
-}
+}*/
 ?>
 <?php //self
 $total_hours = 0;
