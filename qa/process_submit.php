@@ -67,6 +67,11 @@ if ($method == "approve")
 				mysql_query("INSERT INTO packages (id, cli, plan) VALUES ('$account_number', '$packages[1]', '$packages[2]')") or die(mysql_error());
 			}
 			
+			$command = "mv /var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm /var/rec/" . md5($account_number) . sha1($account_number) . ".gsm";
+			exec($command);
+			
+			mysql_query("INSERT INTO recordings (id, name) VALUES ('$account_number', '" . mysql_escape_string(md5($account_number) . sha1($account_number) . ".gsm") . "')") or die(mysql_error());
+			
 			echo 1;
 		}
 		else
@@ -118,6 +123,9 @@ if ($method == "reject")
 				echo "submitted";
 			}
 		}
+		
+		$command = "rm /var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm";
+		exec($command);
 	}
 	elseif ($status == "Rework")
 	{
@@ -126,6 +134,15 @@ if ($method == "reject")
 		
 		mysql_query("INSERT INTO reworks (id,timestamp,centre,agent,reason) VALUES ('$id', '$timestamp', '$data[centre]',  '$data[agent]', '" . mysql_escape_string($reason) . "')") or die(mysql_error());
 		mysql_query("UPDATE sales_customers SET status = 'Rework' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		
+		$path = "/var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm";
+		$command = "rm /var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm";
+		
+		if (file_exists($path))
+		{
+			exec($command);
+		}
+		
 		echo "submitted";
 	}
 }
