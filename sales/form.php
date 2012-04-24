@@ -983,20 +983,23 @@ else
 }
 else
 {
-	if ($ac["centre"] == "")
+	$lq = mysql_query("SELECT leads FROM centres WHERE centre = '$ac[centre]'") or die(mysql_error());
+	$lead_val = mysql_fetch_row($lq);
+	
+	if ($lead_val[0] == 1)
 	{
 		$id = $_GET["id"];
 		$less_id = substr($id,1,9);
-		
+
 		$q6 = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$less_id%'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q6);
-	
+
 		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
 		$check1 = mysql_fetch_row($q5);
-		
+
 		$q7 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q7);
-	
+
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
 		{
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Invalid Lead ID')");
@@ -1007,7 +1010,7 @@ else
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Not in Data Packet')");
 			echo "<script>window.location = '../sales/form.php';</script>";
 		}
-		elseif ($check["centre"] != $ac["centre"] && $check["centre"] != "ROHAN")
+		elseif ($check["centre"] != $ac["centre"] && strtoupper($check["centre"]) != "ROHAN")
 		{
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Wrong Centre')");
 			echo "<script>window.location = '../sales/form.php';</script>";
@@ -1032,9 +1035,9 @@ else
 	{
 		$id = $_GET["id"];
 		$date1 = date("Y-m-d");
-		$date2 = date("Y-m-d", strtotime("+1 week"));
+		$date2 = date("Y-m-d", strtotime("-1 week"));
 	
-		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
 		$check = mysql_fetch_row($q5);
 	
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))

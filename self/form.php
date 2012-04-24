@@ -106,6 +106,8 @@ function Get_Sale()
 	var id = $( "#id" );
 	var centre = "<?php echo $ac["centre"]; ?>";
 	
+	$( ".error" ).html('<img src="../images/ajax-loader.gif" />');
+	
 	$.get("form_submit.php?method=get", { id: id.val(), centre: centre},
 	function(data) {
 	   
@@ -113,6 +115,7 @@ function Get_Sale()
 	   {
 		   $( ".id2" ).html(id.val());
 		   $( "#dialog-form" ).dialog( "open" );
+		   $( ".error" ).html('');
 	   }
 	   else
 	   {
@@ -729,7 +732,7 @@ function Plan_Dropdown()
 
 <body>
 <div style="display:none;">
-<img src="../images/getsale_btn_hover.png" /><img src="../images/submit_form_btn_hover.png" /><img src="../images/cancel_form_btn_hover.png" /><img src="../images/add_package_btn_hover.png" /><img src="../images/search_btn_2.png" /><img src="../images/search_btn_hover_2.png" /><img src="../images/override_btn_hover.png" />
+<img src="../images/getsale_btn_hover.png" /><img src="../images/submit_form_btn_hover.png" /><img src="../images/cancel_form_btn_hover.png" /><img src="../images/add_package_btn_hover.png" /><img src="../images/search_btn_2.png" /><img src="../images/search_btn_hover_2.png" /><img src="../images/override_btn_hover.png" /><img src="../images/ajax-loader.gif" />
 </div>
 <div id="main_wrapper">
 
@@ -993,22 +996,73 @@ if ($_GET["id"] == "")
 }
 else
 {
-	$id = $_GET["id"];
-	$date1 = date("Y-m-d");
-	$date2 = date("Y-m-d", strtotime("+1 week"));
-
-	$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$check = mysql_fetch_row($q5);
-
-	if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+	$lq = mysql_query("SELECT leads FROM centres WHERE centre = '$ac[centre]'") or die(mysql_error());
+	$lead_val = mysql_fetch_row($lq);
+	
+	if ($lead_val[0] == 1)
 	{
-		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Invalid Lead ID')");
-		echo "<script>window.location = '../self/form.php';</script>";
+		$id = $_GET["id"];
+		$less_id = substr($id,1,9);
+
+		$q6 = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$less_id%'") or die(mysql_error());
+		$check = mysql_fetch_assoc($q6);
+
+		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
+		$check1 = mysql_fetch_row($q5);
+
+		$q7 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
+		$check2 = mysql_fetch_row($q7);
+
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Invalid Lead ID')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
+		elseif (mysql_num_rows($q6) == 0)
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Not in Data Packet')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
+		elseif (($check["centre"] != $ac["centre"] && strtoupper($check["centre"]) != "KAMAL") && ($check["centre"] != $ac["centre"] && strtoupper($check["centre"]) != "SANJAY"))
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Wrong Centre')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
+		elseif ($check2[0] != 0)
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','SCT DNC')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
+		elseif (time() < strtotime($check["issue_date"]) || time() > strtotime($check["expiry_date"]))
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Expired Lead')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
+		elseif ($check[0] != 0)
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Lead already submitted')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
 	}
-	elseif ($check[0] != 0)
+	else
 	{
-		mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Lead ID already submitted')");
-		echo "<script>window.location = '../self/form.php';</script>";
+		$id = $_GET["id"];
+		$date1 = date("Y-m-d");
+		$date2 = date("Y-m-d", strtotime("-1 week"));
+	
+		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
+		$check = mysql_fetch_row($q5);
+	
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Invalid Lead ID')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
+		elseif ($check[0] != 0)
+		{
+			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Lead ID already submitted')");
+			echo "<script>window.location = '../self/form.php';</script>";
+		}
 	}
 	
 	$q4 = mysql_query("SELECT * FROM sales_customers_temp WHERE lead_id = '$id'") or die(mysql_error());

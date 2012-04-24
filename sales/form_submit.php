@@ -9,10 +9,13 @@ if ($method == "get")
 	$id = $_GET["id"];
 	$centre = $_GET["centre"];
 	$date1 = date("Y-m-d");
-	$date2 = date("Y-m-d", strtotime("+1 week"));
+	$date2 = date("Y-m-d", strtotime("-1 week"));
 	$lead_id = substr($id,1,9);
 	
-	if ($centre == "")
+	$lq = mysql_query("SELECT leads FROM centres WHERE centre = '$centre'") or die(mysql_error());
+	$lead_val = mysql_fetch_row($lq);
+	
+	if ($lead_val[0] == 1)
 	{
 		$q = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$lead_id%'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q);
@@ -29,11 +32,11 @@ if ($method == "get")
 		}
 		elseif (mysql_num_rows($q) == 0)
 		{
-			echo "Lead is not in the data packet!";
+			echo "Lead is not in the data packet1!";
 		}
-		elseif ($check["centre"] != $centre && $check["centre"] != "ROHAN")
+		elseif ($check["centre"] != $centre && strtoupper($check["centre"]) != "ROHAN")
 		{
-			echo "Lead is not in the data packet!";
+			echo "Lead is not in the data packet2!";
 		}
 		elseif ($check2[0] != 0)
 		{
@@ -54,7 +57,7 @@ if ($method == "get")
 	}
 	else
 	{
-		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q1);
 		
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
