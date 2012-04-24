@@ -991,7 +991,7 @@ else
 		$id = $_GET["id"];
 		$less_id = substr($id,1,9);
 
-		$q6 = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$less_id%'") or die(mysql_error());
+		$q6 = mysql_query("SELECT * FROM leads WHERE cli = '$less_id'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q6);
 
 		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
