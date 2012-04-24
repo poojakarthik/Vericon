@@ -68,6 +68,31 @@ function Display()
 	window.location = 'sales.php?centre=' + centre.val() + '&date=' + date.val();
 }
 </script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:450,
+		height:260,
+		modal: true,
+		buttons: {
+			"Close": function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+
+function Details(id)
+{
+	$( "#sale_details" ).load('sales_display.php?method=details&id=' + id);
+	$( "#dialog-confirm" ).dialog( "open" );
+}
+</script>
 </head>
 
 <body>
@@ -82,6 +107,10 @@ include "../source/operations_menu.php";
 ?>
 
 <div id="text">
+
+<div id="dialog-confirm" title="Sale Details">
+<div id="sale_details"></div>
+</div>
 
 <input type="hidden" id="centre_link" value="<?php echo $_GET["centre"]; ?>" />
 <table width="100%">
