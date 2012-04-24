@@ -46,6 +46,10 @@ elseif ($_GET["p"] == "details")
 {
 	include "../self/admin_details.php";
 }
+elseif ($_GET["p"] == "edit")
+{
+	include "../self/admin_edit.php";
+}
 elseif ($_GET["p"] == "timesheet")
 {
 	include "../self/admin_timesheet.php";

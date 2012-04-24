@@ -16,6 +16,40 @@
 	cursor:pointer;
 }
 
+.notes
+{
+	background-image:url('../images/notes_btn.png');
+	background-repeat:no-repeat;
+	height:30px;
+	width:102px;
+	border:none;
+	background-color:transparent;
+	margin-right:10px;
+}
+
+.notes:hover
+{
+	background-image:url('../images/notes_btn_hover.png');
+	cursor:pointer;
+}
+
+.edit
+{
+	background-image:url('../images/edit_btn.png');
+	background-repeat:no-repeat;
+	height:30px;
+	width:102px;
+	border:none;
+	background-color:transparent;
+	margin-right:10px;
+}
+
+.edit:hover
+{
+	background-image:url('../images/edit_btn_hover.png');
+	cursor:pointer;
+}
+
 div#users-contain table { margin: 1em 0; border-collapse: collapse; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 </style>
@@ -40,10 +74,43 @@ function Get_Sale()
 	});
 }
 </script>
+<script> //notes button
+$(function() {
+$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+$( "#dialog-form" ).dialog({
+	autoOpen: false,
+	height: 200,
+	width: 425,
+	modal: true,
+	resizable: false,
+	draggable: false,
+	buttons: {
+		"Close": function() {
+			$( this ).dialog( "close" );
+		}
+	},
+	close: function() {
+	}
+});
+});
+
+function Notes()
+{
+	$( "#dialog-form" ).dialog( "open" );
+}
+</script>
 <script> //cancel form
 function Cancel()
 {
 	window.location = "admin.php?p=details";
+}
+</script>
+<script>
+function Edit()
+{
+	var id = "<?php echo $_GET["id"]; ?>";
+	window.location = "admin.php?p=edit&id=" + id;
 }
 </script>
 
@@ -51,11 +118,34 @@ function Cancel()
 <img src="../images/getsale_btn_hover.png" /><img src="../images/cancel_form_btn_hover.png" />
 </div>
 
+<div id="dialog-form" title="Notes">
+<table>
+<tr>
+<td><textarea id="notes" readonly="readonly" style="width:400px; height:100px; resize:none;">
+<?php
+$id = $_GET["id"];
+
+$q4 = mysql_query("SELECT * FROM tpv_notes WHERE id = '$id' ORDER BY timestamp DESC") or die (mysql_error());
+
+while ($tpv_notes = mysql_fetch_assoc($q4))
+{
+	$q5 = mysql_query("SELECT * FROM auth WHERE user = '$tpv_notes[verifier]'") or die(mysql_error());
+	$vname = mysql_fetch_assoc($q5);
+	
+	echo "----- " . date("d/m/Y H:i:s", strtotime($tpv_notes["timestamp"])) . " - " . $vname["first"] . " " . $vname["last"] . " -----" . " (" . $tpv_notes["status"] . ")\n";
+	echo $tpv_notes["note"] . "\n";
+}
+?>
+</textarea></td>
+</tr>
+</table>
+</div>
+
 <?php
 if ($_GET["id"] == "")
 {
 ?>
-<!--<div id="get_sale_table" style="margin-top:75px; margin-bottom:75px;">
+<div id="get_sale_table" style="margin-top:75px; margin-bottom:75px;">
 <form onsubmit="event.preventDefault()">
     <table>
         <tr>
@@ -66,7 +156,7 @@ if ($_GET["id"] == "")
     </table>
 </form>
     <center><p class="error" style="color:#C00;"></p></center>
-</div>-->
+</div>
 <p><img src="../images/sales_export_header.png" width="135" height="25" /></p>
 <p><img src="../images/line.png" width="740" height="9" /></p><br />
 
@@ -82,6 +172,13 @@ else
 	
 	$q2 = mysql_query("SELECT * FROM auth WHERE user = '$data[agent]'") or die(mysql_error());
 	$data2 = mysql_fetch_assoc($q2);
+	
+	if ($data["centre"] != $ac["centre"])
+	{
+		echo '<script>';
+		echo 'window.location = "admin.php?p=details";';
+		echo '</script>';
+	}
 	
 	if ($data["status"] == "Line Issue")
 	{
@@ -368,7 +465,8 @@ $( "#packages" ).load('../qa/packages.php?id=' + id);
 </td>
 </tr>
 <tr valign="bottom">
-<td align="right"><input type="button" onclick="Cancel()" class="cancelform" /></td>
+<td align="left"><input type="button" onclick="Notes()" class="notes" /></td>
+<td align="right"><?php if (strtotime(date("Y-m-d", strtotime($data["approved_timestamp"]))) >= strtotime(date("Y-m-d", strtotime("-2days")))){ echo '<input type="button" onclick="Edit()" class="edit" />'; } ?><input type="button" onclick="Cancel()" class="cancelform" /></td>
 </tr>
 </table>
 </td>

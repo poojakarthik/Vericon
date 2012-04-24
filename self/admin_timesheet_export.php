@@ -17,7 +17,7 @@ else
 {
 	while ($da = mysql_fetch_assoc($q))
 	{
-		$q1 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$q1 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$da[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 		$sales = mysql_num_rows($q1);
 		
 		$data .= "\"" . $da["first"] . " " . $da["last"] . "\",";
