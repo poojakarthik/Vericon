@@ -216,7 +216,7 @@ function Edit(user)
 </script>
 
 <div style="display:none;">
-<img src="../images/export_btn_hover.png" /><img src="../images/edit_form_btn_hover.png" /><img src="../images/done_form_btn_hover.png" />
+<img src="../images/export_btn_hover.png" /><img src="../images/edit_btn_hover.png" /><img src="../images/done_btn_hover.png" />
 </div>
 
 <div id="dialog-confirm" title="Error">
