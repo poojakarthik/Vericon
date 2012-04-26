@@ -34,7 +34,7 @@ if (mysql_num_rows($q) != 0)
 	$i = 17;
 	while ($data = mysql_fetch_assoc($q))
 	{
-		$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$da[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 		$sales = mysql_num_rows($q3);
 		
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -76,7 +76,7 @@ if (mysql_num_rows($q) != 0)
 				->setCellValue('C13', mysql_num_rows($q))
 				->setCellValue('E13', 'Net Expense')
 				->setCellValue('H13', '=(C12*19)+G' . $i . '+350')
-				->setCellValue('B14', 'Average SPD')
+				->setCellValue('B14', 'Average SPA')
 				->setCellValue('C14', '=C11/C13')
 				->setCellValue('E14', 'Net Gain')
 				->setCellValue('H14', '=H12-H13')
