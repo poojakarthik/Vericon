@@ -999,6 +999,38 @@ else
 
 		$q7 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q7);
+		
+		$qct = mysql_query("SELECT * FROM centres WHERE centre = '$ac[centre]'") or die(mysql_error());
+		$check3 = mysql_fetch_assoc($qct);
+		
+		if ($check3["type"] == "Captive")
+		{
+			$qcg = mysql_query("SELECT * FROM leads_group WHERE centres LIKE '%$ac[centre]%'") or die(mysql_error());
+			$check4 = mysql_fetch_assoc($qcg);
+			
+			$qlg = mysql_query("SELECT * FROM leads_group WHERE centres LIKE '%$check[centre]%'") or die(mysql_error());
+			$check5 = mysql_fetch_assoc($qlg);
+			
+			if ($check4["group"] != $check5["group"] && strtoupper($check["centre"]) != "ROHAN")
+			{
+				$valid_lead = "false";
+			}
+			else
+			{
+				$valid_lead = "true";
+			}
+		}
+		else
+		{
+			if ($check["centre"] != $ac["centre"])
+			{
+				$valid_lead = "false";
+			}
+			else
+			{
+				$valid_lead = "true";
+			}
+		}
 
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
 		{
@@ -1010,7 +1042,7 @@ else
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Not in Data Packet')");
 			echo "<script>window.location = '../sales/form.php';</script>";
 		}
-		elseif ($check["centre"] != $ac["centre"] && strtoupper($check["centre"]) != "ROHAN")
+		elseif ($valid_lead == "false")
 		{
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Wrong Centre')");
 			echo "<script>window.location = '../sales/form.php';</script>";
