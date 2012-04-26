@@ -18,6 +18,11 @@ if ($method == "check")
 		echo "You can only edit this week's timesheets";
 	}
 }
+elseif ($method == "check_rows")
+{
+	$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	echo mysql_num_rows($q);
+}
 elseif ($method == "view")
 {
 	$q = mysql_query("SELECT * FROM auth WHERE centre = '$centre' AND status = 'Enabled' ORDER BY user ASC") or die(mysql_error());

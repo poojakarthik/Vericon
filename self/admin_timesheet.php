@@ -113,9 +113,20 @@ function Done()
 function Export()
 {
 	var date = $( "#datepicker" ),
+		user = "<?php echo $ac["user"] ?>",
 		centre = "<?php echo $ac["centre"] ?>";
 
-	window.location = 'admin_timesheet_export.php?centre=' + centre + '&date=' + date.val();
+	$.get("admin_timesheet_edit.php", { method: "check_rows", date: date.val(), centre: centre }, function (data) {
+		if (data >= 1)
+		{
+			window.location = 'admin_timesheet_export.php?centre=' + centre + '&user=' + user + '&date=' + date.val();
+		}
+		else
+		{
+			$( ".error" ).html("Nothing to Export!");
+			$( "#dialog-confirm" ).dialog( "open" );
+		}
+	});
 }
 </script>
 <script> //edit view
