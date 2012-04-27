@@ -21,6 +21,26 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 	cursor:pointer;
 }
 
+.edit_agent {
+	background-image:url('../images/edit_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
+.undo {
+	background-image:url('../images/undo_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .edit
 {
 	background-image:url('../images/edit_btn.png');
@@ -113,9 +133,20 @@ function Done()
 function Export()
 {
 	var date = $( "#datepicker" ),
+		user = "<?php echo $ac["user"] ?>",
 		centre = "<?php echo $ac["centre"] ?>";
 
-	window.location = 'admin_timesheet_export.php?centre=' + centre + '&date=' + date.val();
+	$.get("admin_timesheet_edit.php", { method: "check_rows", date: date.val(), centre: centre }, function (data) {
+		if (data >= 1)
+		{
+			window.location = 'admin_timesheet_export.php?centre=' + centre + '&user=' + user + '&date=' + date.val();
+		}
+		else
+		{
+			$( ".error" ).html("Nothing to Export!");
+			$( "#dialog-confirm" ).dialog( "open" );
+		}
+	});
 }
 </script>
 <script> //edit view
@@ -214,16 +245,26 @@ function Edit(user)
 	$( "#dialog-form" ).dialog( "open" );
 }
 </script>
+<script>
+function Undo(user)
+{
+	var date = $( "#datepicker" );
+	
+	$.get("admin_timesheet_edit.php", { method: "undo", user: user, date: date.val() }, function(data) {
+		$( "#timesheet_view" ).load('admin_timesheet_edit.php?method=view&centre=' + centre + '&date=' + date.val());
+	});
+}
+</script>
 
 <div style="display:none;">
-<img src="../images/export_btn_hover.png" /><img src="../images/edit_form_btn_hover.png" /><img src="../images/done_form_btn_hover.png" />
+<img src="../images/export_btn_hover.png" /><img src="../images/edit_btn_hover.png" /><img src="../images/done_btn_hover.png" />
 </div>
 
 <div id="dialog-confirm" title="Error">
     <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span class="error"></span></p>
 </div>
 
-<div id="dialog-form" title="Bla">
+<div id="dialog-form" title="Agent Timesheet">
 <p class="error2"><span style="color:#ff0000;">*</span> Required Fields</p>
 <input type="hidden" id="user">
 <table>
@@ -304,28 +345,14 @@ function Edit(user)
 </tr>
 </table>
 
-<center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
-<thead>
-<tr class="ui-widget-header ">
-<th style="text-align:left;">Agent Name</th>
-<th>Start Time</th>
-<th>End Time</th>
-<th>Hours</th>
-<th>Sales</th>
-<th>Bonus</th>
-</tr>
-</thead>
-<tbody id="timesheet_view">
+<div id="timesheet_view">
 <script>
 var date = $( "#datepicker" ),
 	centre = "<?php echo $ac["centre"] ?>";
 
 $( "#timesheet_view" ).load('admin_timesheet_get.php?centre=' + centre + '&date=' + date.val());
 </script>
-</tbody>
-</table>
-</div></center>
+</div>
 <table width="100%">
 <tr>
 <td align="left"><input type="button" id="export_btn" onClick="Export()" class="export"></td>

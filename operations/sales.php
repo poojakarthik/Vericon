@@ -54,7 +54,7 @@ $(function() {
 		onSelect: function(dateText, inst) {
 			var centre = $( "#centre" );
 		
-			$( "#details" ).load('sales_display.php?method=sales&centre=' + centre.val() + '&date=' + dateText);
+			window.location = 'sales.php?centre=' + centre.val() + '&date=' + dateText;
 		}
 	});
 });
@@ -65,7 +65,32 @@ function Display()
 	var centre = $( "#centre" ),
 		date = $( "#datepicker" );
 		
-	$( "#details" ).load('sales_display.php?method=sales&centre=' + centre.val() + '&date=' + date.val());
+	window.location = 'sales.php?centre=' + centre.val() + '&date=' + date.val();
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:450,
+		height:260,
+		modal: true,
+		buttons: {
+			"Close": function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+
+function Details(id)
+{
+	$( "#sale_details" ).load('sales_display.php?method=details&id=' + id);
+	$( "#dialog-confirm" ).dialog( "open" );
 }
 </script>
 </head>
@@ -83,6 +108,10 @@ include "../source/operations_menu.php";
 
 <div id="text">
 
+<div id="dialog-confirm" title="Sale Details">
+<div id="sale_details"></div>
+</div>
+
 <input type="hidden" id="centre_link" value="<?php echo $_GET["centre"]; ?>" />
 <table width="100%">
 <tr>
@@ -90,6 +119,16 @@ include "../source/operations_menu.php";
 <td align="right" style="padding-right:10px;"><select id="centre" onchange="Display()" style="height:auto; margin:0; padding:0; width:70px;">
 <option></option>
 <?php
+
+if ($_GET["date"] == "")
+{
+	$date = date("Y-m-d");
+}
+else
+{
+	$date = $_GET["date"];
+}
+
 $q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
 $cen = mysql_fetch_row($q);
 $centres = explode(",",$cen[0]);
@@ -99,12 +138,24 @@ for ($i = 0; $i < count($centres); $i++)
 }
 ?>
 </select>
-<input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
+<input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo $date; ?>' /><input type='hidden' id='datepicker' value='<?php echo $date; ?>' /></td>
 </tr>
 <tr>
 <td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
 </tr>
 </table>
+
+<?php
+if ($_GET["centre"] != "")
+{
+	if (!in_array($_GET["centre"], $centres))
+	{
+		echo "<script>";
+		echo "window.location = 'sales.php';";
+		echo "</script>";
+	}
+}
+?>
 
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" width="98%" style="margin-top:0px;">

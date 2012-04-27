@@ -103,9 +103,10 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 <script> //init form
 function Get_Sale()
 {
-	var id = $( "#id" );
+	var id = $( "#id" ),
+		user = "<?php echo $ac["user"]; ?>";
 	
-	$.get("verification_submit.php?method=get", { id: id.val() },
+	$.get("verification_submit.php?method=get", { id: id.val(), user: user },
 	function(data) {
 	   
 	   if (data == "valid")
@@ -117,6 +118,31 @@ function Get_Sale()
 			$( ".error" ).html(data);
 	   }
 	});
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog8" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:450,
+		height:260,
+		modal: true,
+		buttons: {
+			"Close": function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+
+function View(id)
+{
+	$( "#previous_details" ).load('verification_submit.php?method=details&id=' + id);
+	$( "#dialog-confirm" ).dialog( "open" );
 }
 </script>
 <script> //add packages
@@ -764,6 +790,10 @@ include "../source/tpv_menu.php";
 ?>
 
 <div id="text" class="demo">
+
+<div id="dialog-confirm" title="Sale Details">
+<div id="previous_details"></div>
+</div>
 
 <div id="dialog-form" title="Add a Package">
 <p class="error">All fields are required</p><br />

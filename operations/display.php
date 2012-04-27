@@ -78,7 +78,7 @@ for ($i = 0; $i < count($centres); $i++)
 		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td><a href='sales.php?centre=$centres[$i]'>" . $centres[$i] . "</a></td>";
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $approved . "</td>";
 		echo "<td style='text-align:center;'>" . $declined . "</td>";
@@ -155,7 +155,7 @@ for ($i = 0; $i < count($centres); $i++)
 		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td><a href='sales.php?centre=$centres[$i]'>" . $centres[$i] . "</a></td>";
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $approved . "</td>";
 		echo "<td style='text-align:center;'>" . $declined . "</td>";
@@ -232,7 +232,7 @@ for ($i = 0; $i < count($centres); $i++)
 		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td><a href='sales.php?centre=$centres[$i]'>" . $centres[$i] . "</a></td>";
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $approved . "</td>";
 		echo "<td style='text-align:center;'>" . $declined . "</td>";
@@ -317,7 +317,7 @@ for ($i = 0; $i < count($centres); $i++)
 		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td><a href='sales.php?centre=$centres[$i]'>" . $centres[$i] . "</a></td>";
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $approved . "</td>";
 		echo "<td style='text-align:center;'>" . $declined . "</td>";
@@ -394,7 +394,7 @@ for ($i = 0; $i < count($centres); $i++)
 		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td><a href='sales.php?centre=$centres[$i]'>" . $centres[$i] . "</a></td>";
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $approved . "</td>";
 		echo "<td style='text-align:center;'>" . $declined . "</td>";
@@ -471,7 +471,7 @@ for ($i = 0; $i < count($centres); $i++)
 		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td><a href='sales.php?centre=$centres[$i]'>" . $centres[$i] . "</a></td>";
 		echo "<td>" . $campaign[0] . "</td>";
 		echo "<td style='text-align:center;'>" . $approved . "</td>";
 		echo "<td style='text-align:center;'>" . $declined . "</td>";

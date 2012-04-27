@@ -42,9 +42,9 @@ elseif ($_GET["p"] == "current")
 {
 	include "../sales/admin_current.php";
 }
-elseif ($_GET["p"] == "stats")
+elseif ($_GET["p"] == "details")
 {
-	include "../sales/admin_stats.php";
+	include "../sales/admin_details.php";
 }
 elseif ($_GET["p"] == "ivr")
 {
