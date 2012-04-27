@@ -46,7 +46,7 @@ for ($i = 0;$i < count($p1);$i++)
 	echo "</td>";
 }
 ?>
-<td align='center' valign='middle'><a href="manuals/latest.pdf" target="_blank" class="user_manual"></a></td>
+<td align='center' valign='middle'><a href="manuals/" class="user_manual"></a></td>
 </tr>
 </table>
 </div>
