@@ -12,7 +12,6 @@ CREATE TABLE IF NOT EXISTS `address` (
   `postcode` varchar(4) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `allowedip`
@@ -24,7 +23,6 @@ CREATE TABLE IF NOT EXISTS `allowedip` (
   `Description` varchar(500) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `announcements`
@@ -41,7 +39,6 @@ CREATE TABLE IF NOT EXISTS `announcements` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
 ```
-
 ```sql
 --
 -- Table structure for table `archive_mcrm_customers`
@@ -89,7 +86,6 @@ CREATE TABLE IF NOT EXISTS `archive_mcrm_customers` (
   FULLTEXT KEY `search` (`saleAgent`,`fname`,`sname`,`dob`,`addr1`,`addr2`,`suburb`,`postcode`,`p_addr1`,`p_addr2`,`p_suburb`,`p_postcode`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `archive_mcrm_packages`
@@ -101,7 +97,6 @@ CREATE TABLE IF NOT EXISTS `archive_mcrm_packages` (
   `plan` varchar(32) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `archive_mytpv_sales`
@@ -140,7 +135,6 @@ CREATE TABLE IF NOT EXISTS `archive_mytpv_sales` (
   `DirectDebit5` varchar(512) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `auth`
@@ -159,7 +153,6 @@ CREATE TABLE IF NOT EXISTS `auth` (
   PRIMARY KEY (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `campaigns`
@@ -171,7 +164,6 @@ CREATE TABLE IF NOT EXISTS `campaigns` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `centres`
@@ -186,7 +178,6 @@ CREATE TABLE IF NOT EXISTS `centres` (
   PRIMARY KEY (`centre`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `csform`
@@ -212,7 +203,6 @@ CREATE TABLE IF NOT EXISTS `csform` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 ```
-
 ```sql
 --
 -- Table structure for table `currentuser`
@@ -225,7 +215,6 @@ CREATE TABLE IF NOT EXISTS `currentuser` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `customers`
@@ -260,7 +249,6 @@ CREATE TABLE IF NOT EXISTS `customers` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `gnaf`
@@ -317,7 +305,6 @@ CREATE TABLE IF NOT EXISTS `gnaf` (
   KEY `FLAT_NUMBER` (`FLAT_NUMBER`,`NUMBER_FIRST`,`NUMBER_LAST`,`POSTCODE`,`STREET_NAME`,`STREET_TYPE_CODE`,`LOCALITY_NAME`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 ```
-
 ```sql
 --
 -- Table structure for table `international`
@@ -328,7 +315,6 @@ CREATE TABLE IF NOT EXISTS `international` (
   `rate` varchar(50) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `leads`
@@ -347,7 +333,6 @@ CREATE TABLE IF NOT EXISTS `leads` (
   KEY `centre_2` (`centre`,`expiry_date`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `leads_group`
@@ -358,7 +343,6 @@ CREATE TABLE IF NOT EXISTS `leads_group` (
   `centres` varchar(32) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `log_al`
@@ -372,7 +356,6 @@ CREATE TABLE IF NOT EXISTS `log_al` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4110 ;
 ```
-
 ```sql
 --
 -- Table structure for table `log_leads`
@@ -388,7 +371,6 @@ CREATE TABLE IF NOT EXISTS `log_leads` (
   KEY `cli_2` (`cli`,`centre`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `log_login`
@@ -400,9 +382,8 @@ CREATE TABLE IF NOT EXISTS `log_login` (
   `ip` varchar(32) NOT NULL,
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22355 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22364 ;
 ```
-
 ```sql
 --
 -- Table structure for table `log_sales`
@@ -417,7 +398,6 @@ CREATE TABLE IF NOT EXISTS `log_sales` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=53 ;
 ```
-
 ```sql
 --
 -- Table structure for table `log_tpv_inbound`
@@ -431,7 +411,6 @@ CREATE TABLE IF NOT EXISTS `log_tpv_inbound` (
   `status` varchar(64) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `log_unauthorised`
@@ -445,7 +424,6 @@ CREATE TABLE IF NOT EXISTS `log_unauthorised` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1110 ;
 ```
-
 ```sql
 --
 -- Table structure for table `operations`
@@ -456,7 +434,6 @@ CREATE TABLE IF NOT EXISTS `operations` (
   `centres` varchar(128) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `packages`
@@ -468,7 +445,6 @@ CREATE TABLE IF NOT EXISTS `packages` (
   `plan` varchar(64) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `plan_matrix`
@@ -485,7 +461,6 @@ CREATE TABLE IF NOT EXISTS `plan_matrix` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `plan_rates`
@@ -505,7 +480,6 @@ CREATE TABLE IF NOT EXISTS `plan_rates` (
   PRIMARY KEY (`plan_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `qa_customers`
@@ -529,7 +503,6 @@ CREATE TABLE IF NOT EXISTS `qa_customers` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `recordings`
@@ -540,7 +513,6 @@ CREATE TABLE IF NOT EXISTS `recordings` (
   `name` varchar(512) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `reworks`
@@ -554,7 +526,6 @@ CREATE TABLE IF NOT EXISTS `reworks` (
   `reason` varchar(512) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `roster`
@@ -571,7 +542,6 @@ CREATE TABLE IF NOT EXISTS `roster` (
   `na` varchar(8) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `sales_customers`
@@ -607,7 +577,6 @@ CREATE TABLE IF NOT EXISTS `sales_customers` (
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `sales_customers_temp`
@@ -623,7 +592,6 @@ CREATE TABLE IF NOT EXISTS `sales_customers_temp` (
   PRIMARY KEY (`lead_id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `sales_packages`
@@ -636,7 +604,6 @@ CREATE TABLE IF NOT EXISTS `sales_packages` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `sales_packages_temp`
@@ -649,7 +616,6 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
   `plan` varchar(300) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `sct_dnc`
@@ -660,7 +626,6 @@ CREATE TABLE IF NOT EXISTS `sct_dnc` (
   PRIMARY KEY (`cli`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `sf_plan_code`
@@ -672,7 +637,6 @@ CREATE TABLE IF NOT EXISTS `sf_plan_code` (
   `type` varchar(16) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `timesheet`
@@ -687,7 +651,6 @@ CREATE TABLE IF NOT EXISTS `timesheet` (
   `bonus` int(8) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `tmp_dsr`
@@ -785,7 +748,6 @@ CREATE TABLE IF NOT EXISTS `tmp_dsr` (
   `Other_Comment` varchar(512) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `tpv_lock`
@@ -797,7 +759,6 @@ CREATE TABLE IF NOT EXISTS `tpv_lock` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `tpv_notes`
@@ -813,7 +774,19 @@ CREATE TABLE IF NOT EXISTS `tpv_notes` (
   `note` text NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
+```sql
+--
+-- Table structure for table `tutorials`
+--
 
+CREATE TABLE IF NOT EXISTS `tutorials` (
+  `id` varchar(16) NOT NULL,
+  `portal` varchar(16) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `link` varchar(512) NOT NULL,
+  `thumbnail` mediumblob NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
 ```sql
 --
 -- Table structure for table `updates`
@@ -826,9 +799,8 @@ CREATE TABLE IF NOT EXISTS `updates` (
   `subject` varchar(300) NOT NULL,
   `message` longtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=8 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=9 ;
 ```
-
 ```sql
 --
 -- Table structure for table `vicidial_assign`
@@ -842,7 +814,6 @@ CREATE TABLE IF NOT EXISTS `vicidial_assign` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `vicidial_live`
@@ -853,7 +824,6 @@ CREATE TABLE IF NOT EXISTS `vicidial_live` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
-
 ```sql
 --
 -- Table structure for table `vicidial_pool`
@@ -865,4 +835,3 @@ CREATE TABLE IF NOT EXISTS `vicidial_pool` (
   `indial` varchar(16) NOT NULL,
   `centre` varchar(16) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
