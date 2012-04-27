@@ -25,6 +25,22 @@ elseif ($method == "check_rows")
 }
 elseif ($method == "view")
 {
+?>
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
+<thead>
+<tr class="ui-widget-header ">
+<th style="text-align:left;">Agent Name</th>
+<th>Start Time</th>
+<th>End Time</th>
+<th>Hours</th>
+<th>Sales</th>
+<th>Bonus</th>
+<th colspan="2">Edit</th>
+</tr>
+</thead>
+<tbody>
+<?php
 	$q = mysql_query("SELECT * FROM auth WHERE centre = '$centre' AND status = 'Enabled' ORDER BY user ASC") or die(mysql_error());
 
 	while ($user = mysql_fetch_assoc($q))
@@ -41,14 +57,21 @@ elseif ($method == "view")
 		$sales = mysql_num_rows($q2);
 		
 		echo "<tr>";
-		echo "<td style='text-align:left;'><a onClick='Edit(\"$user[user]\")' style='text-decoration:underline; cursor:pointer;'>" . $user["first"] . " " . $user["last"] ."</a></td>";
+		echo "<td style='text-align:left;'>" . $user["first"] . " " . $user["last"] ."</td>";
 		echo "<td>" . $start . "</td>";
 		echo "<td>" . $end . "</td>";
 		echo "<td>" . $hours . "</td>";
 		echo "<td>" . $sales . "</td>";
 		echo "<td>" . $bonus . "</td>";
+		echo "<td><input type='button' onClick='Edit(\"$user[user]\")' class='edit_agent' title='Edit'></td>";
+		echo "<td><input type='button' onclick='Undo(\"$user[user]\")' class='undo' title='Undo'></td>";
 		echo "</tr>";
 	}
+?>
+</tbody>
+</table>
+</div></center>
+<?php
 }
 elseif ($method == "name")
 {
@@ -121,6 +144,10 @@ elseif ($method == "bonus")
 	$data = mysql_fetch_assoc($q);
 	
 	echo $data["bonus"];
+}
+elseif ($method == "undo")
+{
+	mysql_query("DELETE FROM timesheet WHERE user = '$user' AND date = '$date' LIMIT 1") or die(mysql_error());
 }
 elseif ($method == "edit")
 {
