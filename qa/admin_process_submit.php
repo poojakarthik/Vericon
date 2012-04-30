@@ -13,7 +13,7 @@ $dsr_r_path = "/home/dsr/" . $year . "/" . $month . "/DSR_" . $date2 . "_Residen
 $qa_path = "/home/dsr/" . $year . "/" . $month . "/DSR_" . $date2 . "_QA.csv";
 $year_path = "/home/dsr/" . $year;
 $directory_path = "/home/dsr/" . $year . "/" . $month;
-$tmp_path = "/home/dsr/tmp.txt";
+$tmp_path = "/home/dsr/lock/tmp.txt";
 
 //Create temp Report
 $fr = fopen($tmp_path, 'w+');

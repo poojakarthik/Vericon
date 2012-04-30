@@ -1033,7 +1033,7 @@ else
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','SCT DNC')");
 			echo "<script>window.location = '../self/form.php';</script>";
 		}
-		elseif (time() < strtotime($check["issue_date"]) || time() > strtotime($check["expiry_date"]))
+		elseif (strtotime(date("Y-m-d")) < strtotime($check["issue_date"]) || strtotime(date("Y-m-d")) > strtotime($check["expiry_date"]))
 		{
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Expired Lead')");
 			echo "<script>window.location = '../self/form.php';</script>";

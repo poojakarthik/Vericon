@@ -42,7 +42,7 @@ if ($method == "get")
 		{
 			echo "Customer is on the SCT DNC!";
 		}
-		elseif (time() < strtotime($check["issue_date"]) || time() > strtotime($check["expiry_date"]))
+		elseif (strtotime(date("Y-m-d")) < strtotime($check["issue_date"]) || strtotime(date("Y-m-d")) > strtotime($check["expiry_date"]))
 		{
 			echo "Lead has expired!";
 		}
