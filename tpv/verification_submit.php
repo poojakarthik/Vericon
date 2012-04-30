@@ -39,7 +39,7 @@ if ($method == "get") //get sale
 		}
 		else
 		{
-			mysql_query("UPDATE tpv_lock SET id = '$id'") or die(mysql_error());
+			mysql_query("UPDATE tpv_lock SET id = '$id' WHERE user = '$user'") or die(mysql_error());
 		}
 		echo "valid";
 	}
