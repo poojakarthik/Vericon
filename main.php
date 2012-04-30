@@ -21,6 +21,7 @@ include "source/jquery.php";
 
 <?php
 include "source/header.php";
+include "source/browser.php";
 ?>
 
 <div id="menu">
@@ -30,6 +31,50 @@ include "source/header.php";
 </ul>
 </div>
 </div>
+
+<?php
+if ($browser["name"] == "Firefox" && $browser["version"] >= 11)
+{
+
+}
+else
+{
+?>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: true,
+		resizable: false,
+		draggable: false,
+		width: 410,
+		height:260,
+		modal: true,
+		buttons: {
+			"OK": function() {
+				$( "#dialog-confirm" ).dialog( "close" );
+			}
+		}
+	});
+});
+</script>
+
+<script>
+function Firefox()
+{
+	window.open("http://mozilla.mirror.aarnet.edu.au/pub/mozilla/firefox/releases/12.0/win32/en-US/Firefox%20Setup%2012.0.exe");
+}
+</script>
+
+<div id="dialog-confirm" title="Please Upgrade Browser">
+	<p>Please note that from Monday, 7th May 2012, VeriCon will only be available on Firefox Ver 11+</p><br />
+    <p>Be sure to update your browser otherwise you will not be able to access VeriCon</p><br />
+   	<center><p><a onclick="Firefox()" target="_blank"><img src="../images/firefox_download.png" /></a></p></center>
+</div>
+<?php
+}
+?>
 
 <div id="vericon_portals">
 <table class="script_table" style="padding: 15px 15px 7px;">
