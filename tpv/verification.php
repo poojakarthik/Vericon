@@ -363,8 +363,16 @@ $( "#dialog-form2" ).dialog({
 			{
 				$.get("verification_submit.php?method=cancel", { id: id, verifier: verifier, lead_id: lead_id.val(), status: status.val(), note: note.val() },
 				function(data) {
-					$( "#dialog-form2" ).dialog( "close" );
-					window.location = "verification.php";
+					if (data == "done")
+					{
+						$( "#dialog-form2" ).dialog( "close" );
+						window.location = "verification.php";
+					}
+					else
+					{
+						$( "#dialog-form2" ).dialog( "close" );
+						Submit_Error("Error! Please Contact your Administrator");
+					}
 				});
 			}
 		},
@@ -442,7 +450,14 @@ function Submit()
 	
 	$.get("verification_submit.php?method=submit", { id: id, verifier: verifier, lead_id: lead_id.val(), note: note.val() },
 	function(data) {
-		window.location = "verification.php";
+		if (data == "done")
+		{
+			window.location = "verification.php";
+		}
+		else
+		{
+			Submit_Error("Error! Please Contact your Administrator");
+		}
 	});
 }
 </script>

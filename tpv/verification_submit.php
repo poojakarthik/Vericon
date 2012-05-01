@@ -39,7 +39,8 @@ if ($method == "get") //get sale
 		}
 		else
 		{
-			mysql_query("UPDATE tpv_lock SET id = '$id' WHERE user = '$user'") or die(mysql_error());
+			mysql_query("DELETE FROM tpv_lock WHERE user = '$user'") or die(mysql_error());
+			mysql_query("INSERT INTO tpv_lock (user, id) VALUES ('$user', '$id')") or die(mysql_error());
 		}
 		echo "valid";
 	}
@@ -139,7 +140,9 @@ elseif ($method == "cancel") //cancel sale
 	
 	mysql_query("UPDATE sales_customers SET status = '$status', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
 	
-	mysql_query("DELETE FROM tpv_lock WHERE user = '$verifier' LIMIT 1") or die(mysql_error());
+	mysql_query("DELETE FROM tpv_lock WHERE user = '$verifier' OR id = '$id'") or die(mysql_error());
+	
+	echo "done";
 }
 elseif ($method == "submit") //submit sale
 {
@@ -158,7 +161,9 @@ elseif ($method == "submit") //submit sale
 	
 	mysql_query("UPDATE sales_customers SET status = '$status', industry = '$industry', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
 	
-	mysql_query("DELETE FROM tpv_lock WHERE user = '$verifier' LIMIT 1") or die(mysql_error());
+	mysql_query("DELETE FROM tpv_lock WHERE user = '$verifier' OR id = '$id'") or die(mysql_error());
+	
+	echo "done";
 }
 elseif ($method == "details")
 {
