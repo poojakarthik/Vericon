@@ -1,5 +1,6 @@
 <?php
 include "source/browser.php";
+
 if ($browser["name"] == "Firefox" && $browser["version"] >= 11)
 {
 	

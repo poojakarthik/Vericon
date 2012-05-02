@@ -1,42 +1,31 @@
 <?php
 function browser($ua)
 {
-    if (preg_match('/bot/i', $ua) || preg_match('/crawl/i', $ua) || preg_match('/yahoo\!/i', $ua))
-    {
+    if (preg_match('/bot/i', $ua) || preg_match('/crawl/i', $ua) || preg_match('/yahoo\!/i', $ua)) {
         $return['name'] = 'Bot';
         $return['version'] = 'Unknown';
-    }
-    elseif (preg_match('/opera/i', $ua))
-    {
+    } elseif (preg_match('/opera/i', $ua)) {
         preg_match('/Opera(\/| )([0-9\.]+)(u)?(\d+)?/i', $ua, $b);
         $return['name'] = 'Opera';
         unset($b[0], $b[1]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/msie/i', $ua))
-    {
+    } elseif (preg_match('/msie/i', $ua)) {
         preg_match('/MSIE ([0-9\.]+)(b)?/i', $ua, $b);
         $return['name'] = 'Internet Explorer';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/omniweb/i', $ua))
-    {
+    } elseif (preg_match('/omniweb/i', $ua)) {
         preg_match('/OmniWeb\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'OmniWeb';
         if (isset($b[1]))
             $return['version'] = $b[1];
         else
             $return['version'] = 'Unknown';
-    }
-    elseif (preg_match('/icab/i', $ua))
-    {
+    } elseif (preg_match('/icab/i', $ua)) {
         preg_match('/iCab\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'iCab';
         $return['version'] = $b[1];
-    }
-    elseif (preg_match('/safari/i', $ua))
-    {
+    } elseif (preg_match('/safari/i', $ua)) {
         preg_match('/Safari\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'Safari';
         $return['version'] = $b[1];
@@ -89,115 +78,81 @@ function browser($ua)
                 $return['version'] = '1.0.3';
             break;
         }
-    }
-    elseif (preg_match('/konqueror/i', $ua))
-    {
+    } elseif (preg_match('/konqueror/i', $ua)) {
         preg_match('/Konqueror\/([0-9\.]+)(\-rc)?(\d+)?/i', $ua, $b);
         $return['name'] = 'Konqueror';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/Flock/i', $ua))
-    {
+    } elseif (preg_match('/Flock/i', $ua)) {
         preg_match('/Flock\/([0-9\.]+)(\+)?/i', $ua, $b);
         $return['name'] = 'Flock';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/firebird/i', $ua))
-    {
+    } elseif (preg_match('/firebird/i', $ua)) {
         preg_match('/Firebird\/([0-9\.]+)(\+)?/i', $ua, $b);
         $return['name'] = 'Firebird';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/phoenix/i', $ua))
-    {
+    } elseif (preg_match('/phoenix/i', $ua)) {
         preg_match('/Phoenix\/([0-9\.]+)(\+)?/i', $ua, $b);
         $return['name'] = 'Phoenix';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/firefox/i', $ua))
-    {
+    } elseif (preg_match('/firefox/i', $ua)) {
         preg_match('/Firefox\/([0-9\.]+)(\+)?/i', $ua, $b);
         $return['name'] = 'Firefox';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/chimera/i', $ua))
-    {
+    } elseif (preg_match('/chimera/i', $ua)) {
         preg_match('/Chimera\/([0-9\.]+)(a|b)?(\d+)?(\+)?/i', $ua, $b);
         $return['name'] = 'Chimera';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/camino/i', $ua))
-    {
+    } elseif (preg_match('/camino/i', $ua)) {
         preg_match('/Camino\/([0-9\.]+)(a|b)?(\d+)?(\+)?/i', $ua, $b);
         $return['name'] = 'Camino';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/seamonkey/i', $ua))
-    {
+    } elseif (preg_match('/seamonkey/i', $ua)) {
         preg_match('/SeaMonkey\/([0-9\.]+)(a|b)?/i', $ua, $b);
         $return['name'] = 'SeaMonkey';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/galeon/i', $ua))
-    {
+    } elseif (preg_match('/galeon/i', $ua)) {
         preg_match('/Galeon\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'Galeon';
         $return['version'] = $b[1];
-    }
-    elseif (preg_match('/epiphany/i', $ua))
-    {
+    } elseif (preg_match('/epiphany/i', $ua)) {
         preg_match('/Epiphany\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'Epiphany';
         $return['version'] = $b[1];
-    }
-    elseif (preg_match('/mozilla\/5/i', $ua) || preg_match('/gecko/i', $ua))
-    {
+    } elseif (preg_match('/mozilla\/5/i', $ua) || preg_match('/gecko/i', $ua)) {
         preg_match('/rv(:| )([0-9\.]+)(a|b)?/i', $ua, $b);
         $return['name'] = 'Mozilla';
         unset($b[0], $b[1]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/mozilla\/4/i', $ua))
-    {
+    } elseif (preg_match('/mozilla\/4/i', $ua)) {
         preg_match('/Mozilla\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'Netscape';
         $return['version'] = $b[1];
-    }
-    elseif (preg_match('/lynx/i', $ua))
-    {
+    } elseif (preg_match('/lynx/i', $ua)) {
         preg_match('/Lynx\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'Lynx';
         $return['version'] = $b[1];
-    }
-    elseif (preg_match('/links/i', $ua))
-    {
+    } elseif (preg_match('/links/i', $ua)) {
         preg_match('/Links \(([0-9\.]+)(pre)?(\d+)?/i', $ua, $b);
         $return['name'] = 'Links';
         unset($b[0]);
         $return['version'] = implode('', $b);
-    }
-    elseif (preg_match('/curl/i', $ua))
-    {
+    } elseif (preg_match('/curl/i', $ua)) {
         preg_match('/curl\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'cURL';
         $return['version'] = $b[1];
-    }
-    elseif (preg_match('/wget/i', $ua))
-    {
+    } elseif (preg_match('/wget/i', $ua)) {
         preg_match('/Wget\/([0-9\.]+)/i', $ua, $b);
         $return['name'] = 'Wget';
         $return['version'] = $b[1];
-    }
-    else
-    {
+    } else {
         $return['name'] = 'Unknown';
         $return['version'] = 'Unknown';
     }
