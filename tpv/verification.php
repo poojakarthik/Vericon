@@ -103,10 +103,9 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 <script> //init form
 function Get_Sale()
 {
-	var id = $( "#id" ),
-		user = "<?php echo $ac["user"]; ?>";
+	var id = $( "#id" );
 	
-	$.get("verification_submit.php?method=get", { id: id.val(), user: user },
+	$.get("verification_submit.php?method=get", { id: id.val() },
 	function(data) {
 	   
 	   if (data == "valid")

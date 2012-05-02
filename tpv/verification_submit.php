@@ -12,12 +12,6 @@ if ($method == "get") //get sale
 	$q = mysql_query("SELECT * FROM sales_customers WHERE id = '" . mysql_escape_string($id) . "'") or die(mysql_error());
 	$check = mysql_fetch_assoc($q);
 	
-	$q1 = mysql_query("SELECT * FROM tpv_lock WHERE id = '$id'") or die(mysql_error());
-	$check2 = mysql_fetch_assoc($q1);
-	
-	$vq = mysql_query("SELECT first FROM auth WHERE user = '$check2[user]'") or die(mysql_error());
-	$veri = mysql_fetch_row($vq);
-	
 	if ($id == "" || mysql_num_rows($q) == 0)
 	{
 		echo "Invalid ID!";
@@ -26,22 +20,8 @@ if ($method == "get") //get sale
 	{
 		echo "Sale already Approved!";
 	}
-	elseif (mysql_num_rows($q1) != 0)
-	{
-		echo "Sale Currently Open by " . $veri[0] . "!";
-	}
 	else
 	{
-		$q2 = mysql_query("SELECT * FROM tpv_lock WHERE user = '$user'") or die(mysql_error());
-		if (mysql_num_rows($q2) == 0)
-		{
-			mysql_query("INSERT INTO tpv_lock (user, id) VALUES ('$user', '$id')") or die(mysql_error());
-		}
-		else
-		{
-			mysql_query("DELETE FROM tpv_lock WHERE user = '$user'") or die(mysql_error());
-			mysql_query("INSERT INTO tpv_lock (user, id) VALUES ('$user', '$id')") or die(mysql_error());
-		}
 		echo "valid";
 	}
 }
@@ -140,8 +120,6 @@ elseif ($method == "cancel") //cancel sale
 	
 	mysql_query("UPDATE sales_customers SET status = '$status', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
 	
-	mysql_query("DELETE FROM tpv_lock WHERE user = '$verifier' OR id = '$id'") or die(mysql_error());
-	
 	echo "done";
 }
 elseif ($method == "submit") //submit sale
@@ -160,8 +138,6 @@ elseif ($method == "submit") //submit sale
 	mysql_query("INSERT INTO tpv_notes (id,status,lead_id,centre,verifier,note) VALUES ('$id','$status','$lead_id','$centre[0]','$verifier','". mysql_escape_string($note) . "')") or die(mysql_error());
 	
 	mysql_query("UPDATE sales_customers SET status = '$status', industry = '$industry', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
-	
-	mysql_query("DELETE FROM tpv_lock WHERE user = '$verifier' OR id = '$id'") or die(mysql_error());
 	
 	echo "done";
 }
