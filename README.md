@@ -244,6 +244,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `postal` varchar(300) NOT NULL,
   `id_type` varchar(25) NOT NULL,
   `id_num` varchar(25) NOT NULL,
+
   `abn` varchar(25) NOT NULL,
   `position` varchar(300) NOT NULL,
   PRIMARY KEY (`id`)
@@ -354,7 +355,7 @@ CREATE TABLE IF NOT EXISTS `log_al` (
   `ip` varchar(32) NOT NULL,
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4110 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=4111 ;
 ```
 ```sql
 --
@@ -382,7 +383,7 @@ CREATE TABLE IF NOT EXISTS `log_login` (
   `ip` varchar(32) NOT NULL,
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22364 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22371 ;
 ```
 ```sql
 --
@@ -721,6 +722,7 @@ CREATE TABLE IF NOT EXISTS `tmp_dsr` (
   `Street_Number_End` varchar(8) NOT NULL,
   `Street_Name` varchar(64) NOT NULL,
   `Street_Type` varchar(32) NOT NULL,
+
   `Suburb` varchar(64) NOT NULL,
   `State` varchar(8) NOT NULL,
   `Post_Code` varchar(8) NOT NULL,
@@ -746,17 +748,6 @@ CREATE TABLE IF NOT EXISTS `tmp_dsr` (
   `Provisioning_Comment` varchar(512) NOT NULL,
   `Mobile_Comment` varchar(512) NOT NULL,
   `Other_Comment` varchar(512) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `tpv_lock`
---
-
-CREATE TABLE IF NOT EXISTS `tpv_lock` (
-  `user` varchar(16) NOT NULL,
-  `id` varchar(16) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
@@ -803,29 +794,6 @@ CREATE TABLE IF NOT EXISTS `updates` (
 ```
 ```sql
 --
--- Table structure for table `vicidial_assign`
---
-
-CREATE TABLE IF NOT EXISTS `vicidial_assign` (
-  `number` varchar(16) NOT NULL,
-  `id` varchar(16) NOT NULL,
-  `centre` varchar(8) NOT NULL,
-  `agent` varchar(16) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `vicidial_live`
---
-
-CREATE TABLE IF NOT EXISTS `vicidial_live` (
-  `sale_id` varchar(32) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
 -- Table structure for table `vicidial_pool`
 --
 
@@ -835,3 +803,4 @@ CREATE TABLE IF NOT EXISTS `vicidial_pool` (
   `indial` varchar(16) NOT NULL,
   `centre` varchar(16) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```sql
