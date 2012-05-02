@@ -15,6 +15,8 @@ if ($method == "approve")
 	$filename = "/var/vericon/upload/tmp/" . $lead_id . ".gsm";
 	$timestamp = date("Y-m-d H:i:s");
 	
+	$qc = mysql_query("SELECT * FROM qa_customers WHERE id = '$id'") or die(mysql_error());
+	
 	if ($id == "" || $verifier == "" || $lead_id == "")
 	{
 		echo "Error! Please contact your administrator!";
@@ -31,7 +33,7 @@ if ($method == "approve")
 	{
 		echo "Please check if the customer's details are correct";
 	}
-	elseif (!file_exists($filename))
+	elseif (!file_exists($filename) && mysql_num_rows($qc) == 0)
 	{
 		echo "Please upload the voice file";
 	}
@@ -40,7 +42,6 @@ if ($method == "approve")
 		$q = mysql_query("SELECT * FROM sales_customers WHERE id = '$id'") or die(mysql_error());
 		$data = mysql_fetch_assoc($q);
 		
-		$qc = mysql_query("SELECT * FROM qa_customers WHERE id = '$id'") or die(mysql_error());
 		if (mysql_fetch_row($qc) == 0)
 		{
 			mysql_query("INSERT INTO qa_customers (id, status, lead_id, timestamp, verifier, sale_timestamp, agent, centre, campaign, type, lead_check, recording_check, details_check) VALUES ('$id', 'Approved', '$lead_id', '$timestamp', '$verifier', '$data[approved_timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '$lead', '$recording', '$details')") or die(mysql_error());
@@ -76,11 +77,11 @@ if ($method == "approve")
 		}
 		else
 		{
-			echo "Already Submitted!";
+			echo 1;
 		}
 	}
 }
-if ($method == "reject")
+elseif ($method == "reject")
 {
 	$id = $_GET["id"];
 	$verifier = $_GET["verifier"];
@@ -120,6 +121,7 @@ if ($method == "reject")
 			else
 			{
 				mysql_query("UPDATE qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+				
 				echo "submitted";
 			}
 		}
