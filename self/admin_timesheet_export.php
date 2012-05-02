@@ -102,18 +102,6 @@ if (mysql_num_rows($q) != 0)
 	$objPHPExcel->getActiveSheet()->mergeCells('E14:G14');
 	$objPHPExcel->getActiveSheet()->mergeCells('B' . $i . ':D' . $i);
 	
-	// Set document security
-	$objPHPExcel->getSecurity()->setWorkbookPassword("testpass");
-	$objPHPExcel->getSecurity()->setLockWindows(true);
-	$objPHPExcel->getSecurity()->setLockStructure(true);
-	
-	// Protect cells
-	$objPHPExcel->getActiveSheet()->getProtection()->setPassword("testpass");
-	$objPHPExcel->getActiveSheet()->getProtection()->setSheet(true);
-	
-	// Unprotect a cell
-	$objPHPExcel->getActiveSheet()->getStyle('H17:H' . $sum)->getProtection()->setLocked(PHPExcel_Style_Protection::PROTECTION_UNPROTECTED);
-	
 	// Set cell number formats
 	$objPHPExcel->getActiveSheet()->getStyle('H12')->getNumberFormat()->setFormatCode('$#,##0_);[Red]($#,##0)');
 	$objPHPExcel->getActiveSheet()->getStyle('H13')->getNumberFormat()->setFormatCode('$#,##0_);[Red]($#,##0)');
