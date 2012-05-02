@@ -34,7 +34,7 @@ if ($_GET["sale_id"] != "")
 		echo "3";
 		$status = "On Hold";
 	}
-	elseif (strtotime(date("Y-m-d", strtotime($data["timestamp"])) . "+1 week") < strtotime(date("Y-m-d")))
+	elseif (strtotime(date("Y-m-d", strtotime($data["timestamp"])) . "+1 week") < strtotime(date("Y-m-d")) && $data["status"] != "Rework")
 	{
 		echo "4";
 		$status = "ID Expired";
