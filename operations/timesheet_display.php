@@ -75,7 +75,7 @@ elseif ($method == "All")
 			echo "<tr>";
 			echo "<td>" . $i . "</td>";
 			echo "<td>" . $users["first"] . " " . $users["last"] . "</td>";
-			echo "<td style='text-align:center;'>" . number_format($hours[0],2) . "</td>";
+			echo "<td style='text-align:center;'>" . number_format($hours,2) . "</td>";
 			echo "<td style='text-align:center;'>" . $sales . "</td>";
 			echo "<td style='text-align:center;'>" . number_format($sph,2) . "</td>";
 			echo "<td style='text-align:center;'>" . $grade . "</td>";
