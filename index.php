@@ -126,10 +126,6 @@ elseif($_GET["attempt"] == "banned")
 {
 	echo "Your Account has been Disabled!";
 }
-elseif($_GET["attempt"] == "al")
-{
-	echo "You are already Logged In!";
-}
 ?>
 </p></td></tr>
 </table>
