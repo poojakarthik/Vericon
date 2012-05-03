@@ -34,16 +34,19 @@ if (!CheckAccess())
 // check if user already logged in
 $q2 = mysql_query("SELECT * FROM currentuser WHERE user = '" . mysql_escape_string($_POST["username"]) . "'") or die(mysql_error());
 
-if(mysql_num_rows($q2) != 0){
-	mysql_query("INSERT INTO log_al (ip,user) VALUES ('$_SERVER[REMOTE_ADDR]','" . mysql_escape_string($_POST["username"]) . "')");
-	die(header("Location: ../index.php?attempt=al"));}
-
 // log user in
 $d = mysql_fetch_row($q);
 
 $hash = hash('whirlpool', rand());
 
-mysql_query("INSERT INTO currentuser (hash, user, type, timestamp) VALUES ('$hash','" . mysql_escape_string($_POST["username"]) . "', '$d[0]', NOW())") or die(mysql_error());
+if(mysql_num_rows($q2) != 0)
+{
+	mysql_query("UPDATE currentuser SET hash = '$hash', type = '$d[0]', timestamp = NOW() WHERE user = '" . mysql_escape_string($_POST["username"]) . "'") or die(mysql_error());
+}
+else
+{
+	mysql_query("INSERT INTO currentuser (hash, user, type, timestamp) VALUES ('$hash','" . mysql_escape_string($_POST["username"]) . "', '$d[0]', NOW())") or die(mysql_error());
+}
 
 mysql_query("INSERT INTO log_login (ip,user) VALUES ('$_SERVER[REMOTE_ADDR]','" . mysql_escape_string($_POST["username"]) . "')");
 

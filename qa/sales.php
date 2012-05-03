@@ -45,27 +45,13 @@ $(function() {
 });
 </script>
 <script>
-function Teams()
-{
-	if ($( "#centre" ).val() == "CC12")
-	{
-		$( "#teams" ).removeAttr('style');
-	}
-	else
-	{
-		$( "#teams" ).attr('style','display:none;');
-	}
-}
-</script>
-<script>
 function Display()
 {
 	var centre = $( "#centre" ),
-		team = $( "#team" ),
 		date = $( "#datepicker" );
 		
-	$( "#stats" ).load('sales_submit.php?method=stats&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
-	$( "#details" ).load('sales_submit.php?method=pending&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
+	$( "#stats" ).load('sales_submit.php?method=stats&centre=' + centre.val() + '&date=' + date.val());
+	$( "#details" ).load('sales_submit.php?method=pending&centre=' + centre.val() + '&date=' + date.val());
 	
 	$( "#results" ).removeAttr('style');
 }
@@ -73,10 +59,9 @@ function Display()
 function Display_Type()
 {
 	var centre = $( "#centre" ),
-		team = $( "#team" ),
 		display_type = $( "#display_type" ),
 		date = $( "#datepicker" );
-	$( "#details" ).load('sales_submit.php?method=' + display_type.val() + '&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
+	$( "#details" ).load('sales_submit.php?method=' + display_type.val() + '&centre=' + centre.val() + '&date=' + date.val());
 }
 </script>
 </head>
@@ -100,10 +85,10 @@ include "../source/qa_menu.php";
 <table style="margin-top:5px;">
 <tr>
 <td>Centre </td>
-<td width="80px"><select id="centre" onchange="Teams()" style="height:auto; margin:0; padding:0; width:70px;">
+<td width="80px"><select id="centre" style="height:auto; margin:0; padding:0; width:70px;">
 <option></option>
 <?php
-$q = mysql_query("SELECT * FROM centres WHERE centre != 'TPV' ORDER BY centre ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM centres WHERE status = 'Active' ORDER BY centre ASC") or die(mysql_error());
 while ($centres = mysql_fetch_row($q))
 {
 	echo "<option>" . $centres[0] . "</option>";
@@ -111,13 +96,6 @@ while ($centres = mysql_fetch_row($q))
 ?>
 </select>
 </td>
-<td width="80px" id="teams" style="display:none;"><select id="team" style="height:auto; margin:0; padding:0; width:70px;">
-<option></option>
-<option>Damith</option>
-<option>Daniel</option>
-<option>Liam</option>
-<option>Sanu</option>
-</select></td>
 <td>Date</td>
 <td width="120px"><input type='text' size='11' id='datepicker2' readonly='readonly' value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
 <td><input type="button" onclick="Display()" class="search" value="" /></td>

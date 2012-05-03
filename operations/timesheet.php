@@ -22,6 +22,23 @@ div#users-contain table td { border: 1px solid #eee; padding: .1em 10px; text-al
 .error { border: 1px solid transparent; padding: 0.3em; }
 .ui-autocomplete-loading { background: white url('../images/ajax-loader.gif') right center no-repeat; }
 
+.export
+{
+	background-image:url('../images/export_btn.png');
+	background-repeat:no-repeat;
+	height:30px;
+	width:102px;
+	border:none;
+	background-color:transparent;
+	margin-left:10px;
+}
+
+.export:hover
+{
+	background-image:url('../images/export_btn_hover.png');
+	cursor:pointer;
+}
+
 .search
 {
 	background-image:url('../images/search_btn_2.png');
@@ -48,6 +65,7 @@ function Display(centre)
 	$( ".centre" ).html(centre);
 	$( "#centre" ).val(centre);
 	$( "#display" ).load('timesheet_display.php?method=' + method.val() + '&centre=' + centre);
+	$( "#centre_export_btn" ).removeAttr("style");
 }
 
 function Change_Display()
@@ -134,6 +152,24 @@ function Search()
 }
 </script>
 <script>
+function Centre_Export()
+{
+	var type = $( "#display_type" ),
+		centre = $( "#centre" );
+
+	window.location = 'timesheet_export.php?method=centre&centre=' + centre.val() + '&type=' + type.val();
+}
+</script>
+<script>
+function Agent_Export()
+{
+	var type = $( "#export_type" ),
+		user = "<?php echo $_GET["agent"]; ?>";
+
+	window.location = 'timesheet_export.php?method=agent&user=' + user + '&type=' + type.val();
+}
+</script>
+<script>
 $(function() {
 	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
 
@@ -189,6 +225,8 @@ Agent: <input type="text" id="search_box" />
 <thead>
 <tr class="ui-widget-header ">
 <th>Date</th>
+<th style="text-align:center;">Start Time</th>
+<th style="text-align:center;">End Time</th>
 <th style="text-align:center;">Hours</th>
 <th style="text-align:center;">Sales</th>
 <th style="text-align:center;">SPH</th>
@@ -219,7 +257,7 @@ if ($_GET["agent"] == "")
 <div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
 <?php //captive
-$total_hours = 0;
+/*$total_hours = 0;
 $total_sales = 0;
 for ($i = 0; $i < count($centres); $i++)
 {
@@ -292,7 +330,7 @@ if (array_sum($captive) > 0)
 	echo "<td style='text-align:center;'><b>" . $total_grade . "</b></td>";
 	echo "</tr>";
 	echo "</tbody>";
-}
+}*/
 ?>
 <?php //self
 $total_hours = 0;
@@ -413,7 +451,8 @@ $( "#display" ).load('timesheet_display.php?method=' + method.val() + '&centre='
 </tbody>
 </table>
 </div>
-</center>
+</center><br />
+<input type="button" id="centre_export_btn" onClick="Centre_Export()" class="export" style="display:none;">
 <?php
 }
 else
@@ -521,7 +560,12 @@ echo "</tr>";
 </tbody>
 </table>
 </div>
-</center>
+</center><br />
+<input type="button" onClick="Agent_Export()" class="export">
+<select id="export_type" style="margin:0px; padding:0px; height:20px; margin-left:10px; width:80px;">
+<option value="weekly">Weekly</option>
+<option value="daily">Daily</option>
+</select>
 <?php
 }
 ?>

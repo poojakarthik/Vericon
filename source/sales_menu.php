@@ -61,7 +61,7 @@ if($access_level == "Admin")
   <ul>
   <li><a href="../sales/admin.php?p=users">USERS</a></li>
   <li><a href="../sales/admin.php?p=current">LOGGED IN</a></li>
-  <li><a href="../sales/admin.php?p=stats">STATS</a></li>
+  <li><a href="../sales/admin.php?p=details">SALE DETAILS</a></li>
   <li><a href="../sales/admin.php?p=ivr">IVR</a></li>
   </ul>
 </li>

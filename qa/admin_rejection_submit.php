@@ -7,57 +7,9 @@ $method = $_GET["method"];
 if ($method == "stats")
 {
 	$centre = $_GET["centre"];
-	$team = $_GET["team"];
 	$date = $_GET["date"];
 	
-	if ($centre == "CC12")
-	{
-		$q0 = mysql_query("SELECT campaign FROM centres WHERE centre = '$centre'") or die(mysql_error());
-		$cam = mysql_fetch_row($q0);
-		
-		$campaign = explode(",",$cam[0]);
-		$camlength = count($campaign);
-		for ($i = 0; $i < $camlength; $i++)
-		{
-			$q = mysql_query("SELECT * FROM teams WHERE team = '$team'") or die(mysql_error());
-		$total_sales = 0;
-			while ($team_agent = mysql_fetch_row($q))
-			{
-				$q1 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND agent = '$team_agent[0]' AND campaign = '$campaign[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
-				$total_sales += mysql_num_rows($q1);
-				
-				$q5 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Rework' AND agent = '$team_agent[0]' AND campaign = '$campaign[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
-				$reworks += mysql_num_rows($q5);
-				
-				$q2e = mysql_query("SELECT * FROM qa_customers WHERE status = 'Approved' AND centre = '$centre' AND campaign = '$campaign[$i]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
-				if (mysql_num_rows($q2e) != 0)
-				{
-					while ($ex = mysql_fetch_row($q2e))
-					{
-						$exclude .= " AND id != '$ex[0]' ";
-					}
-				}
-				$q2 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND agent = '$team_agent[0]' AND campaign = '$campaign[$i]'" . $exclude . "AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
-				$pending += mysql_num_rows($q2);
-				
-				$q3 = mysql_query("SELECT * FROM qa_customers WHERE status = 'Approved' AND agent = '$team_agent[0]' AND campaign = '$campaign[$i]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
-				$approved += mysql_num_rows($q3);
-				
-				$q4 = mysql_query("SELECT * FROM qa_customers WHERE status = 'Rejected' AND agent = '$team_agent[0]' AND campaign = '$campaign[$i]' AND DATE(sale_timestamp) = '$date'") or die(mysql_error());
-				$rejected = mysql_num_rows($q4);
-			}
-
-			echo "<tr>";
-			echo "<td>" . $campaign[$i] . "</td>";
-			echo "<td style='text-align:center'>" . $total_sales . "</td>";
-			echo "<td style='text-align:center'>" . $reworks . "</td>";
-			echo "<td style='text-align:center'>" . $pending . "</td>";
-			echo "<td style='text-align:center'>" . $approved . "</td>";
-			echo "<td style='text-align:center'>" . $rejected . "</td>";
-			echo "</tr>";
-		}
-	}
-	elseif ($centre == "All")
+	if ($centre == "All")
 	{
 		$q0 = mysql_query("SELECT campaign FROM campaigns ORDER BY campaign ASC") or die(mysql_error());
 		while ($campaign = mysql_fetch_row($q0))
@@ -133,18 +85,8 @@ if ($method == "stats")
 elseif ($method == "download")
 {
 	$centre = $_GET["centre"];
-	$team = $_GET["team"];
 	$date = $_GET["date"];
 	
-	if ($centre == "CC12")
-	{
-		$centre = $centre . "_" . $team;
-		echo "<a href='download_rej.php?date=$date&team=$team&centre=$centre' style='color:inherit;'>Download - Rejection_Report_" . date("d.m.Y", strtotime($date)) . "_" . $centre . ".csv</a>";
-	}
-	else
-	{
-		echo "<a href='download_rej.php?date=$date&centre=$centre' style='color:inherit;'>Download - Rejection_Report_" . date("d.m.Y", strtotime($date)) . "_" . $centre . ".csv</a>";
-	}
-	
+	echo "<a href='download_rej.php?date=$date&centre=$centre' style='color:inherit;'>Download - Rejection_Report_" . date("d.m.Y", strtotime($date)) . "_" . $centre . ".csv</a>";
 }
 ?>

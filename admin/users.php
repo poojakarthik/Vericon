@@ -344,6 +344,7 @@ include "../source/admin_menu.php";
 <tr><td>Account Type<span style="color:#ff0000;">*</span> </td>
 <td><select id="type" name="type" multiple="multiple" style="margin:0; width:165px; height:60px;">
 <option>Admin</option>
+<option>Accounts</option>
 <option>CCT</option>
 <option>CS</option>
 <option>Operations</option>
@@ -393,6 +394,7 @@ while ($centres = mysql_fetch_assoc($q0))
 <tr><td>Account Type<span style="color:#ff0000;">*</span> </td>
 <td><select id="m_type" name="m_type" multiple="multiple" style="margin:0; width:165px; height:60px;">
 <option>Admin</option>
+<option>Accounts</option>
 <option>CCT</option>
 <option>CS</option>
 <option>Operations</option>

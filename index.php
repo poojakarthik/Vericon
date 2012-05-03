@@ -1,6 +1,14 @@
 <?php
-if(eregi("MSIE",getenv("HTTP_USER_AGENT")) || eregi("Internet Explorer",getenv("HTTP_USER_AGENT"))) {
-	echo "Sorry VeriCon is not supported by your web browser<br>Please use <b>Google Chrome</b> or <b>Firefox</b> to access VeriCon";
+include "source/browser.php";
+
+if ($browser["name"] == "Firefox" && $browser["version"] >= 11)
+{
+	
+}
+else
+{
+	echo "<h1>Sorry VeriCon is not supported by your web browser<br>Please use <b>Firefox version 11 or above</b> to access VeriCon</h1>";
+	echo '<a onclick="Firefox()" target="_blank" style="cursor:pointer; margin-left:300px;"><img src="../images/firefox_download.png" /></a>';
 	exit;
 }
 
@@ -117,10 +125,6 @@ if($_GET["attempt"] == "fail")
 elseif($_GET["attempt"] == "banned")
 {
 	echo "Your Account has been Disabled!";
-}
-elseif($_GET["attempt"] == "al")
-{
-	echo "You are already Logged In!";
 }
 ?>
 </p></td></tr>

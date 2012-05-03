@@ -15,6 +15,8 @@ if ($method == "approve")
 	$filename = "/var/vericon/upload/tmp/" . $lead_id . ".gsm";
 	$timestamp = date("Y-m-d H:i:s");
 	
+	$qc = mysql_query("SELECT * FROM qa_customers WHERE id = '$id'") or die(mysql_error());
+	
 	if ($id == "" || $verifier == "" || $lead_id == "")
 	{
 		echo "Error! Please contact your administrator!";
@@ -31,7 +33,7 @@ if ($method == "approve")
 	{
 		echo "Please check if the customer's details are correct";
 	}
-	elseif (!file_exists($filename))
+	elseif (!file_exists($filename) && mysql_num_rows($qc) == 0)
 	{
 		echo "Please upload the voice file";
 	}
@@ -40,7 +42,6 @@ if ($method == "approve")
 		$q = mysql_query("SELECT * FROM sales_customers WHERE id = '$id'") or die(mysql_error());
 		$data = mysql_fetch_assoc($q);
 		
-		$qc = mysql_query("SELECT * FROM qa_customers WHERE id = '$id'") or die(mysql_error());
 		if (mysql_fetch_row($qc) == 0)
 		{
 			mysql_query("INSERT INTO qa_customers (id, status, lead_id, timestamp, verifier, sale_timestamp, agent, centre, campaign, type, lead_check, recording_check, details_check) VALUES ('$id', 'Approved', '$lead_id', '$timestamp', '$verifier', '$data[approved_timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '$lead', '$recording', '$details')") or die(mysql_error());
@@ -67,15 +68,20 @@ if ($method == "approve")
 				mysql_query("INSERT INTO packages (id, cli, plan) VALUES ('$account_number', '$packages[1]', '$packages[2]')") or die(mysql_error());
 			}
 			
+			$command = "mv /var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm /var/rec/" . md5($account_number) . sha1($account_number) . ".gsm";
+			exec($command);
+			
+			mysql_query("INSERT INTO recordings (id, name) VALUES ('$account_number', '" . mysql_escape_string(md5($account_number) . sha1($account_number) . ".gsm") . "')") or die(mysql_error());
+			
 			echo 1;
 		}
 		else
 		{
-			echo "Already Submitted!";
+			echo 1;
 		}
 	}
 }
-if ($method == "reject")
+elseif ($method == "reject")
 {
 	$id = $_GET["id"];
 	$verifier = $_GET["verifier"];
@@ -115,9 +121,13 @@ if ($method == "reject")
 			else
 			{
 				mysql_query("UPDATE qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+				
 				echo "submitted";
 			}
 		}
+		
+		$command = "rm /var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm";
+		exec($command);
 	}
 	elseif ($status == "Rework")
 	{
@@ -126,6 +136,15 @@ if ($method == "reject")
 		
 		mysql_query("INSERT INTO reworks (id,timestamp,centre,agent,reason) VALUES ('$id', '$timestamp', '$data[centre]',  '$data[agent]', '" . mysql_escape_string($reason) . "')") or die(mysql_error());
 		mysql_query("UPDATE sales_customers SET status = 'Rework' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		
+		$path = "/var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm";
+		$command = "rm /var/vericon/upload/tmp/" . $data["lead_id"] . ".gsm";
+		
+		if (file_exists($path))
+		{
+			exec($command);
+		}
+		
 		echo "submitted";
 	}
 }

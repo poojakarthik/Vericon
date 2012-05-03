@@ -38,10 +38,6 @@ if ($_GET["p"] == "users")
 {
 	include "../self/admin_users.php";
 }
-elseif ($_GET["p"] == "teams")
-{
-	include "../self/admin_teams.php";
-}
 elseif ($_GET["p"] == "current")
 {
 	include "../self/admin_current.php";
@@ -49,6 +45,10 @@ elseif ($_GET["p"] == "current")
 elseif ($_GET["p"] == "details")
 {
 	include "../self/admin_details.php";
+}
+elseif ($_GET["p"] == "edit")
+{
+	include "../self/admin_edit.php";
 }
 elseif ($_GET["p"] == "timesheet")
 {

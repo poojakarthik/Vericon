@@ -9,12 +9,15 @@ if ($method == "get")
 	$id = $_GET["id"];
 	$centre = $_GET["centre"];
 	$date1 = date("Y-m-d");
-	$date2 = date("Y-m-d", strtotime("+1 week"));
+	$date2 = date("Y-m-d", strtotime("-1 week"));
 	$lead_id = substr($id,1,9);
 	
-	if ($centre == "")
+	$lq = mysql_query("SELECT leads FROM centres WHERE centre = '$centre'") or die(mysql_error());
+	$lead_val = mysql_fetch_row($lq);
+	
+	if ($lead_val[0] == 1)
 	{
-		$q = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$lead_id%'") or die(mysql_error());
+		$q = mysql_query("SELECT * FROM leads WHERE cli = '$lead_id'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q);
 	
 		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
@@ -22,7 +25,39 @@ if ($method == "get")
 		
 		$q2 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q2);
-	
+		
+		$qct = mysql_query("SELECT * FROM centres WHERE centre = '$centre'") or die(mysql_error());
+		$check3 = mysql_fetch_assoc($qct);
+		
+		if ($check3["type"] == "Captive")
+		{
+			$qcg = mysql_query("SELECT * FROM leads_group WHERE centres LIKE '%$centre%'") or die(mysql_error());
+			$check4 = mysql_fetch_assoc($qcg);
+			
+			$qlg = mysql_query("SELECT * FROM leads_group WHERE centres LIKE '%$check[centre]%'") or die(mysql_error());
+			$check5 = mysql_fetch_assoc($qlg);
+			
+			if ($check4["group"] != $check5["group"] && strtoupper($check["centre"]) != "ROHAN")
+			{
+				$valid_lead = "false";
+			}
+			else
+			{
+				$valid_lead = "true";
+			}
+		}
+		else
+		{
+			if ($check["centre"] != $centre)
+			{
+				$valid_lead = "false";
+			}
+			else
+			{
+				$valid_lead = "true";
+			}
+		}
+		
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
 		{
 			echo "Invalid Lead ID!";
@@ -31,7 +66,7 @@ if ($method == "get")
 		{
 			echo "Lead is not in the data packet!";
 		}
-		elseif ($check["centre"] != $centre && $check["centre"] != "ROHAN")
+		elseif ($valid_lead == "false")
 		{
 			echo "Lead is not in the data packet!";
 		}
@@ -39,7 +74,7 @@ if ($method == "get")
 		{
 			echo "Customer is on the SCT DNC!";
 		}
-		elseif (time() < strtotime($check["issue_date"]) || time() > strtotime($check["expiry_date"]))
+		elseif (strtotime(date("Y-m-d")) < strtotime($check["issue_date"]) || strtotime(date("Y-m-d")) > strtotime($check["expiry_date"]))
 		{
 			echo "Lead has expired!";
 		}
@@ -54,7 +89,7 @@ if ($method == "get")
 	}
 	else
 	{
-		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q1);
 		
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))

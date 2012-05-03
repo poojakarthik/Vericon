@@ -983,20 +983,55 @@ else
 }
 else
 {
-	if ($ac["centre"] == "")
+	$lq = mysql_query("SELECT leads FROM centres WHERE centre = '$ac[centre]'") or die(mysql_error());
+	$lead_val = mysql_fetch_row($lq);
+	
+	if ($lead_val[0] == 1)
 	{
 		$id = $_GET["id"];
 		$less_id = substr($id,1,9);
-		
-		$q6 = mysql_query("SELECT * FROM leads WHERE cli LIKE '%$less_id%'") or die(mysql_error());
+
+		$q6 = mysql_query("SELECT * FROM leads WHERE cli = '$less_id'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q6);
-	
+
 		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
 		$check1 = mysql_fetch_row($q5);
-		
+
 		$q7 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q7);
-	
+		
+		$qct = mysql_query("SELECT * FROM centres WHERE centre = '$ac[centre]'") or die(mysql_error());
+		$check3 = mysql_fetch_assoc($qct);
+		
+		if ($check3["type"] == "Captive")
+		{
+			$qcg = mysql_query("SELECT * FROM leads_group WHERE centres LIKE '%$ac[centre]%'") or die(mysql_error());
+			$check4 = mysql_fetch_assoc($qcg);
+			
+			$qlg = mysql_query("SELECT * FROM leads_group WHERE centres LIKE '%$check[centre]%'") or die(mysql_error());
+			$check5 = mysql_fetch_assoc($qlg);
+			
+			if ($check4["group"] != $check5["group"] && strtoupper($check["centre"]) != "ROHAN")
+			{
+				$valid_lead = "false";
+			}
+			else
+			{
+				$valid_lead = "true";
+			}
+		}
+		else
+		{
+			if ($check["centre"] != $ac["centre"])
+			{
+				$valid_lead = "false";
+			}
+			else
+			{
+				$valid_lead = "true";
+			}
+		}
+
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
 		{
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Invalid Lead ID')");
@@ -1007,7 +1042,7 @@ else
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Not in Data Packet')");
 			echo "<script>window.location = '../sales/form.php';</script>";
 		}
-		elseif ($check["centre"] != $ac["centre"] && $check["centre"] != "ROHAN")
+		elseif ($valid_lead == "false")
 		{
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Wrong Centre')");
 			echo "<script>window.location = '../sales/form.php';</script>";
@@ -1017,7 +1052,7 @@ else
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','SCT DNC')");
 			echo "<script>window.location = '../sales/form.php';</script>";
 		}
-		elseif (time() < strtotime($check["issue_date"]) || time() > strtotime($check["expiry_date"]))
+		elseif (strtotime(date("Y-m-d")) < strtotime($check["issue_date"]) || strtotime(date("Y-m-d")) > strtotime($check["expiry_date"]))
 		{
 			mysql_query("INSERT INTO log_sales (user,lead_id,reason) VALUES ('$user[0]','$id','Expired Lead')");
 			echo "<script>window.location = '../sales/form.php';</script>";
@@ -1032,9 +1067,9 @@ else
 	{
 		$id = $_GET["id"];
 		$date1 = date("Y-m-d");
-		$date2 = date("Y-m-d", strtotime("+1 week"));
+		$date2 = date("Y-m-d", strtotime("-1 week"));
 	
-		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$q5 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
 		$check = mysql_fetch_row($q5);
 	
 		if (!preg_match("/^0[2378][0-9]{8}$/",$id))

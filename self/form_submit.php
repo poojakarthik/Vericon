@@ -9,25 +9,69 @@ if ($method == "get")
 	$id = $_GET["id"];
 	$centre = $_GET["centre"];
 	$date1 = date("Y-m-d");
-	$date2 = date("Y-m-d", strtotime("+1 week"));
+	$date2 = date("Y-m-d", strtotime("-1 week"));
+	$lead_id = substr($id,1,9);
 	
-	mysql_connect('localhost','vericon','18450be');
-	mysql_select_db('vericon');
-
-	$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$check2 = mysql_fetch_row($q1);
+	$lq = mysql_query("SELECT leads FROM centres WHERE centre = '$centre'") or die(mysql_error());
+	$lead_val = mysql_fetch_row($lq);
 	
-	if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+	if ($lead_val[0] == 1)
 	{
-		echo "Invalid ID!";
-	}
-	elseif ($check2[0] != 0)
-	{
-		echo "Customer already submitted within this data period!";
+		$q = mysql_query("SELECT * FROM leads WHERE cli = '$lead_id'") or die(mysql_error());
+		$check = mysql_fetch_assoc($q);
+	
+		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
+		$check1 = mysql_fetch_row($q1);
+		
+		$q2 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '$id'") or die(mysql_error());
+		$check2 = mysql_fetch_row($q2);
+	
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		{
+			echo "Invalid Lead ID!";
+		}
+		elseif (mysql_num_rows($q) == 0)
+		{
+			echo "Lead is not in the data packet!";
+		}
+		elseif (($check["centre"] != $centre && strtoupper($check["centre"]) != "KAMAL") && ($check["centre"] != $centre && strtoupper($check["centre"]) != "SANJAY"))
+		{
+			echo "Lead is not in the data packet!";
+		}
+		elseif ($check2[0] != 0)
+		{
+			echo "Customer is on the SCT DNC!";
+		}
+		elseif (strtotime(date("Y-m-d")) < strtotime($check["issue_date"]) || strtotime(date("Y-m-d")) > strtotime($check["expiry_date"]))
+		{
+			echo "Lead has expired!";
+		}
+		elseif ($check1[0] != 0)
+		{
+			echo "Customer already submitted within this data period!";
+		}
+		else
+		{
+			echo "valid";
+		}
 	}
 	else
 	{
-		echo "valid";
+		$q1 = mysql_query("SELECT COUNT(lead_id) FROM sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
+		$check2 = mysql_fetch_row($q1);
+		
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		{
+			echo "Invalid ID!";
+		}
+		elseif ($check2[0] != 0)
+		{
+			echo "Customer already submitted within this data period!";
+		}
+		else
+		{
+			echo "valid";
+		}
 	}
 }
 elseif ($method == "load")

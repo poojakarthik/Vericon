@@ -1,3 +1,16 @@
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
+<thead>
+<tr class="ui-widget-header ">
+<th style="text-align:left;">Agent Name</th>
+<th>Start Time</th>
+<th>End Time</th>
+<th>Hours</th>
+<th>Sales</th>
+<th>Bonus</th>
+</tr>
+</thead>
+<tbody>
 <?php
 mysql_connect('localhost','vericon','18450be');
 mysql_select_db('vericon');
@@ -42,3 +55,6 @@ echo "<td><b>" . $total_sales . "</b></td>";
 echo "<td><b>\$" . $total_bonus . "</b></td>";
 echo "</tr>";
 ?>
+</tbody>
+</table>
+</div></center>

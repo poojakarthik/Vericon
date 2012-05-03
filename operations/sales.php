@@ -31,6 +31,15 @@ div#users-contain table { margin: 1em 0; border-collapse: collapse; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 </style>
 <script>
+window.onload=function()
+{
+	if ( $( "#centre_link" ).val() != "" )
+	{
+		$( "#centre" ).val($( "#centre_link" ).val());
+	}
+}
+</script>
+<script>
 $(function() {
 	$( "#datepicker" ).datepicker( {
 		showOn: "button",
@@ -41,32 +50,47 @@ $(function() {
 		altFormat: "dd/mm/yy",
 		changeMonth: true,
 		changeYear: true,
-		maxDate: "0d" });
+		maxDate: "0d",
+		onSelect: function(dateText, inst) {
+			var centre = $( "#centre" );
+		
+			window.location = 'sales.php?centre=' + centre.val() + '&date=' + dateText;
+		}
+	});
 });
-</script>
-<script>
-function Teams()
-{
-	if ($( "#centre" ).val() == "CC12")
-	{
-		$( "#teams" ).removeAttr('style');
-	}
-	else
-	{
-		$( "#teams" ).attr('style','display:none;');
-	}
-}
 </script>
 <script>
 function Display()
 {
 	var centre = $( "#centre" ),
-		team = $( "#team" ),
 		date = $( "#datepicker" );
 		
-	$( "#details" ).load('sales_display.php?method=sales&centre=' + centre.val() + '&team=' + team.val() + '&date=' + date.val());
-	
-	$( "#results" ).removeAttr('style');
+	window.location = 'sales.php?centre=' + centre.val() + '&date=' + date.val();
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:450,
+		height:260,
+		modal: true,
+		buttons: {
+			"Close": function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+
+function Details(id)
+{
+	$( "#sale_details" ).load('sales_display.php?method=details&id=' + id);
+	$( "#dialog-confirm" ).dialog( "open" );
 }
 </script>
 </head>
@@ -84,12 +108,27 @@ include "../source/operations_menu.php";
 
 <div id="text">
 
-<table style="margin-top:5px;">
+<div id="dialog-confirm" title="Sale Details">
+<div id="sale_details"></div>
+</div>
+
+<input type="hidden" id="centre_link" value="<?php echo $_GET["centre"]; ?>" />
+<table width="100%">
 <tr>
-<td>Centre </td>
-<td width="80px"><select id="centre" onchange="Teams()" style="height:auto; margin:0; padding:0; width:70px;">
+<td align="left"><img src="../images/sale_details_header2.png" width="125" height="25" style="margin-left:3px;" /></td>
+<td align="right" style="padding-right:10px;"><select id="centre" onchange="Display()" style="height:auto; margin:0; padding:0; width:70px;">
 <option></option>
 <?php
+
+if ($_GET["date"] == "")
+{
+	$date = date("Y-m-d");
+}
+else
+{
+	$date = $_GET["date"];
+}
+
 $q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
 $cen = mysql_fetch_row($q);
 $centres = explode(",",$cen[0]);
@@ -99,37 +138,46 @@ for ($i = 0; $i < count($centres); $i++)
 }
 ?>
 </select>
-</td>
-<td width="80px" id="teams" style="display:none;"><select id="team" style="height:auto; margin:0; padding:0; width:70px;">
-<option></option>
-<option>Damith</option>
-<option>Daniel</option>
-<option>Liam</option>
-<option>Sanu</option>
-</select></td>
-<td>Date</td>
-<td width="120px"><input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
-<td><input type="button" onclick="Display()" class="search" value="" /></td>
+<input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo $date; ?>' /><input type='hidden' id='datepicker' value='<?php echo $date; ?>' /></td>
+</tr>
+<tr>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
 </tr>
 </table>
 
-<div id="results" style="display:none;">
-<p><img src="../images/sale_details_header2.png" width="125" height="25" style="margin-left:3px;" /></p>
-<p><img src="../images/line.png" width="740" height="9" /></p>
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="100%">
+<?php
+if ($_GET["centre"] != "")
+{
+	if (!in_array($_GET["centre"], $centres))
+	{
+		echo "<script>";
+		echo "window.location = 'sales.php';";
+		echo "</script>";
+	}
+}
+?>
+
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" width="98%" style="margin-top:0px;">
 <thead>
 <tr class="ui-widget-header ">
 <th>Sale ID</th>
-<th>Creation Timestamp</th>
-<th>Sale Timestamp</th>
+<th>Final Status</th>
+<th>Agent</th>
+<th>Sale Type</th>
+<th>Last Updated</th>
 </tr>
 </thead>
 <tbody id="details">
+<script>
+var centre = $( "#centre_link" ),
+	date = $( "#datepicker" );
+		
+$( "#details" ).load('sales_display.php?method=sales&centre=' + centre.val() + '&date=' + date.val());
+</script>
 </tbody>
 </table>
-</div>
-</div>
+</div></center>
 
 </div>
 
