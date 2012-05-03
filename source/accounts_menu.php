@@ -9,7 +9,8 @@ ddsmoothmenu.init({
 <div id="menu">
 <div id="smoothmenu1" class="ddsmoothmenu">
 <ul>
-<li><a href="../accounts/index.php">HOME</a></li><!--<li style="padding-top:8px;">|</li>-->
+<li><a href="../accounts/index.php">HOME</a></li><li style="padding-top:8px;">|</li>
+<li><a href="../accounts/rejections.php">REJECTIONS</a></li>
 </ul>
 </div>
 </div>

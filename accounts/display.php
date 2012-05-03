@@ -2,7 +2,6 @@
 mysql_connect('localhost','vericon','18450be');
 mysql_select_db('vericon');
 
-$user = $_GET["user"];
 $date1 = $_GET["date1"];
 $date2 = $_GET["date2"];
 
