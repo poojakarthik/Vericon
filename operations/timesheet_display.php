@@ -29,7 +29,7 @@ if ($method == "Active")
 			$q2 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND agent = '$users[user]'") or die(mysql_error());
 			$sales = mysql_num_rows($q2);
 			
-			$sph = $sales / $hours[0];
+			$sph = $sales / $hours;
 			
 			if ($sph < 0.15) { $grade = "D"; } elseif ($sph < 0.2) { $grade = "C"; } elseif ($sph < 0.25) { $grade = "B"; } else { $grade = "A"; }
 
@@ -68,7 +68,7 @@ elseif ($method == "All")
 			$q2 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND agent = '$users[user]'") or die(mysql_error());
 			$sales = mysql_num_rows($q2);
 			
-			$sph = $sales / $hours[0];
+			$sph = $sales / $hours;
 			
 			if ($sph < 0.15) { $grade = "D"; } elseif ($sph < 0.2) { $grade = "C"; } elseif ($sph < 0.25) { $grade = "B"; } else { $grade = "A"; }
 
