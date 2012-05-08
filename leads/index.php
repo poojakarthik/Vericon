@@ -112,10 +112,6 @@ function Search()
     <p class="result" style="margin-top:10px;"></p>
 </div>
 
-<div id="dialog-confirm2" title="Leads Upload Trigger">
-    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span class="error"></span></p>
-</div>
-
 <div id="main_wrapper">
 
 <?php
