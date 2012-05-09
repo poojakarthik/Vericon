@@ -147,9 +147,9 @@ elseif ($method == "submit")
 	$campaign = $_GET["campaign"];
 	$type = $_GET["type"];
 	$title = $_GET["title"];
-	$first = strtoupper(substr($_GET["first"],0,1)) . strtolower(substr($_GET["first"],1));
-	$middle = strtoupper(substr($_GET["middle"],0,1)) . strtolower(substr($_GET["middle"],1));
-	$last = strtoupper(substr($_GET["last"],0,1)) . strtolower(substr($_GET["last"],1));
+	$first = trim(strtoupper(substr($_GET["first"],0,1)) . strtolower(substr($_GET["first"],1)));
+	$middle = trim(strtoupper(substr($_GET["middle"],0,1)) . strtolower(substr($_GET["middle"],1)));
+	$last = trim(strtoupper(substr($_GET["last"],0,1)) . strtolower(substr($_GET["last"],1)));
 	$dob = $_GET["dob"];
 	$email = $_GET["email"];
 	$mobile = $_GET["mobile"];
@@ -157,10 +157,10 @@ elseif ($method == "submit")
 	$physical = $_GET["physical"];
 	$postal = $_GET["postal"];
 	$id_type = $_GET["id_type"];
-	$id_num = $_GET["id_num"];
+	$id_num = trim($_GET["id_num"]);
 	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
-	$position = $_GET["position"];
+	$position = trim($_GET["position"]);
 	$notes = $_GET["notes"];
 	
 	$q4 = mysql_query("SELECT * FROM sales_packages_temp WHERE lead_id = '$lead_id'");
