@@ -177,6 +177,7 @@ $(function() {
 	
 	var user = $( "#user" ),
 		date = $( "#datepicker" ),
+		designation = $( "#designation" ),
 		start_h = $( "#start_h" ),
 		start_m = $( "#start_m" ),
 		end_h = $( "#end_h" ),
@@ -197,14 +198,14 @@ $(function() {
 
 	$( "#dialog-form" ).dialog({
 		autoOpen: false,
-		height: 250,
+		height: 275,
 		width: 300,
 		modal: true,
 		resizable: false,
 		draggable: false,
 		buttons: {
 			"Submit": function() {
-				$.get("admin_timesheet_edit.php", { method: "edit", user: user.val(), date: date.val(), start_h: start_h.val(), start_m: start_m.val(), end_h: end_h.val(), end_m: end_m.val(), hours: hours.val(), bonus: bonus.val() },
+				$.get("admin_timesheet_edit.php", { method: "edit", user: user.val(), date: date.val(), designation: designation.val(), start_h: start_h.val(), start_m: start_m.val(), end_h: end_h.val(), end_m: end_m.val(), hours: hours.val(), bonus: bonus.val() },
 				function(data) {
 					if (data == "submitted")
 					{
@@ -235,6 +236,7 @@ function Edit(user)
 	
 	$( "#user" ).val(user);
 	$.get("admin_timesheet_edit.php", {method: "name", user: user}, function(data) {$( "#name" ).val(data);});
+	$.get("admin_timesheet_edit.php", {method: "designation", user: user}, function(data) {$( "#designation" ).val(data);});
 	$.get("admin_timesheet_edit.php", {method: "start_h", user: user, date: date.val()}, function(data) {$( "#start_h" ).val(data);});
 	$.get("admin_timesheet_edit.php", {method: "start_m", user: user, date: date.val()}, function(data) {$( "#start_m" ).val(data);});
 	$.get("admin_timesheet_edit.php", {method: "end_h", user: user, date: date.val()}, function(data) {$( "#end_h" ).val(data);});
@@ -271,6 +273,10 @@ function Undo(user)
 <tr>
 <td width='80px'>Agent Name</td>
 <td><input type="text" id="name" disabled="disabled" style='width:89px; height:20px; padding:0px; margin:0px;'></td>
+</tr>
+<tr>
+<td width='80px'>Designation</td>
+<td><input type="text" id="designation" disabled="disabled" style='width:89px; height:20px; padding:0px; margin:0px;'></td>
 </tr>
 <tr>
 <td>Start Time<span style="color:#ff0000;">*</span> </td>

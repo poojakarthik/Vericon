@@ -321,4 +321,27 @@ elseif ($p == "edit")
 		}
 	}
 }
+elseif ($p == "designation")
+{
+	if ($method == "edit")
+	{
+		$user = $_GET["user"];
+		$designation = $_GET["designation"];
+		
+		if ($user == "")
+		{
+			echo "Error! Please contact your administrator";
+		}
+		elseif ($designation == "")
+		{
+			echo "Please select a designation";
+		}
+		else
+		{
+			mysql_query("INSERT INTO timesheet_designation (user, designation) VALUES ('$user', '$designation') ON DUPLICATE KEY UPDATE designation = '$designation'") or die(mysql_error());
+
+			echo "submitted";
+		}
+	}
+}
 ?>

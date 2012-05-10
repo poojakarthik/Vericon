@@ -80,6 +80,13 @@ elseif ($method == "name")
 	
 	echo $user["first"] . " " . $user["last"];
 }
+elseif ($method == "designation")
+{
+	$q = mysql_query("SELECT * FROM timesheet_designation WHERE user = '$user'") or die(mysql_error());
+	$data = mysql_fetch_assoc($q);
+	
+	echo $data["designation"];
+}
 elseif ($method == "start_h")
 {
 	$q = mysql_query("SELECT * FROM timesheet WHERE user = '$user' AND date = '$date'") or die(mysql_error());
@@ -151,6 +158,7 @@ elseif ($method == "undo")
 }
 elseif ($method == "edit")
 {
+	$designation = $_GET["designation"];
 	$start = $_GET["start_h"] . ":" . $_GET["start_m"] . ":00";
 	$end = $_GET["end_h"] . ":" . $_GET["end_m"] . ":00";
 	$hours = $_GET["hours"];
@@ -165,7 +173,11 @@ elseif ($method == "edit")
 		$hours_check = "invalid";
 	}
 	
-	if (!preg_match("/^[0-9]{2}:[0-9]{2}:00$/",$start))
+	if ($designation == "")
+	{
+		echo "Please enter a designation for the agent";
+	}
+	elseif (!preg_match("/^[0-9]{2}:[0-9]{2}:00$/",$start))
 	{
 		echo "Please enter a start time";
 	}
@@ -187,13 +199,13 @@ elseif ($method == "edit")
 		$q = mysql_query("SELECT * FROM timesheet WHERE user = '$user' AND date = '$date'") or die(mysql_error());
 		if (mysql_num_rows($q) == 0)
 		{
-			mysql_query("INSERT INTO timesheet (user, date, start, end, hours, bonus) VALUES ('$user', '$date', '" . mysql_escape_string($start) . "', '" . mysql_escape_string($end) . "', '" . mysql_escape_string($hours) . "', '$bonus')") or die(mysql_error());
+			mysql_query("INSERT INTO timesheet (user, date, designation, start, end, hours, bonus) VALUES ('$user', '$date', '$designation', '" . mysql_escape_string($start) . "', '" . mysql_escape_string($end) . "', '" . mysql_escape_string($hours) . "', '$bonus')") or die(mysql_error());
 			
 			echo "submitted";
 		}
 		else
 		{
-			mysql_query("UPDATE timesheet SET start = '" . mysql_escape_string($start) . "', end = '" . mysql_escape_string($end) . "', hours = '" . mysql_escape_string($hours) . "', bonus = '$bonus' WHERE user = '$user' AND date = '$date' LIMIT 1") or die(mysql_error());
+			mysql_query("UPDATE timesheet SET designation = '$designation', start = '" . mysql_escape_string($start) . "', end = '" . mysql_escape_string($end) . "', hours = '" . mysql_escape_string($hours) . "', bonus = '$bonus' WHERE user = '$user' AND date = '$date' LIMIT 1") or die(mysql_error());
 			
 			echo "submitted";
 		}
