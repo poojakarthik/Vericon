@@ -196,6 +196,10 @@ elseif ($method == "submit")
 	
 	$q4 = mysql_query("SELECT * FROM sales_packages_temp WHERE lead_id = '$lead_id'");
 	
+	$today = date("Y-m-d");
+	$last_week = date("Y-m-d", strtotime("-1 week"));
+	$q5 = mysql_query("SELECT * FROM sales_customers WHERE abn = '$abn' AND DATE(approved_timestamp) BETWEEN '$last_week' AND '$today'") or die(mysql_error());
+	
 	function check_email_address($email) //email validation function
 	{
 		if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) 
@@ -324,6 +328,10 @@ elseif ($method == "submit")
 	elseif ($type == "Business" && $abn_status != "Active")
 	{
 		echo "Please enter a valid ABN";
+	}
+	elseif ($type == "Business" && mysql_num_rows($q5) != 0)
+	{
+		echo "ABN already submitted";
 	}
 	elseif ($type == "Business" && $position == "")
 	{
