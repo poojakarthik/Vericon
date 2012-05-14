@@ -152,10 +152,7 @@ include "../source/admin_menu.php";
 </thead>
 <tbody>
 <tr height="75%">
-<td>
-<div style="margin:5px 10px 0px 10px;"><span id="uptime1" style="font-size:32px;"><?php echo $staticUptime; ?></span><span id="uptime3" style="font-size:24px;"><?php echo $staticUptime; ?></span></div>
-<div id="uptime2" style="margin-top:10px;"><?php echo $staticUptime; ?></div>
-</td>
+<td>Coming Soon</td>
 </tr>
 <tr class="ui-widget-header">
 <th><?php echo date("d F, Y"); ?></th>
