@@ -51,58 +51,7 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 	background-image:url('../images/search_btn_hover_2.png');
 	cursor:pointer;
 }
-
-.trigger
-{
-	background-image:url('../images/trigger_btn.png');
-	background-repeat:no-repeat;
-	height:25px;
-	width:85px;
-	border:none;
-	background-color:transparent;
-	float:right;
-	margin-right:10px;
-}
-
-.trigger:hover
-{
-	background-image:url('../images/trigger_btn_hover.png');
-	cursor:pointer;
-}
 </style>
-<script> // Leads Upload Trigger
-$(function() {
-	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
-
-	$( "#dialog-confirm2" ).dialog({
-		autoOpen: false,
-		resizable: false,
-		draggable: false,
-		height:140,
-		modal: true,
-		buttons: {
-			"Close": function() {
-				$( this ).dialog( "close" );
-			}
-		}
-	});
-});
-
-function Trigger()
-{
-	$.get("trigger.php", function(data) {
-		if (data == "valid")
-		{
-			
-		}
-		else
-		{
-			$( ".error" ).html(data);
-			$( "#dialog-confirm2" ).dialog( "open" );
-		}
-	});
-}
-</script>
 <script>
 function Details(centre)
 {
@@ -163,10 +112,6 @@ function Search()
     <p class="result" style="margin-top:10px;"></p>
 </div>
 
-<div id="dialog-confirm2" title="Leads Upload Trigger">
-    <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span class="error"></span></p>
-</div>
-
 <div id="main_wrapper">
 
 <?php
@@ -176,7 +121,7 @@ include "../source/leads_menu.php";
 
 <div id="text" style="margin-top:0px;">
 
-<p><img src="../images/leads_dashboard_header.png" width="175" height="25" style="margin-left:3px;" /><input type="button" onclick="Search()" class="search" /><input type="button" onclick="Trigger()" class="trigger" /></p>
+<p><img src="../images/leads_dashboard_header.png" width="175" height="25" style="margin-left:3px;" /><input type="button" onclick="Search()" class="search" /></p>
 <p><img src="../images/line.png" width="740" height="9" /></p>
 
 <center><div id="users-contain" class="ui-widget" style="width:99%;">

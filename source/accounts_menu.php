@@ -10,7 +10,8 @@ ddsmoothmenu.init({
 <div id="smoothmenu1" class="ddsmoothmenu">
 <ul>
 <li><a href="../accounts/index.php">HOME</a></li><li style="padding-top:8px;">|</li>
-<li><a href="../accounts/rejections.php">REJECTIONS</a></li>
+<li><a href="../accounts/upload_stats.php">UPLOAD STATS</a></li><?php if ($ac["user"] != "dsin002") { ?><li style="padding-top:8px;">|</li>
+<li><a href="../accounts/rejections.php">REJECTIONS</a></li><?php } ?>
 </ul>
 </div>
 </div>

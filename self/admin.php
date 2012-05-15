@@ -38,6 +38,10 @@ if ($_GET["p"] == "users")
 {
 	include "../self/admin_users.php";
 }
+elseif ($_GET["p"] == "designation")
+{
+	include "../self/admin_designation.php";
+}
 elseif ($_GET["p"] == "current")
 {
 	include "../self/admin_current.php";

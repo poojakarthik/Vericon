@@ -62,6 +62,7 @@ if($access_level == "Admin")
 <li style="padding-top:8px;">|</li><li><a style="cursor:pointer;">ADMIN</a>
   <ul>
   <li><a href="../self/admin.php?p=users">USERS</a></li>
+  <li><a href="../self/admin.php?p=designation">DESIGNATION</a></li>
   <li><a href="../self/admin.php?p=timesheet">TIMESHEET</a></li>
   <li><a href="../self/admin.php?p=current">LOGGED IN</a></li>
   <li><a href="../self/admin.php?p=details">SALE DETAILS</a></li>

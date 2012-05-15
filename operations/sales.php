@@ -31,15 +31,6 @@ div#users-contain table { margin: 1em 0; border-collapse: collapse; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 </style>
 <script>
-window.onload=function()
-{
-	if ( $( "#centre_link" ).val() != "" )
-	{
-		$( "#centre" ).val($( "#centre_link" ).val());
-	}
-}
-</script>
-<script>
 $(function() {
 	$( "#datepicker" ).datepicker( {
 		showOn: "button",
@@ -138,12 +129,19 @@ for ($i = 0; $i < count($centres); $i++)
 }
 ?>
 </select>
-<input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo $date; ?>' /><input type='hidden' id='datepicker' value='<?php echo $date; ?>' /></td>
+<input type='text' size='11' id='datepicker2' style="height:20px;" readonly='readonly' value='<?php echo date("d/m/Y", strtotime($date)); ?>' /><input type='hidden' id='datepicker' value='<?php echo $date; ?>' /></td>
 </tr>
 <tr>
 <td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
 </tr>
 </table>
+
+<script>
+if ( $( "#centre_link" ).val() != "" )
+{
+	$( "#centre" ).val($( "#centre_link" ).val());
+}
+</script>
 
 <?php
 if ($_GET["centre"] != "")
