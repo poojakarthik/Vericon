@@ -83,10 +83,10 @@ $(function() {
 <td width='80px'>Designation<span style="color:#ff0000;">*</span> </td>
 <td><select id="designation" style='width:91px; height:20px; padding:0px; margin:0px;'>
 <option></option>
-<option>Trainee</option>
 <option>Probation</option>
 <option>Agent</option>
 <option>Closer</option>
+<option>Team Leader</option>
 </select></td>
 </tr>
 </table>
