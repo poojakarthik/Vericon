@@ -56,10 +56,10 @@ elseif ($method == "export_cancellations")
 	
 	while ($da = mysql_fetch_row($q))
 	{
-		$q1 = mysql_query("SELECT cancellations FROM timesheet_canc WHERE user = '$data[0]' AND week = '$week'") or die(mysql_error());
+		$q1 = mysql_query("SELECT cancellations FROM timesheet_other WHERE user = '$da[0]' AND week = '$week'") or die(mysql_error());
 		$c = mysql_fetch_row($q1);
 		
-		if ($c[0] == "") { $cancellations = ""; } else { $cancellations = $c[0]; }
+		if ($c[0] == "") { $cancellations = "-"; } else { $cancellations = $c[0]; }
 		
 		$data .= $da[0] . ",";
 		$data .= $da[1] . " " . $da[2] . ",";
@@ -87,15 +87,15 @@ elseif ($method == "import_cancellations")
 		$data = explode(",", $row);
 		if ($i > 0)
 		{
-			$q = mysql_query("SELECT * FROM timesheet_canc WHERE user = '$data[0]' AND week = '$week'") or die(mysql_error());
+			$q = mysql_query("SELECT * FROM timesheet_other WHERE user = '$data[0]' AND week = '$week'") or die(mysql_error());
 			
 			if (mysql_num_rows($q) == 0)
 			{
-				mysql_query("INSERT INTO timesheet_canc (user, week, cancellations) VALUES ('$data[0]', '$week', '$data[2]')") or die(mysql_error());
+				mysql_query("INSERT INTO timesheet_other (user, week, cancellations) VALUES ('$data[0]', '$week', '$data[2]')") or die(mysql_error());
 			}
 			else
 			{
-				mysql_query("UPDATE timesheet_canc SET cancellations = '$data[2]' WHERE user = '$data[0]' AND week = '$week'") or die(mysql_error());
+				mysql_query("UPDATE timesheet_other SET cancellations = '$data[2]' WHERE user = '$data[0]' AND week = '$week'") or die(mysql_error());
 			}
 		}
 		$i++;

@@ -11,6 +11,7 @@ include "../auth/iprestrict.php";
 <?php
 include "../source/jquery.php";
 ?>
+<script type="text/javascript" src="upload/jquery.uploadify-3.1.min.js"></script>
 <style>
 div#users-contain table { margin: 1em 0; margin-bottom:0; border-collapse: collapse; width:98% }
 div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
@@ -51,14 +52,32 @@ div#users-contain table td { border: 1px solid #eee; padding: .1em 10px; text-al
 	cursor:pointer;
 }
 </style>
-<script type="text/javascript" src="upload/jquery.uploadify-3.1.min.js"></script>
+</head>
+
+<body>
+<div style="display:none;">
+<img src="../images/export_btn_hover.png" /> <img src="../images/import_btn_hover.png" />
+</div>
+<div id="main_wrapper">
+
+<?php
+include "../source/header.php";
+include "../source/accounts_menu.php";
+?>
+
+<div id="text">
+
+<?php
+if ($_GET["p"] == "hours")
+{
+?>
 <script>
 function Centre()
 {
 	var centre = $( "#centre" ),
 		date = $( "#datepicker" );
 
-	$( "#display" ).load('upload_display.php?centre=' + centre.val() + '&date=' + date.val());
+	$( "#display" ).load('upload_hours.php?centre=' + centre.val() + '&date=' + date.val());
 }
 </script>
 <script>
@@ -76,7 +95,7 @@ $(function() {
 		onSelect: function(dateText, inst) {
 			var centre = $( "#centre" );
 			
-			$( "#display" ).load('upload_display.php?centre=' + centre.val() + '&date=' + dateText);
+			$( "#display" ).load('upload_hours.php?centre=' + centre.val() + '&date=' + dateText);
 		}});
 });
 </script>
@@ -108,7 +127,7 @@ $(function() {
 				if (data == "done")
 				{
 					$( "#dialog-confirm" ).dialog( "close" );
-					$( "#display" ).load('upload_display.php?centre=' + centre.val() + '&date=' + date.val());
+					$( "#display" ).load('upload_hours.php?centre=' + centre.val() + '&date=' + date.val());
 				}
 				else
 				{
@@ -142,6 +161,76 @@ function Import_Hours()
 	$( "#dialog-confirm" ).dialog( "open" );
 }
 </script>
+
+<div id="dialog-confirm" title="Import Dialler Hours">
+<input type="file" name="file_upload" id="file_upload" />
+</div>
+
+<table width="100%">
+<tr>
+<td align="left"><img src="../images/dialler_hours_header.png" width="140" height="25" style="margin-left:5px;" /></td>
+<td align="right"><select id="centre" style="margin:0px; padding:0px; height:22px; width:75px;" onchange="Centre()">
+<option>Centre</option>
+<?php
+$q = mysql_query("SELECT centre FROM centres WHERE type = 'Self' AND status = 'Active' ORDER BY centre ASC") or die(mysql_error());
+while ($centres = mysql_fetch_row($q))
+{
+	echo "<option>" . $centres[0] . "</option>";
+}
+?>
+</select>
+<input type='text' size='9' id='datepicker2' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' />
+</td>
+</tr>
+<tr>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+</table>
+
+<div id="display">
+<script>
+var centre = $( "#centre" ),
+	date = $( "#datepicker" );
+
+$( "#display" ).load('upload_hours.php?centre=' + centre.val() + '&date=' + date.val());
+</script>
+</div>
+
+<?php
+}
+elseif ($_GET["p"] == "cancellations")
+{
+?>
+
+<script>
+function Centre()
+{
+	var centre = $( "#centre" ),
+		date = $( "#datepicker" );
+
+	$( "#display" ).load('upload_cancellations.php?centre=' + centre.val() + '&date=' + date.val());
+}
+</script>
+<script>
+$(function() {
+	$( "#datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.gif",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		firstDay: 1,
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>",
+		onSelect: function(dateText, inst) {
+			var centre = $( "#centre" );
+			
+			$.get("timesheet_process.php", { method: "from", date: dateText }, function (data) { $( "#from" ).val(data); });
+			$.get("timesheet_process.php", { method: "to", date: dateText }, function (data) { $( "#to" ).val(data); });
+			$( "#display" ).load('upload_cancellations.php?centre=' + centre.val() + '&date=' + dateText);
+		}});
+});
+</script>
 <script>
 function Export_Cancellations()
 {
@@ -170,7 +259,7 @@ $(function() {
 				if (data == "done")
 				{
 					$( "#dialog-confirm2" ).dialog( "close" );
-					$( "#display" ).load('upload_display.php?centre=' + centre.val() + '&date=' + date.val());
+					$( "#display" ).load('upload_cancellations.php?centre=' + centre.val() + '&date=' + date.val());
 				}
 				else
 				{
@@ -204,32 +293,15 @@ function Import_Cancellations()
 	$( "#dialog-confirm2" ).dialog( "open" );
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/export_btn_hover.png" /> <img src="../images/import_btn_hover.png" />
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/accounts_menu.php";
-?>
-
-<div id="text">
-
-<div id="dialog-confirm" title="Import Dialler Hours">
-<input type="file" name="file_upload" id="file_upload" />
-</div>
 
 <div id="dialog-confirm2" title="Import Sale Cancellations">
 <input type="file" name="file_upload2" id="file_upload2" />
 </div>
 
-<table width="99%">
+<table width="100%">
 <tr>
-<td align="right"><select id="centre" style="margin:0px; padding:0px; height:20px; width:75px;" onchange="Centre()">
+<td align="left"><img src="../images/sale_cancellations_header.png" width="195" height="25" style="margin-left:5px;" /></td>
+<td align="right"><select id="centre" style="margin:0px; padding:0px; height:22px; width:75px;" onchange="Centre()">
 <option>Centre</option>
 <?php
 $q = mysql_query("SELECT centre FROM centres WHERE type = 'Self' AND status = 'Active' ORDER BY centre ASC") or die(mysql_error());
@@ -239,8 +311,11 @@ while ($centres = mysql_fetch_row($q))
 }
 ?>
 </select>
-<input type='text' size='9' id='datepicker2' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' />
+<input type='text' size='9' id='from' readonly='readonly' style="height:20px;" value="" /> to <input type='text' size='9' id='to' readonly='readonly' style="height:20px;" value="" /><input type='hidden' id='datepicker' value="<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>" />
 </td>
+</tr>
+<tr>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
 </tr>
 </table>
 
@@ -249,10 +324,15 @@ while ($centres = mysql_fetch_row($q))
 var centre = $( "#centre" ),
 	date = $( "#datepicker" );
 
-$( "#display" ).load('upload_display.php?centre=' + centre.val() + '&date=' + date.val());
+$.get("timesheet_process.php", { method: "from", date: date.val() }, function (data) { $( "#from" ).val(data); });
+$.get("timesheet_process.php", { method: "to", date: date.val() }, function (data) { $( "#to" ).val(data); });
+$( "#display" ).load('upload_cancellations.php?centre=' + centre.val() + '&date=' + date.val());
 </script>
 </div>
 
+<?php
+}
+?>
 </div>
 
 </div> 
