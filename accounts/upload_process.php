@@ -10,14 +10,17 @@ $week = date("W", strtotime($date));
 if ($method == "export_hours")
 {
 	$header = "Username,Full Name,Dialler Hours";
-	$q = mysql_query("SELECT timesheet.user,timesheet.dialler_hours,auth.first,auth.last FROM timesheet,auth WHERE timesheet.date = '$date' AND auth.centre = '$centre' AND timesheet.user = auth.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT user,dialler_hours FROM timesheet WHERE date = '$date' AND centre = '$centre' ORDER BY user ASC") or die(mysql_error());
 	
 	while ($da = mysql_fetch_row($q))
 	{
 		if ($da[1] == "0.00") { $hours = ""; } else { $hours = $da[1]; }
 		
+		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$da[0]'") or die(mysql_error());
+		$user = mysql_fetch_row($q0);
+		
 		$data .= $da[0] . ",";
-		$data .= $da[2] . " " . $da[3] . ",";
+		$data .= $user[0] . " " . $user[1] . ",";
 		$data .= $hours . "\n";
 	}
 	
@@ -52,17 +55,20 @@ elseif ($method == "import_hours")
 elseif ($method == "export_cancellations")
 {
 	$header = "Username,Full Name,Cancellations";
-	$q = mysql_query("SELECT timesheet.user,auth.first,auth.last FROM timesheet,auth WHERE WEEK(timesheet.date) = '$week' AND auth.centre = '$centre' AND timesheet.user = auth.user GROUP BY timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT user FROM timesheet WHERE WEEK(date) = '$week' AND centre = '$centre' GROUP BY user ORDER BY user ASC") or die(mysql_error());
 	
 	while ($da = mysql_fetch_row($q))
 	{
+		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$da[0]'") or die(mysql_error());
+		$user = mysql_fetch_row($q0);
+		
 		$q1 = mysql_query("SELECT cancellations FROM timesheet_other WHERE user = '$da[0]' AND week = '$week'") or die(mysql_error());
 		$c = mysql_fetch_row($q1);
 		
 		if ($c[0] == "") { $cancellations = "-"; } else { $cancellations = $c[0]; }
 		
 		$data .= $da[0] . ",";
-		$data .= $da[1] . " " . $da[2] . ",";
+		$data .= $user[0] . " " . $user[1] . ",";
 		$data .= $cancellations . "\n";
 	}
 	

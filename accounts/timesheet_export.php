@@ -11,7 +11,7 @@ $week1 = date("W", strtotime($date1));
 $date2 = date("Y-m-d", strtotime($year . "W" . $week . "7"));
 $week2 = date("W", strtotime($date2));
 
-$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date BETWEEN '$date1' AND '$date2' AND auth.user = timesheet.user GROUP BY timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2' GROUP BY user ORDER BY user ASC") or die(mysql_error());
 
 if (mysql_num_rows($q) != 0)
 {
@@ -56,6 +56,9 @@ if (mysql_num_rows($q) != 0)
 	$count = 1;
 	while ($data = mysql_fetch_assoc($q))
 	{
+		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+		$user = mysql_fetch_row($q0);
+		
 		$q1 = mysql_query("SELECT SUM(hours),SUM(dialler_hours),SUM(bonus) FROM timesheet WHERE date BETWEEN '$date1' AND '$date2' AND user = '$data[user]'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
@@ -67,7 +70,7 @@ if (mysql_num_rows($q) != 0)
 		
 		$objPHPExcel->setActiveSheetIndex(0)
 					->setCellValue('B' . $i, $count)
-					->setCellValue('C' . $i, $data["first"] . " " . $data["last"])
+					->setCellValue('C' . $i, $user[0] . " " . $user[1])
 					->setCellValue('D' . $i, $data["user"])
 					->setCellValue('E' . $i, $da[0])
 					->setCellValue('F' . $i, $da[1])

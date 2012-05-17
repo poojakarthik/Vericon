@@ -5,7 +5,7 @@ mysql_select_db('vericon');
 $date = $_GET["date"];
 $centre = $_GET["centre"];
 
-$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' ORDER BY user ASC") or die(mysql_error());
 
 if (mysql_num_rows($q) != 0)
 {
@@ -38,7 +38,7 @@ if (mysql_num_rows($q) != 0)
 	$i = 16;
 	
 	// Team Leader
-	$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND timesheet.designation = 'Team Leader' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Team Leader' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -49,11 +49,14 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
+			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$user = mysql_fetch_row($q0);
+			
 			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$sales = mysql_num_rows($q3);
 			
 			$objPHPExcel->setActiveSheetIndex(0)
-						->setCellValue('B' . $i, $data["first"] . " " . $data["last"])
+						->setCellValue('B' . $i, $user[0] . " " . $user[1])
 						->setCellValue('C' . $i, date("H:i", strtotime($data["start"])))
 						->setCellValue('D' . $i, date("H:i", strtotime($data["end"])))
 						->setCellValue('E' . $i, $data["hours"])
@@ -67,7 +70,7 @@ if (mysql_num_rows($q) != 0)
 	}
 	
 	// Closer
-	$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND timesheet.designation = 'Closer' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Closer' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -79,11 +82,14 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
+			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$user = mysql_fetch_row($q0);
+			
 			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$sales = mysql_num_rows($q3);
 			
 			$objPHPExcel->setActiveSheetIndex(0)
-						->setCellValue('B' . $i, $data["first"] . " " . $data["last"])
+						->setCellValue('B' . $i, $user[0] . " " . $user[1])
 						->setCellValue('C' . $i, date("H:i", strtotime($data["start"])))
 						->setCellValue('D' . $i, date("H:i", strtotime($data["end"])))
 						->setCellValue('E' . $i, $data["hours"])
@@ -97,7 +103,7 @@ if (mysql_num_rows($q) != 0)
 	}
 	
 	// Agent
-		$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND timesheet.designation = 'Agent' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Agent' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -108,11 +114,14 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
+			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$user = mysql_fetch_row($q0);
+			
 			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$sales = mysql_num_rows($q3);
 			
 			$objPHPExcel->setActiveSheetIndex(0)
-						->setCellValue('B' . $i, $data["first"] . " " . $data["last"])
+						->setCellValue('B' . $i, $user[0] . " " . $user[1])
 						->setCellValue('C' . $i, date("H:i", strtotime($data["start"])))
 						->setCellValue('D' . $i, date("H:i", strtotime($data["end"])))
 						->setCellValue('E' . $i, $data["hours"])
@@ -126,7 +135,7 @@ if (mysql_num_rows($q) != 0)
 	}
 	
 	// Probation
-	$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND timesheet.designation = 'Probation' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Probation' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -137,20 +146,23 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
-				$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
-				$sales = mysql_num_rows($q3);
-				
-				$objPHPExcel->setActiveSheetIndex(0)
-							->setCellValue('B' . $i, $data["first"] . " " . $data["last"])
-							->setCellValue('C' . $i, date("H:i", strtotime($data["start"])))
-							->setCellValue('D' . $i, date("H:i", strtotime($data["end"])))
-							->setCellValue('E' . $i, $data["hours"])
-							->setCellValue('F' . $i, $sales)
-							->setCellValue('G' . $i, $data["bonus"]);
-				$i++;
-				$total_hours += $data["hours"];
-				$total_sales += $sales;
-				$total_agents++;
+			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$user = mysql_fetch_row($q0);
+			
+			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+			$sales = mysql_num_rows($q3);
+			
+			$objPHPExcel->setActiveSheetIndex(0)
+						->setCellValue('B' . $i, $user[0] . " " . $user[1])
+						->setCellValue('C' . $i, date("H:i", strtotime($data["start"])))
+						->setCellValue('D' . $i, date("H:i", strtotime($data["end"])))
+						->setCellValue('E' . $i, $data["hours"])
+						->setCellValue('F' . $i, $sales)
+						->setCellValue('G' . $i, $data["bonus"]);
+			$i++;
+			$total_hours += $data["hours"];
+			$total_sales += $sales;
+			$total_agents++;
 		}
 	}
 	

@@ -17,7 +17,7 @@ $date = $_GET["date"];
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT timesheet.user,timesheet.dialler_hours,auth.first,auth.last FROM timesheet,auth WHERE timesheet.date = '$date' AND auth.centre = '$centre' AND timesheet.user = auth.user ORDER BY timesheet.user ASC") or die(mysql_error());
+$q = mysql_query("SELECT user,dialler_hours FROM timesheet WHERE date = '$date' AND centre = '$centre' ORDER BY user ASC") or die(mysql_error());
 
 if ($centre == "Centre")
 {
@@ -33,9 +33,12 @@ else
 	{
 		if ($data[1] == "0.00") { $hours = "-"; } else { $hours = $data[1]; }
 		
+		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[0]'") or die(mysql_error());
+		$user = mysql_fetch_row($q0);
+		
 		echo "<tr>";
 		echo "<td>" . $data[0] . "</td>";
-		echo "<td>" . $data[2] . " " . $data[3] . "</td>";
+		echo "<td>" . $user[0] . " " . $user[1] . "</td>";
 		echo "<td style='text-align:center;'>" . $hours . "</td>";
 		echo "</tr>";
 	}

@@ -18,7 +18,7 @@ $week = date("W", strtotime($date));
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT timesheet.user,auth.first,auth.last FROM timesheet,auth WHERE WEEK(timesheet.date) = '$week' AND auth.centre = '$centre' AND timesheet.user = auth.user GROUP BY timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+$q = mysql_query("SELECT user FROM timesheet WHERE WEEK(date) = '$week' AND centre = '$centre' GROUP BY user ORDER BY user ASC") or die(mysql_error());
 
 if ($centre == "Centre")
 {
@@ -32,6 +32,9 @@ else
 {
 	while ($data = mysql_fetch_row($q))
 	{
+		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[0]'") or die(mysql_error());
+		$user = mysql_fetch_row($q0);
+		
 		$q1 = mysql_query("SELECT cancellations FROM timesheet_other WHERE user = '$data[0]' AND week = '$week'") or die(mysql_error());
 		$c = mysql_fetch_row($q1);
 		
@@ -39,7 +42,7 @@ else
 		
 		echo "<tr>";
 		echo "<td>" . $data[0] . "</td>";
-		echo "<td>" . $data[1] . " " . $data[2] . "</td>";
+		echo "<td>" . $user[0] . " " . $user[1] . "</td>";
 		echo "<td style='text-align:center;'>" . $cancellations . "</td>";
 		echo "</tr>";
 	}

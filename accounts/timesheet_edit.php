@@ -28,7 +28,7 @@ $week2 = date("W", strtotime($date2));
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date BETWEEN '$date1' AND '$date2' AND auth.user = timesheet.user GROUP BY timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2' GROUP BY user ORDER BY user ASC") or die(mysql_error());
 
 if ($centre == "Centre")
 {
@@ -42,6 +42,9 @@ else
 {
 	while ($data = mysql_fetch_assoc($q))
 	{
+		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+		$user = mysql_fetch_row($q0);
+		
 		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg) FROM timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
@@ -87,7 +90,7 @@ else
 		
 		echo "<tr>";
 		echo "<td style='text-align:left;'>" . $data["user"] . "</td>";
-		echo "<td style='text-align:left;'>" . $data["first"] . " " . $data["last"] . "</td>";
+		echo "<td style='text-align:left;'>" . $user[0] . " " . $user[1] . "</td>";
 		echo "<td>" . $hours_d . "</td>";
 		echo "<td>" . $bonus_d . "</td>";
 		echo "<td>" . $rate_d . "</td>";
