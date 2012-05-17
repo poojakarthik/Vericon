@@ -15,6 +15,23 @@
 	cursor:pointer;
 }
 
+.hr_portal
+{
+	background-image:url('../images/hr_portal_btn.png');
+	background-repeat:no-repeat;
+	height:76px;
+	width:132px;
+	display:block;
+	border:none;
+	background-color:transparent;
+}
+
+.hr_portal:hover
+{
+	background-image:url('../images/hr_portal_btn_hover.png');
+	cursor:pointer;
+}
+
 .accounts_portal
 {
 	background-image:url('../images/accounts_portal_btn.png');

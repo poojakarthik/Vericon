@@ -15,7 +15,7 @@ include "source/jquery.php";
 
 <body>
 <div style="display:none;">
-<img src="../images/qa_portal_btn_hover.png" /><img src="../images/self_portal_btn_hover.png" /><img src="../images/cs_portal_btn_hover.png" /><img src="../images/sales_portal_btn_hover.png" /><img src="../images/admin_portal_btn_hover.png" /><img src="../images/tpv_portal_btn_hover.png" /><img src="../images/cct_portal_btn_hover.png" /><img src="../images/user_manual_btn_hover.png" /><img src="../images/operations_portal_btn_hover.png" /><img src="../images/melbourne_portal_btn_hover.png" /><img src="../images/leads_portal_btn_hover.png" />
+<img src="../images/qa_portal_btn_hover.png" /><img src="../images/self_portal_btn_hover.png" /><img src="../images/cs_portal_btn_hover.png" /><img src="../images/sales_portal_btn_hover.png" /><img src="../images/admin_portal_btn_hover.png" /><img src="../images/tpv_portal_btn_hover.png" /><img src="../images/cct_portal_btn_hover.png" /><img src="../images/user_manual_btn_hover.png" /><img src="../images/operations_portal_btn_hover.png" /><img src="../images/hr_portal_btn_hover.png" /><img src="../images/leads_portal_btn_hover.png" /><img src="../images/accounts_portal_btn_hover.png" />
 </div>
 <div id="main_wrapper">
 
