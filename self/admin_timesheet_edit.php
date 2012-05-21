@@ -20,7 +20,7 @@ if ($method == "check")
 }
 elseif ($method == "check_rows")
 {
-	$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' ORDER BY user ASC") or die(mysql_error());
 	echo mysql_num_rows($q);
 }
 elseif ($method == "view")
@@ -195,17 +195,19 @@ elseif ($method == "edit")
 	}
 	else
 	{
+		$q0 = mysql_query("SELECT centre FROM auth WHERE user = '$user'") or die(mysql_error());
+		$cen = mysql_fetch_row($q0);
 		
 		$q = mysql_query("SELECT * FROM timesheet WHERE user = '$user' AND date = '$date'") or die(mysql_error());
 		if (mysql_num_rows($q) == 0)
 		{
-			mysql_query("INSERT INTO timesheet (user, date, designation, start, end, hours, bonus) VALUES ('$user', '$date', '$designation', '" . mysql_escape_string($start) . "', '" . mysql_escape_string($end) . "', '" . mysql_escape_string($hours) . "', '$bonus')") or die(mysql_error());
+			mysql_query("INSERT INTO timesheet (user, centre, date, designation, start, end, hours, bonus) VALUES ('$user', '$cen[0]', '$date', '$designation', '" . mysql_escape_string($start) . "', '" . mysql_escape_string($end) . "', '" . mysql_escape_string($hours) . "', '$bonus')") or die(mysql_error());
 			
 			echo "submitted";
 		}
 		else
 		{
-			mysql_query("UPDATE timesheet SET designation = '$designation', start = '" . mysql_escape_string($start) . "', end = '" . mysql_escape_string($end) . "', hours = '" . mysql_escape_string($hours) . "', bonus = '$bonus' WHERE user = '$user' AND date = '$date' LIMIT 1") or die(mysql_error());
+			mysql_query("UPDATE timesheet SET centre = '$cen[0]', designation = '$designation', start = '" . mysql_escape_string($start) . "', end = '" . mysql_escape_string($end) . "', hours = '" . mysql_escape_string($hours) . "', bonus = '$bonus' WHERE user = '$user' AND date = '$date' LIMIT 1") or die(mysql_error());
 			
 			echo "submitted";
 		}

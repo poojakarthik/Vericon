@@ -347,6 +347,8 @@ include "../source/admin_menu.php";
 <option>Accounts</option>
 <option>CCT</option>
 <option>CS</option>
+<option>HR</option>
+<option>Leads</option>
 <option>Operations</option>
 <option>QA</option>
 <option>Sales</option>
@@ -397,6 +399,8 @@ while ($centres = mysql_fetch_assoc($q0))
 <option>Accounts</option>
 <option>CCT</option>
 <option>CS</option>
+<option>HR</option>
+<option>Leads</option>
 <option>Operations</option>
 <option>QA</option>
 <option>Sales</option>

@@ -18,7 +18,7 @@ mysql_select_db('vericon');
 $date = $_GET["date"];
 $centre = $_GET["centre"];
 
-$q = mysql_query("SELECT * FROM auth,timesheet WHERE auth.centre = '$centre' AND timesheet.date = '$date' AND auth.user = timesheet.user ORDER BY timesheet.user ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' ORDER BY user ASC") or die(mysql_error());
 
 if (mysql_num_rows($q) == 0)
 {
@@ -30,11 +30,14 @@ if (mysql_num_rows($q) == 0)
 
 while ($data = mysql_fetch_assoc($q))
 {
+	$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+	$user = mysql_fetch_row($q0);
+	
 	$q1 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 	$sales = mysql_num_rows($q1);
 	
 	echo "<tr>";
-	echo "<td style='text-align:left;'>" . $data["first"] . " " . $data["last"] ."</td>";
+	echo "<td style='text-align:left;'>" . $user[0] . " " . $user[1] ."</td>";
 	echo "<td>" . date("H:i", strtotime($data["start"])) . "</td>";
 	echo "<td>" . date("H:i", strtotime($data["end"])) . "</td>";
 	echo "<td>" . $data["hours"] . "</td>";

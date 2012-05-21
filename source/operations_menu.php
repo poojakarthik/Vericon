@@ -11,8 +11,15 @@ ddsmoothmenu.init({
 <ul>
 <li><a href="../operations/index.php">HOME</a></li><li style="padding-top:8px;">|</li>
 <li><a href="../operations/sales.php">SALES</a></li><li style="padding-top:8px;">|</li>
-<li><a href="../operations/rejections.php">REJECTIONS</a></li><?php if ($ac["user"] == "vkoc001" || $ac["user"] == "nshe001" || $ac["user"] == "kdar001" || $ac["user"] == "nrat001" || $ac["user"] == "onaj001" || $ac["user"] == "bsha001") { ?><li style="padding-top:8px;">|</li>
-<li><a href="../operations/timesheet.php">TIMESHEETS</a></li>
+<li><a href="../operations/rejections.php">REJECTIONS</a></li>
+<?php if ($ac["user"] == "vkoc001" || $ac["user"] == "nshe001" || $ac["user"] == "kdar001" || $ac["user"] == "nrat001" || $ac["user"] == "onaj001" || $ac["user"] == "bsha001") 
+{
+?>
+<li style="padding-top:8px;">|</li><li><a style="cursor:pointer;">TIMESHEET</a>
+	<ul>
+	<li><a href="../operations/payable.php">OP PAYABLE</a></li>
+	</ul>
+</li>
 <?php
 }
 ?>

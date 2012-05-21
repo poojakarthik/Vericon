@@ -1,114 +1,3 @@
-<script> // create user modal
-$(function() {
-	$( "#dialog:ui-dialog" ).dialog( "destroy" );
-	
-	var password = $( "#password" ),
-		password2 = $( "#password2" ),
-		first = $( "#first" ),
-		last = $( "#last" ),
-		centre = $( "#centre" ),
-		alias = $( "#alias" ),
-		allFields = $( [] ).add( password ).add( password2 ),
-		tips = $( ".validateTips" );
-
-	function updateTips( t ) {
-		tips
-			.text( t )
-			.addClass( "ui-state-highlight" );
-		setTimeout(function() {
-			tips.removeClass( "ui-state-highlight", 1500 );
-		}, 500 );
-	}
-
-	function checkLength( o, n, min, max ) {
-		if ( o.val().length > max || o.val().length < min ) {
-			updateTips( "Length of " + n + " must be between " +
-				min + " and " + max + "." );
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	function checkRegexp( o, regexp, n ) {
-		if ( !( regexp.test( o.val() ) ) ) {
-			updateTips( n );
-			return false;
-		} else {
-			return true;
-		}
-	}
-	
-	$( "#dialog-form" ).dialog({
-		autoOpen: false,
-		height: 320,
-		width: 350,
-		modal: true,
-		resizable: false,
-		draggable: false,
-		buttons: {
-			"Create an Account": function() {
-				var bValid = true;
-
-				bValid = bValid && checkLength( first, "first", 2, 20 );
-				bValid = bValid && checkLength( last, "last", 2, 20 );
-				bValid = bValid && checkLength( password, "password", 6, 16 );
-				bValid = bValid && checkLength( password2, "password2", 6, 16 );
-				bValid = bValid && checkRegexp( first, /^[a-zA-Z]+$/i, "First Name may only consist of letters." );
-				bValid = bValid && checkRegexp( last, /^[a-zA-Z]+$/i, "Last Name may only consist of letters." );
-				
-				if ( bValid ) {
-					$.get("admin_submit.php?p=users&method=create", { first: first.val(), last: last.val(), password: password.val(), password2: password2.val(), centre: centre.val(), alias: alias.val() },
-function(data) {
-   
-   if (data.substring(0,7) == "created")
-   {
-	   $( "#dialog-form" ).dialog( "close" );
-	   $( ".user-created" ).html(data.substring(7));
-	   $( "#dialog-confirm3" ).dialog( "open" );
-   }
-   else
-   {
-		updateTips(data);
-   }
-});
-				}
-			},
-			Cancel: function() {
-				$( this ).dialog( "close" );
-			}
-		},
-		close: function() {
-			allFields.val( "" ).removeClass( "ui-state-error" );
-		}
-	});
-
-	$( "#create-user" )
-		.button()
-		.click(function() {
-			$( "#dialog-form" ).dialog( "open" );
-		});
-});
-</script>
-<script> // user created confirmation
-	$(function() {
-		$( "#dialog:ui-dialog3" ).dialog( "destroy" );
-	
-		$( "#dialog-confirm3" ).dialog({
-			autoOpen: false,
-			resizable: false,
-			draggable: false,
-			height:140,
-			modal: true,
-			buttons: {
-				"OK": function() {
-					$( this ).dialog( "close" );
-					location.reload();
-				}
-			}
-		});
-	});
-</script>
 <script> // disable confirmation
 	$(function() {
 		$( "#dialog:ui-dialog" ).dialog( "destroy" );
@@ -265,33 +154,6 @@ $(function() {
     <input type="hidden" id="enable_user" value="" />
 </div>
 
-<div id="dialog-confirm3" title="User Created">
-	<p class="user-created"></p>
-</div>
-
-<div id="dialog-form" title="Create User">
-	<p class="validateTips">All form fields are required.</p>
-
-<table>
-<form autocomplete="off">
-<tr><td>Username<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" size="25" value="Automatically Generated" disabled="disabled"></td></tr>
-<tr><td>First Name<span style="color:#ff0000;">*</span> </td>
-<td><input id="first" name="first" type="text" size="25"></td></tr>
-<tr><td>Last Name<span style="color:#ff0000;">*</span> </td>
-<td><input id="last" name="last" type="text" size="25"></td></tr>
-<tr><td>Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="password" name="password" type="password" size="25"></td></tr>
-<tr><td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="password2" name="password2" type="password" size="25"></td></tr>
-<tr><td>Centre<span style="color:#ff0000;">*</span> </td>
-<td><input id="centre" name="centre" type="text" size="25" value="<?php echo $ac["centre"]; ?>" disabled="disabled"></td></tr>
-<tr><td>Alias<span style="color:#ff0000;">*</span> </td>
-<td><input id="alias" name="alias" type="text" size="25"></td></tr>
-</form>
-</table>
-</div>
-
 <div id="dialog-form2" title="Modify User">
 	<p class="validateTips2">All form fields are required.</p>
 
@@ -422,8 +284,6 @@ $(function() {
 		</tbody>
 	</table>
 </div>
-
-<button id="create-user">Create new user</button><br /><br />
 
 <table width="100%" style="border:0;">
 <tr>
