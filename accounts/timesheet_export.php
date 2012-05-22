@@ -84,7 +84,7 @@ if (mysql_num_rows($q) != 0)
 					->setCellValue('N' . $i, '=(G' . $i . '*M' . $i . ')+L' . $i)
 					->setCellValue('O' . $i, $da2[4])
 					->setCellValue('P' . $i, '=N' . $i . '-O' . $i)
-					->setCellValue('Q' . $i, "=IFERROR(N" . $i . "/J" . $i . ",N" . $i . ")");
+					->setCellValue('Q' . $i, "=IF(J" . $i . ">0,N" . $i . "/J" . $i . ",N" . $i . ")");
 		$i++;
 		$count++;
 	}
