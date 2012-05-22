@@ -413,23 +413,6 @@ function Details()
 	window.open(l,'details','menubar=no,scrollbars=yes,width=1000px,height=900px,left=1px,top=1px');
 }
 </script>
-<script> //get ABN
-window.onload=function()
-{
-	$.getJSON("../source/abrGet.php", {abn: $( "#abn" ).val() },
-	function(data){
-		if( data['organisationName'] != null) {
-			$("#account_name").val( data['organisationName'] );
-		}
-		else if (data['tradingName'] != null) {
-			$("#account_name").val( data['tradingName'] );
-		}
-		else {
-			$("#account_name").val( data['entityName'] );
-		}
-	});
-}
-</script>
 </head>
 
 <body>
@@ -866,6 +849,21 @@ for ($i = 1; $i <= 2; $i++)
 
 <input type="hidden" id="abn" value="<?php echo $data["abn"] ?>" />
 <input type="hidden" id="account_name" value="" />
+
+<script> //get ABN
+$.getJSON("../source/abrGet.php", {abn: $( "#abn" ).val() },
+function(data){
+	if( data['organisationName'] != null) {
+		$("#account_name").val( data['organisationName'] );
+	}
+	else if (data['tradingName'] != null) {
+		$("#account_name").val( data['tradingName'] );
+	}
+	else {
+		$("#account_name").val( data['entityName'] );
+	}
+});
+</script>
 
 <table width="99%">
 <tr>
