@@ -48,9 +48,10 @@ if (mysql_num_rows($q) != 0)
 				->setCellValue('L4', 'Payable Bonus')
 				->setCellValue('M4', 'Rate')
 				->setCellValue('N4', 'Gross Pay')
-				->setCellValue('O4', 'PAYG')
-				->setCellValue('P4', 'Net Pay')
-				->setCellValue('Q4', 'CPS');
+				->setCellValue('O4', 'Gross Pay (Inc. Super)')
+				->setCellValue('P4', 'PAYG')
+				->setCellValue('Q4', 'Net Pay')
+				->setCellValue('R4', 'CPS');
 	
 	$i = 5;
 	$count = 1;
@@ -82,9 +83,10 @@ if (mysql_num_rows($q) != 0)
 					->setCellValue('L' . $i, $da2[2])
 					->setCellValue('M' . $i, $da2[3])
 					->setCellValue('N' . $i, '=(G' . $i . '*M' . $i . ')+L' . $i)
-					->setCellValue('O' . $i, $da2[4])
-					->setCellValue('P' . $i, '=N' . $i . '-O' . $i)
-					->setCellValue('Q' . $i, "=IF(J" . $i . ">0,N" . $i . "/J" . $i . ",N" . $i . ")");
+					->setCellValue('O' . $i, '=(N' . $i . '*9%)+N' . $i)
+					->setCellValue('P' . $i, $da2[4])
+					->setCellValue('Q' . $i, '=N' . $i . '-P' . $i)
+					->setCellValue('R' . $i, "=IF(J" . $i . ">0,O" . $i . "/J" . $i . ",O" . $i . ")");
 		$i++;
 		$count++;
 	}
@@ -106,29 +108,30 @@ if (mysql_num_rows($q) != 0)
 					->setCellValue('N' . $i, '=SUM(N5:N' . $sum . ')')
 					->setCellValue('O' . $i, '=SUM(O5:O' . $sum . ')')
 					->setCellValue('P' . $i, '=SUM(P5:P' . $sum . ')')
-					->setCellValue('Q' . $i, "=IFERROR(N" . $i . "/J" . $i . ",N" . $i . ")");
+					->setCellValue('Q' . $i, '=SUM(Q5:Q' . $sum . ')')
+					->setCellValue('R' . $i, "=IF(J" . $i . ">0,O" . $i . "/J" . $i . ",O" . $i . ")");
 					
 	$objPHPExcel->setActiveSheetIndex(0)
 					->setCellValue('B' . ($i + 2), 'Management Cost')
 					->setCellValue('D' . ($i + 2), $m_cost[0])
 					->setCellValue('B' . ($i + 3), 'Total Gross Pay')
-					->setCellValue('D' . ($i + 3), '=N' . $i . '+D' . ($i + 2))
+					->setCellValue('D' . ($i + 3), '=O' . $i . '+D' . ($i + 2))
 					->setCellValue('B' . ($i + 4), 'Final CPS')
 					->setCellValue('D' . ($i + 4), '=D' . ($i + 3) . '/J' . $i);
 	
 	// Merge cells
-	$objPHPExcel->getActiveSheet()->mergeCells('A1:Q2');
+	$objPHPExcel->getActiveSheet()->mergeCells('A1:R2');
 	$objPHPExcel->getActiveSheet()->mergeCells('E3:G3');
 	$objPHPExcel->getActiveSheet()->mergeCells('H3:J3');
 	$objPHPExcel->getActiveSheet()->mergeCells('K3:L3');
-	$objPHPExcel->getActiveSheet()->mergeCells('M3:Q3');
+	$objPHPExcel->getActiveSheet()->mergeCells('M3:R3');
 	$objPHPExcel->getActiveSheet()->mergeCells('B' . $i . ':D' . $i);
 	$objPHPExcel->getActiveSheet()->mergeCells('B' . ($i + 2) . ':C' . ($i + 2));
 	$objPHPExcel->getActiveSheet()->mergeCells('B' . ($i + 3) . ':C' . ($i + 3));
 	$objPHPExcel->getActiveSheet()->mergeCells('B' . ($i + 4) . ':C' . ($i + 4));
 	
 	// Set cell number formats
-	$objPHPExcel->getActiveSheet()->getStyle('K5:Q' . $i)->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
+	$objPHPExcel->getActiveSheet()->getStyle('K5:R' . $i)->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
 	$objPHPExcel->getActiveSheet()->getStyle('D' . ($i + 2) . ':D' . ($i + 4))->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
 	
 	// Set column widths
@@ -143,16 +146,17 @@ if (mysql_num_rows($q) != 0)
 	$objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(15.71);
 	$objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(13.29);
 	$objPHPExcel->getActiveSheet()->getColumnDimension('N')->setWidth(11);
-	$objPHPExcel->getActiveSheet()->getColumnDimension('O')->setWidth(11);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('O')->setWidth(18);
 	$objPHPExcel->getActiveSheet()->getColumnDimension('P')->setWidth(11);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('Q')->setWidth(11);
 
 	// Set fonts
 	$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setSize(20);
 	$objPHPExcel->getActiveSheet()->getStyle('A1')->getFont()->setBold(true);
-	$objPHPExcel->getActiveSheet()->getStyle('B3:Q4')->getFont()->setSize(10);
-	$objPHPExcel->getActiveSheet()->getStyle('B3:Q4')->getFont()->setBold(true);
-	$objPHPExcel->getActiveSheet()->getStyle('B5:Q' . $i)->getFont()->setSize(10);
-	$objPHPExcel->getActiveSheet()->getStyle('B' . $i . ':Q' . $i)->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('B3:R4')->getFont()->setSize(10);
+	$objPHPExcel->getActiveSheet()->getStyle('B3:R4')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('B5:R' . $i)->getFont()->setSize(10);
+	$objPHPExcel->getActiveSheet()->getStyle('B' . $i . ':R' . $i)->getFont()->setBold(true);
 	$objPHPExcel->getActiveSheet()->getStyle('B' . ($i + 2) . ':D' . ($i + 4))->getFont()->setSize(10);
 	$objPHPExcel->getActiveSheet()->getStyle('B' . ($i + 2) . ':D' . ($i + 4))->getFont()->setBold(true);
 	
@@ -160,9 +164,9 @@ if (mysql_num_rows($q) != 0)
 	$objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
 	$objPHPExcel->getActiveSheet()->getStyle('A1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 	$objPHPExcel->getActiveSheet()->getStyle('B4:B' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	$objPHPExcel->getActiveSheet()->getStyle('E3:Q' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('E3:R' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 	$objPHPExcel->getActiveSheet()->getStyle('C4:D' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	$objPHPExcel->getActiveSheet()->getStyle('B' . $i . ':Q' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('B' . $i . ':R' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 	$objPHPExcel->getActiveSheet()->getStyle('B' . ($i + 2) . ':C' . ($i + 4))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
 	$objPHPExcel->getActiveSheet()->getStyle('D' . ($i + 2) . ':D' . ($i + 4))->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 	
@@ -178,7 +182,7 @@ if (mysql_num_rows($q) != 0)
 	$objPHPExcel->getActiveSheet()->getStyle('E3:G3')->applyFromArray($styleMediumBorderOutline);
 	$objPHPExcel->getActiveSheet()->getStyle('H3:J3')->applyFromArray($styleMediumBorderOutline);
 	$objPHPExcel->getActiveSheet()->getStyle('K3:L3')->applyFromArray($styleMediumBorderOutline);
-	$objPHPExcel->getActiveSheet()->getStyle('M3:Q3')->applyFromArray($styleMediumBorderOutline);
+	$objPHPExcel->getActiveSheet()->getStyle('M3:R3')->applyFromArray($styleMediumBorderOutline);
 	
 	// Set medium border outline medium border inside
 	$styleMediumBorderFill = array(
@@ -191,7 +195,7 @@ if (mysql_num_rows($q) != 0)
 			),
 		),
 	);
-	$objPHPExcel->getActiveSheet()->getStyle('B4:Q4')->applyFromArray($styleMediumBorderFill);
+	$objPHPExcel->getActiveSheet()->getStyle('B4:R4')->applyFromArray($styleMediumBorderFill);
 	
 	// Set medium border outline thin border inside
 	$styleMediumThinBorderFill = array(
@@ -208,12 +212,12 @@ if (mysql_num_rows($q) != 0)
 	$objPHPExcel->getActiveSheet()->getStyle('E5:G' . $i)->applyFromArray($styleMediumThinBorderFill);
 	$objPHPExcel->getActiveSheet()->getStyle('H5:J' . $i)->applyFromArray($styleMediumThinBorderFill);
 	$objPHPExcel->getActiveSheet()->getStyle('K5:L' . $i)->applyFromArray($styleMediumThinBorderFill);
-	$objPHPExcel->getActiveSheet()->getStyle('M5:Q' . $i)->applyFromArray($styleMediumThinBorderFill);
+	$objPHPExcel->getActiveSheet()->getStyle('M5:R' . $i)->applyFromArray($styleMediumThinBorderFill);
 	$objPHPExcel->getActiveSheet()->getStyle('B' . $i . ':D' . $i)->applyFromArray($styleMediumThinBorderFill);
 	$objPHPExcel->getActiveSheet()->getStyle('E' . $i . ':G' . $i)->applyFromArray($styleMediumThinBorderFill);
 	$objPHPExcel->getActiveSheet()->getStyle('H' . $i . ':J' . $i)->applyFromArray($styleMediumThinBorderFill);
 	$objPHPExcel->getActiveSheet()->getStyle('K' . $i . ':L' . $i)->applyFromArray($styleMediumThinBorderFill);
-	$objPHPExcel->getActiveSheet()->getStyle('M' . $i . ':Q' . $i)->applyFromArray($styleMediumThinBorderFill);
+	$objPHPExcel->getActiveSheet()->getStyle('M' . $i . ':R' . $i)->applyFromArray($styleMediumThinBorderFill);
 	$objPHPExcel->getActiveSheet()->getStyle('B' . ($i + 2) . ':D' . ($i+4))->applyFromArray($styleMediumThinBorderFill);
 	
 	// Rename sheet
