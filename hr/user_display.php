@@ -23,6 +23,7 @@ $user = $_GET["user"];
 <?php
 if ($query == "")
 {
+	$page_link = "?page=" . $_GET["page"] . "&user=" . $user;
 	$q = mysql_query("SELECT centres FROM operations WHERE user = '$user'") or die(mysql_error());
 	$cen = mysql_fetch_row($q);
 	$centres = explode(",",$cen[0]);
@@ -68,6 +69,7 @@ if ($query == "")
 }
 else
 {
+	$page_link = "?query=" . $query;
 	$q = mysql_query("SELECT * FROM auth WHERE user = '$query'") or die(mysql_error());
 	$r = mysql_fetch_assoc($q);
 	
@@ -128,3 +130,4 @@ if (($st + 15) < $rows)
 </tr>
 </table></center>
 <input type="hidden" id="page" value="<?php echo $_GET["page"]; ?>">
+<input type="hidden" id="page_link" value="<?php echo $page_link; ?>">

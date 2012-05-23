@@ -69,7 +69,7 @@ elseif ($method == "modify")
 	}
 	else
 	{
-		mysql_query("UPDATE auth SET pass = '" .  md5($password) . "', alias = '" . mysql_escape_string($alias) . "' WHERE user = '$username' LIMIT 1");
+		mysql_query("UPDATE auth SET pass = '" .  md5($password) . "', alias = '" . mysql_escape_string($alias) . "', centre = '$centre' WHERE user = '$username' LIMIT 1");
 		echo "modified";
 	}
 }
