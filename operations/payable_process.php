@@ -17,6 +17,17 @@ elseif ($method == "to")
 	$year = date("Y", strtotime($date));
 	echo date("d/m/Y", strtotime($year . "W" . $week . "7"));
 }
+elseif ($method == "check")
+{
+	if (date("W", strtotime(date("Y")."W".(date("W") - 2)."7")) <= date("W", strtotime($date)))
+	{
+		echo "valid";
+	}
+	else
+	{
+		echo "You can only edit this pay week's timesheets";
+	}
+}
 elseif ($method == "hours")
 {
 	$user = $_GET["user"];
@@ -30,6 +41,21 @@ elseif ($method == "hours")
 	else
 	{
 		mysql_query("UPDATE timesheet_other SET op_hours = '$hours' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+	}
+	
+	$da = mysql_fetch_assoc($q);
+	$q1 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$user' AND WEEK(approved_timestamp) = '$week' AND status = 'Approved'") or die(mysql_error());
+	$sale = mysql_num_rows($q1);
+	
+	$gross = ((16.57 * $hours) + $da["op_bonus"]) * 1.09;
+	$net = $sales - $da["cancellations"];
+	if ($net > 0)
+	{
+		echo "\$" . number_format($gross / $net,2);
+	}
+	else
+	{
+		echo "\$" . number_format($gross,2);
 	}
 }
 elseif ($method == "bonus")
@@ -45,6 +71,21 @@ elseif ($method == "bonus")
 	else
 	{
 		mysql_query("UPDATE timesheet_other SET op_bonus = '$bonus' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+	}
+	
+	$da = mysql_fetch_assoc($q);
+	$q1 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$user' AND WEEK(approved_timestamp) = '$week' AND status = 'Approved'") or die(mysql_error());
+	$sale = mysql_num_rows($q1);
+	
+	$gross = ((16.57 * $da["op_hours"]) + $bonus) * 1.09;
+	$net = $sales - $da["cancellations"];
+	if ($net > 0)
+	{
+		echo "\$" . number_format($gross / $net,2);
+	}
+	else
+	{
+		echo "\$" . number_format($gross,2);
 	}
 }
 ?>
