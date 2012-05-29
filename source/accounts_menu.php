@@ -17,7 +17,8 @@ ddsmoothmenu.init({
     </ul>
 </li><?php if ($ac["user"] != "dsin002") { ?><li style="padding-top:8px;">|</li>
 <li><a href="../accounts/rejections.php">REJECTIONS</a></li><li style="padding-top:8px;">|</li>
-<li><a href="../accounts/timesheet.php">TIMESHEET</a></li><?php } ?>
+<li><a href="../accounts/timesheet.php">TIMESHEET</a></li><li style="padding-top:8px;">|</li>
+<li><a href="../accounts/rate.php">PAY RATES</a></li><?php } ?>
 </ul>
 </div>
 </div>

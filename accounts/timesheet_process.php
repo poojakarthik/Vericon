@@ -17,30 +17,18 @@ elseif ($method == "to")
 	$year = date("Y", strtotime($date));
 	echo date("d/m/Y", strtotime($year . "W" . $week . "7"));
 }
-elseif ($method == "rate")
+elseif ($method == "payg")
 {
 	$user = $_GET["user"];
+	$payg = $_GET["payg"];
 	$rate = $_GET["rate"];
 	
-	mysql_query("UPDATE timesheet_other SET rate = '$rate' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+	mysql_query("UPDATE timesheet_other SET payg = '$payg', rate = '$rate' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
 	
 	$q = mysql_query("SELECT SUM(op_hours),SUM(op_bonus) FROM timesheet_other WHERE user = '$user' AND week = '$week'") or die(mysql_error());
 	$da = mysql_fetch_row($q);
 	
 	$gross = ($rate * $da[0]) + $da[1];
-	echo "\$" . number_format($gross,2);
-}
-elseif ($method == "payg")
-{
-	$user = $_GET["user"];
-	$payg = $_GET["payg"];
-	
-	mysql_query("UPDATE timesheet_other SET payg = '$payg' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
-	
-	$q = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),rate FROM timesheet_other WHERE user = '$user' AND week = '$week'") or die(mysql_error());
-	$da = mysql_fetch_row($q);
-	
-	$gross = ($da[2] * $da[0]) + $da[1];
 	$net =  $gross - $payg;
 	echo "\$" . number_format($net,2);
 }

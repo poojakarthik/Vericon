@@ -48,44 +48,41 @@ else
 		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg) FROM timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
+		$q2 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$r = mysql_fetch_row($q2);
 		
-		if ($da[2] <= 0)
-		{
-			$rate = "";
-			$gross_d = "-";
-		}
-		else
-		{
-			$rate = number_format($da[2],2);
-			$gross = ($da[2] * $da[0]) + $da[1];
-			$gross_d = "\$" . number_format($gross,2);
-		}
+		$hours_d = number_format($da[0],2);
+		$bonus_d = "\$" . number_format($da[1],2);
+		if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
+		$rate_d = "\$" . number_format($rate,2);
+		$gross = ($rate * $da[0]) + $da[1];
+		$gross_d = "\$" . number_format($gross,2);
+		$payg = $da[3];
+		$payg_d = "$<input type='text' id='$data[user]_payg' value='$payg' onChange='PAYG(\"$data[user]\")' style='height:15px; width:35px;'>";
+		$net = $gross - $payg;
+		$net_d = "\$" . number_format($net,2);
 		
-		if ($da[3] <= 0)
-		{
-			$payg = "";
-			$net_d = "-";
-		}
-		else
-		{
-			$payg = number_format($da[3],2);
-			$net = $gross - $da[3];
-			$net_d = "\$" . number_format($net,2);
-		}
-		
-		if ($da[0] == "")
+		if ($da[0] == "" || $da[0] == 0)
 		{
 			$hours_d = "-";
 			$bonus_d = "-";
 			$rate_d = "-";
+			$gross_d = "-";	
 			$payg_d = "-";
+			$net_d = "-";
 		}
-		else
+		elseif ($rate_d == "$0.00")
 		{
-			$hours_d = number_format($da[0],2);
-			$bonus_d = "\$" . number_format($da[1],2);
-			$rate_d = "\$<input type='text' id='$data[user]_rate' value='$rate' onChange='Rate(\"$data[user]\")' style='height:15px; width:30px;'>";
+			$rate_d = "-";
+			$gross_d = "-";	
+			$payg_d = "-";
+			$net_d = "-";
+		}
+		elseif ($da[2] <= 0)
+		{
+			$payg = "";
 			$payg_d = "$<input type='text' id='$data[user]_payg' value='$payg' onChange='PAYG(\"$data[user]\")' style='height:15px; width:35px;'>";
+			$net_d = "-";
 		}
 		
 		echo "<tr>";
@@ -93,7 +90,7 @@ else
 		echo "<td style='text-align:left;'>" . $user[0] . " " . $user[1] . "</td>";
 		echo "<td>" . $hours_d . "</td>";
 		echo "<td>" . $bonus_d . "</td>";
-		echo "<td>" . $rate_d . "</td>";
+		echo "<td><span id='$data[user]_rate'>" . $rate_d . "</span></td>";
 		echo "<td><span id='$data[user]_gross'>" . $gross_d . "</span></td>";
 		echo "<td>" . $payg_d . "</td>";
 		echo "<td><span id='$data[user]_net'>" . $net_d . "</span></td>";

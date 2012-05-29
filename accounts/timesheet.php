@@ -100,7 +100,7 @@ function Export()
 	var centre = $( "#centre" ),
 		date = $( "#datepicker" );
 		
-	window.open("timesheet_export.php?centre=" + centre.val() + "&date=" + date.val());
+	window.location = "timesheet_export.php?centre=" + centre.val() + "&date=" + date.val();
 }
 </script>
 <script>
@@ -122,40 +122,13 @@ function Done()
 }
 </script>
 <script>
-function Rate(user)
-{
-	var field = "#" + user + "_rate",
-		field2 = "#" + user + "_gross",
-		rate = $( field ),
-		date = $( "#datepicker" );
-
-	function checkRegexp( o, regexp, n ) {
-		if ( !( regexp.test( o.val() ) ) ) {
-			alert( n );
-			o.val("");
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-
-	bValid = checkRegexp( rate, /^([0-9.])+$/, "'" + rate.val() + "' is not a valid pay rate" );
-	
-	if (bValid)
-	{
-		$.get("timesheet_process.php", { method: "rate", date: date.val(), user: user, rate: rate.val() }, function (data) {
-			$( field2 ).html(data);
-		});
-	}
-}
-</script>
-<script>
 function PAYG(user)
 {
 	var field = "#" + user + "_payg",
 		field2 = "#" + user + "_net",
+		field3 = "#" + user + "_rate",
 		payg = $( field ),
+		rate = $( field3 ).html().substr(1),
 		date = $( "#datepicker" );
 
 	function checkRegexp( o, regexp, n ) {
@@ -173,7 +146,7 @@ function PAYG(user)
 	
 	if (bValid)
 	{
-		$.get("timesheet_process.php", { method: "payg", date: date.val(), user: user, payg: payg.val() }, function (data) {
+		$.get("timesheet_process.php", { method: "payg", date: date.val(), user: user, payg: payg.val(), rate: rate }, function (data) {
 			$( field2 ).html(data);
 		});
 	}

@@ -69,6 +69,11 @@ if (mysql_num_rows($q) != 0)
 		$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND approved_timestamp BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 		$sales = mysql_num_rows($q3);
 		
+		$q4 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$r = mysql_fetch_row($q4);
+		
+		if ($da2[3] == 0) { $rate = $r[0]; } else { $rate = $da2[3]; }
+		
 		$objPHPExcel->setActiveSheetIndex(0)
 					->setCellValue('B' . $i, $count)
 					->setCellValue('C' . $i, $user[0] . " " . $user[1])
@@ -81,8 +86,8 @@ if (mysql_num_rows($q) != 0)
 					->setCellValue('J' . $i, "=H" . $i . "-I" . $i)
 					->setCellValue('K' . $i, $da[2])
 					->setCellValue('L' . $i, $da2[2])
-					->setCellValue('M' . $i, $da2[3])
-					->setCellValue('N' . $i, '=(G' . $i . '*M' . $i . ')+L' . $i)
+					->setCellValue('M' . $i, $rate)
+					->setCellValue('N' . $i, '=IF(M' . $i . '>0,(G' . $i . '*M' . $i . ')+L' . $i . ',0)')
 					->setCellValue('O' . $i, '=(N' . $i . '*9%)+N' . $i)
 					->setCellValue('P' . $i, $da2[4])
 					->setCellValue('Q' . $i, '=N' . $i . '-P' . $i)

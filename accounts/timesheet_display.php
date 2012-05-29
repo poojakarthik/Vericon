@@ -48,32 +48,40 @@ else
 		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg) FROM timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
-		if ($da[0] == "")
+		$q2 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$r = mysql_fetch_row($q2);
+		
+		$hours_d = number_format($da[0],2);
+		$bonus_d = "\$" . number_format($da[1],2);
+		if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
+		$rate_d = "\$" . number_format($rate,2);
+		$gross = ($rate * $da[0]) + $da[1];
+		$gross_d = "\$" . number_format($gross,2);
+		$payg = $da[3];
+		$payg_d = "\$" . number_format($payg,2);
+		$net = $gross - $payg;
+		$net_d = "\$" . number_format($net,2);
+
+		if ($da[0] == "" || $da[0] == 0)
 		{
 			$hours_d = "-";
 			$bonus_d = "-";
-		}
-		else
-		{
-			$hours_d = number_format($da[0],2);
-			$bonus_d = "\$" . number_format($da[1],2);
-		}
-		
-		if ($da[2] <= 0)
-		{
 			$rate_d = "-";
-			$gross_d = "-";
+			$gross_d = "-";	
 			$payg_d = "-";
 			$net_d = "-";
 		}
-		else
+		elseif ($rate_d == "$0.00")
 		{
-			$rate_d = "\$" . number_format($da[2],2);
-			$gross = ($da[2] * $da[0]) + $da[1];
-			$gross_d = "\$" . number_format($gross,2);
-			$payg_d = "\$" . number_format($da[3],2);
-			$net = $gross - $da[3];
-			$net_d = "\$" . number_format($net,2);
+			$rate_d = "-";
+			$gross_d = "-";	
+			$payg_d = "-";
+			$net_d = "-";
+		}
+		elseif ($da[2] <= 0)
+		{
+			$payg_d = "-";
+			$net_d = "-";
 		}
 		
 		echo "<tr>";
