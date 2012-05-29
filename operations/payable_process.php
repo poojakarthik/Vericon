@@ -48,7 +48,7 @@ elseif ($method == "hours")
 	$sale = mysql_num_rows($q1);
 	
 	$gross = ((16.57 * $hours) + $da["op_bonus"]) * 1.09;
-	$net = $sales - $da["cancellations"];
+	$net = $sale - $da["cancellations"];
 	if ($net > 0)
 	{
 		echo "\$" . number_format($gross / $net,2);
@@ -78,7 +78,7 @@ elseif ($method == "bonus")
 	$sale = mysql_num_rows($q1);
 	
 	$gross = ((16.57 * $da["op_hours"]) + $bonus) * 1.09;
-	$net = $sales - $da["cancellations"];
+	$net = $sale - $da["cancellations"];
 	if ($net > 0)
 	{
 		echo "\$" . number_format($gross / $net,2);
