@@ -111,6 +111,10 @@ else
 			$cps_d = "-";
 		}
 		
+		$total_hours += $da2[0];
+		$total_bonus += $da2[1];
+		$total_net += ($da3 - $da2[2]);
+		
 		echo "<tr>";
 		echo "<td style='text-align:left;'>" . $data["user"] . "</td>";
 		echo "<td style='text-align:left;'>" . $user[0] . " " . $user[1] . "</td>";
@@ -123,6 +127,26 @@ else
 		echo "<td>" . $cps_d . "</td>";
 		echo "</tr>";
 	}
+	
+	$q1 = mysql_query("SELECT SUM(hours),SUM(bonus) FROM timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+	$da = mysql_fetch_row($q1);
+	
+	$q2 = mysql_query("SELECT COUNT(id) FROM sales_customers WHERE status = 'Approved' AND centre = '$centre' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+	$da2 = mysql_fetch_row($q2);
+	
+	$total_gross = ((16.57 * $total_hours) + $total_bonus) * 1.09;
+	$total_cps = $total_gross / $total_net;
+	
+	echo "<tr>";
+	echo "<td colspan='2' style='text-align:right;'><b>Total</b></td>";
+	echo "<td><b>" . number_format($da[0],2) . "</b></td>";
+	echo "<td><b>\$" . number_format($da[1],2) . "</b></td>";
+	echo "<td><b>" . $da2[0] . "</b></td>";
+	echo "<td><b>" . number_format($total_hours,2) . "</b></td>";
+	echo "<td><b>\$" . number_format($total_bonus,2) . "</b></td>";
+	echo "<td><b>" . $total_net . "</b></td>";
+	echo "<td><b>\$" . number_format($total_cps,2) . "</b></td>";
+	echo "</tr>";
 }
 ?>
 </tbody>
