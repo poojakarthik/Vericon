@@ -47,7 +47,12 @@ elseif ($method == "hours")
 	$q1 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$user' AND WEEK(approved_timestamp) = '$week' AND status = 'Approved'") or die(mysql_error());
 	$sale = mysql_num_rows($q1);
 	
-	$gross = ((16.57 * $hours) + $da["op_bonus"]) * 1.09;
+	$q2 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$user'") or die(mysql_error());
+	$da2 = mysql_fetch_row($q2);
+	
+	if ($da2[0] == "") { $rate = 16.57; } else { $rate = $da2[0]; }
+	
+	$gross = (($rate * $hours) + $da["op_bonus"]) * 1.09;
 	$net = $sale - $da["cancellations"];
 	if ($net > 0)
 	{
@@ -77,7 +82,12 @@ elseif ($method == "bonus")
 	$q1 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$user' AND WEEK(approved_timestamp) = '$week' AND status = 'Approved'") or die(mysql_error());
 	$sale = mysql_num_rows($q1);
 	
-	$gross = ((16.57 * $da["op_hours"]) + $bonus) * 1.09;
+	$q2 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$user'") or die(mysql_error());
+	$da2 = mysql_fetch_row($q2);
+	
+	if ($da2[0] == "") { $rate = 16.57; } else { $rate = $da2[0]; }
+	
+	$gross = (($rate * $da["op_hours"]) + $bonus) * 1.09;
 	$net = $sale - $da["cancellations"];
 	if ($net > 0)
 	{

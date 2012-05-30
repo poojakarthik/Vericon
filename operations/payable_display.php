@@ -60,6 +60,11 @@ else
 		$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 		$da3 = mysql_num_rows($q3);
 		
+		$q4 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$da4 = mysql_fetch_row($q4);
+		
+		if ($da4[0] == "") { $rate = 16.57; } else { $rate = $da4[0]; }
+		
 		if ($da[0] == "")
 		{
 			$t_hours_d = "-";
@@ -84,13 +89,13 @@ else
 		
 		if (($da3 - $da2[2]) > 0)
 		{
-			$gross = ((16.57 * $da2[0]) + $da2[1]) * 1.09;
+			$gross = (($rate * $da2[0]) + $da2[1]) * 1.09;
 			$net = $da3 - $da2[2];
 			$cps = $gross / $net;
 		}
 		else
 		{
-			$cps = ((16.57 * $da2[0]) + $da2[1]) * 1.09;
+			$cps = (($rate * $da2[0]) + $da2[1]) * 1.09;
 		}
 		
 		if ($da2[0] != 0)
