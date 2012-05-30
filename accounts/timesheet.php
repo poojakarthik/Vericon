@@ -11,6 +11,16 @@ include "../auth/iprestrict.php";
 include "../source/jquery.php";
 ?>
 <style>
+.more {
+	background-image:url('../images/more_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .export
 {
 	background-image:url('../images/export_btn.png');
@@ -59,6 +69,8 @@ include "../source/jquery.php";
 	cursor:pointer;
 }
 
+.ui-dialog2 .ui-state-highlight { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
 div#users-contain table { margin: 1em 0; margin-bottom:0; border-collapse: collapse; width:98% }
 div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: center; }
 div#users-contain table td { border: 1px solid #eee; padding: .1em 10px; text-align: center; }
@@ -178,6 +190,101 @@ function M_Cost()
 	}
 }
 </script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+	
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		height: 270,
+		width: 350,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		buttons: {
+			"Close": function() {
+				$( "#dialog-confirm" ).dialog( "close" );
+			}
+		},
+		close: function() {
+		}
+	});
+});
+
+function More_Display(user,name)
+{
+	var date = $( "#datepicker" );
+	$( "#name_d" ).val(name);
+	$.get("timesheet_process.php", {method: "annual", user: user, date: date.val()}, function (data) { $( "#annual_d" ).val(data); });
+	$.get("timesheet_process.php", {method: "sick", user: user, date: date.val()}, function (data) { $( "#sick_d" ).val(data); });
+	$.get("timesheet_process.php", {method: "comments", user: user, date: date.val()}, function(data) {$( "#comments_d" ).val(data);});
+	$( "#dialog-confirm" ).dialog( "open" );
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
+	
+	var user = $( "#user" ),
+		date = $( "#datepicker" ),
+		centre = $( "#centre" ),
+		annual = $( "#annual" ),
+		sick = $( "#sick" ),
+		comments = $( "#comments" ),
+		tips = $( ".validateTips" );
+	
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+	
+	$( "#dialog-form" ).dialog({
+		autoOpen: false,
+		height: 280,
+		width: 350,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		buttons: {
+			"Submit": function() {
+				$.get("timesheet_process.php?method=other", { user: user.val(), date: date.val(), annual: annual.val(), sick: sick.val(), comments: comments.val() },
+				function(data) {
+					if (data == "submitted")
+					{
+						$( "#dialog-form" ).dialog( "close" );
+						$( "#display" ).load('timesheet_edit.php?centre=' + centre.val() + '&date=' + date.val());
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		},
+		close: function() {
+		}
+	});
+});
+
+function More_Edit(user,name)
+{
+	var date = $( "#datepicker" );
+	$( ".validateTips" ).html("Enter the Additional Hours and Comments Below");
+	$( "#user" ).val(user);
+	$( "#name" ).val(name);
+	$.get("timesheet_process.php", {method: "annual", user: user, date: date.val()}, function (data) { $( "#annual" ).val(data); });
+	$.get("timesheet_process.php", {method: "sick", user: user, date: date.val()}, function (data) { $( "#sick" ).val(data); });
+	$.get("timesheet_process.php", {method: "comments", user: user, date: date.val()}, function(data) {$( "#comments" ).val(data);});
+	$( "#dialog-form" ).dialog( "open" );
+}
+</script>
 </head>
 
 <body>
@@ -192,6 +299,50 @@ include "../source/accounts_menu.php";
 ?>
 
 <div id="text">
+
+<div id="dialog-confirm" title="Other Details">
+<table>
+<tr>
+<td width='80px'>Agent Name </td>
+<td><input type="text" id="name_d" disabled="disabled" size="20" style='padding:0px; margin:0px;'></td>
+</tr>
+<tr>
+<td width='80px'>Annual Leave </td>
+<td><input type="text" id="annual_d" disabled="disabled" size="20" style='padding:0px; margin:0px;'></td>
+</tr>
+<tr>
+<td width='80px'>Sick Leave </td>
+<td><input type="text" id="sick_d" disabled="disabled" size="20" style='padding:0px; margin:0px;'></td>
+</tr>
+<tr>
+<td width='80px'>Comments </td>
+<td><textarea id="comments_d" readonly="readonly" style="width:240px; height:75px; resize:none;"></textarea></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-form" title="Other Details">
+<input type="hidden" id="user" value="" />
+<p class="validateTips">Enter the Additional Hours and Comments Below</p>
+<table>
+<tr>
+<td width='80px'>Agent Name </td>
+<td><input type="text" id="name" disabled="disabled" size="20" style='padding:0px; margin:0px;'></td>
+</tr>
+<tr>
+<td width='80px'>Annual Leave </td>
+<td><input type="text" id="annual" size="20" style='padding:0px; margin:0px;'></td>
+</tr>
+<tr>
+<td width='80px'>Sick Leave </td>
+<td><input type="text" id="sick" size="20" style='padding:0px; margin:0px;'></td>
+</tr>
+<tr>
+<td width='80px'>Comments </td>
+<td><textarea id="comments" style="width:240px; height:75px; resize:none;"></textarea></td>
+</tr>
+</table>
+</div>
 
 <table width="100%">
 <tr>

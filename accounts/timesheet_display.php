@@ -24,6 +24,7 @@ $week2 = date("W", strtotime($date2));
 <th>Gross Pay</th>
 <th>PAYG</th>
 <th>Net Pay</th>
+<th>Other</th>
 </tr>
 </thead>
 <tbody>
@@ -32,11 +33,11 @@ $q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date BETW
 
 if ($centre == "Centre")
 {
-	echo "<tr><td colspan='8'>Please Select a Centre From Above</td></tr>";
+	echo "<tr><td colspan='9'>Please Select a Centre From Above</td></tr>";
 }
 elseif (mysql_num_rows($q) == 0)
 {
-	echo "<tr><td colspan='8'>No Records Found!</td></tr>";
+	echo "<tr><td colspan='9'>No Records Found!</td></tr>";
 }
 else
 {
@@ -45,7 +46,7 @@ else
 		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
 		$user = mysql_fetch_row($q0);
 		
-		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg) FROM timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
+		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg),SUM(annual),SUM(sick) FROM timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
 		$q2 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
@@ -55,12 +56,13 @@ else
 		$bonus_d = "\$" . number_format($da[1],2);
 		if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
 		$rate_d = "\$" . number_format($rate,2);
-		$gross = ($rate * $da[0]) + $da[1];
+		$gross = ($rate * ($da[0] + $da[4] + $da[5])) + $da[1];
 		$gross_d = "\$" . number_format($gross,2);
 		$payg = $da[3];
 		$payg_d = "\$" . number_format($payg,2);
 		$net = $gross - $payg;
 		$net_d = "\$" . number_format($net,2);
+		$other_d = "<input type='button' onclick='More_Display(\"$data[user]\",\"$user[0] $user[1]\")' class='more' title='More'>";
 
 		if ($da[0] == "" || $da[0] == 0)
 		{
@@ -70,6 +72,7 @@ else
 			$gross_d = "-";	
 			$payg_d = "-";
 			$net_d = "-";
+			$other_d = "-";
 		}
 		elseif ($rate_d == "$0.00")
 		{
@@ -77,6 +80,7 @@ else
 			$gross_d = "-";	
 			$payg_d = "-";
 			$net_d = "-";
+			$other_d = "-";
 		}
 		elseif ($da[2] <= 0)
 		{
@@ -88,11 +92,12 @@ else
 		echo "<td style='text-align:left;'>" . $data["user"] . "</td>";
 		echo "<td style='text-align:left;'>" . $user[0] . " " . $user[1] . "</td>";
 		echo "<td>" . $hours_d . "</td>";
-		echo "<td>" . $bonus_d . "</td>";
+		echo "<td >" . $bonus_d . "</td>";
 		echo "<td>" . $rate_d . "</td>";
 		echo "<td>" . $gross_d . "</td>";
 		echo "<td>" . $payg_d . "</td>";
 		echo "<td>" . $net_d . "</td>";
+		echo "<td>" . $other_d . "</td>";
 		echo "</tr>";
 	}
 	
@@ -111,6 +116,7 @@ else
 	echo "<tr>";
 	echo "<td colspan='7' style='text-align:right;'><b>Management Cost</b></td>";
 	echo "<td><b>" . $m_cost . "</b></td>";
+	echo "<td></td>";
 	echo "</tr>";
 }
 ?>
