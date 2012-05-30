@@ -134,6 +134,64 @@ function Done()
 }
 </script>
 <script>
+function Hours(user)
+{
+	var field = "#" + user + "_hours",
+		hours = $( field ),
+		centre = $( "#centre" ),
+		date = $( "#datepicker" );
+
+	function checkRegexp( o, regexp, n ) {
+		if ( !( regexp.test( o.val() ) ) ) {
+			alert( n );
+			o.val("");
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	bValid = checkRegexp( hours, /^([0-9.])+$/, "'" + hours.val() + "' is not a valid Hour input" );
+	
+	if (bValid)
+	{
+		$.get("timesheet_process.php", { method: "hours", date: date.val(), user: user, hours: hours.val() }, function (data) {
+			$( "#display" ).load('timesheet_edit.php?centre=' + centre.val() + '&date=' + date.val());
+		});
+	}
+}
+</script>
+<script>
+function Bonus(user)
+{
+	var field = "#" + user + "_bonus",
+		bonus = $( field ),
+		centre = $( "#centre" ),
+		date = $( "#datepicker" );
+
+	function checkRegexp( o, regexp, n ) {
+		if ( !( regexp.test( o.val() ) ) ) {
+			alert( n );
+			o.val("");
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+
+	bValid = checkRegexp( bonus, /^([0-9.])+$/, "'" + bonus.val() + "' is not a valid Bonus input" );
+	
+	if (bValid)
+	{
+		$.get("timesheet_process.php", { method: "bonus", date: date.val(), user: user, bonus: bonus.val() }, function (data) {
+			$( "#display" ).load('timesheet_edit.php?centre=' + centre.val() + '&date=' + date.val());
+		});
+	}
+}
+</script>
+<script>
 function PAYG(user)
 {
 	var field = "#" + user + "_payg",

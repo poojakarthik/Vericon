@@ -52,14 +52,16 @@ else
 		$q2 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
 		$r = mysql_fetch_row($q2);
 		
-		$hours_d = number_format($da[0],2);
-		$bonus_d = "\$" . number_format($da[1],2);
+		$hours = number_format($da[0],2);
+		$bonus = number_format($da[1],2);
+		$hours_d = "<input type='text' id='$data[user]_hours' value='$hours' onChange='Hours(\"$data[user]\")' style='height:15px; width:35px;'>";
+		$bonus_d = "\$<input type='text' id='$data[user]_bonus' value='$bonus' onChange='Bonus(\"$data[user]\")' style='height:15px; width:35px;'>";
 		if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
 		$rate_d = "\$" . number_format($rate,2);
 		$gross = ($rate * ($da[0] + $da[4] + $da[5])) + $da[1];
 		$gross_d = "\$" . number_format($gross,2);
 		$payg = $da[3];
-		$payg_d = "$<input type='text' id='$data[user]_payg' value='$payg' onChange='PAYG(\"$data[user]\")' style='height:15px; width:35px;'>";
+		$payg_d = "\$<input type='text' id='$data[user]_payg' value='$payg' onChange='PAYG(\"$data[user]\")' style='height:15px; width:35px;'>";
 		$net = $gross - $payg;
 		$net_d = "\$" . number_format($net,2);
 		$other_d = "<input type='button' onclick='More_Edit(\"$data[user]\",\"$user[0] $user[1]\")' class='more' title='More'>";
@@ -76,6 +78,8 @@ else
 		}
 		elseif ($rate_d == "$0.00")
 		{
+			$hours_d = $hours;
+			$bonus_d = "\$" . $bonus;
 			$rate_d = "-";
 			$gross_d = "-";	
 			$payg_d = "-";

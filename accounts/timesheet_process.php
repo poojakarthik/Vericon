@@ -38,6 +38,20 @@ elseif ($method == "comments")
 	$data = mysql_fetch_row($q);
 	echo $data[0];
 }
+elseif ($method == "hours")
+{
+	$user = $_GET["user"];
+	$hours = $_GET["hours"];
+	
+	mysql_query("UPDATE timesheet_other SET op_hours = '$hours' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+}
+elseif ($method == "bonus")
+{
+	$user = $_GET["user"];
+	$bonus = $_GET["bonus"];
+	
+	mysql_query("UPDATE timesheet_other SET op_bonus = '$bonus' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+}
 elseif ($method == "payg")
 {
 	$user = $_GET["user"];
