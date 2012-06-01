@@ -18,6 +18,8 @@ ddsmoothmenu.init({
 <li style="padding-top:8px;">|</li><li><a style="cursor:pointer;">TIMESHEET</a>
 	<ul>
 	<li><a href="../operations/payable.php">OP PAYABLE</a></li>
+    <li><a href="../operations/centre.php">CENTRE REPORT</a></li>
+    <li><a href="../operations/agent.php">AGENT REPORT</a></li>
 	</ul>
 </li>
 <?php

@@ -83,8 +83,16 @@ function Edit_View()
 {
 	var centre = $( "#centre" ),
 		date = $( "#datepicker" );
-
-	$( "#display" ).load('payable_edit.php?centre=' + centre.val() + '&date=' + date.val());
+	$.get("payable_process.php", {method: "check", date: date.val() }, function (data) {
+		if (data == "valid")
+		{
+			$( "#display" ).load('payable_edit.php?centre=' + centre.val() + '&date=' + date.val());
+		}
+		else
+		{
+			alert(data);
+		}
+	});
 }
 </script>
 <script>
@@ -100,6 +108,7 @@ function Done()
 function Hours(user)
 {
 	var field = "#" + user + "_hours",
+		field2 = "#" + user + "_cps",
 		hours = $( field ),
 		date = $( "#datepicker" );
 
@@ -118,7 +127,9 @@ function Hours(user)
 	
 	if (bValid)
 	{
-		$.get("payable_process.php", { method: "hours", date: date.val(), user: user, hours: hours.val() }, function (data) { });
+		$.get("payable_process.php", { method: "hours", date: date.val(), user: user, hours: hours.val() }, function (data) { 
+			$( field2 ).html(data);
+		});
 	}
 }
 </script>
@@ -126,6 +137,7 @@ function Hours(user)
 function Bonus(user)
 {
 	var field = "#" + user + "_bonus",
+		field2 = "#" + user + "_cps",
 		bonus = $( field ),
 		date = $( "#datepicker" );
 
@@ -144,7 +156,9 @@ function Bonus(user)
 	
 	if (bValid)
 	{
-		$.get("payable_process.php", { method: "bonus", date: date.val(), user: user, bonus: bonus.val() }, function (data) { });
+		$.get("payable_process.php", { method: "bonus", date: date.val(), user: user, bonus: bonus.val() }, function (data) { 
+			$( field2 ).html(data);
+		});
 	}
 }
 </script>

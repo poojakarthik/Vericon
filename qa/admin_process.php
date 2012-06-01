@@ -164,36 +164,39 @@ while ($campaign = mysql_fetch_row($q))
 <input type="hidden" id="pending" value="<?php echo $total_pending; ?>" />
 
 <?php
-$dir = "/home/dsr/" . date("Y/F", strtotime($date)) . "/DSR_" . date("d.m.Y", strtotime($date)) . "_Report.txt";
+$dir = "/home/dsr/" . date("Y/F", strtotime($date)) . "/" . date("d.m.Y", strtotime($date)) . "/DSR_" . date("d.m.Y", strtotime($date)) . "_Report.txt";
 if (file_exists($dir))
 {
 ?>
 <table width="99%">
 <tr>
-<td>
-<img src="../images/dsr_report_header.png" width="120" height="25" style="margin-left:3px;" />
-</td>
+<td><img src="../images/dsr_report_header.png" width="120" height="25" style="margin-left:3px;" /></td>
 </tr>
 <tr>
-<td>
-<img src="../images/line.png" width="740" height="9" />
-</td>
+<td colspan="2"><img src="../images/line.png" width="740" height="9" /></td>
 </tr>
-</table>
+<tr>
 <?php
+	echo "<td style='padding-left:10px'>";
 	echo "<pre>";
-	readfile("/home/dsr/" . date("Y/F", strtotime($date)) . "/DSR_" . date("d.m.Y", strtotime($date)) . "_Report.txt");
+	readfile($dir);
 	echo "</pre>";
-	echo "<a href='download_dsr.php?date=$date' style='color:inherit;'>Download - DSR_" . date("d.m.Y", strtotime($date)) . "_" . "_QA.csv</a>";
+	echo "</td>";
+	echo "<td align='right' valign='top' style='padding-right:10px;'>";
+	echo "<a href='download_dsr.php?date=$date&method=business' style='color:inherit;'>Download - DSR_" . date("d.m.Y", strtotime($date)) . "_" . "_Business.csv</a><br><br>";
+	echo "<a href='download_dsr.php?date=$date&method=residential' style='color:inherit;'>Download - DSR_" . date("d.m.Y", strtotime($date)) . "_" . "_Residential.csv</a>";
+	echo "</td>";
 }
 elseif ($total_approved == 0)
 {
-	echo "No Processed Sales to Generate DSR";
+	echo "<td colspan='2'>No Processed Sales to Generate DSR</td>";
 }
 else
 {
 ?>
-	<input type="button" onclick="Generate_DSR()" value="Generate DSR" />
+	<td colspan="2"><input type="button" onclick="Generate_DSR()" value="Generate DSR" /></td>
 <?php
 }
 ?>
+</tr>
+</table>

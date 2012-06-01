@@ -195,8 +195,8 @@ $(function() {
 		buttons: {
 			"OK": function() {
 				$( "#dialog-confirm" ).dialog( "close" );
-				var page = $( "#page" );
-				$( "#display" ).load("user_display.php?page=" + page.val() + "&user=<?php echo $ac["user"] ?>");
+				var page_link = $( "#page_link" );
+				$( "#display" ).load("user_display.php" + page_link.val());
 			}
 		}
 	});
@@ -251,8 +251,8 @@ $(function() {
 						{
 							$( "#dialog-form2" ).dialog( "close" );
 							tips.html('<span style="color:#ff0000;">*</span> Required Fields');
-							var page = $( "#page" );
-							$( "#display" ).load("user_display.php?page=" + page.val() + "&user=<?php echo $ac["user"] ?>");
+							var page_link = $( "#page_link" );
+							$( "#display" ).load("user_display.php" + page_link.val());
 						}
 						else
 						{
@@ -296,8 +296,8 @@ $(function() {
 				var disable_user = $( "#disable_user" ).val();
 				$.get("user_submit.php?method=disable", { username: disable_user }, function (data) {
 					$( "#dialog-confirm2" ).dialog( "close" );
-					var page = $( "#page" );
-					$( "#display" ).load("user_display.php?page=" + page.val() + "&user=<?php echo $ac["user"] ?>");
+					var page_link = $( "#page_link" );
+					$( "#display" ).load("user_display.php" + page_link.val());
 				});
 			},
 			Cancel: function() {
@@ -327,8 +327,8 @@ $(function() {
 				var enable_user = $( "#enable_user" ).val();
 				$.get("user_submit.php?p=users&method=enable", { username: enable_user }, function (data) {
 					$( "#dialog-confirm3" ).dialog( "close" );
-					var page = $( "#page" );
-					$( "#display" ).load("user_display.php?page=" + page.val() + "&user=<?php echo $ac["user"] ?>");
+					var page_link = $( "#page_link" );
+					$( "#display" ).load("user_display.php" + page_link.val());
 				});
 			},
 			Cancel: function() {

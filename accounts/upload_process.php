@@ -65,7 +65,7 @@ elseif ($method == "export_cancellations")
 		$q1 = mysql_query("SELECT cancellations FROM timesheet_other WHERE user = '$da[0]' AND week = '$week'") or die(mysql_error());
 		$c = mysql_fetch_row($q1);
 		
-		if ($c[0] == "") { $cancellations = "-"; } else { $cancellations = $c[0]; }
+		if ($c[0] == "") { $cancellations = ""; } else { $cancellations = $c[0]; }
 		
 		$data .= $da[0] . ",";
 		$data .= $user[0] . " " . $user[1] . ",";

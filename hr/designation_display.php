@@ -12,11 +12,11 @@ $user = $_GET["user"];
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; margin-top:0px;">
 <thead>
 <tr class="ui-widget-header ">
-<th width="15%">Username</th>
+<th width="10%">Username</th>
 <th width="40%">Full Name</th>
 <th style='text-align:center;' width="15%">Centre</th>
-<th style='text-align:center;' width="15%">Status</th>
-<th colspan="2" style='text-align:center;' width="15%">Edit User</th>
+<th style='text-align:center;' width="20%">Designation</th>
+<th style='text-align:center;' width="15%">Edit</th>
 </tr>
 </thead>
 <tbody>
@@ -33,36 +33,31 @@ if ($query == "")
 	}
 	$c_q = substr($c_q,0,-4);
 	
-	$check = mysql_query("SELECT * FROM auth WHERE " . $c_q) or die(mysql_error());
+	$check = mysql_query("SELECT * FROM auth WHERE (" . $c_q . ") AND status = 'Enabled'") or die(mysql_error());
 	$rows = mysql_num_rows($check);
 	
 	if($rows == 0)
 	{
 		echo "<tr>";
-		echo "<td colspan='6'>No Users?!?!?!</td>";
+		echo "<td colspan='5'>No Users?!?!?!</td>";
 		echo "</tr>";
 	}
 	else
 	{
 		$st = $_GET["page"]*15;
-		$q = mysql_query("SELECT * FROM auth WHERE " . $c_q . " ORDER BY user ASC LIMIT $st , 15") or die(mysql_error());
+		$q = mysql_query("SELECT * FROM auth WHERE (" . $c_q . ") AND status = 'Enabled' ORDER BY user ASC LIMIT $st , 15") or die(mysql_error());
 		
 		while($r = mysql_fetch_assoc($q))
 		{
+			$q1 = mysql_query("SELECT * FROM timesheet_designation WHERE user = '$r[user]'") or die(mysql_error());
+			$d = mysql_fetch_assoc($q1);
+			
 			echo "<tr>";
 			echo "<td>" . $r["user"] . "</td>";
 			echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
 			echo "<td style='text-align:center;'>" . $r["centre"] . "</td>";
-			echo "<td style='text-align:center;'>" . $r["status"] . "</td>";
-			echo "<td style='text-align:center;'><input type='button' onclick='Modify(\"$r[user]\",\"$r[first]\",\"$r[last]\",\"$r[centre]\",\"$r[alias]\")' class='edit' title='Edit'></td>";
-			if($r["status"] == "Enabled")
-			{
-				echo "<td style='text-align:center;'><input type='button' onclick='Disable(\"$r[user]\")' class='disable' title='Disable'></td>";
-			}
-			else
-			{
-				echo "<td style='text-align:center;'><input type='button' onclick='Enable(\"$r[user]\")' class='enable' title='Enable'></td>";
-			}
+			echo "<td style='text-align:center;'>" . $d["designation"] . "</td>";
+			echo "<td style='text-align:center;'><input type='button' onclick='Edit(\"$r[user]\",\"$r[first] $r[last]\",\"$d[designation]\")' class='edit' title='Edit'></td>";
 			echo "</tr>";
 		}
 	}
@@ -73,20 +68,15 @@ else
 	$q = mysql_query("SELECT * FROM auth WHERE user = '$query'") or die(mysql_error());
 	$r = mysql_fetch_assoc($q);
 	
+	$q1 = mysql_query("SELECT * FROM timesheet_designation WHERE user = '$r[user]'") or die(mysql_error());
+	$d = mysql_fetch_assoc($q1);
+	
 	echo "<tr>";
 	echo "<td>" . $r["user"] . "</td>";
 	echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
 	echo "<td style='text-align:center;'>" . $r["centre"] . "</td>";
-	echo "<td style='text-align:center;'>" . $r["status"] . "</td>";
-	echo "<td style='text-align:center;'><input type='button' onclick='Modify(\"$r[user]\",\"$r[first]\",\"$r[last]\",\"$r[centre]\",\"$r[alias]\")' class='edit' title='Edit'></td>";
-	if($r["status"] == "Enabled")
-	{
-		echo "<td style='text-align:center;'><input type='button' onclick='Disable(\"$r[user]\")' class='disable' title='Disable'></td>";
-	}
-	else
-	{
-		echo "<td style='text-align:center;'><input type='button' onclick='Enable(\"$r[user]\")' class='enable' title='Enable'></td>";
-	}
+	echo "<td style='text-align:center;'>" . $d["designation"] . "</td>";
+	echo "<td style='text-align:center;'><input type='button' onclick='Edit(\"$r[user]\",\"$r[first] $r[last]\",\"$d[designation]\")' class='edit' title='Edit'></td>";
 	echo "</tr>";
 }
 ?>

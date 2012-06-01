@@ -4,14 +4,6 @@ mysql_select_db('adsl');
 
 $phone = $_GET["phone"];
 
-$q = mysql_query("SELECT * FROM bigList WHERE `To` >= '$phone' AND `From` <= '$phone' AND NumberLength = CHAR_LENGTH('$phone') LIMIT 1") or die(mysql_error());
-
-if (mysql_num_rows($q) == 0)
-{
-	echo "Invalid CLI";
-	exit;
-}
-
 if (preg_match('/0([2378])([0-9]{8})/',$phone,$d))
 {
 	$q = mysql_query("SELECT * FROM Enabled_Exchanges WHERE Range_From <= $d[2] AND Range_To >= $d[2] AND AC = '$d[1]'") or die(mysql_error());
@@ -43,6 +35,10 @@ if (preg_match('/0([2378])([0-9]{8})/',$phone,$d))
 		}
 		echo "The telephone number you have provided is in the <b>$r[3]</b> exchange and qualifies for an <b>$net</b> internet connection on a <b>$zone</b> plan!";
 	}
+}
+else
+{
+	echo "Invalid CLI";
 }
 
 ?>
