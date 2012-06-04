@@ -1,3 +1,12 @@
+#Database Structure
+As of 04/06/2012
+
+| Table of Contents |
+| ------------- |
+| [ADSL](#adsl) |
+| [GNAF](#gnaf) |
+| [VeriCon](#vericon)  |
+
 ##ADSL
 ```sql
 --
@@ -647,7 +656,9 @@ CREATE TABLE IF NOT EXISTS `archive_mcrm_customers` (
   `tpvNotes` text NOT NULL,
   `tpvFail` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
-  FULLTEXT KEY `search` (`saleAgent`,`fname`,`sname`,`dob`,`addr1`,`addr2`,`suburb`,`postcode`,`p_addr1`,`p_addr2`,`p_suburb`,`p_postcode`)
+  FULLTEXT KEY `search` 
+
+(`saleAgent`,`fname`,`sname`,`dob`,`addr1`,`addr2`,`suburb`,`postcode`,`p_addr1`,`p_addr2`,`p_suburb`,`p_postcode`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
