@@ -354,6 +354,7 @@ include "../source/admin_menu.php";
 <option>Sales</option>
 <option>Self</option>
 <option>TPV</option>
+<option>Welcome</option>
 </select></td></tr>
 <tr><td>Access Level<span style="color:#ff0000;">*</span> </td>
 <td><select id="access" name="access" style="margin:0; width:165px;">
@@ -406,6 +407,7 @@ while ($centres = mysql_fetch_assoc($q0))
 <option>Sales</option>
 <option>Self</option>
 <option>TPV</option>
+<option>Welcome</option>
 </select></td></tr>
 <tr><td>Access Level<span style="color:#ff0000;">*</span> </td>
 <td><select id="m_access" name="m_access" style="margin:0; width:165px;">

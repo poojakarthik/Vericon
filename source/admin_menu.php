@@ -24,13 +24,16 @@ ddsmoothmenu.init({
 <li><a href="../admin/clients.php">CLIENTS</a></li><li style="padding-top:8px;">|</li>
 <li><a style="cursor:pointer;">PORTALS</a>
   <ul>
+  <li><a href="../accounts/index.php" target="_blank">ACCOUNTS PORTAL</a></li>
   <li><a href="../cct/index.php" target="_blank">CCT PORTAL</a></li>
   <li><a href="../cs/index.php" target="_blank">CS PORTAL</a></li>
+  <li><a href="../leads/index.php" target="_blank">LEADS PORTAL</a></li>
   <li><a href="../operations/index.php" target="_blank">OPS PORTAL</a></li>
   <li><a href="../qa/index.php" target="_blank">QA PORTAL</a></li>
   <li><a href="../sales/index.php" target="_blank">SALES PORTAL</a></li>
   <li><a href="../self/index.php" target="_blank">SELF PORTAL</a></li>
   <li><a href="../tpv/index.php" target="_blank">TPV PORTAL</a></li>
+  <li><a href="../welcome/index.php" target="_blank">WELCOME PORTAL</a></li>
   </ul>
 </li>
 </ul>
