@@ -61,14 +61,14 @@ window.onload = function() {
 <td align="right"><span class="clock" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#0066cc; font-weight:bolder; margin-right:-10px;"><?php echo date("d/m/Y"); ?> <span id="time"><?php echo date("H:i:s A"); ?></span></span></td>
 </tr>
 </table>
-<table width="100%" height="24px" border="0" style="padding-right:23px;">
+<table width="100%" height="24px" border="0" style="padding-right:20px;">
 <tr valign="bottom">
-<td align="right"><span style="font-family:Tahoma, Geneva, sans-serif; font-size:11px; color:#666;"><?php echo $ac["user"]; ?></span></td>
+<td align="right"><span style="font-family:'Trebuchet MS', Arial, Helvetica, sans-serif; font-weight:lighter; font-size:11px; color:#666;"><?php echo $ac["user"]; ?></span></td>
 </tr>
 </table>
 <table width="100%" height="24px" border="0" style="padding-right:23px;">
 <tr valign="bottom">
-<td align="right" valign="middle"><?php if($acc["tpv"] == true || $acc["cct"] == true || $acc["cs"] == true) { ?><img src="../images/webmail_icon.png" /> <a href="../webmail/?u=<?php echo $ac["user"]; ?>" target="_blank">Webmail</a>&nbsp;<?php } ?><img src="../images/logout_icon.png" /> <a onclick="Logout()">Logout</a></td>
+<td align="right" valign="middle"><img src="../images/logout_icon.png" /> <a onclick="Logout()">Logout</a></td>
 </tr>
 </table>
 </div>
