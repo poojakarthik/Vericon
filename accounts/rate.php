@@ -100,10 +100,10 @@ $(function() {
 	});
 });
 
-function Edit(user,name,rate)
+function Edit(user,rate)
 {
 	$( "#user" ).val(user);
-	$( "#name" ).val(name);
+	$.get("rate_submit.php?method=name", { user: user }, function(data) { $( "#name" ).val(data) });
 	$( "#rate" ).val(rate);
 	$( "#dialog-form" ).dialog( "open" );
 }

@@ -63,7 +63,7 @@ if ($query == "")
 			echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
 			echo "<td style='text-align:center;'>" . $r["centre"] . "</td>";
 			echo "<td style='text-align:center;'>" . $rate . "</td>";
-			echo "<td style='text-align:center;'><input type='button' onclick='Edit(\"$r[user]\",\"$r[first] $r[last]\",\"$d[rate]\")' class='edit' title='Edit'></td>";
+			echo "<td style='text-align:center;'><input type='button' onclick='Edit(\"$r[user]\",\"$d[rate]\")' class='edit' title='Edit'></td>";
 			echo "</tr>";
 		}
 	}
@@ -90,7 +90,7 @@ else
 	echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
 	echo "<td style='text-align:center;'>" . $r["centre"] . "</td>";
 	echo "<td style='text-align:center;'>" . $rate . "</td>";
-	echo "<td style='text-align:center;'><input type='button' onclick='Edit(\"$r[user]\",\"$r[first] $r[last]\",\"$d[rate]\")' class='edit' title='Edit'></td>";
+	echo "<td style='text-align:center;'><input type='button' onclick='Edit(\"$r[user]\",\"$d[rate]\")' class='edit' title='Edit'></td>";
 	echo "</tr>";
 }
 ?>
