@@ -280,14 +280,14 @@ for ($i = 1; $i <= 3; $i++)
 	echo "<td>MSN " . $i . "</td>";
 	echo "<td><input type='text' id='msn_" . $i . "' /></td>";
 	echo "<td>Mplan " . $i . "</td>";
-	echo "<td><select id='mplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
+	echo "<td><input type='text' id='mplan_" . $i ."' value=''></td>";
 	$i++;
 	if ($i <= 3)
 	{
 		echo "<td>MSN " . $i . "</td>";
 		echo "<td><input type='text' id='msn_" . $i . "' /></td>";
 		echo "<td>Mplan " . $i . "</td>";
-		echo "<td><select id='mplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
+		echo "<td><input type='text' id='mplan_" . $i ."' value=''></td>";
 		echo "</tr>";
 	}
 }
@@ -298,12 +298,12 @@ for ($i = 1; $i <= 2; $i++)
 	echo "<td>WMSN " . $i . "</td>";
 	echo "<td><input type='text' id='wmsn_" . $i . "' /></td>";
 	echo "<td>Wplan " . $i . "</td>";
-	echo "<td><select id='wplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
+	echo "<td><input type='text' id='wplan_" . $i ."' value=''></td>";
 	$i++;
 	echo "<td>WMSN " . $i . "</td>";
 	echo "<td><input type='text' id='wmsn_" . $i . "' /></td>";
 	echo "<td>Wplan " . $i . "</td>";
-	echo "<td><select id='wplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
+	echo "<td><input type='text' id='wplan_" . $i ."' value=''></td>";
 	echo "</tr>";
 }
 ?>
