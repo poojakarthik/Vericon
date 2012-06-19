@@ -283,7 +283,7 @@
 .ui-corner-all, .ui-corner-bottom, .ui-corner-right, .ui-corner-br { -moz-border-radius-bottomright: 5px; -webkit-border-bottom-right-radius: 5px; -khtml-border-bottom-right-radius: 5px; border-bottom-right-radius: 5px; }
 
 /* Overlays */
-.ui-widget-overlay { background: #aaaaaa url(images/ui-bg_diagonals-small_85_aaaaaa_40x40.png) 50% 50% repeat; opacity: .85;filter:Alpha(Opacity=85); }
+.ui-widget-overlay { background: #aaaaaa url(images/ui-bg_diagonals-small_85_aaaaaa_40x40.png) 50% 50% repeat; opacity: .25;filter:Alpha(Opacity=25); }
 .ui-widget-shadow { margin: 5px 0 0 5px; padding: 0px; background: #999999 url(images/ui-bg_flat_45_999999_40x100.png) 50% 50% repeat-x; opacity: .85;filter:Alpha(Opacity=85); -moz-border-radius: 5px; -khtml-border-radius: 5px; -webkit-border-radius: 5px; border-radius: 5px; }/*!
  * jQuery UI Resizable 1.8.20
  *

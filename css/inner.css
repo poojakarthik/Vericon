@@ -95,10 +95,53 @@ line-height:1.5em;
 }
 
 input{
-	border:1px solid #c6c6c6;
-	height:25px;
+	/*border:1px solid #c6c6c6;*/
+	font-family:Tahoma, Geneva, sans-serif;
+	font-size:12px;
+	height:20px;
+	line-height:1.5em;
 }
 
+.btn{
+	background-image:url('../images/btn.png');
+	background-repeat:no-repeat;
+	height:30px;
+	width:102px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size:11px;
+	color:#FFFFFF;
+	font-weight:bold;
+	text-transform:uppercase;
+	text-align:center;
+}
+
+.btn:hover {
+	background-image:url('../images/btn_hover.png');
+	cursor:pointer;
+}
+
+.icon_delete {
+	background-image:url('../images/delete_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
+.icon_edit {
+	background-image:url('../images/edit_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
 
 .get_sale_btn{
 	background-image:url('../images/getsale_btn.png');
@@ -258,12 +301,9 @@ padding-bottom:17px;
 }
 
 select {
-   padding: 5px;
-   width:auto;
-   border: 1px solid #ccc;
+   /*border: 1px solid #ccc;*/
    font-family:Tahoma, Geneva, sans-serif;
-   height: 30px;
-   margin: 5px;
+   height: 20px;
 }
 
 #footer{

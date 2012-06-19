@@ -126,6 +126,8 @@ var plans = 0;
 <script> //approve sale
 function Approve_Sale()
 {
+	$( "#dsr_plans" ).load('process_submit.php?method=plans&id=<?php echo $_GET["id"] . "&type=" . $data["type"]; ?>');
+	
 	var id = "<?php echo $_GET["id"]; ?>",
 		verifier = "<?php echo $ac["user"]; ?>",
 		lead_id = $( ".lead_id" ),
@@ -384,9 +386,7 @@ $(function() {
 
 function Plans()
 {
-	var id = "<?php echo $_GET['id']; ?>";
-	$( "#packages2" ).load('packages.php?id=' + id);
-	
+	$( "#dsr_plans" ).load('process_submit.php?method=plans&id=<?php echo $_GET["id"] . "&type=" . $data["type"]; ?>');
 	$( "#dialog-form4" ).dialog( "open" );
 }
 </script>
@@ -434,135 +434,6 @@ if (mysql_num_rows($q) == 0 || $id == "")
 	echo "<script>window.location = '../qa/sales.php';</script>";
 	exit;
 }
-
-$physical = $data["physical"];
-$postal = $data["postal"];
-
-if (substr($physical,0,2) == "GA")
-{
-	$q1 = mysql_query("SELECT * FROM gnaf WHERE address_detail_pid = '$physical'") or die(mysql_error());
-	$data2 = mysql_fetch_assoc($q1);
-	
-	if ($data2["FLAT_NUMBER"] != 0)
-	{
-		$building_type = $data2["FLAT_TYPE_CODE"];
-		$building_number = $data2["FLAT_NUMBER"];
-		$building_number_suffix = $data2["FLAT_NUMBER_SUFFIX"];
-	}
-	elseif ($data2["LEVEL_NUMBER"] != 0)
-	{
-		$building_type = "LVL";
-		$building_number = $data2["LEVEL_NUMBER"];
-		$building_number_suffix = $data2["LEVEL_NUMBER_SUFFIX"];
-	}
-	
-	$street_number_start = $data2["NUMBER_FIRST"] . $data2["NUMBER_FIRST_SUFFIX"];
-	
-	if ($data2["NUMBER_LAST"] != 0)
-	{
-		$street_number_end = $data2["NUMBER_LAST"];
-	}
-	
-	$street_name = $data2["STREET_NAME"];
-
-	if ($data2["STREET_SUFFIX_CODE"] != "")
-	{
-		$street_type = $data2["STREET_TYPE_CODE"] . " " . $data2["STREET_SUFFIX_CODE"];
-	}
-	else
-	{
-		$street_type = $data2["STREET_TYPE_CODE"];
-	}
-	
-	$suburb = $data2["LOCALITY_NAME"];
-	$state = $data2["STATE"];
-	$postcode = $data2["POSTCODE"];
-}
-elseif (substr($physical,0,2) == "MA")
-{
-	$q1 = mysql_query("SELECT * FROM address WHERE id = '$physical'") or die(mysql_error());
-	$data2 = mysql_fetch_assoc($q1);
-	
-	$street_name = $data2["street"];
-	$suburb = $data2["suburb"];
-	$state = $data2["state"];
-	$postcode = $data2["postcode"];
-}
-
-if ($postal != $physical)
-{
-	if (substr($postal,0,2) == "GA")
-	{
-		$q1 = mysql_query("SELECT * FROM gnaf WHERE address_detail_pid = '$postal'") or die(mysql_error());
-		$data2 = mysql_fetch_assoc($q1);
-		
-		$mail_street_number = $data2["NUMBER_FIRST"] . $data2["NUMBER_FIRST_SUFFIX"];
-	
-		if ($data2["STREET_SUFFIX_CODE"] != "")
-		{
-			$mail_street = $data2["STREET_NAME"] . " " . $data2["STREET_TYPE_CODE"] . " " . $data2["STREET_SUFFIX_CODE"];
-		}
-		else
-		{
-			$mail_street = $data2["STREET_NAME"] . " " . $data2["STREET_TYPE_CODE"];
-		}
-		
-		$mail_suburb = $data2["LOCALITY_NAME"];
-		$mail_state = $data2["STATE"];
-		$mail_postcode = $data2["POSTCODE"];
-	}
-	elseif (substr($postal,0,2) == "MA")
-	{
-		$q1 = mysql_query("SELECT * FROM address WHERE id = '$postal'") or die(mysql_error());
-		$data2 = mysql_fetch_assoc($q1);
-		
-		$mail_street = $data2["street"];
-		$mail_suburb = $data2["suburb"];
-		$mail_state = $data2["state"];
-		$mail_postcode = $data2["postcode"];
-	}
-}
-
-$q2 = mysql_query("SELECT plan FROM sales_packages WHERE sid = '$id'") or die(mysql_error());
-$contract_months = 0;
-while ($planc = mysql_fetch_row($q2))
-{
-	$q1 = mysql_query("SELECT name FROM plan_matrix WHERE id = '$planc[0]'") or die(mysql_error());
-	$plan_name = mysql_fetch_row($q1);
-	$planc[0] = $plan_name[0];
-	
-	if (preg_match("/24 Month Contract/", $planc[0]))
-	{
-		$contract = 24;
-	}
-	elseif (preg_match("/12 Month Contract/", $planc[0]))
-	{
-		$contract = 12;
-	}
-	else
-	{
-		$contract = 0;
-	}
-	
-	if ($contract >= $contract_months)
-	{
-		$contract_months = $contract;
-	}
-}
-
-switch ($contract_months)
-{
-	case 0:
-	$no_contract="selected";
-	break;
-	case 12:
-	$m_contract="selected";
-	break;
-	case 24:
-	$mm_contract="selected";
-	break;
-}
-
 ?>
 
 <div id="text">
@@ -591,105 +462,14 @@ switch ($contract_months)
 <div id="dialog-form3" title="Validate DSR Details">
 <table width="100%">
 <tr>
-<td>Account Status</td>
-<td><select id="account_status" style="margin:0 0 5px; padding:0; width:125px; height:auto;">
-<option>Waiting Provisioning</option>
-<option>Resubmit Order</option>
-</select></td>
-<td>ADSL Status</td>
-<td><select id="adsl_status" style="margin:0 0 5px; padding:0; width:125px; height:auto;">
-<option></option>
-<option>Pending</option>
-</select></td>
-<td>Wireless Status</td>
-<td><select id="wireless_status" style="margin:0 0 5px; padding:0; width:125px; height:auto;">
-<option></option>
-<option>Pending</option>
-</select></td>
-</tr>
-</table>
-<table width="100%">
-<tr>
-<td colspan="6"><img src="../images/physical_address_header.png" width="125" height="15" style="margin-left:3px;" /></td>
+<td colspan="6"><img src="../images/other_details_header.png" width="105" height="15" style="margin-left:3px;" /></td>
 </tr>
 <tr>
 <td colspan="6"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
 </tr>
 <tr>
-<td>Building Type</td>
-<td><input type="text" id="building_type" value="<?php echo $building_type; ?>" /></td>
-<td>Building Number</td>
-<td><input type="text" id="building_number" value="<?php echo $building_number; ?>" /></td>
-</tr>
-<tr>
-<td>Building Number Suffix</td>
-<td><input type="text" id="building_number_suffix" value="<?php echo $building_number_suffix; ?>" /></td>
-<td>Building Name</td>
-<td><input type="text" id="building_name" value="<?php echo $building_name; ?>" /></td>
-</tr>
-<tr>
-<td>Street Number Start</td>
-<td><input type="text" id="street_number_start" value="<?php echo $street_number_start; ?>" /></td>
-<td>Street Number End</td>
-<td><input type="text" id="street_number_end" value="<?php echo $street_number_end; ?>" /></td>
-</tr>
-<tr>
-<td>Street Name</td>
-<td><input type="text" id="street_name" value="<?php echo $street_name; ?>" /></td>
-<td>Street Type</td>
-<td><input type="text" id="street_type" value="<?php echo $street_type; ?>" /></td>
-</tr>
-<tr>
-<td>Suburb</td>
-<td><input type="text" id="suburb" value="<?php echo $suburb; ?>" /></td>
-<td>State</td>
-<td><input type="text" id="state" value="<?php echo $state; ?>" /></td>
-<td>Postcode</td>
-<td><input type="text" id="postcode" value="<?php echo $postcode; ?>" /></td>
-</tr>
-</table>
-<table width="100%">
-<tr>
-<td colspan="6"><img src="../images/postal_address_header.png" width="115" height="15" style="margin-left:3px;" /></td>
-</tr>
-<tr>
-<td colspan="6"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td>PO Box Number</td>
-<td><input type="text" id="po_box_number" value="<?php echo $po_box_number; ?>" /></td>
-<td>Mail Street Number</td>
-<td><input type="text" id="mail_street_number" value="<?php echo $mail_street_number; ?>" /></td>
-<td>Mail Street</td>
-<td><input type="text" id="mail_street" value="<?php echo $mail_street; ?>" /></td>
-</tr>
-<tr>
-<td>Mail Suburb</td>
-<td><input type="text" id="mail_suburb" value="<?php echo $mail_suburb; ?>" /></td>
-<td>Mail State</td>
-<td><input type="text" id="mail_state" value="<?php echo $mail_state; ?>" /></td>
-<td>Mail Postcode</td>
-<td><input type="text" id="mail_postcode" value="<?php echo $mail_postcode; ?>" /></td>
-</tr>
-</table>
-<table width="100%">
-<tr>
-<td colspan="4"><img src="../images/other_details_header.png" width="105" height="15" style="margin-left:3px;" /></td>
-</tr>
-<tr>
-<td colspan="4"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td>Contract Months</td>
-<td><select id="contract_months" style="margin:0 0 5px; padding:0; width:50px; height:auto;">
-<option <?php echo $no_contract ?>>0</option>
-<option <?php echo $m_contract ?>>12</option>
-<option <?php echo $mm_contract ?>>24</option>
-</select></td>
 <td>Credit Offered</td>
 <td><input type="text" id="credit_offered" value="" /></td>
-</tr>
-<tr>
 <td>PayWay</td>
 <td><input type="text" id="payway" value="" /></td>
 <td>Direct Debit</td>
@@ -704,144 +484,18 @@ switch ($contract_months)
 <td colspan="4"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
 </tr>
 <tr>
-<td>Additional Information</td>
-<td><textarea id="additional_information" style="resize:none;"></textarea></td>
-<td>Billing Comment</td>
-<td><textarea id="billing_comment" style="resize:none;"></textarea></td>
-</tr>
-<tr>
-<td>Provisioning Comment</td>
-<td><textarea id="provisioning_comment" style="resize:none;"></textarea></td>
-<td>Mobile Comment</td>
-<td><textarea id="mobile_comment" style="resize:none;"></textarea></td>
-</tr>
-<tr>
-<td>Other Comment</td>
-<td colspan="3"><textarea id="other_comment" style="resize:none;"></textarea></td>
+<td colspan="4" align="center"><textarea id="other_comment" style="resize:none; width:95%; height:100px; border:1px solid #C6C6C6;">
+</textarea></td>
 </tr>
 </table>
 </div>
 
 <div id="dialog-form4" title="Validate DSR Plans">
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="100%">
-<thead>
-<tr class="ui-widget-header ">
-<th>CLI</th>
-<th>Plan</th>
-</tr>
-</thead>
-<tbody id="packages2">
+<div id="dsr_plans">
 <script>
-var id = "<?php echo $_GET['id']; ?>";
-$( "#packages2" ).load('packages.php?id=' + id);
+$( "#dsr_plans" ).load('process_submit.php?method=plans&id=<?php echo $_GET["id"] . "&type=" . $data["type"]; ?>');
 </script>
-</tbody>
-</table>
 </div>
-<table width="100%">
-<tr>
-<td colspan="8"><img src="../images/dsr_comments_header.png" width="115" height="15" style="margin-left:3px; margin-top:5px;" /></td>
-</tr>
-<tr>
-<td colspan="8"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<?php
-$q2 = mysql_query("SELECT id FROM sf_plan_code WHERE type = '$data[type]'") or die(mysql_error());
-$sf_plan_codes = "<option></option>";
-while ($sf = mysql_fetch_row($q2))
-{
-	$sf_plan_codes .= "<option>" . $sf[0] . "</option>";
-}
-for ($i = 1; $i <= 10; $i++)
-{
-	echo "<tr>";
-	echo "<td>CLI " . $i . "</td>";
-	echo "<td><input type='text' id='cli_" . $i . "' /></td>";
-	echo "<td>Plan " . $i . "</td>";
-	echo "<td><select id='plan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
-	$i++;
-	echo "<td>CLI " . $i . "</td>";
-	echo "<td><input type='text' id='cli_" . $i . "' /></td>";
-	echo "<td>Plan " . $i . "</td>";
-	echo "<td><select id='plan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
-	echo "</tr>";
-}
-?>
-<tr>
-<td colspan="8"><img src="../images/dsr_comments_header.png" width="115" height="15" style="margin-left:3px; margin-top:5px;" /></td>
-</tr>
-<tr>
-<td colspan="8"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<?php
-for ($i = 1; $i <= 3; $i++)
-{
-	echo "<tr>";
-	echo "<td>MSN " . $i . "</td>";
-	echo "<td><input type='text' id='msn_" . $i . "' /></td>";
-	echo "<td>Mplan " . $i . "</td>";
-	echo "<td><select id='mplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
-	$i++;
-	if ($i <= 3)
-	{
-		echo "<td>MSN " . $i . "</td>";
-		echo "<td><input type='text' id='msn_" . $i . "' /></td>";
-		echo "<td>Mplan " . $i . "</td>";
-		echo "<td><select id='mplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
-		echo "</tr>";
-	}
-}
-?>
-<tr>
-<td colspan="8"><img src="../images/dsr_comments_header.png" width="115" height="15" style="margin-left:3px; margin-top:5px;" /></td>
-</tr>
-<tr>
-<td colspan="8"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<?php
-for ($i = 1; $i <= 2; $i++)
-{
-	echo "<tr>";
-	echo "<td>WMSN " . $i . "</td>";
-	echo "<td><input type='text' id='wmsn_" . $i . "' /></td>";
-	echo "<td>Wplan " . $i . "</td>";
-	echo "<td><select id='wplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
-	$i++;
-	echo "<td>WMSN " . $i . "</td>";
-	echo "<td><input type='text' id='wmsn_" . $i . "' /></td>";
-	echo "<td>Wplan " . $i . "</td>";
-	echo "<td><select id='wplan_" . $i ."' style='width:100px; height:20px; padding:0px; margin:0;'>" . $sf_plan_codes . "</select></td>";
-	echo "</tr>";
-}
-?>
-<tr>
-<td colspan="8"><img src="../images/dsr_comments_header.png" width="115" height="15" style="margin-left:3px; margin-top:5px;" /></td>
-</tr>
-<tr>
-<td colspan="8"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td>ACLI</td>
-<td><input type='text' id='acli' /></td>
-<td>Aplan</td>
-<td><select id='aplan' style='width:100px; height:20px; padding:0px; margin:0;'><?php echo $sf_plan_codes; ?></select></td>
-<td></td>
-<td></td>
-<td>Bundle</td>
-<td><select id='bundle' style='width:100px; height:20px; padding:0px; margin:0;'>
-<option>PSTN</option>
-<option>ADSL</option>
-<option>MOBILE</option>
-<option>WIRELESS</option>
-<option>ABUNDLE</option>
-<option>MBUNDLE</option>
-<option>WBUNDLE</option>
-<option>ABUNDLE+M</option>
-<option>WBUNDLE+M</option>
-</select></td>
-</tr>
-</table>
 </div>
 
 <p><img src="../images/process_sale_header.png" width="130" height="25" style="margin-left:3px;" /></p>
