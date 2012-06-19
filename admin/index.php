@@ -112,31 +112,46 @@ function pad(number, length) {
 
 var Seconds=<?php echo $t; ?>;
 function doTime() {
-var timeString = "";
-var secs = parseInt(Seconds % 60);
-var mins = parseInt(Seconds / 60 % 60);
-var hours = parseInt(Seconds / 3600 % 24);
-var days = parseInt(Seconds / 86400);
-period = ((hours > 11) ? " PM" : " AM");
-if (hours > 12)
-{
-	hours = hours - 12;
+	var timeString = "";
+	var secs = parseInt(Seconds % 60);
+	var mins = parseInt(Seconds / 60 % 60);
+	var hours = parseInt(Seconds / 3600 % 24);
+	var days = parseInt(Seconds / 86400);
+	period = ((hours > 11) ? " PM" : " AM");
+	if (hours > 12)
+	{
+		hours = hours - 12;
+	}
+	hours = pad(hours,2);
+	mins = pad(mins,2);
+	secs = pad(secs,2);
+	
+	timeString = hours + ":" + mins + ":" + secs + " " + period;
+	var span_el = document.getElementById("time");
+	var replaceWith = document.createTextNode(timeString);
+	span_el.replaceChild(replaceWith, span_el.childNodes[0]);
+	Seconds++;
+	setTimeout("doTime()",1000);
 }
-hours = pad(hours,2);
-mins = pad(mins,2);
-secs = pad(secs,2);
-
-timeString = hours + ":" + mins + ":" + secs + " " + period;
-var span_el = document.getElementById("time");
-var replaceWith = document.createTextNode(timeString);
-span_el.replaceChild(replaceWith, span_el.childNodes[0]);
-Seconds++;
-setTimeout("doTime()",1000);
+</script>
+<script>
+function doLoad(){
+	$( "#load" ).load("index_process.php?method=load");
+	setTimeout("doLoad()",5000);
 }
-
+</script>
+<script>
+function doMem(){
+	$( "#mem" ).load("index_process.php?method=mem");
+	setTimeout("doMem()",10000);
+}
+</script>
+<script>
 window.onload = function() {
 	doTime();
 	doUptime();
+	doLoad();
+	doMem();
 }
 </script>
 </head>
@@ -245,10 +260,14 @@ include "../source/admin_menu.php";
 </thead>
 <tbody>
 <tr height="75%">
-<td>Coming Soon</td>
+<td><div id="load">
+<script>
+$( "#load" ).load("index_process.php?method=load");
+</script>
+</div></td>
 </tr>
 <tr class="ui-widget-header">
-<th>CPU</th>
+<th>/proc/loadavg</th>
 </tr>
 </tbody>
 </table>
@@ -264,7 +283,11 @@ include "../source/admin_menu.php";
 </thead>
 <tbody>
 <tr height="75%">
-<td>Coming Soon</td>
+<td><div id="mem">
+<script>
+$( "#mem" ).load("index_process.php?method=mem");
+</script>
+</div></td>
 </tr>
 <tr class="ui-widget-header">
 <th>/proc/meminfo</th>
