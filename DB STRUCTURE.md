@@ -577,8 +577,15 @@ CREATE TABLE IF NOT EXISTS `STREET_TYPE_AUT` (
 
 CREATE TABLE IF NOT EXISTS `address` (
   `id` varchar(15) NOT NULL,
-  `street` varchar(512) NOT NULL,
-  `suburb` varchar(64) NOT NULL,
+  `building_type` varchar(32) NOT NULL,
+  `building_number` varchar(32) NOT NULL,
+  `building_number_suffix` varchar(32) NOT NULL,
+  `building_name` varchar(512) NOT NULL,
+  `number_first` varchar(32) NOT NULL,
+  `number_last` varchar(32) NOT NULL,
+  `street_name` varchar(512) NOT NULL,
+  `street_type` varchar(128) NOT NULL,
+  `suburb` varchar(128) NOT NULL,
   `state` varchar(3) NOT NULL,
   `postcode` varchar(4) NOT NULL,
   PRIMARY KEY (`id`)
@@ -656,9 +663,7 @@ CREATE TABLE IF NOT EXISTS `archive_mcrm_customers` (
   `tpvNotes` text NOT NULL,
   `tpvFail` varchar(128) NOT NULL,
   PRIMARY KEY (`id`),
-  FULLTEXT KEY `search` 
-
-(`saleAgent`,`fname`,`sname`,`dob`,`addr1`,`addr2`,`suburb`,`postcode`,`p_addr1`,`p_addr2`,`p_suburb`,`p_postcode`)
+  FULLTEXT KEY `search` (`saleAgent`,`fname`,`sname`,`dob`,`addr1`,`addr2`,`suburb`,`postcode`,`p_addr1`,`p_addr2`,`p_suburb`,`p_postcode`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
@@ -955,6 +960,8 @@ CREATE TABLE IF NOT EXISTS `packages` (
 
 CREATE TABLE IF NOT EXISTS `plan_matrix` (
   `id` varchar(18) NOT NULL,
+  `t_id` varchar(32) NOT NULL,
+  `s_id` varchar(32) NOT NULL,
   `status` varchar(16) NOT NULL,
   `rating` varchar(16) NOT NULL,
   `name` varchar(128) NOT NULL,
