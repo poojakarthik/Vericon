@@ -216,6 +216,14 @@ for ($i = 0;$i < count($p1);$i++)
 
 $d = explode("/",$_SERVER['PHP_SELF']);
 
+$q3 = mysql_query("SELECT * FROM vericon.portals_pages WHERE portal = '$d[1]' AND link = '" . mysql_real_escape_string($d[2]) . "'") or die(mysql_error());
+$page_id = mysql_fetch_assoc($q3);
+
+$q4 = mysql_query("SELECT * FROM vericon.portals_access WHERE user = '$ac[user]' AND portal = '$d[1]' AND pages LIKE '%" . mysql_real_escape_string($page_id["id"]) . "%'") or die(mysql_error());
+
+$q5 = mysql_query("SELECT * FROM vericon.portals WHERE id = '$d[1]'") or die(mysql_error());
+$portal_name = mysql_fetch_assoc($q5);
+
 if ($_SERVER[PHP_SELF] == "/index.php")
 {
 	if ($p != "")
@@ -228,7 +236,7 @@ elseif (mysql_num_rows($q1) != 1)
 	header("Location: ../index.php");
 	exit;
 }
-elseif (preg_match("/admin/",$p) || $d[1] == "manuals" || $d[1] == "mobile" || $_SERVER[PHP_SELF] == "/main.php" || $_SERVER[PHP_SELF] == "/update.php")
+elseif (preg_match("/admin/",$p) || $_SERVER[PHP_SELF] == "/main.php" || $d[1] == "ma")
 {
 	
 }
@@ -237,11 +245,11 @@ elseif ($acc[$d[1]] != true)
 	header("Location: ../index.php");
 	exit;
 }
-/*elseif ($ac["type"] == "Self")
+elseif (mysql_num_rows($q4) == 0)
 {
-	header("Location: ../update.php");
+	header("Location: ../index.php");
 	exit;
-}*/
+}
 
 $access_level = $ac["access"];
 
@@ -249,5 +257,6 @@ if ($ac["status"] == "Disabled")
 {
 	setcookie("hash", "", time()-86400);
 	header("Location: ../index.php?attempt=banned");
+	exit;
 }
 ?>

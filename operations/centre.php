@@ -1,17 +1,10 @@
 <?php
 include "../auth/iprestrict.php";
+include "../source/header.php";
+
 $q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
 $cen = mysql_fetch_row($q);
 $centres = str_replace(",","_",$cen[0]);
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Operations :: Centre Timesheet Report</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
 ?>
 <script src="../js/date.js" type="text/javascript"></script>
 <style>
@@ -150,20 +143,6 @@ function Daily_Export(date)
 	window.location = "../self/admin_timesheet_export.php?centre=" + centre.val() + "&date=" + date;
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/export2_btn_hover.png" />
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/operations_menu.php";
-?>
-
-<div id="text">
 
 <div id="dialog-confirm" title="Daily Breakdown for W.E. <span class='we'></span>">
 <div id="users-contain" class="ui-widget">
@@ -212,11 +191,6 @@ $( "#week" ).load('centre_display.php?method=week');
 </script>
 </div>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

@@ -1,15 +1,7 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Leads :: Upload Leads</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<link rel="stylesheet" type="text/css" href="upload/uploadify.css" />
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
+
 if ($_POST["m"] == "done")
 {
 ?>
@@ -21,6 +13,7 @@ $.get("upload_view.php?method=complete", function (data) {
 <?
 }
 ?>
+<link rel="stylesheet" type="text/css" href="upload/uploadify.css" />
 <script type="text/javascript" src="upload/jquery.uploadify-3.1.min.js"></script>
 <script>
 $(function() {
@@ -61,21 +54,6 @@ $(function() {
     });
 });
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/done_btn_hover.png" />
-</div>
-
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/leads_menu.php";
-?>
-
-<div id="text" style="margin-top:0px;">
 
 <form id="complete" action="upload.php" method="post">
 <input type="hidden" name="m" value="done" />
@@ -97,11 +75,6 @@ $( "#display" ).load("upload_view.php?method=last");
 </script>
 </div>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

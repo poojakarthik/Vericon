@@ -1,15 +1,7 @@
 <?php
 include "../auth/iprestrict.php";
+include "../source/header.php";
 include "../js/self-js.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Customer Solutions :: Scripts</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
 ?>
 <link rel="stylesheet" href="../css/jqtransform.css" type="text/css" media="all" />
 <script type="text/javascript" src="../js/jquery.jqtransform.js"></script>
@@ -159,20 +151,7 @@ function DD(campaign,website)
 	$( "#dialog-form6" ).dialog( "open" );
 }
 </script>
-</head>
 
-<body>
-<div style="display:none;">
-<img src="../images/load_script_btn_hover.png" />
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/cs_menu.php";
-?>
-
-<div id="text" class="demo">
 <p><img src="../images/script_options_heading.png" width="150" height="25" /></p>
 <p><img src="../images/line.png" width="740" height="9" alt="line" /></p><br />
 
@@ -547,13 +526,7 @@ else
 <div id="script_text" style="border:0; margin-top:0;">
 <iframe src="../script/script.php" id="script" name="script" width="100%" height="350px" frameborder="0">
 </iframe>
-</div>
-
-</div>
 
 <?php
 include "../source/footer.php";
 ?>
-
-</body>
-</html>

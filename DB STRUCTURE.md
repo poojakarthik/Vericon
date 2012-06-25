@@ -809,6 +809,62 @@ CREATE TABLE IF NOT EXISTS `customers` (
 ```
 ```sql
 --
+-- Table structure for table `gnaf`
+--
+
+CREATE TABLE IF NOT EXISTS `gnaf` (
+  `ADDRESS_DETAIL_PID` varchar(15) CHARACTER SET latin1 NOT NULL DEFAULT '',
+  `ADDRESS_SITE_PID` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `ALIAS_PRINCIPAL` char(1) CHARACTER SET latin1 DEFAULT NULL,
+  `BUILDING_NAME` varchar(4) CHARACTER SET latin1 DEFAULT NULL,
+  `CONFIDENCE` int(2) DEFAULT NULL,
+  `FLAT_NUMBER` int(5) DEFAULT NULL,
+  `FLAT_NUMBER_PREFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `FLAT_NUMBER_SUFFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `FLAT_TYPE_CODE` varchar(7) CHARACTER SET latin1 DEFAULT NULL,
+  `GNAF_PROPERTY_PID` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `LEGAL_PARCEL_ID` varchar(20) CHARACTER SET latin1 DEFAULT NULL,
+  `LEVEL_GEOCODED_CODE` int(2) DEFAULT NULL,
+  `LEVEL_NUMBER` int(3) DEFAULT NULL,
+  `LEVEL_NUMBER_PREFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `LEVEL_NUMBER_SUFFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `LEVEL_TYPE_CODE` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `LOCALITY_PID` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `LOCATION_DESCRIPTION` varchar(45) CHARACTER SET latin1 DEFAULT NULL,
+  `LOT_NUMBER` varchar(5) CHARACTER SET latin1 DEFAULT NULL,
+  `LOT_NUMBER_PREFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `LOT_NUMBER_SUFFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `NUMBER_FIRST` int(6) DEFAULT NULL,
+  `NUMBER_FIRST_PREFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `NUMBER_FIRST_SUFFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `NUMBER_LAST` int(10) DEFAULT NULL,
+  `NUMBER_LAST_PREFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `NUMBER_LAST_SUFFIX` varchar(10) CHARACTER SET latin1 DEFAULT NULL,
+  `POSTCODE` varchar(4) CHARACTER SET latin1 DEFAULT NULL,
+  `PRIMARY_SECONDARY` varchar(1) CHARACTER SET latin1 DEFAULT NULL,
+  `PRIVATE_STREET` varchar(75) CHARACTER SET latin1 DEFAULT NULL,
+  `PROPERTY_PID` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `STREET_LOCALITY_PID` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `DATE_CREATED` datetime DEFAULT NULL,
+  `DATE_LAST_MODIFIED` datetime DEFAULT NULL,
+  `DATE_RETIRED` datetime DEFAULT NULL,
+  `STREET_NAME` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
+  `STREET_TYPE_CODE` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `STREET_SUFFIX_CODE` varchar(15) CHARACTER SET latin1 DEFAULT NULL,
+  `LOCALITY_NAME` varchar(100) CHARACTER SET latin1 DEFAULT NULL,
+  `STATE` varchar(3) CHARACTER SET latin1 DEFAULT NULL,
+  `LATITUDE` decimal(11,8) DEFAULT NULL,
+  `LONGITUDE` decimal(11,8) DEFAULT NULL,
+  `RELIABILITY_CODE` int(1) DEFAULT NULL,
+  PRIMARY KEY (`ADDRESS_DETAIL_PID`),
+  KEY `POSTCODE` (`POSTCODE`),
+  KEY `POSTCODE_2` (`POSTCODE`,`LOCALITY_NAME`),
+  KEY `POSTCODE_3` (`POSTCODE`,`STREET_NAME`,`LOCALITY_NAME`),
+  KEY `FLAT_NUMBER` (`FLAT_NUMBER`,`NUMBER_FIRST`,`NUMBER_LAST`,`POSTCODE`,`STREET_NAME`,`STREET_TYPE_CODE`,`LOCALITY_NAME`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+```
+```sql
+--
 -- Table structure for table `international`
 --
 
@@ -988,6 +1044,48 @@ CREATE TABLE IF NOT EXISTS `plan_rates` (
   `data` varchar(300) NOT NULL,
   `etf` varchar(300) NOT NULL,
   PRIMARY KEY (`plan_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `portals`
+--
+
+CREATE TABLE IF NOT EXISTS `portals` (
+  `id` varchar(32) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `status` int(1) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `portals_access`
+--
+
+CREATE TABLE IF NOT EXISTS `portals_access` (
+  `user` varchar(16) NOT NULL,
+  `portal` varchar(32) NOT NULL,
+  `pages` text NOT NULL,
+  PRIMARY KEY (`user`,`portal`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `portals_pages`
+--
+
+CREATE TABLE IF NOT EXISTS `portals_pages` (
+  `id` varchar(32) NOT NULL,
+  `portal` varchar(32) NOT NULL,
+  `name` varchar(64) NOT NULL,
+  `link` varchar(64) NOT NULL,
+  `level` int(11) NOT NULL,
+  `sub_level` int(11) NOT NULL,
+  `status` int(1) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `portal` (`portal`,`level`,`sub_level`),
+  UNIQUE KEY `id` (`id`,`portal`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql

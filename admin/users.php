@@ -1,25 +1,17 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Admin :: Users</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
-	label, input { display:block; }
-	input.text { margin-bottom:12px; width:95%; padding: .4em; font-family:Tahoma, Geneva, sans-serif;
+label, input { display:block; }
+input.text { margin-bottom:12px; width:95%; padding: .4em; font-family:Tahoma, Geneva, sans-serif;
 font-size:13px; }
-	fieldset { padding:0; border:0; margin-top:25px; }
-	h1 { font-size: 1.2em; margin: .6em 0; }
-	div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
-	div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
-	.ui-dialog .ui-state-error { padding: .3em; }
-	.validateTips { border: 1px solid transparent; padding: 0.3em; }
+fieldset { padding:0; border:0; margin-top:25px; }
+h1 { font-size: 1.2em; margin: .6em 0; }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+.ui-dialog .ui-state-error { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
 </style>
 <script> // create user modal
 $(function() {
@@ -300,17 +292,6 @@ $(function() {
 	$( "input:submit", ".demo" ).button();
 });
 </script>
-</head>
-
-<body>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/admin_menu.php";
-?>
-
-<div id="text" class="demo">
 
 <div id="dialog-confirm" title="Disable User?">
 	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure you would like to disable this user?</p>
@@ -566,14 +547,6 @@ if (($st + 10) < $rows)
 </td>
 </tr>
 </table>
-
-</div>
-
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

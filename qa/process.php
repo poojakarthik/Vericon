@@ -1,14 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Quality Assurance</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
 .loadscript
@@ -413,17 +405,8 @@ function Details()
 	window.open(l,'details','menubar=no,scrollbars=yes,width=1000px,height=900px,left=1px,top=1px');
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/load_script2_btn_hover.png" /><img src="../images/details_btn_hover.png" /><img src="../images/dsr_btn_hover.png" /><img src="../images/plans_btn_hover.png" /><img src="../images/approve_sale_btn_hover.png" /><img src="../images/reject_sale_btn_hover.png" />
-</div>
-<div id="main_wrapper">
 
 <?php
-include "../source/header.php";
-include "../source/qa_menu.php";
 
 $id = $_GET["id"];
 $q = mysql_query("SELECT * FROM sales_customers WHERE id = '$id'") or die(mysql_error());
@@ -435,8 +418,6 @@ if (mysql_num_rows($q) == 0 || $id == "")
 	exit;
 }
 ?>
-
-<div id="text">
 
 <div id="dialog-form" title="Reject Sale">
 <p class="error">All fields are required</p><br />
@@ -576,11 +557,6 @@ while ($plan = mysql_fetch_row($qp))
 </tr>
 </table>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

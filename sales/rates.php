@@ -1,28 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Sales :: Rates</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
-?>
-</head>
-
-<body>
-<div id="main_wrapper">
-
-<?php
 include "../source/header.php";
-include "../source/sales_menu.php";
-?>
-
-<div id="text" style="overflow:hidden;" class="demo">
-
-<?php
 include "../source/rates.php";
 ?>
 
@@ -31,13 +9,5 @@ include "../source/rates.php";
 
 <?php
 include "../source/international.php";
-?>
-
-</div>
-
-</div> 
-<?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

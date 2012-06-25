@@ -1,14 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Operations :: OP Payable</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
 .edit
@@ -162,20 +154,6 @@ function Bonus(user)
 	}
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/operations_menu.php";
-?>
-
-<div id="text">
 
 <table width="100%">
 <tr>
@@ -221,11 +199,6 @@ $( "#display" ).load('payable_display.php?centre=' + centre.val() + '&date=' + d
 </script>
 </div>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

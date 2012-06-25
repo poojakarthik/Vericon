@@ -1,15 +1,8 @@
 <?php
 include "../auth/iprestrict.php";
+include "../source/header.php";
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: User Manual</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
-?>
+
 <script>
 function Play(id)
 {
@@ -17,20 +10,6 @@ function Play(id)
 	window.open(l,'Video','menubar=no,scrollbars=no,width=1050px,height=825px,left=10px,top=10px');
 }
 </script>
-</head>
-
-<body>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/manuals_menu.php";
-?>
-
-<div id="text">
-
-<div id="dialog-confirm" title="Sale Details">
-</div>
 
 <p><img src="../images/video_tutorials_header.png" width="160" height="25" style="margin-left:3px;" /></p>
 <p><img src="../images/line.png" width="740" height="9" /></p>
@@ -72,11 +51,6 @@ for ($i = 0;$i < count($portals);$i++)
 ?>
 </table></center>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

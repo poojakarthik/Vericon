@@ -1,14 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: HR :: Users</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
 .edit {
@@ -424,21 +416,6 @@ function Search()
 	$( "#dialog-form3" ).dialog( "open" );
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/back_hover_btn.png" /><img src="../images/next_hover_btn.png" /><img src="../images/create_user_btn_hover.png" /><img src="../images/search_btn_hover.png" />
-</div>
-
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/hr_menu.php";
-?>
-
-<div id="text" class="demo">
 
 <div id="dialog-form" title="Create User">
 	<p class="validateTips"><span style="color:#ff0000;">*</span> Required Fields</p>
@@ -559,12 +536,6 @@ $( "#display" ).load("user_display.php?page=0&user=<?php echo $ac["user"] ?>");
 </script>
 </div>
 
-</div>
-
-</div>
-
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

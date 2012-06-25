@@ -1,15 +1,7 @@
 <?php
 include "../auth/iprestrict.php";
+include "../source/header.php";
 $id = $_GET["id"];
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: TPV :: Verification</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
 ?>
 <style>
 .loadscript
@@ -790,20 +782,6 @@ function Plan_Dropdown_Edit()
 	$( "#edit_plan" ).load("plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#edit_cli').val());
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/getsale_btn_hover.png" /><img src="../images/load_script_btn_hover.png" /><img src="../images/cancel_form_btn_hover.png" /><img src="../images/add_package_btn_hover.png" /><img src="../images/notes_btn_hover.png" />
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/tpv_menu.php";
-?>
-
-<div id="text" class="demo">
 
 <div id="dialog-confirm" title="Sale Details">
 <div id="previous_details"></div>
@@ -1431,6 +1409,7 @@ while ($package2 = mysql_fetch_assoc($q8))
 <div id="script_text" style="border:0; margin-top:0; padding:5px 5px 0; width:100%;">
 <iframe src="../script/script_tpv.php" id="script" name="script" width="100%" height="380px" frameborder="0">
 </iframe>
+</div>
 </td>
 </tr>
 </table>
@@ -1439,12 +1418,6 @@ while ($package2 = mysql_fetch_assoc($q8))
 </table>
 <?php
 }
-?>
 
-</div>
-</div> 
-<?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

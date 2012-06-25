@@ -1,14 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Operations :: Rejections</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
 div#users-contain table { margin: 1em 0; margin-bottom:0; border-collapse: collapse; }
@@ -84,20 +76,6 @@ function View(centre)
 	$( "#dialog-confirm" ).dialog( "open" );
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/operations_menu.php";
-?>
-
-<div id="text">
 
 <div id="dialog-confirm" title="Rejections for <span class='cent'></span>">
 <div id="users-contain" class="ui-widget">
@@ -134,12 +112,7 @@ var user = "<?php echo $ac["user"] ?>",
 $( "#display" ).load('rejections_display.php?method=display&user=' + user + '&date1=' + date1.val() + '&date2=' + date2.val());
 </script>
 </div>
-
-</div>
-
-</div> 
+ 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

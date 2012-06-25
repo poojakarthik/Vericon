@@ -1,17 +1,10 @@
 <?php
 include "../auth/iprestrict.php";
+include "../source/header.php";
+
 $q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
 $cen = mysql_fetch_row($q);
 $centres = explode(",",$cen[0]);
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Operations :: Agent Timesheet Report</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
 ?>
 <script src="../js/date.js" type="text/javascript"></script>
 <style>
@@ -200,20 +193,6 @@ function Export()
 	window.location = "agent_export?user=" + user.val() + "&date1=" + date1.val() + "&date2=" + date2.val();
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/search_btn_hover_2.png" /><img src="../images/export_btn_hover.png" />
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/operations_menu.php";
-?>
-
-<div id="text">
 
 <div id="dialog-form" title="Search">
 <p class="validateTips">Please Type the Agent's Name Below</p><br />
@@ -260,11 +239,6 @@ include "../source/operations_menu.php";
 
 <div id="week"></div>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

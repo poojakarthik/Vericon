@@ -1,14 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Leads</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
 div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
@@ -100,26 +92,11 @@ function Search()
 	$( "#dialog-confirm" ).dialog( "open" );
 }
 </script>
-</head>
-
-<body>
-<div style="display:none;">
-<img src="../images/search_btn_hover_2.png" /><img src="../images/trigger_btn_hover.png" /><img src="../images/ajax-loader.gif" />
-</div>
 
 <div id="dialog-confirm" title="Lead Search">
 	<p>Lead ID: &nbsp;&nbsp;<input type="text" size="25" id="lead" /></p>
     <p class="result" style="margin-top:10px;"></p>
 </div>
-
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/leads_menu.php";
-?>
-
-<div id="text" style="margin-top:0px;">
 
 <p><img src="../images/leads_dashboard_header.png" width="175" height="25" style="margin-left:3px;" /><input type="button" onclick="Search()" class="search" /></p>
 <p><img src="../images/line.png" width="740" height="9" /></p>
@@ -257,11 +234,6 @@ echo "</tr>";
 </table>
 </div></center>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

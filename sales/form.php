@@ -1,15 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>VeriCon :: Sales :: Sales Form</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
 #physical_address_code { height:120px; margin:0px; overflow-y:auto; border:1px solid black; padding:3px; }
@@ -1503,9 +1494,6 @@ function Postal_Same()
 	}
 }
 </script>
-</head>
-
-<body>
 
 <div id="dialog-form" title="Sale Details">
 <p class="validateTips">Please select a campaign and sale type</p><br />
@@ -1785,13 +1773,6 @@ for ($i = 0; $i < count($campaign); $i++)
 </table>
 </div>
 
-<div id="main_wrapper">
-<?php
-include "../source/header.php";
-include "../source/sales_menu.php";
-?>
-<div id="text">
-
 <input type="hidden" id="lead_id" value="" />
 <div id="display">
 <script>
@@ -1802,10 +1783,6 @@ function() {
 </script>
 </div>
 
-</div>
-</div>
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>
