@@ -64,7 +64,7 @@ else
 		$payg_d = "\$<input type='text' id='$data[user]_payg' value='$payg' onChange='PAYG(\"$data[user]\")' style='height:15px; width:35px;'>";
 		$net = $gross - $payg;
 		$net_d = "\$" . number_format($net,2);
-		$other_d = "<input type='button' onclick='More_Edit(\"$data[user]\",\"$user[0] $user[1]\")' class='more' title='More'>";
+		$other_d = "<input type='button' onclick='More_Edit(\"$data[user]\")' class='more' title='More'>";
 		
 		if ($da[0] == "" || $da[0] == 0)
 		{

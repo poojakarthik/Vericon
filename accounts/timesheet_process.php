@@ -17,6 +17,13 @@ elseif ($method == "to")
 	$year = date("Y", strtotime($date));
 	echo date("d/m/Y", strtotime($year . "W" . $week . "7"));
 }
+elseif ($method == "name")
+{
+	$user = $_GET["user"];
+	$q = mysql_query("SELECT first,last FROM auth WHERE user = '$user'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	echo $data[0] . " " . $data[1];
+}
 elseif ($method == "annual")
 {
 	$user = $_GET["user"];

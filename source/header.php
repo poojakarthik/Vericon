@@ -99,8 +99,7 @@ $.get("../source/clock.php", function(time) { Seconds = time; });
 $q = mysql_query("SELECT * FROM vericon.portals_pages WHERE portal = '$d[1]' AND status = '1' AND sub_level = '0' ORDER BY level") or die(mysql_error());
 while ($pages = mysql_fetch_assoc($q))
 {
-	$q1 = mysql_query("SELECT * FROM vericon.portals_access WHERE user = '$ac[user]' AND portal = '$d[1]' AND pages LIKE '%" . mysql_real_escape_string ($pages["id"]) . "%'") or die(mysql_error());
-	if (mysql_num_rows($q1) == 1 || $acc["admin"] == true)
+	if (in_array($pages["id"], $access_pages) || $acc["admin"] == true)
 	{
 		if ($pages["link"] != "")
 		{
@@ -112,8 +111,7 @@ while ($pages = mysql_fetch_assoc($q))
 			$q2 = mysql_query("SELECT * FROM vericon.portals_pages WHERE portal = '$d[1]' AND status = '1' AND level = '$pages[level]' AND sub_level > '0' ORDER BY sub_level") or die(mysql_error());
 			while ($sub_pages = mysql_fetch_assoc($q2))
 			{
-				$q3 = mysql_query("SELECT * FROM vericon.portals_access WHERE user = '$ac[user]' AND portal = '$d[1]' AND pages LIKE '%" . mysql_real_escape_string ($sub_pages["id"]) . "%'") or die(mysql_error());
-				if (mysql_num_rows($q3) == 1 || $acc["admin"] == true)
+				if (in_array($sub_pages["id"], $access_pages) || $acc["admin"] == true)
 				{
 					$pages_link[$pages["level"]] .= '<li><a href="../' . $d[1] . '/' . $sub_pages["link"] . '">' . strtoupper($sub_pages["name"]) . '</a></li>';
 				}

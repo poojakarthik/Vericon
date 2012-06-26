@@ -62,7 +62,7 @@ else
 		$payg_d = "\$" . number_format($payg,2);
 		$net = $gross - $payg;
 		$net_d = "\$" . number_format($net,2);
-		$other_d = "<input type='button' onclick='More_Display(\"$data[user]\",\"$user[0] $user[1]\")' class='more' title='More'>";
+		$other_d = "<input type='button' onclick='More_Display(\"$data[user]\")' class='more' title='More'>";
 
 		if ($da[0] == "" || $da[0] == 0)
 		{

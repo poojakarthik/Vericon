@@ -219,7 +219,9 @@ $d = explode("/",$_SERVER['PHP_SELF']);
 $q3 = mysql_query("SELECT * FROM vericon.portals_pages WHERE portal = '$d[1]' AND link = '" . mysql_real_escape_string($d[2]) . "'") or die(mysql_error());
 $page_id = mysql_fetch_assoc($q3);
 
-$q4 = mysql_query("SELECT * FROM vericon.portals_access WHERE user = '$ac[user]' AND portal = '$d[1]' AND pages LIKE '%" . mysql_real_escape_string($page_id["id"]) . "%'") or die(mysql_error());
+$q4 = mysql_query("SELECT pages FROM vericon.portals_access WHERE user = '$ac[user]'") or die(mysql_error());
+$ap = mysql_fetch_row($q4);
+$access_pages = explode(",", $ap[0]);
 
 $q5 = mysql_query("SELECT * FROM vericon.portals WHERE id = '$d[1]'") or die(mysql_error());
 $portal_name = mysql_fetch_assoc($q5);
@@ -245,7 +247,7 @@ elseif ($acc[$d[1]] != true)
 	header("Location: ../index.php");
 	exit;
 }
-elseif (mysql_num_rows($q4) == 0)
+elseif (!in_array($page_id["id"], $access_pages))
 {
 	header("Location: ../index.php");
 	exit;

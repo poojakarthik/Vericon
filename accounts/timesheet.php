@@ -261,10 +261,10 @@ $(function() {
 	});
 });
 
-function More_Display(user,name)
+function More_Display(user)
 {
 	var date = $( "#datepicker" );
-	$( "#name_d" ).val(name);
+	$.get("timesheet_process.php", {method: "name", user: user}, function (data) { $( "#name_d" ).val(data); });
 	$.get("timesheet_process.php", {method: "annual", user: user, date: date.val()}, function (data) { $( "#annual_d" ).val(data); });
 	$.get("timesheet_process.php", {method: "sick", user: user, date: date.val()}, function (data) { $( "#sick_d" ).val(data); });
 	$.get("timesheet_process.php", {method: "comments", user: user, date: date.val()}, function(data) {$( "#comments_d" ).val(data);});
@@ -328,7 +328,7 @@ function More_Edit(user,name)
 	var date = $( "#datepicker" );
 	$( ".validateTips" ).html("Enter the Additional Hours and Comments Below");
 	$( "#user" ).val(user);
-	$( "#name" ).val(name);
+	$.get("timesheet_process.php", {method: "name", user: user}, function (data) { $( "#name" ).val(data); });
 	$.get("timesheet_process.php", {method: "annual", user: user, date: date.val()}, function (data) { $( "#annual" ).val(data); });
 	$.get("timesheet_process.php", {method: "sick", user: user, date: date.val()}, function (data) { $( "#sick" ).val(data); });
 	$.get("timesheet_process.php", {method: "comments", user: user, date: date.val()}, function(data) {$( "#comments" ).val(data);});
@@ -383,7 +383,7 @@ function More_Edit(user,name)
 <table width="100%">
 <tr>
 <td align="left"><img src="../images/centre_timesheet_header.png" width="175" height="25" style="margin-left:3px;" /></td>
-<td align="right" style="padding-right:10px;"><select id="centre" style="margin:0px; padding:0px; height:22px; width:75px;" onchange="Centre()">
+<td align="right" style="padding-right:10px;"><select id="centre" style="width:75px;" onchange="Centre()">
 <option>Centre</option>
 <?php
 $q = mysql_query("SELECT centre FROM centres WHERE type = 'Self' AND status = 'Active' ORDER BY centre ASC") or die(mysql_error());
