@@ -1486,8 +1486,12 @@ function Postal_Same()
 	{
 		$( "#display_postal1" ).val("");
 		$( "#display_postal2" ).val("");
+		$( "#display_postal3" ).val("");
+		$( "#display_postal4" ).val("");
 		$( "#display_postal1" ).removeAttr("disabled");
 		$( "#display_postal2" ).removeAttr("disabled");
+		$( "#display_postal3" ).removeAttr("disabled");
+		$( "#display_postal4" ).removeAttr("disabled");
 		$( "#postal" ).val("");
 		$( "#postal_link" ).attr("onclick", "Postal()");
 		$( "#postal_link" ).attr("style", "cursor:pointer; text-decoration:underline;");

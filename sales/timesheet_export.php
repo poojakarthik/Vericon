@@ -1,18 +1,17 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
 $date = $_GET["date"];
 $centre = $_GET["centre"];
 
-$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' ORDER BY user ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centre' AND date = '$date' ORDER BY user ASC") or die(mysql_error());
 
 if (mysql_num_rows($q) != 0)
 {
-	$q1 = mysql_query("SELECT campaign FROM centres WHERE centre = '$centre'") or die(mysql_error());
+	$q1 = mysql_query("SELECT campaign FROM vericon.centres WHERE centre = '$centre'") or die(mysql_error());
 	$campaign = mysql_fetch_row($q1);
 	
-	$q2 = mysql_query("SELECT * FROM timesheet_designation,auth WHERE timesheet_designation.designation = 'Team Leader' AND auth.centre = '$centre' AND auth.status = 'Enabled' AND auth.user = timesheet_designation.user") or die(mysql_error());
+	$q2 = mysql_query("SELECT * FROM vericon.timesheet_designation,vericon.auth WHERE timesheet_designation.designation = 'Team Leader' AND auth.centre = '$centre' AND auth.status = 'Enabled' AND auth.user = timesheet_designation.user") or die(mysql_error());
 	$ti = 0;
 	while($t = mysql_fetch_assoc($q2))
 	{
@@ -38,7 +37,7 @@ if (mysql_num_rows($q) != 0)
 	$i = 16;
 	
 	// Team Leader
-	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Team Leader' ORDER BY user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Team Leader' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -49,10 +48,10 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
-			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[user]'") or die(mysql_error());
 			$user = mysql_fetch_row($q0);
 			
-			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+			$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$sales = mysql_num_rows($q3);
 			
 			$objPHPExcel->setActiveSheetIndex(0)
@@ -70,7 +69,7 @@ if (mysql_num_rows($q) != 0)
 	}
 	
 	// Closer
-	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Closer' ORDER BY user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Closer' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -82,10 +81,10 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
-			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[user]'") or die(mysql_error());
 			$user = mysql_fetch_row($q0);
 			
-			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+			$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$sales = mysql_num_rows($q3);
 			
 			$objPHPExcel->setActiveSheetIndex(0)
@@ -103,7 +102,7 @@ if (mysql_num_rows($q) != 0)
 	}
 	
 	// Agent
-	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Agent' ORDER BY user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Agent' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -114,10 +113,10 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
-			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[user]'") or die(mysql_error());
 			$user = mysql_fetch_row($q0);
 			
-			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+			$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$sales = mysql_num_rows($q3);
 			
 			$objPHPExcel->setActiveSheetIndex(0)
@@ -135,7 +134,7 @@ if (mysql_num_rows($q) != 0)
 	}
 	
 	// Probation
-	$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Probation' ORDER BY user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centre' AND date = '$date' AND designation = 'Probation' ORDER BY user ASC") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$objPHPExcel->setActiveSheetIndex(0)
@@ -146,10 +145,10 @@ if (mysql_num_rows($q) != 0)
 		
 		while ($data = mysql_fetch_assoc($q))
 		{
-			$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+			$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[user]'") or die(mysql_error());
 			$user = mysql_fetch_row($q0);
 			
-			$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+			$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
 			$sales = mysql_num_rows($q3);
 			
 			$objPHPExcel->setActiveSheetIndex(0)

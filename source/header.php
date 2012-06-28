@@ -107,7 +107,7 @@ while ($pages = mysql_fetch_assoc($q))
 		}
 		else
 		{
-			$pages_link[$pages["level"]] .= '<li><a style="cursor:pointer;">' . strtoupper($pages["name"]) . '</a><ul>';
+			$pages_link[$pages["level"]] .= '<li><span style="padding:8px 25px; cursor:pointer; display:block; margin:inherit;">' . strtoupper($pages["name"]) . '</span><ul>';
 			$q2 = mysql_query("SELECT * FROM vericon.portals_pages WHERE portal = '$d[1]' AND status = '1' AND level = '$pages[level]' AND sub_level > '0' ORDER BY sub_level") or die(mysql_error());
 			while ($sub_pages = mysql_fetch_assoc($q2))
 			{
@@ -127,4 +127,29 @@ echo $links;
 </ul>
 </div>
 </div>
+
+<script>
+keypressed = null;
+
+$(window).keydown(function(event) {
+    keypressed = event.keyCode;
+});
+
+$(window).keyup(function(event) {
+    keypressed = null;
+});
+
+$("a" , "#menu").click(function(event) {
+    // Don't work magic if command keys or ctrl keys held down
+    if (keypressed == 91 || keypressed == 92 || keypressed == 17) {
+        return true;
+    }
+	var transition_link = $(this).attr("href");
+    event.preventDefault();
+    $( "#display" ).hide('blind', '' , 'slow', function() {
+        location.href = transition_link;
+    });
+});
+</script>
+
 <div id="text">

@@ -143,6 +143,26 @@ input{
 	cursor:pointer;
 }
 
+.icon_undo {
+	background-image:url('../images/undo_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
+.icon_save {
+	background-image:url('../images/save_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .get_sale_btn{
 	background-image:url('../images/getsale_btn.png');
 	background-repeat:no-repeat;

@@ -73,7 +73,7 @@ elseif ($method == "form")
 $(function() {
 	$( "#datepicker" ).datepicker( {
 		showOn: "button",
-		buttonImage: "../images/calendar.gif",
+		buttonImage: "../images/calendar.png",
 		buttonImageOnly: true,
 		dateFormat: "yy-mm-dd",
 		firstDay: 1,
