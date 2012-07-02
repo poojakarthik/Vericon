@@ -1,31 +1,18 @@
 <?php
 //declare variables
-$campaign = $_GET['campaign'];
+$campaign = str_replace("_", " ", $_GET['campaign']);
 $campaign_check = "";
 $website = "";
 $number = "";
-$plan = $_GET['plan'];
-$plan_name = $_GET['plan'];
+$plan = str_replace("_", " ", $_GET['plan']);
+$plan_name = str_replace("_", " ", $_GET['plan']);
 $date = "<span style=\"color:#FF0000;\">_______</span>";
 
 include "../script/source/convert.php";
 include "../script/source/questions.php";
 ?>
 
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title><?php echo $campaign_name . " " . $plan_name; ?></title>
-<link rel="shortcut icon" href="../images/vericon.ico">
 <style type="text/css">
-body{
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:11px;
-}
-table td{
-	font-family:Arial, Helvetica, sans-serif;
-	font-size:11px;
-}
 .line{
 	width:100%;
 }
@@ -44,7 +31,6 @@ table td{
 <body>
 <?php
 
-echo "<h1><u>" . $campaign_name . " " . $plan_name . "</u></h1>";
 //Landline
 if ($plan[0] == 'T')
 {
@@ -54,7 +40,9 @@ if ($plan[0] == 'T')
 		for($page=1;$page<=21;$page++)
 		{
 			include "../script/order/bus_nc.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 	
@@ -64,7 +52,9 @@ if ($plan[0] == 'T')
 		for($page=1;$page<=22;$page++)
 		{
 			include "../script/order/bus_c.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 	
@@ -74,7 +64,9 @@ if ($plan[0] == 'T')
 		for($page=1;$page<=20;$page++)
 		{
 			include "../script/order/resi_nc.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 	
@@ -84,7 +76,9 @@ if ($plan[0] == 'T')
 		for($page=1;$page<=22;$page++)
 		{
 			include "../script/order/resi_c.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 }
@@ -96,7 +90,9 @@ elseif ($plan[0] == 'A')
 		for($page=1;$page<=24;$page++)
 		{
 			include "../script/order/bus_adsl.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 	
@@ -106,7 +102,9 @@ elseif ($plan[0] == 'A')
 		for($page=1;$page<=24;$page++)
 		{
 			include "../script/order/resi_adsl.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 }
@@ -118,7 +116,9 @@ elseif ($plan[0] == 'W')
 		for($page=1;$page<=23;$page++)
 		{
 			include "../script/order/bus_wireless.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 	
@@ -128,7 +128,9 @@ elseif ($plan[0] == 'W')
 		for($page=1;$page<=23;$page++)
 		{
 			include "../script/order/resi_wireless.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 }
@@ -140,7 +142,9 @@ elseif ($plan[0] == 'B')
 		for($page=1;$page<=24;$page++)
 		{
 			include "../script/order/bus_bundle.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 	
@@ -150,11 +154,11 @@ elseif ($plan[0] == 'B')
 		for($page=1;$page<=24;$page++)
 		{
 			include "../script/order/resi_bundle.php";
+			echo "<br>";
 			echo "<div class='line'><hr></hr></div>";
+			echo "<br>";
 		}
 	}
 }
 
 ?>
-</body>
-</html>

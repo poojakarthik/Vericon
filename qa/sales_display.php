@@ -24,6 +24,7 @@ $(function() {
 		changeMonth: true,
 		changeYear: true,
 		maxDate: "0d",
+		minDate: "<?php echo "2012-03-01"; ?>",
 		onSelect: function(dateText, inst) {
 			$( "#display" ).hide('blind', '' , 'slow', function() {
 				$( "#display" ).load('sales_display.php?date=' + dateText,

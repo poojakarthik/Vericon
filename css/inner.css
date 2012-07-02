@@ -123,6 +123,60 @@ input{
 	cursor:pointer;
 }
 
+.btn[disabled] {
+	background-image:url('../images/btn_disabled.png');
+	cursor:default;
+	color:#DDDDDD;
+}
+
+.btn_red{
+	background-image:url('../images/btn_red.png');
+	background-repeat:no-repeat;
+	height:30px;
+	width:102px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size:11px;
+	color:#FFFFFF;
+	font-weight:bold;
+	text-transform:uppercase;
+	text-align:center;
+}
+
+.btn_red:hover {
+	background-image:url('../images/btn_red_hover.png');
+	cursor:pointer;
+}
+
+.btn2{
+	background-image:url('../images/btn2.png');
+	background-repeat:no-repeat;
+	height:25px;
+	width:85px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size:10px;
+	color:#FFFFFF;
+	font-weight:bold;
+	text-transform:uppercase;
+	text-align:center;
+}
+
+.btn2:hover {
+	background-image:url('../images/btn2_hover.png');
+	cursor:pointer;
+}
+
+.btn2[disabled] {
+	background-image:url('../images/btn2_disabled.png');
+	cursor:default;
+	color:#DDDDDD;
+}
+
 .icon_delete {
 	background-image:url('../images/delete_icon.png');
 	background-repeat:no-repeat;

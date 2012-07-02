@@ -1,21 +1,37 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
 $method = $_GET["method"];
 
-if ($method == "add") //add package
+if ($method == "notes")
 {
-	$sid = $_GET["id"];
+	$id = $_GET["id"];
+	
+	$q = mysql_query("SELECT * FROM vericon.tpv_notes WHERE id = '$id' ORDER BY timestamp DESC") or die (mysql_error());
+	while ($tpv_notes = mysql_fetch_assoc($q))
+	{
+		$q1 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$tpv_notes[verifier]'") or die(mysql_error());
+		$vname = mysql_fetch_assoc($q1);
+		
+		echo "----- " . date("d/m/Y H:i:s", strtotime($tpv_notes["timestamp"])) . " - " . $vname["first"] . " " . $vname["last"] . " -----" . " (" . $tpv_notes["status"] . ")\n";
+		echo $tpv_notes["note"] . "\n";
+	}
+}
+elseif ($method == "add")
+{
+	$id = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
 	$week = date("W");
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM sales_packages WHERE cli = '$cli' AND WEEK(timestamp) = '$week'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages_temp WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check2 = mysql_fetch_row($ch2);
 	
-	$ch3 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '" . mysql_escape_string($cli) . "'");
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
+	
+	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
+	$check4 = mysql_fetch_row($ch4);
 	
 	if (!preg_match("/^0[2378][0-9]{8}$/",$cli))
 	{
@@ -25,28 +41,31 @@ if ($method == "add") //add package
 	{
 		echo "CLI is on the SCT DNC list";
 	}
-	elseif ($check2[0] != 0)
+	elseif ($check2[0] != 0 || $check4[0] != 0)
 	{
 		echo "CLI already added";
 	}
 	else
 	{
-		mysql_query("INSERT INTO sales_packages (sid, cli, plan) VALUES ('$sid', '" . mysql_escape_string($cli) . "', '$plan')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan) VALUES ('$id', '$cli', '$plan')") or die(mysql_error());
 		echo "added";
 	}
 }
 elseif ($method == "edit") //edit package
 {
-	$sid = $_GET["id"];
+	$id = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
 	$cli2 = $_GET["cli2"];
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM sales_packages WHERE cli = '$cli'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages_temp WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check2 = mysql_fetch_row($ch2);
 	
-	$ch3 = mysql_query("SELECT COUNT(cli) FROM sct_dnc WHERE cli = '" . mysql_escape_string($cli) . "'");
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
+	
+	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
+	$check4 = mysql_fetch_row($ch4);
 	
 	if (!preg_match("/^0[2378][0-9]{8}$/",$cli))
 	{
@@ -56,23 +75,23 @@ elseif ($method == "edit") //edit package
 	{
 		echo "CLI is on the SCT DNC list";
 	}
-	elseif ($check2[0] != 0 && $cli != $cli2)
+	elseif (($check2[0] != 0 || $check4[0] != 0) && $cli != $cli2)
 	{
 		echo "CLI already added";
 	}
 	else
 	{
-		mysql_query("DELETE FROM sales_packages WHERE sid = '$sid' AND cli = '$cli2' LIMIT 1") or die(mysql_error());
-		mysql_query("INSERT INTO sales_packages (sid, cli, plan) VALUES ('$sid', '" . mysql_escape_string($cli) . "', '$plan')") or die(mysql_error());
+		mysql_query("DELETE FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli2' LIMIT 1") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan) VALUES ('$id', '$cli', '$plan')") or die(mysql_error());
 		echo "editted";
 	}
 }
-elseif ($method == "delete") //delete package
+elseif ($method == "delete")
 {
-	$sid = $_GET["id"];
+	$id = $_GET["id"];
 	$cli = $_GET["cli"];
 	
-	mysql_query("DELETE FROM sales_packages WHERE sid = '$sid' AND cli = '$cli' LIMIT 1") or die(mysql_error());
+	mysql_query("DELETE FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli' LIMIT 1") or die(mysql_error());
 	
 	echo "deleted";
 }
@@ -80,27 +99,29 @@ elseif ($method == "submit")
 {
 	$id = $_GET["id"];
 	$title = $_GET["title"];
-	$first = strtoupper(substr($_GET["first"],0,1)) . strtolower(substr($_GET["first"],1));
-	$middle = strtoupper(substr($_GET["middle"],0,1)) . strtolower(substr($_GET["middle"],1));
-	$last = strtoupper(substr($_GET["last"],0,1)) . strtolower(substr($_GET["last"],1));
+	$first = trim(strtoupper(substr($_GET["first"],0,1)) . strtolower(substr($_GET["first"],1)));
+	$middle = trim(strtoupper(substr($_GET["middle"],0,1)) . strtolower(substr($_GET["middle"],1)));
+	$last = trim(strtoupper(substr($_GET["last"],0,1)) . strtolower(substr($_GET["last"],1)));
 	$dob = $_GET["dob"];
 	$email = $_GET["email"];
 	$mobile = $_GET["mobile"];
-	$billing = $_GET["billing"];
 	$physical = $_GET["physical"];
 	$postal = $_GET["postal"];
 	$id_type = $_GET["id_type"];
-	$id_num = $_GET["id_num"];
+	$id_num = trim($_GET["id_num"]);
 	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
-	$position = $_GET["position"];
+	$position = trim(strtoupper($_GET["position"]));
+	$credit = trim($_GET["credit"]);
+	$payway = trim($_GET["payway"]);
+	$dd_type = $_GET["dd_type"];
 	
-	$q = mysql_query("SELECT * FROM sales_customers WHERE id = '$id'");
-	$data2 = mysql_fetch_assoc($q);
+	$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'");
+	$data = mysql_fetch_assoc($q);
 	
-	$type = $data2["type"];
+	$type = $data["type"];
 	
-	$q1 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id'");
+	$q1 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id'");
 	
 	function check_email_address($email) //email validation function
 	{
@@ -219,13 +240,23 @@ elseif ($method == "submit")
 	{
 		echo "Please enter the customer's position in the business";
 	}
+	elseif ($credit != "" && !preg_match("/^[0-9]$/",$credit))
+	{
+		echo "Please enter a valid credit amount";
+	}
+	elseif ($payway != "" && !preg_match("/^SP0[2378][0-9]{8}$/",$payway))
+	{
+		echo "Please enter a valid payway ID (e.g. SP0312345678)";
+	}
 	elseif (mysql_num_rows($q1) == 0)
 	{
 		echo "Please enter a package for the customer";
 	}
 	else
 	{
-		mysql_query("UPDATE sales_customers SET title = '$title', firstname = '" . mysql_escape_string($first) . "', middlename = '" . mysql_escape_string($middle) . "', lastname = '" . mysql_escape_string($last) . "', dob = '" . mysql_escape_string($dob) . "', email = '" . mysql_escape_string($email) . "', mobile = '" . mysql_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_escape_string($id_type) . "', id_num = '" . mysql_escape_string($id_num) . "', abn = '" . mysql_escape_string($abn) . "', position = '" . mysql_escape_string($position) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		if ($email == "N/A") { $billing = "post"; } else { $email = strtolower($email); $billing = "email"; }
+		
+		mysql_query("UPDATE vericon.sales_customers SET title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', credit = '" . mysql_real_escape_string($credit) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
 		echo "submitted";
 	}
