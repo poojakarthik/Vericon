@@ -546,7 +546,7 @@ elseif ($type == "display")
 		$state = $data["state"];
 		$postcode = $data["postcode"];
 		
-		echo $street_number . " " . $street_name . " " . $street_type . "}" . $suburb . "}" . $state . "}" . $postcode;
+		echo trim($street_number . " " . $street_name . " " . $street_type . "}" . $suburb . "}" . $state . "}" . $postcode);
 		
 	}
 	elseif (substr($id,0,2) == "MA")
@@ -575,7 +575,7 @@ elseif ($type == "display")
 			$street_number = $number_first;
 		}
 		
-		echo $building_type . " " . $building_number . " " . $building_name . " " . $street_number . " " . $street_name . " " . $street_type . "}" . $suburb . "}" . $state . "}" . $postcode;
+		echo trim($building_type . " " . $building_number . " " . $building_name . " " . $street_number . " " . $street_name . " " . $street_type . "}" . $suburb . "}" . $state . "}" . $postcode);
 	}
 }
 ?>
