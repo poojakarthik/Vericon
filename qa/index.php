@@ -10,7 +10,7 @@ div#users-contain table td { border: 1px solid #eee; padding: .6em 10px; text-al
 
 <div id="display">
 <script>
-$( "#display" ).load("index_display.php",
+$( "#display" ).load("index_display.php?date1=<?php echo date("Y-m-d"); ?>&date2=<?php echo date("Y-m-d"); ?>",
 function() {
 	$( "#display" ).show('blind', '' , 'slow');
 });
