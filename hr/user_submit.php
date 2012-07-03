@@ -12,6 +12,7 @@ $first = trim($_GET["first"]);
 $last = trim($_GET["last"]);
 $centre = $_GET["centre"];
 $alias = trim($_GET["alias"]);
+$timestamp = date("Y-m-d H:i:s");
 
 if ($method == "create")
 {
@@ -55,7 +56,7 @@ if ($method == "create")
 		
 		$username = $user1 . str_pad(($num[0]+1),3,"0",STR_PAD_LEFT);
 
-		mysql_query("INSERT INTO vericon.auth (user, pass, type, status, first, last, centre, alias) VALUES ('$username' ,'" . md5($password) . "', '$type', 'Enabled', '" . mysql_real_escape_string($first) . "', '" . mysql_real_escape_string($last) . "', '$centre', '" . mysql_real_escape_string($alias) . "')");
+		mysql_query("INSERT INTO vericon.auth (user, pass, type, status, first, last, centre, alias, timestamp) VALUES ('$username' ,'" . md5($password) . "', '$type', 'Enabled', '" . mysql_real_escape_string($first) . "', '" . mysql_real_escape_string($last) . "', '$centre', '" . mysql_real_escape_string($alias) . "', '$timestamp')");
 		
 		mysql_query("INSERT INTO vericon.timesheet_designation (user,designation) VALUES ('$username','$designation')") or die(mysql_error());
 		

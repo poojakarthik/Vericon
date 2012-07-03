@@ -730,6 +730,7 @@ CREATE TABLE IF NOT EXISTS `auth` (
   `first` varchar(300) NOT NULL,
   `last` varchar(300) NOT NULL,
   `alias` varchar(300) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```

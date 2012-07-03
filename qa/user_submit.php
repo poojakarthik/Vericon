@@ -9,6 +9,7 @@ $type = "QA";
 $status = $_GET["status"];
 $first = trim($_GET["first"]);
 $last = trim($_GET["last"]);
+$timestamp = date("Y-m-d H:i:s");
 
 if ($method == "create")
 {
@@ -40,7 +41,7 @@ if ($method == "create")
 		
 		$username = $user1 . str_pad(($num[0]+1),3,"0",STR_PAD_LEFT);
 
-		mysql_query("INSERT INTO vericon.auth (user, pass, type, status, first, last) VALUES ('$username' ,'" . md5($password) . "', '$type', 'Enabled', '" . mysql_real_escape_string($first) . "', '" . mysql_real_escape_string($last) . "')");
+		mysql_query("INSERT INTO vericon.auth (user, pass, type, status, first, last, timestamp) VALUES ('$username' ,'" . md5($password) . "', '$type', 'Enabled', '" . mysql_real_escape_string($first) . "', '" . mysql_real_escape_string($last) . "', '$timestamp')");
 		
 		$q1 = mysql_query("SELECT pages FROM vericon.portals_template WHERE user = 'QA'") or die(mysql_error());
 		$pages = mysql_fetch_row($q1);
