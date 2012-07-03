@@ -42,7 +42,8 @@ function pad(number, length) {
 }
 
 var Seconds=<?php echo $t; ?>;
-setInterval( function() {
+function Header_Clock()
+{
 	var timeString = "";
 	var secs = parseInt(Seconds % 60);
 	var mins = parseInt(Seconds / 60 % 60);
@@ -58,15 +59,18 @@ setInterval( function() {
 	secs = pad(secs,2);
 	
 	timeString = hours + ":" + mins + ":" + secs + " " + period;
-	var span_el = document.getElementById("time");
-	var replaceWith = document.createTextNode(timeString);
-	span_el.replaceChild(replaceWith, span_el.childNodes[0]);
+	$( "#header_time" ).html(timeString);
 	Seconds++;
-},1000);
+}
 
-setInterval(function() {
-$.get("../source/clock.php", function(time) { Seconds = time; });
-}, 300000);
+function Update_Clock()
+{
+	$.get("../source/clock.php", function(time) { Seconds = time; });
+}
+
+Header_Clock();
+setInterval("Header_Clock()", 1000);
+setInterval("Update_Clock()", 300000);
 </script>
 </head>
 
@@ -78,7 +82,7 @@ $.get("../source/clock.php", function(time) { Seconds = time; });
 <div id="logout">
 <table width="100%" height="17px" border="0" style="padding-right:22px; margin-top:-2px; margin-bottom:-2px;">
 <tr valign="bottom">
-<td align="right"><span class="clock" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#0066cc; font-weight:bolder; margin-right:-10px;"><?php echo date("d/m/Y"); ?> <span id="time"><?php echo date("h:i:s A"); ?></span></span></td>
+<td align="right"><span class="clock" style="font-family:Arial, Helvetica, sans-serif; font-size:11px; color:#0066cc; font-weight:bolder; margin-right:-10px;"><?php echo date("d/m/Y"); ?> <span id="header_time"><?php echo date("h:i:s A"); ?></span></span></td>
 </tr>
 </table>
 <table width="100%" height="24px" border="0" style="padding-right:20px;">
