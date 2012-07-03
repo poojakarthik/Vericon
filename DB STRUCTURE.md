@@ -600,6 +600,8 @@ CREATE TABLE IF NOT EXISTS `allowedip` (
   `IP` varchar(50) NOT NULL,
   `status` int(25) NOT NULL,
   `Description` varchar(500) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `added_by` varchar(8) NOT NULL,
   PRIMARY KEY (`IP`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
