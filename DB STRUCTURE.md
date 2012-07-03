@@ -854,19 +854,6 @@ CREATE TABLE IF NOT EXISTS `leads_group` (
 ```
 ```sql
 --
--- Table structure for table `log_al`
---
-
-CREATE TABLE IF NOT EXISTS `log_al` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `ip` varchar(32) NOT NULL,
-  `user` varchar(32) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-```
-```sql
---
 -- Table structure for table `log_leads`
 --
 
@@ -892,33 +879,6 @@ CREATE TABLE IF NOT EXISTS `log_login` (
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `log_sales`
---
-
-CREATE TABLE IF NOT EXISTS `log_sales` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `user` varchar(32) NOT NULL,
-  `lead_id` varchar(32) NOT NULL,
-  `reason` varchar(300) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `log_tpv_inbound`
---
-
-CREATE TABLE IF NOT EXISTS `log_tpv_inbound` (
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `entered_id` varchar(32) NOT NULL,
-  `actual_id` varchar(32) NOT NULL,
-  `centre` varchar(32) NOT NULL,
-  `status` varchar(64) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -1084,20 +1044,6 @@ CREATE TABLE IF NOT EXISTS `recordings` (
 ```
 ```sql
 --
--- Table structure for table `reworks`
---
-
-CREATE TABLE IF NOT EXISTS `reworks` (
-  `id` varchar(16) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `centre` varchar(8) NOT NULL,
-  `agent` varchar(8) NOT NULL,
-  `reason` varchar(512) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
 -- Table structure for table `sales_customers`
 --
 
@@ -1182,18 +1128,6 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
 CREATE TABLE IF NOT EXISTS `sct_dnc` (
   `cli` varchar(16) NOT NULL,
   PRIMARY KEY (`cli`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `sf_plan_code`
---
-
-CREATE TABLE IF NOT EXISTS `sf_plan_code` (
-  `id` varchar(16) NOT NULL,
-  `plan` varchar(64) NOT NULL,
-  `type` varchar(16) NOT NULL,
-  PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
@@ -1407,17 +1341,4 @@ CREATE TABLE IF NOT EXISTS `updates` (
   `message` longtext NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `vicidial_pool`
---
-
-CREATE TABLE IF NOT EXISTS `vicidial_pool` (
-  `number` varchar(16) NOT NULL,
-  `status` varchar(8) NOT NULL,
-  `indial` varchar(16) NOT NULL,
-  `centre` varchar(16) NOT NULL,
-  PRIMARY KEY (`number`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```

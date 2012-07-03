@@ -20,10 +20,7 @@ if (substr($_GET["sale_id"],0,2) == "12")
 else
 {
 	$ext = $_GET["sale_id"];
-	
-	$q2 = mysql_query("SELECT centre FROM vicidial_pool WHERE number = '$ext'") or die(mysql_error());
-	$data = mysql_fetch_row($q2);
-	$centre = $data[0];
+	$centre = $ext;
 }
 ?>
 
@@ -111,7 +108,7 @@ echo "<td>" . $lines["cli"] . " -- " . $package_name[0] . "</td>";
 </div>	
 <?php
 }
-elseif (substr($ext,0,2) == "99")
+elseif (substr($ext,0,2) == "CC")
 {
 ?>
 <div id="login_form">  

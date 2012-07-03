@@ -44,18 +44,9 @@ if ($_GET["sale_id"] != "")
 		echo "1";
 		$status = "Transferred";
 	}
-	
-	mysql_query("INSERT INTO log_tpv_inbound (entered_id,centre,status) VALUES ('" . mysql_escape_string($log_id) . "','$data[centre]','$status')") or die(mysql_error());
 }
 elseif ($_GET["ext"] != "")
 {
-	$id = $_GET["ext"];
-	
-	$q = mysql_query("SELECT * FROM vicidial_pool WHERE number = '$id'") or die(mysql_error());
-	$data = mysql_fetch_row($q);
-	
-	mysql_query("INSERT INTO log_tpv_inbound (entered_id,actual_id,centre,status) VALUES ('" . mysql_escape_string($id) . "','$data[2]','$data[3]','Transferred')") or die(mysql_error());
-	
 	echo "1";
 }
 ?>
