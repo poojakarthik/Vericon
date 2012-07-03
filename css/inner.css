@@ -257,6 +257,16 @@ input{
 	cursor:pointer;
 }
 
+.icon_logout {
+	background-image:url('../images/logout_icon.png');
+	background-repeat:no-repeat;
+	height:12px;
+	width:20px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .get_sale_btn{
 	background-image:url('../images/getsale_btn.png');
 	background-repeat:no-repeat;

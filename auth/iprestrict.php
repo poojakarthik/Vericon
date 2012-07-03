@@ -259,4 +259,13 @@ if ($ac["status"] == "Disabled")
 	header("Location: ../index.php?attempt=banned");
 	exit;
 }
+
+$current_page = $portal_name["name"] . " :: " . $page_id["name"];
+if ($current_page == " :: ")
+{
+	$current_page = "Main";
+}
+mysql_query("UPDATE vericon.currentuser SET current_page = '" . mysql_real_escape_string($current_page) . "' WHERE hash = '" . $_COOKIE["hash"] . "' AND user = '$ac[user]'") or die(mysql_error());
+
+mysql_query("INSERT INTO vericon.log_access (user, page) VALUES ('$ac[user]' ,'" . mysql_real_escape_string($current_page) . "')") or die(mysql_error());
 ?>

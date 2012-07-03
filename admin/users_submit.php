@@ -83,11 +83,4 @@ elseif ($method == "enable")
 	mysql_query("UPDATE auth SET status = 'Enabled' WHERE user = '$username' LIMIT 1");
 	exit;
 }
-elseif ($method == "logout")
-{
-	$username = $_GET["username"];
-	$hash = $_GET["hash"];
-	mysql_query("DELETE FROM currentuser WHERE hash = '$hash' AND user = '$username' LIMIT 1");
-	exit;
-}
 ?>

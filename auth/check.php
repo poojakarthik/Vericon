@@ -41,11 +41,11 @@ $hash = hash('whirlpool', rand());
 
 if(mysql_num_rows($q2) != 0)
 {
-	mysql_query("UPDATE currentuser SET hash = '$hash', type = '$d[0]', timestamp = NOW() WHERE user = '" . mysql_escape_string($_POST["username"]) . "'") or die(mysql_error());
+	mysql_query("UPDATE currentuser SET hash = '$hash', timestamp = NOW() WHERE user = '" . mysql_escape_string($_POST["username"]) . "'") or die(mysql_error());
 }
 else
 {
-	mysql_query("INSERT INTO currentuser (hash, user, type, timestamp) VALUES ('$hash','" . mysql_escape_string($_POST["username"]) . "', '$d[0]', NOW())") or die(mysql_error());
+	mysql_query("INSERT INTO currentuser (hash, user, timestamp) VALUES ('$hash','" . mysql_escape_string($_POST["username"]) . "', NOW())") or die(mysql_error());
 }
 
 mysql_query("INSERT INTO log_login (ip,user) VALUES ('$_SERVER[REMOTE_ADDR]','" . mysql_escape_string($_POST["username"]) . "')");

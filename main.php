@@ -1,8 +1,5 @@
 <?php
 include "auth/iprestrict.php";
-?>
-<title>VeriCon :: Home</title>
-<?php
 include "source/header.php";
 ?>
 <link rel="stylesheet" href="../css/main.css" type="text/css"/>

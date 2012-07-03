@@ -1,7 +1,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title><?php echo "VeriCon :: " . $portal_name["name"] . " :: " . $page_id["name"]; ?></title>
+<title><?php echo "VeriCon :: " . $current_page; ?></title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
 <link rel="stylesheet" href="../jquery/css/custom-theme/jquery-ui-1.8.20.custom.css">

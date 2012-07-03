@@ -767,8 +767,8 @@ CREATE TABLE IF NOT EXISTS `centres` (
 CREATE TABLE IF NOT EXISTS `currentuser` (
   `hash` varchar(300) NOT NULL,
   `user` varchar(300) NOT NULL,
-  `type` varchar(300) NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `current_page` varchar(300) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`hash`),
   UNIQUE KEY `user` (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -850,6 +850,18 @@ CREATE TABLE IF NOT EXISTS `leads_group` (
   `group` varchar(16) NOT NULL,
   `centres` varchar(32) NOT NULL,
   PRIMARY KEY (`group`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `log_access`
+--
+
+CREATE TABLE IF NOT EXISTS `log_access` (
+  `user` varchar(8) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `page` varchar(300) NOT NULL,
+  KEY `user` (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
