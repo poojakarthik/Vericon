@@ -1,3 +1,7 @@
+<?php
+include "../auth/iprestrict.php";
+include "../source/header.php";
+?>
 <script>
 $(function() {
 	$( "#datepicker" ).datepicker( {
@@ -78,3 +82,7 @@ var centre = $( "#centre" ),
 $( "#download" ).load('admin_rejection_submit.php?method=download&centre=' + centre.val() + '&date=' + date.val());
 </script>
 </div>
+
+<?php
+include "../source/footer.php";
+?>
