@@ -253,8 +253,6 @@ elseif (!in_array($page_id["id"], $access_pages))
 	exit;
 }
 
-$access_level = $ac["access"];
-
 if ($ac["status"] == "Disabled")
 {
 	setcookie("hash", "", time()-86400);

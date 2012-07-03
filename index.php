@@ -60,8 +60,6 @@ elseif ($acc[$d[1]] != true)
 	exit;
 }
 
-$access_level = $ac["access"];
-
 if ($ac["status"] == "Disabled")
 {
 	setcookie("hash", "", time()-86400);

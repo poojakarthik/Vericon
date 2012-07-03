@@ -725,7 +725,6 @@ CREATE TABLE IF NOT EXISTS `auth` (
   `user` varchar(25) NOT NULL,
   `pass` varchar(256) NOT NULL,
   `type` varchar(300) NOT NULL,
-  `access` varchar(25) NOT NULL,
   `centre` varchar(25) NOT NULL,
   `status` varchar(25) NOT NULL,
   `first` varchar(300) NOT NULL,
@@ -1032,6 +1031,18 @@ CREATE TABLE IF NOT EXISTS `portals_pages` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `portal` (`portal`,`level`,`sub_level`),
   UNIQUE KEY `id` (`id`,`portal`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `portals_template`
+--
+
+CREATE TABLE IF NOT EXISTS `portals_template` (
+  `user` varchar(16) NOT NULL,
+  `type` varchar(16) NOT NULL,
+  `pages` text NOT NULL,
+  PRIMARY KEY (`user`,`type`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql

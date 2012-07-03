@@ -197,6 +197,36 @@ input{
 	cursor:pointer;
 }
 
+.icon_cancel {
+	background-image:url('../images/cancel_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
+.icon_check {
+	background-image:url('../images/check_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
+.icon_change_password {
+	background-image:url('../images/change_password_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .icon_view {
 	background-image:url('../images/details_icon.png');
 	background-repeat:no-repeat;
