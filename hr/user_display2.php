@@ -26,12 +26,33 @@ if ($query == "")
 	$page_link = "?page=" . $_GET["page"] . "&user=" . $user;
 	$q = mysql_query("SELECT centres FROM vericon.operations WHERE user = '$user'") or die(mysql_error());
 	$cen = mysql_fetch_row($q);
-	$centres = explode(",",$cen[0]);
-	for ($i = 0; $i < count($centres); $i++)
+	if ($cen[0] == "All")
 	{
-		$c_q .= "centre = '$centres[$i]' OR ";
+		$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+		while ($centres = mysql_fetch_row($q1))
+		{
+			$c_q .= "centre = '$centres[0]' OR ";
+		}
+		$c_q = substr($c_q,0,-4);
 	}
-	$c_q = substr($c_q,0,-4);
+	elseif ($cen[0] == "Captive" || $cen[0] == "Self")
+	{
+		$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' AND type = '$cen[0]' ORDER BY centre ASC") or die(mysql_error());
+		while ($centres = mysql_fetch_row($q1))
+		{
+			$c_q .= "centre = '$centres[0]' OR ";
+		}
+		$c_q = substr($c_q,0,-4);
+	}
+	else
+	{
+		$centres = explode(",",$cen[0]);
+		for ($i = 0; $i < count($centres); $i++)
+		{
+			$c_q .= "centre = '$centres[$i]' OR ";
+		}
+		$c_q = substr($c_q,0,-4);
+	}
 	
 	$check = mysql_query("SELECT * FROM vericon.auth WHERE " . $c_q) or die(mysql_error());
 	$rows = mysql_num_rows($check);

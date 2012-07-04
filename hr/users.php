@@ -355,9 +355,33 @@ function Enable(user)
 }
 </script>
 <?php
-$q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
+$q = mysql_query("SELECT centres FROM vericon.operations WHERE user = '$ac[user]'") or die(mysql_error());
 $cen = mysql_fetch_row($q);
-$centres = explode(",",$cen[0]);
+if ($cen[0] == "All")
+{
+	$centres = array();
+	$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+	while ($centre = mysql_fetch_row($q1))
+	{
+		array_push($centres, $centre[0]);
+	}
+	$centre = implode(",", $centres);
+}
+elseif ($cen[0] == "Captive" || $cen[0] == "Self")
+{
+	$centres = array();
+	$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' AND type = '$cen[0]' ORDER BY centre ASC") or die(mysql_error());
+	while ($centre = mysql_fetch_row($q1))
+	{
+		array_push($centres, $centre[0]);
+	}
+	$centre = implode(",", $centres);
+}
+else
+{
+	$centres = explode(",",$cen[0]);
+	$centre = implode(",", $centres);
+}
 ?>
 <script> // search users
 $(function() {
@@ -395,7 +419,7 @@ $(function() {
 				dataType: "json",
 				data: {
 					method: "search",
-					centres : "<?php echo str_replace(",", "_", $cen[0]); ?>",
+					centres : "<?php echo str_replace(",", "_", $centre); ?>",
 					term : request.term
 				},
 				success: function(data) {
