@@ -55,6 +55,14 @@ function Notes()
 	});
 	$( "#dialog-form_notes" ).dialog( "open" );
 }
+
+function Notes_View(id)
+{
+	$.get("sales_submit.php" , { method: "notes", id: id }, function(data) {
+		$( "#notes" ).val(data);
+	});
+	$( "#dialog-form_notes" ).dialog( "open" );
+}
 </script>
 <script> //cancel form
 function Cancel()

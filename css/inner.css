@@ -237,6 +237,16 @@ input{
 	cursor:pointer;
 }
 
+.icon_notes {
+	background-image:url('../images/notes_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .icon_undo {
 	background-image:url('../images/undo_icon.png');
 	background-repeat:no-repeat;

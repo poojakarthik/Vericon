@@ -45,6 +45,7 @@ if ($method == "init")
 <th>Agent</th>
 <th>Campaign</th>
 <th>Type</th>
+<th style="text-align:center;">Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -54,7 +55,7 @@ $sq = mysql_query("SELECT * FROM vericon.sales_customers WHERE centre = '$ac[cen
 if (mysql_num_rows($sq) == 0)
 {
 	echo "<tr>";
-	echo "<td colspan='7'><center>No Sales Submitted Within the Week!</center></td>";
+	echo "<td colspan='8'><center>No Sales Submitted Within the Week!</center></td>";
 	echo "</tr>";
 }
 else
@@ -71,6 +72,7 @@ else
 		echo "<td>" . $agent["first"] . " " . $agent["last"] . "</td>";
 		echo "<td>" . $sales_data["campaign"] . "</td>";
 		echo "<td>" . $sales_data["type"] . "</td>";
+		echo "<td style='text-align:center;'><button onclick='Notes_View(\"$sales_data[id]\")' class='icon_notes' title='Notes'></button></td>";
 		echo "</tr>";
 	}
 }
