@@ -619,7 +619,7 @@ CREATE TABLE IF NOT EXISTS `announcements` (
   `subject` varchar(300) NOT NULL,
   `message` longtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -893,7 +893,7 @@ CREATE TABLE IF NOT EXISTS `log_login` (
   `ip` varchar(32) NOT NULL,
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=22452 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -906,7 +906,7 @@ CREATE TABLE IF NOT EXISTS `log_unauthorised` (
   `ip` varchar(32) NOT NULL,
   `user` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=1110 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -952,7 +952,6 @@ CREATE TABLE IF NOT EXISTS `plan_matrix` (
 ```sql
 --
 -- Table structure for table `plan_rates`
-
 --
 
 CREATE TABLE IF NOT EXISTS `plan_rates` (
@@ -1356,5 +1355,5 @@ CREATE TABLE IF NOT EXISTS `updates` (
   `subject` varchar(300) NOT NULL,
   `message` longtext NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM  DEFAULT CHARSET=latin1 AUTO_INCREMENT=13 ;
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 ```

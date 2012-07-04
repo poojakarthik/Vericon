@@ -227,6 +227,16 @@ input{
 	cursor:pointer;
 }
 
+.icon_access {
+	background-image:url('../images/access_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .icon_view {
 	background-image:url('../images/details_icon.png');
 	background-repeat:no-repeat;
