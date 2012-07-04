@@ -2,7 +2,23 @@
 include "auth/iprestrict.php";
 include "source/header.php";
 ?>
-<link rel="stylesheet" href="../css/main.css" type="text/css"/>
+<script>
+function Go(link)
+{
+	window.location = "/" + link + "/";
+}
+</script>
+<style>
+#vericon_portals{
+width:753px;
+height:162px;
+background-image:url('../images/vericon_portals_bg.png');
+background-repeat:no-repeat;
+margin-left:auto;
+margin-right:auto;
+margin-top:10px;
+}
+</style>
 <div id="vericon_portals" style="margin-top:-10px;">
 <table class="script_table" style="padding: 15px 15px 7px;">
 <tr><td><img src="../images/vericon_portals_header.png" width="170" height="25" /></td></tr>
@@ -13,8 +29,10 @@ include "source/header.php";
 <?php
 for ($i = 0;$i < count($p1);$i++)
 {
+	$q = mysql_query("SELECT name FROM vericon.portals WHERE id = '$p1[$i]'") or die(mysql_error());
+	$p_name = mysql_fetch_row($q);
 	echo "<td align='center' valign='middle'>";
-	echo "<a href=\"$p1[$i]\" class=\"" . $p1[$i] . "_portal\"></a>";
+	echo "<button onclick='Go(\"$p1[$i]\")' class='portal_btn'>$p_name[0]</button>";
 	echo "</td>";
 }
 ?>

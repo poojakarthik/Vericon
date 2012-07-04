@@ -102,6 +102,26 @@ input{
 	line-height:1.5em;
 }
 
+.portal_btn{
+	background-image:url('../images/plan_btn_bg.png');
+	background-repeat:no-repeat;
+	height:76px;
+	width:132px;
+	display:block;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+	font-family: Tahoma, Geneva, sans-serif;
+	font-size:20px;
+	color:#FFFFFF;
+	text-align:center;
+}
+
+.portal_btn:hover {
+	background-image:url('../images/plan_btn_hover_bg.png');
+	cursor:pointer;
+}
+
 .btn{
 	background-image:url('../images/btn.png');
 	background-repeat:no-repeat;
