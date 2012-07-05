@@ -3,7 +3,7 @@ mysql_connect('localhost','vericon','18450be');
 
 $date = $_GET["date"];
 
-$q0 = mysql_query("SELECT * FROM vericon.centres WHERE status = 'Active'") or die(mysql_error());
+$q0 = mysql_query("SELECT * FROM vericon.centres WHERE status = 'Enabled'") or die(mysql_error());
 $num = mysql_num_rows($q0);
 
 $t1 = ceil($num / 2);
@@ -71,7 +71,7 @@ $(function() {
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Active' ORDER BY centre ASC LIMIT 0,$t1") or die(mysql_error());
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC LIMIT 0,$t1") or die(mysql_error());
 while ($centre = mysql_fetch_row($q))
 {
 	$exclude_b = "";
@@ -149,7 +149,7 @@ while ($centre = mysql_fetch_row($q))
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Active' ORDER BY centre ASC LIMIT $t1,$t2") or die(mysql_error());
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = Enabled' ORDER BY centre ASC LIMIT $t1,$t2") or die(mysql_error());
 while ($centre = mysql_fetch_row($q))
 {
 	$exclude_b = "";

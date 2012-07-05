@@ -169,7 +169,7 @@ for ($i = 0; $i < count($centres); $i++)
 	$q1 = mysql_query("SELECT * FROM centres WHERE centre = '$centres[$i]'") or die(mysql_error());
 	$c_check = mysql_fetch_assoc($q1);
 	
-	if ($c_check["type"] == "Self" && $c_check["status"] == "Active")
+	if ($c_check["type"] == "Self" && $c_check["status"] == "Enabled")
 	{
 		echo "<option>" . $centres[$i] . "</option>";
 	}

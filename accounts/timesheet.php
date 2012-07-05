@@ -386,7 +386,7 @@ function More_Edit(user,name)
 <td align="right" style="padding-right:10px;"><select id="centre" style="width:75px;" onchange="Centre()">
 <option>Centre</option>
 <?php
-$q = mysql_query("SELECT centre FROM centres WHERE type = 'Self' AND status = 'Active' ORDER BY centre ASC") or die(mysql_error());
+$q = mysql_query("SELECT centre FROM centres WHERE type = 'Self' AND status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
 while ($centres = mysql_fetch_row($q))
 {
 	echo "<option>" . $centres[0] . "</option>";

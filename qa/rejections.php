@@ -35,7 +35,7 @@ function Display()
 <td width="80px"><select id="centre" style="height:20px; margin:0; padding:0; width:70px;">
 <option>All</option>
 <?php
-$q = mysql_query("SELECT * FROM centres WHERE status = 'Active' ORDER BY centre ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
 while ($centres = mysql_fetch_row($q))
 {
 	echo "<option>" . $centres[0] . "</option>";
