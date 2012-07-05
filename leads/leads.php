@@ -64,7 +64,7 @@ function Search()
 
 <div id="display">
 <center><img src="../images/ajax-loader.gif" /><br /><br />
-<p>Compiling Leads Report. Please Wait...</p></center>
+<p>Generating Leads Stats. Please Wait...</p></center>
 <script>
 $( "#display" ).load("leads_display.php",
 function() {

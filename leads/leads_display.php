@@ -29,17 +29,19 @@ $total_num = 0;
 $q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
 while ($centre = mysql_fetch_row($q))
 {
-	$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = '$centre[0]' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC") or die(mysql_error());
-	$num = mysql_num_rows($q1);
+	$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = '$centre[0]' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
+	$num = mysql_fetch_row($q0);
+	$total_num += $num[0];
+	
+	$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = '$centre[0]' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
 	$c_exp = mysql_fetch_row($q1);
-	$total_num += $num;
 
 	$q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = '$centre[0]' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
 	$c_last = mysql_fetch_row($q2);
 
 	echo "<tr>";
 	echo "<td>" . $centre[0] . "</td>";
-	echo "<td>" . number_format($num) . "</td>";
+	echo "<td>" . number_format($num[0]) . "</td>";
 	echo "<td>" . date("d/m/Y", strtotime($c_exp[0])) . "</td>";
 	echo "<td>" . date("d/m/Y H:i:s", strtotime($c_last[0])) . "</td>";
 	echo "<td><input type='button' onclick='Details(\"$centre[0]\")' class='icon_view' title='View Details'></td>";
@@ -70,9 +72,11 @@ echo "</tr>";
 <?php
 $total_num = 0;
 //kamal
-$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Kamal' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC") or die(mysql_error());
-$num = mysql_num_rows($q1);
-$total_num += $num;
+$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = 'Kamal' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
+$num = mysql_fetch_row($q0);
+$total_num += $num[0];
+
+$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Kamal' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
 $k_exp = mysql_fetch_row($q1);
 
 $q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = 'Kamal' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
@@ -80,7 +84,7 @@ $k_last = mysql_fetch_row($q2);
 
 echo "<tr>";
 echo "<td>Kamal</td>";
-echo "<td>" . number_format($num) . "</td>";
+echo "<td>" . number_format($num[0]) . "</td>";
 echo "<td>" . date("d/m/Y", strtotime($k_exp[0])) . "</td>";
 echo "<td>" . date("d/m/Y H:i:s", strtotime($k_last[0])) . "</td>";
 echo "<td><input type='button' onclick='Details(\"Kamal\")' class='icon_view' title='View Details'></td>";
@@ -88,9 +92,11 @@ echo "<td><input type='button' onclick='Export(\"Kamal\")' class='icon_excel' ti
 echo "</tr>";
 
 //rohan
-$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Rohan' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC") or die(mysql_error());
-$num = mysql_num_rows($q1);
-$total_num += $num;
+$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = 'Rohan' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
+$num = mysql_fetch_row($q0);
+$total_num += $num[0];
+
+$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Rohan' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
 $k_exp = mysql_fetch_row($q1);
 
 $q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = 'Rohan' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
@@ -98,7 +104,7 @@ $k_last = mysql_fetch_row($q2);
 
 echo "<tr>";
 echo "<td>Rohan</td>";
-echo "<td>" . number_format($num) . "</td>";
+echo "<td>" . number_format($num[0]) . "</td>";
 echo "<td>" . date("d/m/Y", strtotime($k_exp[0])) . "</td>";
 echo "<td>" . date("d/m/Y H:i:s", strtotime($k_last[0])) . "</td>";
 echo "<td><input type='button' onclick='Details(\"Rohan\")' class='icon_view' title='View Details'></td>";
@@ -106,9 +112,11 @@ echo "<td><input type='button' onclick='Export(\"Rohan\")' class='icon_excel' ti
 echo "</tr>";
 
 //sanjay
-$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Sanjay' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC") or die(mysql_error());
-$num = mysql_num_rows($q1);
-$total_num += $num;
+$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = 'Sanjay' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
+$num = mysql_fetch_row($q0);
+$total_num += $num[0];
+
+$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Sanjay' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
 $k_exp = mysql_fetch_row($q1);
 
 $q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = 'Sanjay' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
@@ -116,7 +124,7 @@ $k_last = mysql_fetch_row($q2);
 
 echo "<tr>";
 echo "<td>Sanjay</td>";
-echo "<td>" . number_format($num) . "</td>";
+echo "<td>" . number_format($num[0]) . "</td>";
 echo "<td>" . date("d/m/Y", strtotime($k_exp[0])) . "</td>";
 echo "<td>" . date("d/m/Y H:i:s", strtotime($k_last[0])) . "</td>";
 echo "<td><input type='button' onclick='Details(\"Sanjay\")' class='icon_view' title='View Details'></td>";
