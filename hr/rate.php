@@ -2,35 +2,7 @@
 include "../auth/iprestrict.php";
 include "../source/header.php";
 ?>
-
 <style>
-.edit {
-	background-image:url('../images/edit_icon.png');
-	background-repeat:no-repeat;
-	height:16px;
-	width:16px;
-	border:none;
-	background-color:transparent;
-	cursor:pointer;
-}
-
-.search
-{
-	background-image:url('../images/search_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	margin-right:10px;
-}
-
-.search:hover
-{
-	background-image:url('../images/search_btn_hover.png');
-	cursor:pointer;
-}
-
 div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 .ui-dialog .ui-dialog2 .ui-state-highlight { padding: .3em; }
@@ -41,7 +13,7 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 <script>
 function Display(page)
 {
-	$( "#display" ).load("rate_display.php?page=" + page + "&user=<?php echo $ac["user"] ?>");
+	$( "#display2" ).load("rate_display2.php?page=" + page + "&user=<?php echo $ac["user"] ?>");
 }
 </script>
 <script> //edit
@@ -68,6 +40,8 @@ $(function() {
 		modal: true,
 		resizable: false,
 		draggable: false,
+		show: 'blind',
+		hide: 'blind',
 		buttons: {
 			"Submit": function() {
 				$.get("rate_submit.php?method=edit", { user: user.val(), rate: rate.val() },
@@ -76,7 +50,7 @@ $(function() {
 					{
 						$( "#dialog-form" ).dialog( "close" );
 						var page_link = $( "#page_link" );
-						$( "#display" ).load("rate_display.php" + page_link.val());
+						$( "#display2" ).load("rate_display2.php" + page_link.val());
 					}
 					else
 					{
@@ -102,12 +76,33 @@ function Edit(user,rate)
 }
 </script>
 <?php
-$q = mysql_query("SELECT centre FROM centres WHERE type = 'Self'") or die(mysql_error());
-while ($cen = mysql_fetch_row($q))
+$q = mysql_query("SELECT centres FROM vericon.operations WHERE user = '$ac[user]'") or die(mysql_error());
+$cen = mysql_fetch_row($q);
+if ($cen[0] == "All")
 {
-	$centres .= $cen[0] . ",";
+	$centres = array();
+	$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+	while ($centre = mysql_fetch_row($q1))
+	{
+		array_push($centres, $centre[0]);
+	}
+	$centre = implode(",", $centres);
 }
-$centres = substr($centres,0,-1);
+elseif ($cen[0] == "Captive" || $cen[0] == "Self")
+{
+	$centres = array();
+	$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' AND type = '$cen[0]' ORDER BY centre ASC") or die(mysql_error());
+	while ($centre = mysql_fetch_row($q1))
+	{
+		array_push($centres, $centre[0]);
+	}
+	$centre = implode(",", $centres);
+}
+else
+{
+	$centres = explode(",",$cen[0]);
+	$centre = implode(",", $centres);
+}
 ?>
 <script> // search users
 $(function() {
@@ -130,28 +125,10 @@ $(function() {
 		resizable: false,
 		draggable: false,
 		width:250,
-		height:160,
+		height:125,
 		modal: true,
-		buttons: {
-			"Open": function() {				
-				$.get("rate_submit.php?method=check", { agent: agent.val() },
-				function(data) {
-					if (data == "valid")
-					{
-						$( "#dialog-form2" ).dialog( "close" );
-						$( "#display" ).load("rate_display.php?query=" + agent.val());
-					}
-					else
-					{
-						updateTips(data);
-					}
-				});
-			},
-			
-			"Close": function() {
-				$( this ).dialog( "close" );
-			}
-		}
+		show: 'blind',
+		hide: 'blind'
 	});
 });
 
@@ -163,7 +140,7 @@ $(function() {
 				dataType: "json",
 				data: {
 					method: "search",
-					centres : "<?php echo str_replace(",", "_", $centres); ?>",
+					centres : "<?php echo str_replace(",", "_", $centre); ?>",
 					term : request.term
 				},
 				success: function(data) {
@@ -174,6 +151,8 @@ $(function() {
 		minLength: 2,
 		select: function( event, ui ) {
 			$( "#search_agent" ).val(ui.item.id);
+			$( "#dialog-form2" ).dialog( "close" );
+			$( "#display2" ).load("rate_display2.php?query=" + ui.item.id);
 		}
 	});
 });
@@ -207,19 +186,16 @@ Agent: <input type="text" id="search_box" size="25" />
 <input type="hidden" id="search_agent" value="" />
 </div>
 
-<table width="100%">
-<tr>
-<td align="left" valign="bottom"><img src="../images/pay_rates_header.png" width="100" height="25" style="margin-left:6px;" /></td>
-<td align="right" style="padding-right:10px;"><input type="button" onClick="Search()" class="search"></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="740" height="9" /></td>
-</tr>
-</table>
-
 <div id="display">
 <script>
-$( "#display" ).load("rate_display.php?page=0&user=<?php echo $ac["user"] ?>");
+$( "#display" ).hide();
+$( "#display" ).load('rate_display.php',
+function() {
+	$( "#display2" ).load('rate_display2.php?page=0&user=<?php echo $ac["user"]; ?>',
+	function() {
+		$( "#display" ).show('blind', '' , 'slow');
+	});
+});
 </script>
 </div>
 

@@ -1,6 +1,5 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
 $method = $_GET["method"];
 
@@ -23,7 +22,7 @@ if ($method == "edit")
 	}
 	else
 	{
-		mysql_query("INSERT INTO timesheet_rate (user, rate) VALUES ('$user', '$rate') ON DUPLICATE KEY UPDATE rate = '$rate'") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.timesheet_rate (user, rate) VALUES ('$user', '$rate') ON DUPLICATE KEY UPDATE rate = '$rate'") or die(mysql_error());
 
 		echo "submitted";
 	}
@@ -41,7 +40,7 @@ elseif ($method == "search")
 	}
 	$inc = substr($inc, 0, -4);
 	
-	$q = mysql_query("SELECT * FROM auth WHERE (" . $inc . ") AND first LIKE '$term[0]%' AND last LIKE '$term[1]%'") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM vericon.auth WHERE (" . $inc . ") AND first LIKE '$term[0]%' AND last LIKE '$term[1]%'") or die(mysql_error());
 	echo '[';
 	while ($data = mysql_fetch_assoc($q))
 	{
@@ -50,23 +49,10 @@ elseif ($method == "search")
 	echo implode(", ",$d);
 	echo ']';
 }
-elseif ($method == "check")
-{
-	$agent = $_GET["agent"];
-	$q = mysql_query("SELECT * FROM auth WHERE user = '$agent'") or die(mysql_error());
-	if (mysql_num_rows($q) == 0)
-	{
-		echo "Please Type the Agent's Name Below";
-	}
-	else
-	{
-		echo "valid";
-	}
-}
 elseif ($method == "name")
 {
 	$user = $_GET["user"];
-	$q = mysql_query("SELECT first,last FROM auth WHERE user = '$user'") or die(mysql_error());
+	$q = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
 	$data = mysql_fetch_row($q);
 	echo $data[0] . " " . $data[1];
 }
