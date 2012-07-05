@@ -149,7 +149,7 @@ while ($centre = mysql_fetch_row($q))
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = Enabled' ORDER BY centre ASC LIMIT $t1,$t2") or die(mysql_error());
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC LIMIT $t1,$t2") or die(mysql_error());
 while ($centre = mysql_fetch_row($q))
 {
 	$exclude_b = "";

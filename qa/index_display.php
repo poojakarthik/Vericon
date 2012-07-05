@@ -188,7 +188,7 @@ echo "</tr>";
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE type = 'Self' AND status = Enabled' ORDER BY centre ASC") or die(mysql_error());
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE type = 'Self' AND status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
 $total_bus = 0;
 $total_resi = 0;
 while ($centres = mysql_fetch_row($q))
