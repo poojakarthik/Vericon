@@ -4,7 +4,12 @@ include "../source/header.php";
 ?>
 
 <div id="display">
-Bla
+<script>
+$( "#display" ).load('index_display.php',
+function() {
+	$( "#display" ).show('blind', '', 'slow');
+});
+</script>
 </div>
 
 <?php

@@ -135,7 +135,3 @@ echo "</tr>";
 </tbody>
 </table>
 </div></center>
-
-<?php
-include "../source/footer.php";
-?>
