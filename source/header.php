@@ -77,7 +77,7 @@ setInterval("Update_Clock()", 300000);
 <body>
 <div id="main_wrapper">
 <div id="innerpage_logo">
-<a href="../"><img src="../images/logo.png"  width="252" height="65" alt="logo" style="border-style:none;" /></a>
+<img src="../images/logo.png" onclick="BTML()" width="252" height="65" style="cursor: pointer;" />
 </div>
 <div id="logout">
 <table width="100%" height="17px" border="0" style="padding-right:22px; margin-top:-2px; margin-bottom:-2px;">
@@ -154,6 +154,18 @@ $("a" , "#menu").click(function(event) {
         location.href = transition_link;
     });
 });
+</script>
+
+<script>
+function BTML()
+{
+	if (keypressed == 91 || keypressed == 92 || keypressed == 17) {
+        return true;
+    }
+    $( "#display" ).hide('blind', '' , 'slow', function() {
+		location.href = "../";
+    });
+}
 </script>
 
 <div id="text">
