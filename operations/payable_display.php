@@ -1,8 +1,8 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
 $centre = $_GET["centre"];
+$centres = explode(",",$_GET["centres"]);
 $date = $_GET["date"];
 $week = date("W", strtotime($date));
 $year = date("Y", strtotime($date));
@@ -11,6 +11,56 @@ $week1 = date("W", strtotime($date1));
 $date2 = date("Y-m-d", strtotime($year . "W" . $week . "7"));
 $week2 = date("W", strtotime($date2));
 ?>
+
+<script>
+$(function() {
+	$( "#datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>",
+		onSelect: function(dateText, inst) {
+			var centre = $( "#centre" ),
+				centres = "<?php echo implode(",", $centres); ?>";
+			
+			$( "#display" ).hide( 'blind', '', 'slow', function() {
+				$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&centres=' + centres + '&date=' + dateText, function(){
+					$( "#display" ).show( 'blind', '', 'slow');
+				});
+			});
+		}
+	});
+});
+</script>
+
+<table width="100%">
+<tr>
+<td align="left"><img src="../images/centre_timesheet_header.png" width="175" height="25" style="margin-left:3px;" /></td>
+<td align="right" style="padding-right:10px;"><select id="centre" style="margin:0px; padding:0px; height:22px; width:75px;" onchange="Centre()">
+<option>Centre</option>
+<?php
+for ($i = 0; $i < count($centres); $i++)
+{
+	echo "<option>" . $centres[$i] . "</option>";
+}
+?>
+</select>
+<input type='text' size='9' id='from' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date1)); ?>" /> to <input type='text' size='9' id='to' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date2)); ?>" /><input type='hidden' id='datepicker' value="<?php echo $date; ?>" /></td>
+</tr>
+<tr>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+</table>
+
+<script>
+$( "#centre" ).val("<?php echo $centre; ?>");
+</script>
 
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
@@ -34,7 +84,7 @@ $week2 = date("W", strtotime($date2));
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2' GROUP BY user ORDER BY user ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2' GROUP BY user ORDER BY user ASC") or die(mysql_error());
 
 if ($centre == "Centre")
 {
@@ -48,19 +98,19 @@ else
 {
 	while ($data = mysql_fetch_assoc($q))
 	{
-		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+		$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[user]'") or die(mysql_error());
 		$user = mysql_fetch_row($q0);
 		
-		$q1 = mysql_query("SELECT SUM(hours),SUM(bonus) FROM timesheet WHERE user = '$data[user]' AND date BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$q1 = mysql_query("SELECT SUM(hours),SUM(bonus) FROM vericon.timesheet WHERE user = '$data[user]' AND date BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
-		$q2 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),SUM(cancellations) FROM timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
+		$q2 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),SUM(cancellations) FROM vericon.timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
 		$da2 = mysql_fetch_row($q2);
 		
-		$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 		$da3 = mysql_num_rows($q3);
 		
-		$q4 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$q4 = mysql_query("SELECT rate FROM vericon.timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
 		$da4 = mysql_fetch_row($q4);
 		
 		if ($da4[0] == "") { $rate = 16.57; } else { $rate = $da4[0]; }
@@ -128,10 +178,10 @@ else
 		echo "</tr>";
 	}
 	
-	$q1 = mysql_query("SELECT SUM(hours),SUM(bonus) FROM timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+	$q1 = mysql_query("SELECT SUM(hours),SUM(bonus) FROM vericon.timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 	$da = mysql_fetch_row($q1);
 	
-	$q2 = mysql_query("SELECT COUNT(id) FROM sales_customers WHERE status = 'Approved' AND centre = '$centre' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+	$q2 = mysql_query("SELECT COUNT(id) FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centre' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 	$da2 = mysql_fetch_row($q2);
 	
 	$total_gross = ((16.57 * $total_hours) + $total_bonus) * 1.09;
@@ -154,12 +204,12 @@ else
 </div></center><br>
 
 <?php
-if ($centre != "Centre" && mysql_num_rows($q) != 0)
+if ($centre != "Centre" && mysql_num_rows($q) != 0 && date("W", strtotime(date("Y")."W".(date("W") - 2)."7")) <= date("W", strtotime($date)))
 {
 ?>
 <center><table width="98%">
 <tr>
-<td align="right"><input type="button" onclick="Edit_View()" class="edit" /></td>
+<td align="right"><button onclick="Edit_View()" class="btn">Edit</button></td>
 </tr>
 </table></center>
 <?php

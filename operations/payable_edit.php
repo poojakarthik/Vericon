@@ -3,6 +3,7 @@ mysql_connect('localhost','vericon','18450be');
 mysql_select_db('vericon');
 
 $centre = $_GET["centre"];
+$centres = explode(",",$_GET["centres"]);
 $date = $_GET["date"];
 $week = date("W", strtotime($date));
 $year = date("Y", strtotime($date));
@@ -11,6 +12,56 @@ $week1 = date("W", strtotime($date1));
 $date2 = date("Y-m-d", strtotime($year . "W" . $week . "7"));
 $week2 = date("W", strtotime($date2));
 ?>
+
+<script>
+$(function() {
+	$( "#datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>",
+		onSelect: function(dateText, inst) {
+			var centre = $( "#centre" ),
+				centres = "<?php echo implode(",", $centres); ?>";
+			
+			$( "#display" ).hide( 'blind', '', 'slow', function() {
+				$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&centres=' + centres + '&date=' + dateText, function(){
+					$( "#display" ).show( 'blind', '', 'slow');
+				});
+			});
+		}
+	});
+});
+</script>
+
+<table width="100%">
+<tr>
+<td align="left"><img src="../images/centre_timesheet_header.png" width="175" height="25" style="margin-left:3px;" /></td>
+<td align="right" style="padding-right:10px;"><select id="centre" style="margin:0px; padding:0px; height:22px; width:75px;" onchange="Centre()">
+<option>Centre</option>
+<?php
+for ($i = 0; $i < count($centres); $i++)
+{
+	echo "<option>" . $centres[$i] . "</option>";
+}
+?>
+</select>
+<input type='text' size='9' id='from' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date1)); ?>" /> to <input type='text' size='9' id='to' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date2)); ?>" /><input type='hidden' id='datepicker' value="<?php echo $date; ?>" /></td>
+</tr>
+<tr>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+</table>
+
+<script>
+$( "#centre" ).val("<?php echo $centre; ?>");
+</script>
 
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
@@ -136,6 +187,6 @@ else
 
 <center><table width="98%">
 <tr>
-<td align="right"><input type="button" onclick="Done()" class="done" /></td>
+<td align="right"><button onclick="Done()" class="btn">Done</button></td>
 </tr>
 </table></center>

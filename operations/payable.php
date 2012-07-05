@@ -1,40 +1,34 @@
 <?php
 include "../auth/iprestrict.php";
 include "../source/header.php";
+$q = mysql_query("SELECT centres FROM vericon.operations WHERE user = '$ac[user]'") or die(mysql_error());
+$cen = mysql_fetch_row($q);
+if ($cen[0] == "All")
+{
+	$centres = array();
+	$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+	while ($centre = mysql_fetch_row($q1))
+	{
+		array_push($centres, $centre[0]);
+	}
+	$centres_link = implode(",", $centres);
+}
+elseif ($cen[0] == "Captive" || $cen[0] == "Self")
+{
+	$centres = array();
+	$q1 = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' AND type = '$cen[0]' ORDER BY centre ASC") or die(mysql_error());
+	while ($centre = mysql_fetch_row($q1))
+	{
+		array_push($centres, $centre[0]);
+	}
+	$centres_link = implode(",", $centres);
+}
+else
+{
+	$centres_link = $cen[0];
+}
 ?>
 <style>
-.edit
-{
-	background-image:url('../images/edit_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-}
-
-.edit:hover
-{
-	background-image:url('../images/edit_btn_hover.png');
-	cursor:pointer;
-}
-
-.done
-{
-	background-image:url('../images/done_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-}
-
-.done:hover
-{
-	background-image:url('../images/done_btn_hover.png');
-	cursor:pointer;
-}
-
 div#users-contain table { margin: 1em 0; margin-bottom:0; border-collapse: collapse; width:98% }
 div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: center; }
 div#users-contain table td { border: 1px solid #eee; padding: .1em 10px; text-align: center; }
@@ -43,47 +37,27 @@ div#users-contain table td { border: 1px solid #eee; padding: .1em 10px; text-al
 function Centre()
 {
 	var centre = $( "#centre" ),
+		centres = "<?php echo $centres_link; ?>",
 		date = $( "#datepicker" );
-
-	$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&date=' + date.val());
+	
+	$( "#display" ).hide( 'blind', '', 'slow', function() {
+		$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&centres=' + centres + '&date=' + date.val(), function(){
+			$( "#display" ).show( 'blind', '', 'slow');
+		});
+	});
 }
-</script>
-<script>
-$(function() {
-	$( "#datepicker" ).datepicker( {
-		showOn: "button",
-		buttonImage: "../images/calendar.gif",
-		buttonImageOnly: true,
-		dateFormat: "yy-mm-dd",
-		firstDay: 1,
-		showOtherMonths: true,
-		selectOtherMonths: true,
-		changeMonth: true,
-		changeYear: true,
-		maxDate: "<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>",
-		onSelect: function(dateText, inst) {
-			var centre = $( "#centre" );
-			
-			$.get("payable_process.php", { method: "from", date: dateText }, function (data) { $( "#from" ).val(data); });
-			$.get("payable_process.php", { method: "to", date: dateText }, function (data) { $( "#to" ).val(data); });
-			$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&date=' + dateText);
-		}});
-});
 </script>
 <script>
 function Edit_View()
 {
 	var centre = $( "#centre" ),
+		centres = "<?php echo $centres_link; ?>",
 		date = $( "#datepicker" );
-	$.get("payable_process.php", {method: "check", date: date.val() }, function (data) {
-		if (data == "valid")
-		{
-			$( "#display" ).load('payable_edit.php?centre=' + centre.val() + '&date=' + date.val());
-		}
-		else
-		{
-			alert(data);
-		}
+	
+	$( "#display" ).hide( 'blind', '', 'slow', function() {
+		$( "#display" ).load('payable_edit.php?centre=' + centre.val() + '&centres=' + centres + '&date=' + date.val(), function(){
+			$( "#display" ).show( 'blind', '', 'slow');
+		});
 	});
 }
 </script>
@@ -91,9 +65,14 @@ function Edit_View()
 function Done()
 {
 	var centre = $( "#centre" ),
+		centres = "<?php echo $centres_link; ?>",
 		date = $( "#datepicker" );
-
-	$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&date=' + date.val());
+	
+	$( "#display" ).hide( 'blind', '', 'slow', function() {
+		$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&centres=' + centres + '&date=' + date.val(), function(){
+			$( "#display" ).show( 'blind', '', 'slow');
+		});
+	});
 }
 </script>
 <script>
@@ -155,47 +134,12 @@ function Bonus(user)
 }
 </script>
 
-<table width="100%">
-<tr>
-<td align="left"><img src="../images/centre_timesheet_header.png" width="175" height="25" style="margin-left:3px;" /></td>
-<td align="right" style="padding-right:10px;"><select id="centre" style="margin:0px; padding:0px; height:22px; width:75px;" onchange="Centre()">
-<option>Centre</option>
-<?php
-$q = mysql_query("SELECT centres FROM operations WHERE user = '$ac[user]'") or die(mysql_error());
-$cen = mysql_fetch_row($q);
-$centres = explode(",",$cen[0]);
-for ($i = 0; $i < count($centres); $i++)
-{
-	$q1 = mysql_query("SELECT * FROM centres WHERE centre = '$centres[$i]'") or die(mysql_error());
-	$c_check = mysql_fetch_assoc($q1);
-	
-	if ($c_check["type"] == "Self" && $c_check["status"] == "Enabled")
-	{
-		echo "<option>" . $centres[$i] . "</option>";
-	}
-}
-?>
-</select>
-<input type='text' size='9' id='from' readonly='readonly' style="height:20px;" value="" /> to <input type='text' size='9' id='to' readonly='readonly' style="height:20px;" value="" /><input type='hidden' id='datepicker' value="<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 2)."7")); ?>" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
-</tr>
-</table>
-
-<script>
-var date = $( "#datepicker" );
-
-$.get("payable_process.php", { method: "from", date: date.val() }, function (data) { $( "#from" ).val(data); });
-$.get("payable_process.php", { method: "to", date: date.val() }, function (data) { $( "#to" ).val(data); });
-</script>
-
 <div id="display">
 <script>
-var centre = $( "#centre" ),
-	date = $( "#datepicker" );
-
-$( "#display" ).load('payable_display.php?centre=' + centre.val() + '&date=' + date.val());
+$( "#display" ).load('payable_display.php?centre=Centre&centres=<?php echo $centres_link; ?>&date=<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 2)."7")); ?>',
+function() {
+	$( "#display" ).show('blind', '', 'slow');
+});
 </script>
 </div>
 
