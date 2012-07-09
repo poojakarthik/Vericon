@@ -1,6 +1,5 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
 $method = $_GET["method"];
 $centre = $_GET["centre"];
@@ -10,13 +9,13 @@ $week = date("W", strtotime($date));
 if ($method == "export_hours")
 {
 	$header = "Username,Full Name,Dialler Hours";
-	$q = mysql_query("SELECT user,dialler_hours FROM timesheet WHERE date = '$date' AND centre = '$centre' ORDER BY user ASC") or die(mysql_error());
+	$q = mysql_query("SELECT user,dialler_hours FROM vericon.timesheet WHERE date = '$date' AND centre = '$centre' ORDER BY user ASC") or die(mysql_error());
 	
 	while ($da = mysql_fetch_row($q))
 	{
 		if ($da[1] == "0.00") { $hours = ""; } else { $hours = $da[1]; }
 		
-		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$da[0]'") or die(mysql_error());
+		$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$da[0]'") or die(mysql_error());
 		$user = mysql_fetch_row($q0);
 		
 		$data .= $da[0] . ",";
@@ -43,7 +42,7 @@ elseif ($method == "import_hours")
 		$data = explode(",", $row);
 		if ($i > 0)
 		{
-			mysql_query("UPDATE timesheet SET dialler_hours = '$data[2]' WHERE user = '$data[0]' AND date = '$date'") or die(mysql_error());
+			mysql_query("UPDATE vericon.timesheet SET dialler_hours = '$data[2]' WHERE user = '$data[0]' AND date = '$date'") or die(mysql_error());
 		}
 		$i++;
 	}
