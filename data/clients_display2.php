@@ -20,6 +20,7 @@ $group = $_GET["group"];
 <tr class="ui-widget-header ">
 <th style="text-align:center;">ID</th>
 <th style="text-align:center;">Name</th>
+<th style="text-align:center;">Plan Matrix</th>
 </tr>
 </thead>
 <tbody align="center">
@@ -36,6 +37,7 @@ while ($campaigns = mysql_fetch_assoc($q))
 	echo "<tr>";
 	echo "<td style='text-align:center;'>" . $campaigns["id"] . "</td>";
 	echo "<td style='text-align:center;'>" . $campaigns["campaign"] . "</td>";
+	echo "<td style='text-align:center'><button onclick='View_Matrix(\"$campaigns[id]\")' class='icon_view' title='View'></button></td>";
 	echo "</tr>";
 }
 ?>

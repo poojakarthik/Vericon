@@ -4,7 +4,8 @@ include "../source/header.php";
 ?>
 <style>
 div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
-div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align:left }
+div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align:left }
+div#users-contain table td { border: 1px solid #eee; padding: .3em 5px; text-align:left }
 .ui-dialog .ui-state-highlight { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 </style>
@@ -154,6 +155,17 @@ function Add_Campaign()
 	$( "#dialog-form2" ).dialog( "open" );
 }
 </script>
+<script>
+function View_Matrix(campaign)
+{
+	$( "#campaign_store" ).val(campaign);
+	$( "#display" ).hide('blind', '', 'slow', function() {
+		$( "#display" ).load("clients_display_plans.php?campaign=" + campaign, function() {
+			$( "#display" ).show('blind', '', 'slow');
+		});
+	});
+}
+</script>
 
 <div id="dialog-form" title="Add Group">
 	<p class="validateTips"><span style="color:#ff0000;">*</span> Required Fields</p>
@@ -184,6 +196,7 @@ function Add_Campaign()
 </div>
 
 <input type="hidden" id="group_store" value="" />
+<input type="hidden" id="campaign_store" value="" />
 
 <div id="display">
 <script>
