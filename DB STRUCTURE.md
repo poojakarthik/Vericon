@@ -815,6 +815,16 @@ CREATE TABLE IF NOT EXISTS `customers` (
 ```
 ```sql
 --
+-- Table structure for table `groups`
+--
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `id` varchar(16) NOT NULL,
+  `name` varchar(64) NOT NULL
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
 -- Table structure for table `international`
 --
 
@@ -1005,8 +1015,7 @@ CREATE TABLE IF NOT EXISTS `portals_pages` (
   `sub_level` int(11) NOT NULL,
   `status` int(1) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `portal` (`portal`,`level`,`sub_level`),
-  UNIQUE KEY `id` (`id`,`portal`)
+  UNIQUE KEY `portal` (`portal`,`level`,`sub_level`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
