@@ -223,10 +223,10 @@ function Enable(centre)
 <td><select id="campaign" style="width:132px;">
 <option></option>
 <?php
-$q = mysql_query("SELECT `group` FROM vericon.campaigns GROUP BY `group` ORDER BY `group` ASC") or die(mysql_error());
+$q = mysql_query("SELECT id,name FROM vericon.groups ORDER BY id ASC") or die(mysql_error());
 while ($group = mysql_fetch_row($q))
 {
-	echo "<option disabled='disabled'>--- $group[0] ---</option>";
+	echo "<option disabled='disabled'>--- $group[1] ---</option>";
 	$q1 = mysql_query("SELECT campaign FROM vericon.campaigns WHERE `group` = '$group[0]' ORDER BY id ASC") or die(mysql_error());
 	while ($campaign = mysql_fetch_row($q1))
 	{
@@ -267,10 +267,10 @@ while ($group = mysql_fetch_row($q))
 <td width="85px">Campaign<span style="color:#ff0000;">*</span> </td>
 <td><select id="e_campaign" style="width:132px;">
 <?php
-$q = mysql_query("SELECT `group` FROM vericon.campaigns GROUP BY `group` ORDER BY `group` ASC") or die(mysql_error());
+$q = mysql_query("SELECT id,name FROM vericon.groups ORDER BY id ASC") or die(mysql_error());
 while ($group = mysql_fetch_row($q))
 {
-	echo "<option disabled='disabled'>--- $group[0] ---</option>";
+	echo "<option disabled='disabled'>--- $group[1] ---</option>";
 	$q1 = mysql_query("SELECT campaign FROM vericon.campaigns WHERE `group` = '$group[0]' ORDER BY id ASC") or die(mysql_error());
 	while ($campaign = mysql_fetch_row($q1))
 	{
