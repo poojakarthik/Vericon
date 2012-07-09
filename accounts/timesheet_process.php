@@ -7,17 +7,7 @@ $centre = $_GET["centre"];
 $date = $_GET["date"];
 $week = date("W", strtotime($date));
 
-if ($method == "from")
-{
-	$year = date("Y", strtotime($date));
-	echo date("d/m/Y", strtotime($year . "W" . $week . "1"));
-}
-elseif ($method == "to")
-{
-	$year = date("Y", strtotime($date));
-	echo date("d/m/Y", strtotime($year . "W" . $week . "7"));
-}
-elseif ($method == "name")
+if ($method == "name")
 {
 	$user = $_GET["user"];
 	$q = mysql_query("SELECT first,last FROM auth WHERE user = '$user'") or die(mysql_error());
