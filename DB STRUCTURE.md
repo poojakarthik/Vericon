@@ -948,6 +948,7 @@ CREATE TABLE IF NOT EXISTS `packages` (
 
 CREATE TABLE IF NOT EXISTS `plan_matrix` (
   `id` varchar(18) NOT NULL,
+  `campaign` varchar(64) NOT NULL,
   `t_id` varchar(32) NOT NULL,
   `s_id` varchar(32) NOT NULL,
   `status` varchar(16) NOT NULL,
@@ -956,7 +957,7 @@ CREATE TABLE IF NOT EXISTS `plan_matrix` (
   `type` varchar(32) NOT NULL,
   `start` date NOT NULL,
   `end` date NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`,`campaign`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql

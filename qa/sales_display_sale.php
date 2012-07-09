@@ -232,10 +232,13 @@ else
 <select id="plan" style="width:210px;">
 <option>--- Select Script ---</option>
 <?php
+$q0 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+$c_id = mysql_fetch_row($q0);
+
 $qp = mysql_query("SELECT plan FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
 while ($plan = mysql_fetch_row($qp))
 {
-	$q1 = mysql_query("SELECT name FROM vericon.plan_matrix WHERE id = '$plan[0]'") or die(mysql_error());
+	$q1 = mysql_query("SELECT name FROM vericon.plan_matrix WHERE id = '$plan[0]' AND campaign = '" . mysql_real_escape_string($c_id[0]) . "'") or die(mysql_error());
 	$package_name = mysql_fetch_row($q1);
 	
 	if ($package_name[0] == "ADSL $54.95 24 Month Contract" || $package_name[0] == "ADSL $64.95 24 Month Contract")

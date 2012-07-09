@@ -92,6 +92,10 @@ elseif ($method == "details")
 	$q2 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$data[agent]'") or die(mysql_error());
 	$data2 = mysql_fetch_assoc($q2);
 	
+	$q3 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+	$c = mysql_fetch_row($q3);
+	$c_id = $c[0];
+	
 	if ($data["status"] == "Line Issue")
 	{
 		$status_text = "line_issue";
@@ -428,7 +432,7 @@ else
 		$class1 = "";
 		$class2 = "";
 		$warning = "";
-		$q4 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$package[plan]'") or die(mysql_error());
+		$q4 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$package[plan]' AND campaign = '" . mysql_real_escape_string($c_id) . "'") or die(mysql_error());
 		$package_name = mysql_fetch_assoc($q4);
 		if (substr($package_name["type"],0,4) == "ADSL" || $package_name["type"] == "Bundle")
 		{

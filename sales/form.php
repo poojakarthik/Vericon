@@ -195,7 +195,7 @@ function Add_Package()
 function Plan_Dropdown()
 {
 	$( "#plan" ).val("");
-	$( "#plan" ).load("plans.php?type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
+	$( "#plan" ).load("plans.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
 }
 </script>
 <script> //edit packages
@@ -265,7 +265,7 @@ $(function() {
 function Edit_Package(cli,plan)
 {
 	$( "#edit_cli" ).val(cli);
-	$( "#edit_plan" ).load("plans.php?type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
+	$( "#edit_plan" ).load("plans.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
 		$( "#edit_plan" ).val(plan);
 	});
 	$( "#original_edit_cli" ).val(cli);
@@ -274,7 +274,7 @@ function Edit_Package(cli,plan)
 
 function Plan_Dropdown_Edit()
 {
-	$( "#edit_plan" ).load("plans.php?type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
+	$( "#edit_plan" ).load("plans.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
 }
 </script>
 <script> //delete packages
