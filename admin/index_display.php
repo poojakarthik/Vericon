@@ -239,6 +239,8 @@ exec("df -h | tail -n +2 | awk '{print $2 \",\" $3 \",\" $5 \",\" $6}'",$drives)
 foreach ($drives as $row)
 {
 	$disk_data = explode(",",$row);
+	if ($disk_data[3] != "" && $disk_data[2] != "" && $disk_data[1] != "" && $disk_data[0] != "")
+	{
 ?>
 <tr>
 <td width="10%"><?php echo $disk_data[3]; ?></td>
@@ -249,6 +251,7 @@ foreach ($drives as $row)
 <td width="10%" style="text-align:center"><?php echo $disk_data[1] . "/" . $disk_data[0]; ?></td>
 </tr>
 <?php
+	}
 }
 ?>
 </tbody>
