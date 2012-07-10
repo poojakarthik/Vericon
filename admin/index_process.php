@@ -5,8 +5,10 @@ if ($method == "load")
 {
 	$load = exec("cat /proc/loadavg");
 	$load = split(" ",$load);
+	$proc = exec("cat /proc/cpuinfo | grep \"processor\"");
+	$proc = substr($proc,-2) + 1;
 ?>
-<div style="margin:5px 10px 0px 15px;"><span style="font-size:32px;"><?php echo $load[0]; ?></span><span style="font-size:20px;"> / 12</span></div>
+<div style="margin:5px 10px 0px 15px;"><span style="font-size:32px;"><?php echo $load[0]; ?></span><span style="font-size:20px;"> / <?php echo $proc; ?></span></div>
 <center><div style="margin-top:10px; margin-left:15px; float:left"><?php echo $load[1] . "<br>5 Mins"; ?></div><div style="margin-top:10px; margin-right:15px; float:right"><?php echo $load[2] . "<br>15 Mins"; ?></div></center>
 <?php
 }
