@@ -92,7 +92,7 @@ setInterval("Update_Clock()", 300000);
 </table>
 <table width="100%" height="24px" border="0" style="padding-right:23px;">
 <tr valign="bottom">
-<td align="right" valign="middle"><a href="/ma/">My Account</a>&nbsp;&nbsp;&nbsp;<img src="../images/logout_icon.png" /> <a onclick="Logout()">Logout</a></td>
+<td align="right" valign="middle"><a onclick="MAL()">My Account</a>&nbsp;&nbsp;&nbsp;<img src="../images/logout_icon.png" /> <a onclick="Logout()">Logout</a></td>
 </tr>
 </table>
 </div>
@@ -164,6 +164,18 @@ function BTML()
     }
     $( "#display" ).hide('blind', '' , 'slow', function() {
 		location.href = "../";
+    });
+}
+</script>
+
+<script>
+function MAL()
+{
+	if (keypressed == 91 || keypressed == 92 || keypressed == 17) {
+        return true;
+    }
+    $( "#display" ).hide('blind', '' , 'slow', function() {
+		location.href = "../ma";
     });
 }
 </script>
