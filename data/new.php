@@ -13,7 +13,7 @@ function Business()
 {
 	var date = $( "#datepicker" );
 	
-	window.location = "new_process.php?type=Business&date=" + date.val();
+	window.open("new_process.php?type=Business&date=" + date.val(), 'Business', 'width=1, height=1, x=800');
 }
 </script>
 <script>
@@ -21,7 +21,7 @@ function Residential()
 {
 	var date = $( "#datepicker" );
 	
-	window.location = "new_process.php?type=Residential&date=" + date.val();
+	window.open("new_process.php?type=Residential&date=" + date.val(), 'Residential', 'width=1, height=1, x=800');
 }
 </script>
 

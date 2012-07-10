@@ -359,8 +359,20 @@ while ($qa = mysql_fetch_assoc($q))
 		$account_name = strtoupper($data["lastname"]) . ", " . $data["firstname"];
 	}
 	
-	if ($data["welcome"] == "post") { $welcome = "N"; } else { $welcome = "Y"; }
-	if ($data["billing"] == "post") { $ebill = "N"; } else { $ebill = "Y"; }
+	if ($data["email"] == "N/A")
+	{
+		$welcome = "N";
+		$ebill = "N";
+		$email = "";
+	}
+	else
+	{
+		$welcome = "Y";
+		$ebill = "Y";
+		$email = $data["email"];
+	}
+	
+	if ($data["mobile"] == "N/A") { $mobile = ""; } else { $mobile = $data["mobile"]; }
 	
 	$body .= '"' . $dsr_num . '",';
 	$body .= '"' . '",';
@@ -428,10 +440,10 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . $data["dd_type"] . '",';
 	$body .= '"' . $ebill . '",';
 	$body .= '"' . "N" . '",';
-	$body .= '="' . $data["mobile"] . '",';
+	$body .= '="' . $mobile . '",';
 	$body .= '"' . '",';
 	$body .= '"' . "Telstra" . '",';
-	$body .= '"' . $data["email"] . '",';
+	$body .= '"' . $email . '",';
 	$body .= '"' . $resi_id_info . '",';
 	$body .= '"' . '",';
 	$body .= '"';
@@ -445,9 +457,10 @@ while ($qa = mysql_fetch_assoc($q))
 	$sale_id++;
 }
 
-$filename = "DSR_" . $date . "_" . $type . ".csv";
+$filename = "DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv";
 header("Content-type: application/x-msdownload");
 header("Content-Disposition: attachment; filename=$filename");
 header("Pragma: no-cache");
 header("Expires: 0");
 print("$header\n$body");
+?>
