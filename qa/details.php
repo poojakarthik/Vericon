@@ -1640,9 +1640,9 @@ function Postal_Same()
 <table width="100%" style="margin-top:10px;">
 <tr id="mb_building_type_tr" style="display:none;">
 <td width="80px">Mail Box Type</td>
-<td><select id="mb_building_type" style="width:95px; height:auto; padding:0px; margin:0px;">
+<td><select id="mb_building_type" style="width:115px; height:auto; padding:0px; margin:0px;">
 <option></option>
-<option>GPO BOX</option>
+<option>Care of Post Office</option>
 <option>LOCKED BAG</option>
 <option>PO BOX</option>
 <option>PRIVATE BAG</option>
