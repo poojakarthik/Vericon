@@ -3,6 +3,8 @@ mysql_connect('localhost','vericon','18450be');
 
 $user = $_GET["user"];
 
+mysql_query("DELETE FROM vericon.welcome_lock WHERE user = '$user'") or die(mysql_error());
+
 $q0 = mysql_query("SELECT welcome_cb.id FROM vericon.welcome_cb LEFT JOIN vericon.welcome_lock ON welcome_cb.id = welcome_lock.id WHERE welcome_cb.time <= NOW() AND welcome_lock.id IS NULL ORDER BY welcome_cb.time ASC") or die(mysql_error());
 $id = mysql_fetch_row($q0);
 $id = $id[0];
@@ -200,8 +202,8 @@ elseif ($data["type"] == "Residential")
 <td width="85px">ID Type </td>
 <td><select id="id_type" style="width:192px;">
 <option <?php echo $drl; ?>>Driver's Licence (AUS)</option>
-<option <?php echo $mcc; ?>>Healthcare Card</option>
-<option <?php echo $hcc; ?>>Medicare Card</option>
+<option <?php echo $hcc; ?>>Healthcare Card</option>
+<option <?php echo $mcc; ?>>Medicare Card</option>
 <option <?php echo $ppt; ?>>Passport</option>
 <option <?php echo $pnc; ?>>Pension Card</option>
 </select></td>
@@ -395,7 +397,7 @@ $( "#packages" ).load('packages.php?id=' + id);
 </tr>
 <tr valign="bottom">
 <td align="left" style="padding-left:10px;" colspan="2"></td>
-<td align="right" width="25%" style="padding-right:10px;"></td>
+<td align="right" width="25%" style="padding-right:10px;"><button onclick="Complete()" class="btn">Complete</button></td>
 <td align="right" width="25%" style="padding-right:10px;"><button onclick="NA_Switch()" class="btn">N/A</button></td>
 </tr>
 </table>

@@ -308,7 +308,28 @@ $(function() {
 });
 </script>
 <script>
-function Done()
+$(function() {
+	$( "#dialog:ui-dialog_complete" ).dialog( "destroy" );
+	
+	$( "#dialog-confirm_complete" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 275,
+		height: 100,
+		modal: true,
+		show: "blind",
+		hide: "blind"
+	});
+});
+
+function Complete()
+{
+	$( "#dialog-confirm_complete" ).dialog( "open" );
+}
+</script>
+<script>
+function Approve()
 {
 	var id = $( "#account_id" ),
 		title = $( "#title" ),
@@ -327,24 +348,31 @@ function Done()
 		position = $( "#position" ),
 		credit = $( "#credit" ),
 		payway = $( "#payway" ),
-		dd_type = $( "#dd_type" );
+		dd_type = $( "#dd_type" ),
+		user = "<?php echo $ac["user"]; ?>";
 		
 		if ($('#postal_same').attr('checked'))
 		{
 			postal = $( "#physical" );
 		}
 	
-	$.get("details_submit.php?method=submit", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val() },
+	$.get("customers_submit.php?method=approve", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user },
 	function(data) {
 		if (data == "submitted")
 		{
-			window.opener.Details_Check();
-			window.close();
+			$( "#dialog-confirm_complete" ).dialog( "close" );
+			$( "#display" ).hide('blind', '', 'slow', function() {
+				$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+				function() {
+					$( "#display" ).show('blind', '', 'slow');
+				});
+			});
 		}
 		else
 		{
 			$( ".validateTips4" ).html(data);
-			$( "#dialog-form4" ).dialog( "open" );
+			$( "#dialog-confirm_complete" ).dialog( "close" );
+			setTimeout(function() {$( "#dialog-form4" ).dialog( "open" );},500);
 		}
 	});
 }
@@ -1494,6 +1522,15 @@ function Postal_Same()
 <tr>
 <td width="85px">Call Back Time </td>
 <td><select id="cb_time_h" style="width:40px;"><option></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option></select> : <select id="cb_time_m" style="width:40px;"><option></option><option>00</option><option>15</option><option>30</option><option>45</option></select> <select id="cb_time_p" style="width:40px;"><option></option><option>AM</option><option>PM</option></select></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm_complete" title="Complete Switch">
+<table width="100%" height="55px">
+<tr height="100%">
+<td valign="middle" align="center"><button onclick="Approve()" class="btn">Approve</button></td>
+<td valign="middle" align="center"><button onclick="Cancel()" class="btn_red">Cancel</button></td>
 </tr>
 </table>
 </div>
