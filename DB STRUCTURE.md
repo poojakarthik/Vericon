@@ -696,103 +696,6 @@ CREATE TABLE IF NOT EXISTS `announcements` (
 ```
 ```sql
 --
--- Table structure for table `archive_mcrm_customers`
---
-
-CREATE TABLE IF NOT EXISTS `archive_mcrm_customers` (
-  `id` varchar(128) NOT NULL,
-  `status` varchar(32) NOT NULL,
-  `campaign` varchar(32) NOT NULL,
-  `saleTS` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `saleAgent` varchar(32) NOT NULL,
-  `tpvAgent` varchar(32) NOT NULL,
-  `tpvTS` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
-  `fname` varchar(32) NOT NULL,
-  `sname` varchar(32) NOT NULL,
-  `dob` varchar(32) NOT NULL,
-  `addr1` varchar(50) NOT NULL,
-  `addr2` varchar(50) NOT NULL,
-  `suburb` varchar(50) NOT NULL,
-  `state` varchar(32) NOT NULL,
-  `postcode` varchar(4) NOT NULL,
-  `p_addr1` varchar(50) NOT NULL,
-  `p_addr2` varchar(50) NOT NULL,
-  `p_suburb` varchar(50) NOT NULL,
-  `p_state` varchar(32) NOT NULL,
-  `p_postcode` varchar(4) NOT NULL,
-  `email` varchar(32) NOT NULL,
-  `mobile` varchar(32) NOT NULL,
-  `lines` varchar(32) NOT NULL,
-  `abn` varchar(32) NOT NULL,
-  `biz_name` varchar(128) NOT NULL,
-  `biz_type` varchar(32) NOT NULL,
-  `biz_start` varchar(32) NOT NULL,
-  `idType` varchar(32) NOT NULL,
-  `biz_asic` varchar(32) NOT NULL,
-  `biz_position` varchar(128) NOT NULL,
-  `idNum` varchar(32) NOT NULL,
-  `billing` varchar(32) NOT NULL,
-  `payment` varchar(32) NOT NULL,
-  `ongoing_credit` varchar(32) NOT NULL,
-  `agentNotes` text NOT NULL,
-  `tpvNotes` text NOT NULL,
-  `tpvFail` varchar(128) NOT NULL,
-  PRIMARY KEY (`id`),
-  FULLTEXT KEY `search` (`saleAgent`,`fname`,`sname`,`dob`,`addr1`,`addr2`,`suburb`,`postcode`,`p_addr1`,`p_addr2`,`p_suburb`,`p_postcode`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `archive_mcrm_packages`
---
-
-CREATE TABLE IF NOT EXISTS `archive_mcrm_packages` (
-  `sid` varchar(32) NOT NULL,
-  `line` varchar(32) NOT NULL,
-  `plan` varchar(32) NOT NULL,
-  KEY `sid` (`sid`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `archive_mytpv_sales`
---
-
-CREATE TABLE IF NOT EXISTS `archive_mytpv_sales` (
-  `sdate` varchar(512) NOT NULL,
-  `stime` varchar(512) NOT NULL,
-  `vcode` varchar(512) NOT NULL,
-  `cencode` varchar(512) NOT NULL,
-  `result` varchar(512) NOT NULL,
-  `custFname` varchar(512) NOT NULL,
-  `custLname` varchar(512) NOT NULL,
-  `comments` varchar(1016) NOT NULL,
-  `verificationcode` varchar(512) NOT NULL,
-  `camp_id` varchar(512) NOT NULL,
-  `salescode` varchar(512) NOT NULL,
-  `phone1` varchar(512) NOT NULL,
-  `phone2` varchar(512) NOT NULL,
-  `phone3` varchar(512) NOT NULL,
-  `phone4` varchar(512) NOT NULL,
-  `camp_name` varchar(512) NOT NULL,
-  `BillingOption` varchar(512) NOT NULL,
-  `DOB` varchar(512) NOT NULL,
-  `PhysicalAddress` varchar(512) NOT NULL,
-  `PostalAddress` varchar(512) NOT NULL,
-  `Mobile` varchar(512) NOT NULL,
-  `email` varchar(512) NOT NULL,
-  `IDForm` varchar(512) NOT NULL,
-  `IDNo` varchar(512) NOT NULL,
-  `DirectDebit` varchar(512) NOT NULL,
-  `DirectDebit1` varchar(512) NOT NULL,
-  `DirectDebit2` varchar(512) NOT NULL,
-  `DirectDebit3` varchar(512) NOT NULL,
-  `DirectDebit4` varchar(512) NOT NULL,
-  `DirectDebit5` varchar(512) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
 -- Table structure for table `auth`
 --
 
@@ -856,6 +759,9 @@ CREATE TABLE IF NOT EXISTS `currentuser` (
 
 CREATE TABLE IF NOT EXISTS `customers` (
   `id` varchar(15) NOT NULL,
+  `status` varchar(64) NOT NULL,
+  `last_edit_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_edit_by` varchar(8) NOT NULL,
   `industry` varchar(25) NOT NULL,
   `lead_id` varchar(10) NOT NULL,
   `sale_id` varchar(16) NOT NULL,
@@ -883,7 +789,65 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `credit` int(11) NOT NULL,
   `payway` varchar(16) NOT NULL,
   `dd_type` varchar(16) NOT NULL,
+  `billing_comments` text NOT NULL,
+  `other_comments` text NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `customers_log`
+--
+
+CREATE TABLE IF NOT EXISTS `customers_log` (
+  `id` varchar(15) NOT NULL,
+  `status` varchar(64) NOT NULL,
+  `last_edit_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `last_edit_by` varchar(8) NOT NULL,
+  `industry` varchar(25) NOT NULL,
+  `lead_id` varchar(10) NOT NULL,
+  `sale_id` varchar(16) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `agent` varchar(10) NOT NULL,
+  `centre` varchar(25) NOT NULL,
+  `campaign` varchar(300) NOT NULL,
+  `type` varchar(25) NOT NULL,
+  `title` varchar(10) NOT NULL,
+  `firstname` varchar(300) NOT NULL,
+  `middlename` varchar(300) NOT NULL,
+  `lastname` varchar(300) NOT NULL,
+  `dob` date NOT NULL,
+  `email` varchar(300) NOT NULL,
+  `mobile` varchar(10) NOT NULL,
+  `billing` varchar(25) NOT NULL,
+  `welcome` varchar(25) NOT NULL,
+  `promotions` varchar(8) NOT NULL,
+  `physical` varchar(300) NOT NULL,
+  `postal` varchar(300) NOT NULL,
+  `id_type` varchar(25) NOT NULL,
+  `id_num` varchar(25) NOT NULL,
+  `abn` varchar(25) NOT NULL,
+  `position` varchar(300) NOT NULL,
+  `credit` int(11) NOT NULL,
+  `payway` varchar(16) NOT NULL,
+  `dd_type` varchar(16) NOT NULL,
+  `billing_comments` text NOT NULL,
+  `other_comments` text NOT NULL,
+  KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `customers_notes`
+--
+
+CREATE TABLE IF NOT EXISTS `customers_notes` (
+  `id` varchar(16) NOT NULL,
+  `user` varchar(8) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `type` varchar(32) NOT NULL,
+  `note` text NOT NULL,
+  KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
@@ -1028,7 +992,6 @@ CREATE TABLE IF NOT EXISTS `portals_access` (
   `pages` text NOT NULL,
   PRIMARY KEY (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-
 ```
 ```sql
 --
@@ -1297,4 +1260,42 @@ CREATE TABLE IF NOT EXISTS `updates` (
   `message` longtext NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `welcome`
+--
+
+CREATE TABLE IF NOT EXISTS `welcome` (
+  `id` varchar(16) NOT NULL,
+  `status` varchar(64) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `user` varchar(8) NOT NULL,
+  `u_type` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `welcome_cb`
+--
+
+CREATE TABLE IF NOT EXISTS `welcome_cb` (
+  `id` varchar(16) NOT NULL,
+  `time` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `welcome_lock`
+--
+
+CREATE TABLE IF NOT EXISTS `welcome_lock` (
+  `id` varchar(16) NOT NULL,
+  `user` varchar(8) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user` (`user`)
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```

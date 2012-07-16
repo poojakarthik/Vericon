@@ -14,12 +14,14 @@ ui-dialog { padding: .3em; }
 .ui-dialog_postal_confirm_switch { padding: .3em; }
 .ui-dialog_postal_na_switch { padding: .3em; }
 .ui-dialog_postal_call_back { padding: .3em; }
+.ui-dialog_postal_complete { padding: .3em; }
 .ui-state-highlight { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 .validateTips2 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips3 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips4 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips5 { border: 1px solid transparent; padding: 0.3em; }
+.validateTips6 { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPhysical { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPostal { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsMB { border: 1px solid transparent; padding: 0.3em; }
@@ -230,6 +232,7 @@ function No_Answer()
 
 function Call_Back()
 {
+	$( ".validateTips5" ).text("All fields are required");
 	$( "#cb_time_h" ).val("");
 	$( "#cb_time_m" ).val("");
 	$( "#cb_time_p" ).val("");
@@ -326,6 +329,70 @@ $(function() {
 function Complete()
 {
 	$( "#dialog-confirm_complete" ).dialog( "open" );
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog_reject" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips6" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+	
+	$( "#dialog-confirm_reject" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 300,
+		height: 225,
+		modal: true,
+		show: "blind",
+		hide: "blind",
+		buttons: {
+			"Reject": function() {
+				var id = $( "#account_id" ),
+					user = "<?php echo $ac["user"]; ?>",
+					reason = $( "#reject_reason" ),
+					notes = $( "#reject_notes" );
+				
+				$.get("customers_submit.php?method=reject", { id: id.val(), user: user, reason: reason.val(), notes: notes.val() },
+				function(data) {
+					if (data == "rejected")
+					{
+						$( "#dialog-confirm_reject" ).dialog( "close" );
+						$( "#display" ).hide('blind', '', 'slow', function() {
+							$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+							function() {
+								$( "#display" ).show('blind', '', 'slow');
+							});
+						});
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+function Reject()
+{
+	$( ".validateTips6" ).text("All fields are required");
+	$( "#reject_reason" ).val("");
+	$( "#reject_notes" ).val("");
+	$( "#dialog-confirm_complete" ).dialog( "close" );
+	setTimeout(function() {$( "#dialog-confirm_reject" ).dialog( "open" );},500);
 }
 </script>
 <script>
@@ -1517,7 +1584,7 @@ function Postal_Same()
 </div>
 
 <div id="dialog-confirm_call_back" title="Call Back">
-<p class="validateTips5">All fields are required</p><br />
+<p class="validateTips5">All fields are required</p>
 <table>
 <tr>
 <td width="85px">Call Back Time </td>
@@ -1530,7 +1597,29 @@ function Postal_Same()
 <table width="100%" height="55px">
 <tr height="100%">
 <td valign="middle" align="center"><button onclick="Approve()" class="btn">Approve</button></td>
-<td valign="middle" align="center"><button onclick="Cancel()" class="btn_red">Cancel</button></td>
+<td valign="middle" align="center"><button onclick="Reject()" class="btn_red">Cancel</button></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm_reject" title="Cancel Account">
+<p class="validateTips6">All fields are required</p>
+<table>
+<tr>
+<td width="50px">Reason </td>
+<td><select id="reject_reason" style="width:100px;" />
+<option></option>
+<option>Contract</option>
+<option>Fraud</option>
+<option>Rates</option>
+<option>Telstra</option>
+<option>Other</option>
+</select></td>
+</tr>
+<tr>
+<td>Notes </td>
+<td><textarea id="reject_notes" style="width: 210px; height: 75px; resize: none;"></textarea>
+</td>
 </tr>
 </table>
 </div>

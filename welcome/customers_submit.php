@@ -12,6 +12,46 @@ if ($method == "call_back")
 	
 	echo "done";
 }
+elseif ($method == "reject")
+{
+	$id = $_GET["id"];
+	$user = $_GET["user"];
+	$reason = $_GET["reason"];
+	$notes = trim($_GET["notes"]);
+	$timestamp = date("Y-m-d H:i:s");
+	
+	$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'");
+	$data = mysql_fetch_assoc($q);
+	
+	if ($id == "" || $user == "")
+	{
+		echo "Error! Contact your administrator!";
+	}
+	elseif ($reason == "")
+	{
+		echo "Please select a cancellation reason";
+	}
+	elseif ($notes == "")
+	{
+		echo "Please enter a detailed explaination for cancelling";
+	}
+	else
+	{
+		$note = $reason . " - " . $notes;
+		
+		mysql_query("INSERT INTO vericon.welcome (id, status, timestamp, user) VALUES ('$id', 'Cancel', '$timestamp', '$user')") or die(mysql_error());
+		
+		mysql_query("INSERT INTO vericon.customers_notes (id, user, timestamp, type, note) VALUES ('$id', '$user', '$timestamp', 'Cancelled', '" . mysql_real_escape_string($note) . "')") or die(mysql_error());
+		
+		mysql_query("UPDATE vericon.customers SET status = 'Cancelled', last_edit_by = '$user' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		
+		mysql_query("INSERT INTO vericon.customers_log (id, status, last_edit_by, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type, billing_comments, other_comments) VALUES ('$data[id]', 'Cancelled', '$user', '$data[industry]', '$data[lead_id]', '$data[sale_id]', '$data[timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($data["title"]) . "', '" . mysql_real_escape_string($data["firstname"]) . "', '" . mysql_real_escape_string($data["middlename"]) . "', '" . mysql_real_escape_string($data["lastname"]) . "', '" . mysql_real_escape_string($data["dob"]) . "', '" . mysql_real_escape_string($data["email"]) . "', '" . mysql_real_escape_string($data["mobile"]) . "', '$data[billing]', '$data[welcome]', '$data[promotions]', '$data[physical]', '$data[postal]', '" . mysql_real_escape_string($data["id_type"]) . "', '" . mysql_real_escape_string($data["id_num"]) . "', '" . mysql_real_escape_string($data["abn"]) . "', '" . mysql_real_escape_string($data["position"]) . "', '" . mysql_real_escape_string($data["credit"]) . "', '" . mysql_real_escape_string($data["payway"]) . "', '" . mysql_real_escape_string($data["dd_type"]) . "', '" . mysql_real_escape_string($data["billing_comments"]) . "', '" . mysql_real_escape_string($data["other_comments"]) . "')") or die(mysql_error());
+		
+		mysql_query("DELETE FROM vericon.welcome_lock WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		
+		echo "rejected";
+	}
+}
 elseif ($method == "approve")
 {
 	$id = $_GET["id"];
@@ -178,6 +218,9 @@ elseif ($method == "approve")
 		mysql_query("INSERT INTO vericon.welcome (id, status, timestamp, user) VALUES ('$id', 'Approve', '$timestamp', '$user')") or die(mysql_error());
 		
 		mysql_query("UPDATE vericon.customers SET status = 'Waiting Provisioning', last_edit_by = '$user', title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', credit = '" . mysql_real_escape_string($credit) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		
+		$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'");
+		$data = mysql_fetch_assoc($q);
 		
 		mysql_query("INSERT INTO vericon.customers_log (id, status, last_edit_by, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type, billing_comments, other_comments) VALUES ('$data[id]', 'Waiting Provisioning', '$user', '$data[industry]', '$data[lead_id]', '$data[sale_id]', '$data[timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($data["title"]) . "', '" . mysql_real_escape_string($data["firstname"]) . "', '" . mysql_real_escape_string($data["middlename"]) . "', '" . mysql_real_escape_string($data["lastname"]) . "', '" . mysql_real_escape_string($data["dob"]) . "', '" . mysql_real_escape_string($data["email"]) . "', '" . mysql_real_escape_string($data["mobile"]) . "', '$data[billing]', '$data[welcome]', '$data[promotions]', '$data[physical]', '$data[postal]', '" . mysql_real_escape_string($data["id_type"]) . "', '" . mysql_real_escape_string($data["id_num"]) . "', '" . mysql_real_escape_string($data["abn"]) . "', '" . mysql_real_escape_string($data["position"]) . "', '" . mysql_real_escape_string($data["credit"]) . "', '" . mysql_real_escape_string($data["payway"]) . "', '" . mysql_real_escape_string($data["dd_type"]) . "', '" . mysql_real_escape_string($data["billing_comments"]) . "', '" . mysql_real_escape_string($data["other_comments"]) . "')") or die(mysql_error());
 		
