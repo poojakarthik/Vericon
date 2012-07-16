@@ -12,11 +12,14 @@ ui-dialog { padding: .3em; }
 .ui-dialog_postal_mailbox { padding: .3em; }
 .ui-dialog_postal_confirm { padding: .3em; }
 .ui-dialog_postal_confirm_switch { padding: .3em; }
+.ui-dialog_postal_na_switch { padding: .3em; }
+.ui-dialog_postal_call_back { padding: .3em; }
 .ui-state-highlight { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 .validateTips2 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips3 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips4 { border: 1px solid transparent; padding: 0.3em; }
+.validateTips5 { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPhysical { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPostal { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsMB { border: 1px solid transparent; padding: 0.3em; }
@@ -197,6 +200,112 @@ function Delete_Package(cli)
 		}
 	});
 }
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog_na_switch" ).dialog( "destroy" );
+	
+	$( "#dialog-confirm_na" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 275,
+		height: 100,
+		modal: true,
+		show: "blind",
+		hide: "blind"
+	});
+});
+
+function No_Answer()
+{
+	$( "#dialog-confirm_na" ).dialog( "close" );
+	$( "#display" ).hide('blind', '', 'slow', function() {
+		$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+		function() {
+			$( "#display" ).show('blind', '', 'slow');
+		});
+	});
+}
+
+function Call_Back()
+{
+	$( "#cb_time_h" ).val("");
+	$( "#cb_time_m" ).val("");
+	$( "#cb_time_p" ).val("");
+	$( "#dialog-confirm_na" ).dialog( "close" );
+	setTimeout(function() {$( "#dialog-confirm_call_back" ).dialog( "open" );},500);
+}
+
+function NA_Switch()
+{
+	$( "#dialog-confirm_na" ).dialog( "open" );
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog_call_back" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips5" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+	
+	$( "#dialog-confirm_call_back" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 250,
+		height: 150,
+		modal: true,
+		show: "blind",
+		hide: "blind",
+		buttons: {
+			"Submit": function() {
+				var id = $( "#account_id" ),
+					time_h = $( "#cb_time_h" ),
+					time_m = $( "#cb_time_m" ),
+					time_p = $( "#cb_time_p" );
+				
+				if (time_h.val() == "" || time_m.val() == "" || time_p.val() == "")
+				{
+					updateTips("Enter a valid call back time!");
+				}
+				else
+				{
+					var time = time_h.val() + ":" + time_m.val() + ":00 " + time_p.val();
+					
+					$.get("customers_submit.php?method=call_back", { id: id.val(), time: time },
+					function(data) {
+						if (data == "done")
+						{
+							$( "#dialog-confirm_call_back" ).dialog( "close" );
+							$( "#display" ).hide('blind', '', 'slow', function() {
+								$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+								function() {
+									$( "#display" ).show('blind', '', 'slow');
+								});
+							});
+						}
+						else
+						{
+							updateTips(data);
+						}
+					});
+				}
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
 </script>
 <script>
 function Done()
@@ -1369,6 +1478,25 @@ function Postal_Same()
 	}
 }
 </script>
+
+<div id="dialog-confirm_na" title="N/A Switch">
+<table width="100%" height="55px">
+<tr height="100%">
+<td valign="middle" align="center"><button onclick="No_Answer()" class="btn">No Answer</button></td>
+<td valign="middle" align="center"><button onclick="Call_Back()" class="btn">Call Back</button></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm_call_back" title="Call Back">
+<p class="validateTips5">All fields are required</p><br />
+<table>
+<tr>
+<td width="85px">Call Back Time </td>
+<td><select id="cb_time_h" style="width:40px;"><option></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option></select> : <select id="cb_time_m" style="width:40px;"><option></option><option>00</option><option>15</option><option>30</option><option>45</option></select> <select id="cb_time_p" style="width:40px;"><option></option><option>AM</option><option>PM</option></select></td>
+</tr>
+</table>
+</div>
 
 <div id="dialog-form2" title="Add a Package">
 <p class="validateTips2">All fields are required</p><br />

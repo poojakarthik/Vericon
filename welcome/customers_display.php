@@ -393,6 +393,11 @@ $( "#packages" ).load('packages.php?id=' + id);
 </div>
 </td>
 </tr>
+<tr valign="bottom">
+<td align="left" style="padding-left:10px;" colspan="2"></td>
+<td align="right" width="25%" style="padding-right:10px;"></td>
+<td align="right" width="25%" style="padding-right:10px;"><button onclick="NA_Switch()" class="btn">N/A</button></td>
+</tr>
 </table>
 </td>
 </tr>
