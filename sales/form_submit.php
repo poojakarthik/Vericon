@@ -16,7 +16,7 @@ if ($method == "get")
 	
 	if ($lead_val[0] == 1)
 	{
-		$q = mysql_query("SELECT * FROM vericon.leads WHERE cli = '$lead_id'") or die(mysql_error());
+		$q = mysql_query("SELECT * FROM leads.leads WHERE cli = '$lead_id'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q);
 	
 		$q1 = mysql_query("SELECT COUNT(lead_id) FROM vericon.sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
@@ -30,10 +30,10 @@ if ($method == "get")
 		
 		if ($check3["type"] == "Captive")
 		{
-			$qcg = mysql_query("SELECT * FROM vericon.leads_group WHERE centres LIKE '%$centre%'") or die(mysql_error());
+			$qcg = mysql_query("SELECT * FROM leads.groups WHERE centres LIKE '%$centre%'") or die(mysql_error());
 			$check4 = mysql_fetch_assoc($qcg);
 			
-			$qlg = mysql_query("SELECT * FROM vericon.leads_group WHERE centres LIKE '%$check[centre]%'") or die(mysql_error());
+			$qlg = mysql_query("SELECT * FROM leads.groups WHERE centres LIKE '%$check[centre]%'") or die(mysql_error());
 			$check5 = mysql_fetch_assoc($qlg);
 			
 			if ($check4["group"] != $check5["group"] && strtoupper($check["centre"]) != "ROHAN")

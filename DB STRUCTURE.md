@@ -5,6 +5,8 @@ As of 04/06/2012
 | ------------- |
 | [ADSL](#adsl) |
 | [GNAF](#gnaf) |
+| [Leads](#leads) |
+| [PAF](#paf) |
 | [VeriCon](#vericon)  |
 
 ##ADSL
@@ -569,6 +571,77 @@ CREATE TABLE IF NOT EXISTS `STREET_TYPE_AUT` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 
+##Leads
+```sql
+--
+-- Table structure for table `groups`
+--
+
+CREATE TABLE IF NOT EXISTS `groups` (
+  `group` varchar(16) NOT NULL,
+  `centres` varchar(32) NOT NULL,
+  PRIMARY KEY (`group`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `leads`
+--
+
+CREATE TABLE IF NOT EXISTS `leads` (
+  `cli` int(10) NOT NULL,
+  `centre` varchar(16) NOT NULL,
+  `issue_date` date NOT NULL,
+  `expiry_date` date NOT NULL,
+  `packet_expiry` date NOT NULL,
+  PRIMARY KEY (`cli`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1
+/*!50100 PARTITION BY KEY (cli)
+PARTITIONS 30 */;
+```
+```sql
+--
+-- Table structure for table `leads_time`
+--
+
+CREATE TABLE IF NOT EXISTS `leads_time` (
+  `centre` varchar(16) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`centre`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `log_leads`
+--
+
+CREATE TABLE IF NOT EXISTS `log_leads` (
+  `cli` int(10) NOT NULL,
+  `centre` varchar(16) NOT NULL,
+  `issue_date` date NOT NULL,
+  `expiry_date` date NOT NULL,
+  `packet_expiry` date NOT NULL,
+  KEY `cli` (`cli`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1
+/*!50100 PARTITION BY KEY (cli)
+PARTITIONS 30 */;
+```
+
+##PAF
+```sql
+--
+-- Table structure for table `pcode`
+--
+
+CREATE TABLE IF NOT EXISTS `pcode` (
+  `postcode` int(4) NOT NULL,
+  `locality` varchar(256) NOT NULL,
+  `state` varchar(3) NOT NULL,
+  KEY `postcode` (`postcode`),
+  KEY `locality` (`locality`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+
 ##VeriCon
 ```sql
 --
@@ -774,7 +847,7 @@ CREATE TABLE IF NOT EXISTS `currentuser` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`hash`),
   UNIQUE KEY `user` (`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -836,37 +909,6 @@ CREATE TABLE IF NOT EXISTS `international` (
 ```
 ```sql
 --
--- Table structure for table `leads`
---
-
-CREATE TABLE IF NOT EXISTS `leads` (
-  `cli` int(10) NOT NULL,
-  `centre` varchar(16) NOT NULL,
-  `issue_date` date NOT NULL,
-  `expiry_date` date NOT NULL,
-  `packet_expiry` date NOT NULL,
-  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`cli`),
-  KEY `centre` (`centre`),
-  KEY `cli` (`cli`,`centre`),
-  KEY `centre_2` (`centre`,`expiry_date`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1
-/*!50100 PARTITION BY KEY ()
-PARTITIONS 30 */;
-```
-```sql
---
--- Table structure for table `leads_group`
---
-
-CREATE TABLE IF NOT EXISTS `leads_group` (
-  `group` varchar(16) NOT NULL,
-  `centres` varchar(32) NOT NULL,
-  PRIMARY KEY (`group`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
 -- Table structure for table `log_access`
 --
 
@@ -875,21 +917,6 @@ CREATE TABLE IF NOT EXISTS `log_access` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `page` varchar(300) NOT NULL,
   KEY `user` (`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
-```
-```sql
---
--- Table structure for table `log_leads`
---
-
-CREATE TABLE IF NOT EXISTS `log_leads` (
-  `cli` int(10) NOT NULL,
-  `centre` varchar(16) NOT NULL,
-  `issue_date` date NOT NULL,
-  `expiry_date` date NOT NULL,
-  `packet_expiry` date NOT NULL,
-  KEY `cli` (`cli`),
-  KEY `cli_2` (`cli`,`centre`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
@@ -1001,6 +1028,7 @@ CREATE TABLE IF NOT EXISTS `portals_access` (
   `pages` text NOT NULL,
   PRIMARY KEY (`user`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+
 ```
 ```sql
 --
@@ -1118,7 +1146,7 @@ CREATE TABLE IF NOT EXISTS `sales_customers_temp` (
   `campaign` varchar(300) NOT NULL,
   `type` varchar(25) NOT NULL,
   PRIMARY KEY (`lead_id`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -1143,7 +1171,7 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `cli` varchar(10) NOT NULL,
   `plan` varchar(300) NOT NULL
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```
 ```sql
 --

@@ -24,25 +24,30 @@ mysql_connect('localhost','vericon','18450be');
 </thead>
 <tbody>
 <?php
+$count = array();
+$expiry = array();
+$q = mysql_query("SELECT centre, COUNT(cli), MAX(expiry_date) FROM leads.leads WHERE expiry_date >= '" . date("Y-m-d") . "' GROUP BY centre") or die(mysql_error());
+while($data = mysql_fetch_row($q))
+{
+	$count[$data[0]] = $data[1];
+	$expiry[$data[0]] = $data[2];
+}
+
 $total_num = 0;
 //centres
 $q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
 while ($centre = mysql_fetch_row($q))
 {
-	$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = '$centre[0]' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
-	$num = mysql_fetch_row($q0);
-	$total_num += $num[0];
+	$total_num += $count[$centre[0]];
+	$q1 = mysql_query("SELECT timestamp FROM leads.leads_time WHERE centre = '$centre[0]'") or die(mysql_error());
+	$c_last = mysql_fetch_row($q1);
 	
-	$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = '$centre[0]' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
-	$c_exp = mysql_fetch_row($q1);
-
-	$q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = '$centre[0]' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
-	$c_last = mysql_fetch_row($q2);
-
+	if ($expiry[$centre[0]] != "") { $expiry_date = date("d/m/Y", strtotime($expiry[$centre[0]])); } else { $expiry_date = "-"; }
+	
 	echo "<tr>";
 	echo "<td>" . $centre[0] . "</td>";
-	echo "<td>" . number_format($num[0]) . "</td>";
-	echo "<td>" . date("d/m/Y", strtotime($c_exp[0])) . "</td>";
+	echo "<td>" . number_format($count[$centre[0]]) . "</td>";
+	echo "<td>" . $expiry_date . "</td>";
 	echo "<td>" . date("d/m/Y H:i:s", strtotime($c_last[0])) . "</td>";
 	echo "<td><input type='button' onclick='Details(\"$centre[0]\")' class='icon_view' title='View Details'></td>";
 	echo "<td><input type='button' onclick='Export(\"$centre[0]\")' class='icon_excel' title='Export Leads'></td>";
@@ -72,63 +77,51 @@ echo "</tr>";
 <?php
 $total_num = 0;
 //kamal
-$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = 'Kamal' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
-$num = mysql_fetch_row($q0);
-$total_num += $num[0];
+$total_num += $count["KAMAL"];
+$q1 = mysql_query("SELECT timestamp FROM leads.leads_time WHERE centre = 'KAMAL'") or die(mysql_error());
+$c_last = mysql_fetch_row($q1);
 
-$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Kamal' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
-$k_exp = mysql_fetch_row($q1);
-
-$q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = 'Kamal' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
-$k_last = mysql_fetch_row($q2);
+if ($expiry["KAMAL"] != "") { $expiry_date = date("d/m/Y", strtotime($expiry["KAMAL"])); } else { $expiry_date = "-"; }
 
 echo "<tr>";
 echo "<td>Kamal</td>";
-echo "<td>" . number_format($num[0]) . "</td>";
-echo "<td>" . date("d/m/Y", strtotime($k_exp[0])) . "</td>";
-echo "<td>" . date("d/m/Y H:i:s", strtotime($k_last[0])) . "</td>";
-echo "<td><input type='button' onclick='Details(\"Kamal\")' class='icon_view' title='View Details'></td>";
-echo "<td><input type='button' onclick='Export(\"Kamal\")' class='icon_excel' title='Export Leads'></td>";
+echo "<td>" . number_format($count["KAMAL"]) . "</td>";
+echo "<td>" . $expiry_date . "</td>";
+echo "<td>" . date("d/m/Y H:i:s", strtotime($c_last[0])) . "</td>";
+echo "<td><input type='button' onclick='Details(\"KAMAL\")' class='icon_view' title='View Details'></td>";
+echo "<td><input type='button' onclick='Export(\"KAMAL\")' class='icon_excel' title='Export Leads'></td>";
 echo "</tr>";
 
 //rohan
-$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = 'Rohan' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
-$num = mysql_fetch_row($q0);
-$total_num += $num[0];
+$total_num += $count["ROHAN"];
+$q1 = mysql_query("SELECT timestamp FROM leads.leads_time WHERE centre = 'ROHAN'") or die(mysql_error());
+$c_last = mysql_fetch_row($q1);
 
-$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Rohan' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
-$k_exp = mysql_fetch_row($q1);
-
-$q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = 'Rohan' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
-$k_last = mysql_fetch_row($q2);
+if ($expiry["ROHAN"] != "") { $expiry_date = date("d/m/Y", strtotime($expiry["ROHAN"])); } else { $expiry_date = "-"; }
 
 echo "<tr>";
 echo "<td>Rohan</td>";
-echo "<td>" . number_format($num[0]) . "</td>";
-echo "<td>" . date("d/m/Y", strtotime($k_exp[0])) . "</td>";
-echo "<td>" . date("d/m/Y H:i:s", strtotime($k_last[0])) . "</td>";
-echo "<td><input type='button' onclick='Details(\"Rohan\")' class='icon_view' title='View Details'></td>";
-echo "<td><input type='button' onclick='Export(\"Rohan\")' class='icon_excel' title='Export Leads'></td>";
+echo "<td>" . number_format($count["ROHAN"]) . "</td>";
+echo "<td>" . $expiry_date . "</td>";
+echo "<td>" . date("d/m/Y H:i:s", strtotime($c_last[0])) . "</td>";
+echo "<td><input type='button' onclick='Details(\"ROHAN\")' class='icon_view' title='View Details'></td>";
+echo "<td><input type='button' onclick='Export(\"ROHAN\")' class='icon_excel' title='Export Leads'></td>";
 echo "</tr>";
 
 //sanjay
-$q0 = mysql_query("SELECT COUNT(cli) FROM vericon.leads WHERE centre = 'Sanjay' AND expiry_date >= '" . date("Y-m-d") . "'") or die(mysql_error());
-$num = mysql_fetch_row($q0);
-$total_num += $num[0];
+$total_num += $count["SANJAY"];
+$q1 = mysql_query("SELECT timestamp FROM leads.leads_time WHERE centre = 'SANJAY'") or die(mysql_error());
+$c_last = mysql_fetch_row($q1);
 
-$q1 = mysql_query("SELECT expiry_date FROM vericon.leads WHERE centre = 'Sanjay' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY expiry_date DESC LIMIT 1") or die(mysql_error());
-$k_exp = mysql_fetch_row($q1);
-
-$q2 = mysql_query("SELECT timestamp FROM vericon.leads WHERE centre = 'Sanjay' AND expiry_date >= '" . date("Y-m-d") . "' ORDER BY timestamp DESC LIMIT 1") or die(mysql_error());
-$k_last = mysql_fetch_row($q2);
+if ($expiry["SANJAY"] != "") { $expiry_date = date("d/m/Y", strtotime($expiry["SANJAY"])); } else { $expiry_date = "-"; }
 
 echo "<tr>";
 echo "<td>Sanjay</td>";
-echo "<td>" . number_format($num[0]) . "</td>";
-echo "<td>" . date("d/m/Y", strtotime($k_exp[0])) . "</td>";
-echo "<td>" . date("d/m/Y H:i:s", strtotime($k_last[0])) . "</td>";
-echo "<td><input type='button' onclick='Details(\"Sanjay\")' class='icon_view' title='View Details'></td>";
-echo "<td><input type='button' onclick='Export(\"Sanjay\")' class='icon_excel' title='Export Leads'></td>";
+echo "<td>" . number_format($count["SANJAY"]) . "</td>";
+echo "<td>" . $expiry_date . "</td>";
+echo "<td>" . date("d/m/Y H:i:s", strtotime($c_last[0])) . "</td>";
+echo "<td><input type='button' onclick='Details(\"SANJAY\")' class='icon_view' title='View Details'></td>";
+echo "<td><input type='button' onclick='Export(\"SANJAY\")' class='icon_excel' title='Export Leads'></td>";
 echo "</tr>";
 
 //total

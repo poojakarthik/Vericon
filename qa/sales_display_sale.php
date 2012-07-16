@@ -183,7 +183,7 @@ if ($l[0] == 0)
 {
 	$dof = date("Y-m-d", strtotime($data["timestamp"]));
 	$dos = date("Y-m-d", strtotime($data["approved_timestamp"]));
-	$q2 = mysql_query("SELECT * FROM vericon.log_leads WHERE cli = '$data[lead_id]' AND (centre = '$data[centre]' OR centre NOT LIKE 'CC%') AND issue_date <= '$dof' AND expiry_date >= '$dof' AND packet_expiry >= '$dos'") or die(mysql_error());
+	$q2 = mysql_query("SELECT * FROM leads.log_leads WHERE cli = '$data[lead_id]' AND (centre = '$data[centre]' OR centre NOT LIKE 'CC%') AND issue_date <= '$dof' AND expiry_date >= '$dof' AND packet_expiry >= '$dos'") or die(mysql_error());
 	
 	if (mysql_num_rows($q2) == 0)
 	{

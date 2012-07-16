@@ -7,7 +7,7 @@ if (preg_match('/0([2378])([0-9]{8})/',$id))
 {
 	$id = substr($id,1,9);
 	
-	$q = mysql_query("SELECT * FROM vericon.log_leads WHERE cli = '$id'") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM leads.log_leads WHERE cli = '$id'") or die(mysql_error());
 	
 	if (mysql_num_rows($q) == 0)
 	{
@@ -28,7 +28,7 @@ if (preg_match('/0([2378])([0-9]{8})/',$id))
 }
 elseif (preg_match('/([2378])([0-9]{8})/',$id))
 {
-	$q = mysql_query("SELECT * FROM vericon.log_leads WHERE cli = '$id'") or die(mysql_error());
+	$q = mysql_query("SELECT * FROM leads.log_leads WHERE cli = '$id'") or die(mysql_error());
 	
 	if (mysql_num_rows($q) == 0)
 	{
