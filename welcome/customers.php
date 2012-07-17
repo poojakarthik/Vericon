@@ -12,9 +12,11 @@ ui-dialog { padding: .3em; }
 .ui-dialog_postal_mailbox { padding: .3em; }
 .ui-dialog_postal_confirm { padding: .3em; }
 .ui-dialog_postal_confirm_switch { padding: .3em; }
-.ui-dialog_postal_na_switch { padding: .3em; }
-.ui-dialog_postal_call_back { padding: .3em; }
-.ui-dialog_postal_complete { padding: .3em; }
+.ui-dialog_na_switch { padding: .3em; }
+.ui-dialog_call_back { padding: .3em; }
+.ui-dialog_complete { padding: .3em; }
+.ui-dialog_reject { padding: .3em; }
+.ui-dialog_upgrade { padding: .3em; }
 .ui-state-highlight { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 .validateTips2 { border: 1px solid transparent; padding: 0.3em; }
@@ -54,13 +56,13 @@ $(function() {
 		modal: true,
 		resizable: false,
 		draggable: false,
-		show: "blind",
 		hide: "blind",
 		buttons: {
 			"Add Package": function() {
 				var id = $( "#account_id" ),
 					cli = $( "#cli" ),
-					plan = $( "#plan" );
+					plan = $( "#plan" ),
+					user = "<?php echo $ac["user"]; ?>";
 				
 				if (cli.val() == "")
 				{
@@ -72,11 +74,11 @@ $(function() {
 				}
 				else
 				{
-					$.get("details_submit.php?method=add", { id: id.val(), cli: cli.val(), plan: plan.val() },
+					$.get("customers_submit.php?method=add", { id: id.val(), cli: cli.val(), plan: plan.val(), user: user },
 					function(data) {
 						if (data == "added")
 						{
-							$( "#packages" ).load('packages.php?id=' + id.val());
+							$( "#upgrade_packages" ).load('packages2.php?id=' + id.val());
 							$( "#dialog-form2" ).dialog( "close" );
 						}
 						else
@@ -131,30 +133,25 @@ $(function() {
 		modal: true,
 		resizable: false,
 		draggable: false,
-		show: "blind",
 		hide: "blind",
 		buttons: {
 			"Edit Package": function() {
 				var id = $( "#account_id" ),
 					cli = $( "#edit_cli" ),
 					plan = $( "#edit_plan" ),
-					cli2 = $( "#original_edit_cli" );
+					user = "<?php echo $ac["user"]; ?>";
 				
-				if (cli.val() == "")
-				{
-					updateTips("Enter the CLI!");
-				}
-				else if (plan.val() == "")
+				if (plan.val() == "")
 				{
 					updateTips("Select a plan!");
 				}
 				else
 				{
-					$.get("details_submit.php?method=edit", { id: id.val(), cli: cli.val(), plan: plan.val(), cli2: cli2.val() },
+					$.get("customers_submit.php?method=edit", { id: id.val(), cli: cli.val(), plan: plan.val(), user: user },
 					function(data) {
 						if (data == "editted")
 						{
-							$( "#packages" ).load('packages.php?id=' + id.val());
+							$( "#upgrade_packages" ).load('packages2.php?id=' + id.val());
 							$( "#dialog-form3" ).dialog( "close" );
 						}
 						else
@@ -179,28 +176,7 @@ function Edit_Package(cli,plan)
 	$( "#edit_plan" ).load("plans.php?id=" + $( "#account_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
 		$( "#edit_plan" ).val(plan);
 	});
-	$( "#original_edit_cli" ).val(cli);
 	$( "#dialog-form3" ).dialog( "open" );
-}
-
-function Plan_Dropdown_Edit()
-{
-	$( "#edit_plan" ).load("plans.php?id=" + $( "#account_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
-}
-</script>
-<script> //delete packages
-function Delete_Package(cli)
-{
-	var id = $( "#account_id" ),
-		cli = cli;
-	
-	$.get("details_submit.php?method=delete", { id: id.val(), cli: cli},
-	function(data) {
-		if (data == "deleted")
-		{
-			$( "#packages" ).load('packages.php?id=' + id.val());
-		}
-	});
 }
 </script>
 <script>
@@ -459,6 +435,81 @@ $(function() {
 		hide: "blind"
 	});
 });
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog_upgrade" ).dialog( "destroy" );
+	
+	$( "#dialog-confirm_upgrade" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 550,
+		height: 300,
+		modal: true,
+		show: "blind",
+		hide: "blind",
+		buttons: {
+			"Submit": function() {
+				var id = $( "#account_id" ),
+					title = $( "#title" ),
+					first = $( "#first" ),
+					middle = $( "#middle" ),
+					last = $( "#last" ),
+					dob = $( "#datepicker" ),
+					email = $( "#email" ),
+					mobile = $( "#mobile" ),
+					physical = $( "#physical" ),
+					postal = $( "#postal" ),
+					id_type = $( "#id_type" ),
+					id_num = $( "#id_num" ),
+					abn = $( "#abn" ),
+					abn_status = $( ".abn_status" ),
+					position = $( "#position" ),
+					credit = $( "#credit" ),
+					payway = $( "#payway" ),
+					dd_type = $( "#dd_type" ),
+					user = "<?php echo $ac["user"]; ?>";
+					
+					if ($('#postal_same').attr('checked'))
+					{
+						postal = $( "#physical" );
+					}
+				
+				$.get("customers_submit.php?method=upgrade", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user },
+				function(data) {
+					if (data == "submitted")
+					{
+						$( "#dialog-confirm_upgrade" ).dialog( "close" );
+						$( "#display" ).hide('blind', '', 'slow', function() {
+							$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+							function() {
+								$( "#display" ).show('blind', '', 'slow');
+							});
+						});
+					}
+					else
+					{
+						$( ".validateTips4" ).html(data);
+						$( "#dialog-confirm_upgrade" ).dialog( "close" );
+						setTimeout(function() {$( "#dialog-form4" ).dialog( "open" );},500);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+
+function Upgrade()
+{
+	var id = $( "#account_id" );
+	
+	$( "#upgrade_packages" ).load("packages2.php?id=" + id.val());
+	$( "#dialog-confirm_upgrade" ).dialog( "open" );
+}
 </script>
 <script> //get ABN
 function getABN(){
@@ -1624,6 +1675,23 @@ function Postal_Same()
 </table>
 </div>
 
+<div id="dialog-confirm_upgrade" title="Upgrade">
+<div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" width="100%" style="margin-top:0px;">
+<thead>
+<tr class="ui-widget-header ">
+<th width="20%">CLI</th>
+<th width="75%">Plan</th>
+<th width="5%">Edit</th>
+</tr>
+</thead>
+<tbody id="upgrade_packages">
+</tbody>
+</table>
+</div>
+<button onclick="Add_Package()" class="btn">Add Package</button>
+</div>
+
 <div id="dialog-form2" title="Add a Package">
 <p class="validateTips2">All fields are required</p><br />
 <table>
@@ -1641,11 +1709,10 @@ function Postal_Same()
 
 <div id="dialog-form3" title="Edit Package">
 <p class="validateTips3">All fields are required</p><br />
-<input type="hidden" id="original_edit_cli" value="" />
 <table>
 <tr>
 <td width="50px">CLI </td>
-<td><input type="text" size="15" id="edit_cli" onchange="Plan_Dropdown_Edit()" style="margin-top:0px;" /></td>
+<td><input type="text" size="15" id="edit_cli" disabled="disabled" style="margin-top:0px;" /></td>
 </tr>
 <tr>
 <td>Plan </td>

@@ -396,7 +396,7 @@ $( "#packages" ).load('packages.php?id=' + id);
 </td>
 </tr>
 <tr valign="bottom">
-<td align="left" style="padding-left:10px;" colspan="2"></td>
+<td align="left" style="padding-left:10px;" colspan="2"><button onclick="Upgrade()" class="btn">Upgrade</button></td>
 <td align="right" width="25%" style="padding-right:10px;"><button onclick="Complete()" class="btn">Complete</button></td>
 <td align="right" width="25%" style="padding-right:10px;"><button onclick="NA_Switch()" class="btn">N/A</button></td>
 </tr>
