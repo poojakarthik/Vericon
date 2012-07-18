@@ -42,6 +42,8 @@ else
 	$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'") or die(mysql_error());
 	$data = mysql_fetch_assoc($q);
 ?>
+<input type="hidden" id="processing_type" value="" />
+<input type="hidden" id="rec_store" value="" />
 <input type="hidden" id="account_id" value="<?php echo $id; ?>" />
 <script> //dob datepicker
 $(function() {
@@ -411,8 +413,8 @@ $( "#packages" ).load('packages.php?id=' + id);
 </td>
 </tr>
 <tr valign="bottom">
-<td align="left" style="padding-left:10px;" colspan="2"><button onclick="Upgrade()" class="btn">Upgrade</button></td>
-<td align="right" width="25%" style="padding-right:10px;"><button onclick="Complete()" class="btn">Complete</button></td>
+<td align="left" style="padding-left:10px;" colspan="2"><button onclick="Rec('Upgrade')" class="btn">Upgrade</button></td>
+<td align="right" width="25%" style="padding-right:10px;"><button onclick="Rec('Complete')" class="btn">Complete</button></td>
 <td align="right" width="25%" style="padding-right:10px;"><button onclick="NA_Switch()" class="btn">N/A</button></td>
 </tr>
 </table>

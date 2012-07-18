@@ -2,10 +2,13 @@
 include "../auth/iprestrict.php";
 include "../source/header.php";
 ?>
+<link rel="stylesheet" type="text/css" href="upload/uploadify.css" />
+<script type="text/javascript" src="upload/jquery.uploadify-3.1.min.js"></script>
 <style>
 #physical_address_code { height:120px; margin:0px; overflow-y:auto; border:1px solid black; padding:3px; }
 #postal_address_code  { height:120px; margin:0px; overflow-y:auto; border:1px solid black; padding:3px; }
 ui-dialog { padding: .3em; }
+.ui-dialog_form0 { padding: .3em; }
 .ui-dialog_physical { padding: .3em; }
 .ui-dialog_physical_confirm { padding: .3em; }
 .ui-dialog_postal { padding: .3em; }
@@ -34,7 +37,60 @@ div#users-contain table { margin: 1em 0; border-collapse: collapse; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 </style>
 
-<script> //add packages
+<script>
+$(function() {
+	$( "#dialog:ui-dialog0" ).dialog( "destroy" );
+	
+	$( "#dialog-form0" ).dialog({
+		autoOpen: false,
+		height: 175,
+		width: 300,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind"
+	});
+});
+
+function Rec(type)
+{
+	$( "#processing_type" ).val(type);
+	$( "#dialog-form0" ).dialog( "open" );
+}
+</script>
+<script>
+$(function() {
+    $('#file_upload').uploadify({
+		'checkExisting' : 'upload/check-exists.php',
+		'fileSizeLimit' : '20MB',
+		'fileTypeDesc' : 'GSM',
+        'fileTypeExts' : '*.gsm',
+		'multi'    : false,
+		'progressData' : 'speed',
+		'removeTimeout' : 0,
+        'swf'      : 'upload/uploadify.swf',
+        'uploader' : 'upload/uploadify.php',
+        'buttonText' : 'BROWSE...',
+		'buttonClass' : 'btn',
+		'width'    : 102,
+		'onUploadSuccess' : function(file, data, response) {
+			$( "#rec_store" ).val(file["name"]);
+			if ($( "#processing_type" ).val() == "Upgrade")
+			{
+				$( "#dialog-form0" ).dialog( "close" );
+				setTimeout("Upgrade()", 500);
+			}
+			else if ($( "#processing_type" ).val() == "Complete")
+			{
+				$( "#dialog-form0" ).dialog( "close" );
+				setTimeout("Complete()", 500);
+			}
+		}
+    });
+});
+</script>
+<script>
 $(function() {
 	$( "#dialog:ui-dialog" ).dialog( "destroy" );
 	
@@ -70,7 +126,6 @@ function Residential_Customers()
 	});
 }
 </script>
-
 <script> //add packages
 $(function() {
 	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
@@ -373,9 +428,10 @@ $(function() {
 				var id = $( "#account_id" ),
 					user = "<?php echo $ac["user"]; ?>",
 					reason = $( "#reject_reason" ),
-					notes = $( "#reject_notes" );
+					notes = $( "#reject_notes" ),
+					rec = $( "#rec_store" );
 				
-				$.get("customers_submit.php?method=reject", { id: id.val(), user: user, reason: reason.val(), notes: notes.val() },
+				$.get("customers_submit.php?method=reject", { id: id.val(), user: user, reason: reason.val(), notes: notes.val(), rec: rec.val() },
 				function(data) {
 					if (data == "rejected")
 					{
@@ -429,14 +485,15 @@ function Approve()
 		credit = $( "#credit" ),
 		payway = $( "#payway" ),
 		dd_type = $( "#dd_type" ),
-		user = "<?php echo $ac["user"]; ?>";
+		user = "<?php echo $ac["user"]; ?>",
+		rec = $( "#rec_store" );
 		
 		if ($('#postal_same').attr('checked'))
 		{
 			postal = $( "#physical" );
 		}
 	
-	$.get("customers_submit.php?method=approve", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user },
+	$.get("customers_submit.php?method=approve", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val() },
 	function(data) {
 		if (data == "submitted")
 		{
@@ -506,14 +563,15 @@ $(function() {
 					credit = $( "#credit" ),
 					payway = $( "#payway" ),
 					dd_type = $( "#dd_type" ),
-					user = "<?php echo $ac["user"]; ?>";
+					user = "<?php echo $ac["user"]; ?>",
+					rec = $( "#rec_store" );
 					
 					if ($('#postal_same').attr('checked'))
 					{
 						postal = $( "#physical" );
 					}
 				
-				$.get("customers_submit.php?method=upgrade", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user },
+				$.get("customers_submit.php?method=upgrade", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val() },
 				function(data) {
 					if (data == "submitted")
 					{
@@ -1661,6 +1719,27 @@ function Postal_Same()
 	}
 }
 </script>
+
+<div id="dialog-form0" title="Voice File">
+<style type="text/css">
+.uploadify-button {
+	background-image:url('../images/btn.png');
+	background-color: transparent;
+	border: none;
+	text-transform:uppercase;
+	padding: 0;
+	font-weight: bold;
+	font-family: Tahoma,Geneva,sans-serif;
+	font-size: 11px;
+	text-shadow:none;
+}
+.uploadify:hover .uploadify-button {
+	background-color: transparent;
+	background-image:url('../images/btn_hover.png');
+}
+</style>
+<input type="file" name="file_upload" id="file_upload" />
+</div>
 
 <div id="dialog-form" title="Call Type">
 <table width="100%" height="55px">
