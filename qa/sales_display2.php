@@ -71,7 +71,14 @@ else
 		echo "<td style='text-align:center;'>" . $data["id"] . "</td>";
 		echo "<td style='text-align:center;'>" . $data["lead_id"] . "</td>";
 		echo "<td style='text-align:center;'>" . $data["campaign"] . "</td>";
-		echo "<td style='text-align:center;'><button onclick='View_Sale(\"$data[id]\")' class='icon_view' title='View'></button></td>";
+		if ($type == "Approved")
+		{
+			echo "<td style='text-align:center;'></td>";
+		}
+		else
+		{
+			echo "<td style='text-align:center;'><button onclick='View_Sale(\"$data[id]\")' class='icon_view' title='View'></button></td>";
+		}
 		echo "</tr>";
 	}
 }
@@ -133,7 +140,14 @@ else
 		echo "<td style='text-align:center;'>" . $data["id"] . "</td>";
 		echo "<td style='text-align:center;'>" . $data["lead_id"] . "</td>";
 		echo "<td style='text-align:center;'>" . $data["campaign"] . "</td>";
-		echo "<td style='text-align:center;'><button onclick='View_Sale(\"$data[id]\")' class='icon_view' title='View'></button></td>";
+		if ($type == "Approved")
+		{
+			echo "<td style='text-align:center;'></td>";
+		}
+		else
+		{
+			echo "<td style='text-align:center;'><button onclick='View_Sale(\"$data[id]\")' class='icon_view' title='View'></button></td>";
+		}
 		echo "</tr>";
 	}
 }

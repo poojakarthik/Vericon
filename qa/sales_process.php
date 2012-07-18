@@ -68,62 +68,30 @@ elseif ($method == "approve")
 			mysql_query("UPDATE vericon.qa_customers SET status = 'Approved', timestamp = '$timestamp', verifier = '$verifier', lead_check = '$lead', recording_check = '$recording', details_check = '$details' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		}
 		
-		$q2 = mysql_query("SELECT * FROM vericon.customers WHERE sale_id = '$id'") or die(mysql_error());
-		if (mysql_num_rows($q2) == 0)
+		$pre_id = date("y", strtotime($data["approved_timestamp"])) . str_pad(date("z", strtotime($data["approved_timestamp"])),3,"0",STR_PAD_LEFT);
+		$q3 = mysql_query("SELECT COUNT(id) FROM vericon.customers WHERE id LIKE '$pre_id%'");
+		$num = mysql_fetch_row($q3);
+		
+		$account_number = $pre_id . str_pad(($num[0]+1),3,"0",STR_PAD_LEFT);
+		
+		mysql_query("INSERT INTO vericon.customers (id, status, last_edit_by, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type, billing_comments, other_comments) VALUES ('$account_number', 'Waiting Welcome Call', '$verifier', '$data[industry]', '$data[lead_id]', '$data[id]', '$timestamp', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($data["title"]) . "', '" . mysql_real_escape_string($data["firstname"]) . "', '" . mysql_real_escape_string($data["middlename"]) . "', '" . mysql_real_escape_string($data["lastname"]) . "', '" . mysql_real_escape_string($data["dob"]) . "', '" . mysql_real_escape_string($data["email"]) . "', '" . mysql_real_escape_string($data["mobile"]) . "', '$data[billing]', '$data[welcome]', '$data[promotions]', '$data[physical]', '$data[postal]', '" . mysql_real_escape_string($data["id_type"]) . "', '" . mysql_real_escape_string($data["id_num"]) . "', '" . mysql_real_escape_string($data["abn"]) . "', '" . mysql_real_escape_string($data["position"]) . "', '" . mysql_real_escape_string($data["credit"]) . "', '" . mysql_real_escape_string($data["payway"]) . "', '" . mysql_real_escape_string($data["dd_type"]) . "', '" . mysql_real_escape_string($billing_comments) . "', '" . mysql_real_escape_string($other_comments) . "')") or die(mysql_error());
+		
+		mysql_query("INSERT INTO vericon.customers_log (id, status, last_edit_by, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type, billing_comments, other_comments) VALUES ('$account_number', 'Waiting Welcome Call', '$verifier', '$data[industry]', '$data[lead_id]', '$data[id]', '$timestamp', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($data["title"]) . "', '" . mysql_real_escape_string($data["firstname"]) . "', '" . mysql_real_escape_string($data["middlename"]) . "', '" . mysql_real_escape_string($data["lastname"]) . "', '" . mysql_real_escape_string($data["dob"]) . "', '" . mysql_real_escape_string($data["email"]) . "', '" . mysql_real_escape_string($data["mobile"]) . "', '$data[billing]', '$data[welcome]', '$data[promotions]', '$data[physical]', '$data[postal]', '" . mysql_real_escape_string($data["id_type"]) . "', '" . mysql_real_escape_string($data["id_num"]) . "', '" . mysql_real_escape_string($data["abn"]) . "', '" . mysql_real_escape_string($data["position"]) . "', '" . mysql_real_escape_string($data["credit"]) . "', '" . mysql_real_escape_string($data["payway"]) . "', '" . mysql_real_escape_string($data["dd_type"]) . "', '" . mysql_real_escape_string($billing_comments) . "', '" . mysql_real_escape_string($other_comments) . "')") or die(mysql_error());
+		
+		$q4 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
+		while ($packages = mysql_fetch_row($q4))
 		{
-			$pre_id = date("y", strtotime($data["approved_timestamp"])) . str_pad(date("z", strtotime($data["approved_timestamp"])),3,"0",STR_PAD_LEFT);
-			$q3 = mysql_query("SELECT COUNT(id) FROM vericon.customers WHERE id LIKE '$pre_id%'");
-			$num = mysql_fetch_row($q3);
+			mysql_query("INSERT INTO vericon.packages (id, cli, plan, status, edit_by) VALUES ('$account_number', '$packages[1]', '$packages[2]', 'P', '$verifier')") or die(mysql_error());
 			
-			$account_number = $pre_id . str_pad(($num[0]+1),3,"0",STR_PAD_LEFT);
-			
-			mysql_query("INSERT INTO vericon.customers (id, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type) VALUES ('$account_number', '$data[industry]', '$data[lead_id]', '$data[id]', '$timestamp', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($data["title"]) . "', '" . mysql_real_escape_string($data["firstname"]) . "', '" . mysql_real_escape_string($data["middlename"]) . "', '" . mysql_real_escape_string($data["lastname"]) . "', '" . mysql_real_escape_string($data["dob"]) . "', '" . mysql_real_escape_string($data["email"]) . "', '" . mysql_real_escape_string($data["mobile"]) . "', '$data[billing]', '$data[welcome]', '$data[promotions]', '$data[physical]', '$data[postal]', '" . mysql_real_escape_string($data["id_type"]) . "', '" . mysql_real_escape_string($data["id_num"]) . "', '" . mysql_real_escape_string($data["abn"]) . "', '" . mysql_real_escape_string($data["position"]) . "', '" . mysql_real_escape_string($data["credit"]) . "', '" . mysql_real_escape_string($data["payway"]) . "', '" . mysql_real_escape_string($data["dd_type"]) . "')") or die(mysql_error());
-			
-			$q4 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
-			while ($packages = mysql_fetch_row($q4))
-			{
-				mysql_query("INSERT INTO vericon.packages (id, cli, plan) VALUES ('$account_number', '$packages[1]', '$packages[2]')") or die(mysql_error());
-			}
-			
-			$command = "mv /var/vericon/qa/tmp/" . $data["lead_id"] . ".gsm /var/rec/" . md5($account_number) . sha1($account_number) . ".gsm";
-			exec($command);
-			
-			mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$account_number', '$data[id]', 'New Sale',  '" . mysql_real_escape_string(md5($account_number) . sha1($account_number) . ".gsm") . "')") or die(mysql_error());
-			
-			echo 1;
+			mysql_query("INSERT INTO vericon.packages_log (id, cli, plan, status, edit_by) VALUES ('$account_number', '$packages[1]', '$packages[2]', 'P', '$verifier')") or die(mysql_error());
 		}
-		else
-		{
-			$data2 = mysql_fetch_assoc($q2);
-			
-			mysql_query("UPDATE vericon.customers SET timestamp = '$timestamp', title = '" . mysql_real_escape_string($data["title"]) . "', firstname = '" . mysql_real_escape_string($data["firstname"]) . "', middlename = '" . mysql_real_escape_string($data["middlename"]) . "', lastname = '" . mysql_real_escape_string($data["lastname"]) . "', dob = '" . mysql_real_escape_string($data["dob"]) . "', email = '" . mysql_real_escape_string($data["email"]) . "', mobile = '" . mysql_real_escape_string($data["mobile"]) . "', billing = '$data[billing]', welcome = '$data[welcome]', promotions = '$data[promotions]', physical = '$data[physical]', postal = '$data[postal]', id_type = '" . mysql_real_escape_string($data["id_type"]) . "', id_num = '" . mysql_real_escape_string($data["id_num"]) . "', abn = '" . mysql_real_escape_string($data["abn"]) . "', position = '" . mysql_real_escape_string($data["position"]) . "', credit = '" . mysql_real_escape_string($data["credit"]) . "', payway = '" . mysql_real_escape_string($data["payway"]) . "', dd_type = '" . mysql_real_escape_string($data["dd_type"]) . "' WHERE id = '$data2[id]'") or die(mysql_error());
-			
-			$q3 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
-			while ($packages = mysql_fetch_row($q3))
-			{
-				$q4 = mysql_query("SELECT * FROM vericon.packages WHERE id = '$data2[id]' AND cli = '$packages[1]'") or die(mysql_error());
-				if (mysql_num_rows($q4) == 0)
-				{
-					mysql_query("INSERT INTO vericon.packages (id, cli, plan) VALUES ('$data2[id]', '$packages[1]', '$packages[2]')") or die(mysql_error());
-				}
-				else
-				{
-					mysql_query("UPDATE vericon.packages SET plan = '$packages[2]' WHERE id = '$data2[id]'") or die(mysql_error());
-				}
-			}
-			
-			$q3 = mysql_query("SELECT * FROM vericon.packages WHERE id = '$data2[id]'") or die(mysql_error());
-			while ($packages2 = mysql_fetch_row($q3))
-			{
-				$q4 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$packages2[1]'") or die(mysql_error());
-				if (mysql_num_rows($q4) == 0)
-				{
-					mysql_query("DELETE FROM vericon.packages WHERE id = '$data2[id]' AND cli = '$packages2[1]'") or die(mysql_error());
-				}
-			}
-			
-			echo 1;
-		}
+		
+		$command = "mv /var/vericon/qa/tmp/" . $data["lead_id"] . ".gsm /var/rec/" . md5($account_number . date("Y-m-d H:i:s")) . ".gsm";
+		exec($command);
+		
+		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$account_number', '$data[id]', 'New Sale',  '" . mysql_real_escape_string(md5($account_number . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
+		
+		echo 1;
 	}
 }
 elseif ($method == "reject")
