@@ -6,9 +6,30 @@ $type = $_GET["type"];
 
 mysql_query("DELETE FROM vericon.welcome_lock WHERE user = '$user'") or die(mysql_error());
 
-$q0 = mysql_query("SELECT customers.id FROM vericon.customers LEFT JOIN vericon.welcome_lock ON customers.id = welcome_lock.id WHERE customers.status = 'Waiting Welcome Call' AND customers.type = '$type' AND welcome_lock.id IS NULL ORDER BY RAND()") or die(mysql_error());
-$id = mysql_fetch_row($q0);
-$id = $id[0];
+$q0 = mysql_query("SELECT customers.id FROM vericon.customers,vericon.welcome_cb WHERE customers.status = 'Waiting Welcome Call' AND customers.type = '$type' AND welcome_cb.time <= NOW() AND welcome_cb.id = customers.id ORDER BY welcome_cb.time ASC") or die(mysql_error());
+while ($d = mysql_fetch_row($q0))
+{
+	$q = mysql_query("SELECT id FROM vericon.welcome_lock WHERE id = '$d[0]'") or die(mysql_error());
+	if (mysql_num_rows($q) == 0)
+	{
+		$id = $d[0];
+		break;
+	}
+}
+
+if ($id == "")
+{
+	$q0 = mysql_query("SELECT customers.id FROM vericon.customers LEFT JOIN vericon.welcome_cb ON customers.id = welcome_cb.id WHERE customers.status = 'Waiting Welcome Call' AND customers.type = '$type' AND welcome_cb.id IS NULL ORDER BY RAND()") or die(mysql_error());
+	while ($d = mysql_fetch_row($q0))
+	{
+		$q = mysql_query("SELECT id FROM vericon.welcome_lock WHERE id = '$d[0]'") or die(mysql_error());
+		if (mysql_num_rows($q) == 0)
+		{
+			$id = $d[0];
+			break;
+		}
+	}
+}
 
 if ($id == "")
 {
