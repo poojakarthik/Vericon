@@ -36,6 +36,43 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 
 <script> //add packages
 $(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+	
+	$( "#dialog-form" ).dialog({
+		autoOpen: true,
+		height: 100,
+		width: 275,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind"
+	});
+});
+
+function Business_Customers()
+{
+	$( "#dialog-form" ).dialog( "close" );
+	$( "#customer_type_store" ).val("Business");
+	$( "#display" ).load('customers_display.php?type=Business&user=<?php echo $ac["user"]; ?>',
+	function() {
+		$( "#display" ).show('blind', '', 'slow');
+	});
+}
+
+function Residential_Customers()
+{
+	$( "#dialog-form" ).dialog( "close" );
+	$( "#customer_type_store" ).val("Residential");
+	$( "#display" ).load('customers_display.php?type=Residential&user=<?php echo $ac["user"]; ?>',
+	function() {
+		$( "#display" ).show('blind', '', 'slow');
+	});
+}
+</script>
+
+<script> //add packages
+$(function() {
 	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
 	
 	var tips = $( ".validateTips2" );
@@ -199,7 +236,7 @@ function No_Answer()
 {
 	$( "#dialog-confirm_na" ).dialog( "close" );
 	$( "#display" ).hide('blind', '', 'slow', function() {
-		$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+		$( "#display" ).load('customers_display.php?type=' + $( "#customer_type_store" ).val() + '&user=<?php echo $ac["user"]; ?>',
 		function() {
 			$( "#display" ).show('blind', '', 'slow');
 		});
@@ -266,7 +303,7 @@ $(function() {
 						{
 							$( "#dialog-confirm_call_back" ).dialog( "close" );
 							$( "#display" ).hide('blind', '', 'slow', function() {
-								$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+								$( "#display" ).load('customers_display.php?type=' + $( "#customer_type_store" ).val() + '&user=<?php echo $ac["user"]; ?>',
 								function() {
 									$( "#display" ).show('blind', '', 'slow');
 								});
@@ -344,7 +381,7 @@ $(function() {
 					{
 						$( "#dialog-confirm_reject" ).dialog( "close" );
 						$( "#display" ).hide('blind', '', 'slow', function() {
-							$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+							$( "#display" ).load('customers_display.php?type=' + $( "#customer_type_store" ).val() + '&user=<?php echo $ac["user"]; ?>',
 							function() {
 								$( "#display" ).show('blind', '', 'slow');
 							});
@@ -405,7 +442,7 @@ function Approve()
 		{
 			$( "#dialog-confirm_complete" ).dialog( "close" );
 			$( "#display" ).hide('blind', '', 'slow', function() {
-				$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+				$( "#display" ).load('customers_display.php?type=' + $( "#customer_type_store" ).val() + '&user=<?php echo $ac["user"]; ?>',
 				function() {
 					$( "#display" ).show('blind', '', 'slow');
 				});
@@ -482,7 +519,7 @@ $(function() {
 					{
 						$( "#dialog-confirm_upgrade" ).dialog( "close" );
 						$( "#display" ).hide('blind', '', 'slow', function() {
-							$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
+							$( "#display" ).load('customers_display.php?type=' + $( "#customer_type_store" ).val() + '&user=<?php echo $ac["user"]; ?>',
 							function() {
 								$( "#display" ).show('blind', '', 'slow');
 							});
@@ -1625,6 +1662,15 @@ function Postal_Same()
 }
 </script>
 
+<div id="dialog-form" title="Call Type">
+<table width="100%" height="55px">
+<tr height="100%">
+<td valign="middle" align="center"><button onclick="Business_Customers()" class="btn">Business</button></td>
+<td valign="middle" align="center"><button onclick="Residential_Customers()" class="btn">Residential</button></td>
+</tr>
+</table>
+</div>
+
 <div id="dialog-confirm_na" title="N/A Switch">
 <table width="100%" height="55px">
 <tr height="100%">
@@ -1925,13 +1971,9 @@ function Postal_Same()
 </table>
 </div>
 
+<input type="hidden" id="customer_type_store" value="" />
+
 <div id="display">
-<script>
-$( "#display" ).load('customers_display.php?user=<?php echo $ac["user"]; ?>',
-function() {
-	$( "#display" ).show('blind', '', 'slow');
-});
-</script>
 </div>
 
 <?php

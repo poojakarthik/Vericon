@@ -2,23 +2,17 @@
 mysql_connect('localhost','vericon','18450be');
 
 $user = $_GET["user"];
+$type = $_GET["type"];
 
 mysql_query("DELETE FROM vericon.welcome_lock WHERE user = '$user'") or die(mysql_error());
 
-$q0 = mysql_query("SELECT welcome_cb.id FROM vericon.welcome_cb LEFT JOIN vericon.welcome_lock ON welcome_cb.id = welcome_lock.id WHERE welcome_cb.time <= NOW() AND welcome_lock.id IS NULL ORDER BY welcome_cb.time ASC") or die(mysql_error());
+$q0 = mysql_query("SELECT customers.id FROM vericon.customers LEFT JOIN vericon.welcome_lock ON customers.id = welcome_lock.id WHERE customers.status = 'Waiting Welcome Call' AND customers.type = '$type' AND welcome_lock.id IS NULL ORDER BY RAND()") or die(mysql_error());
 $id = mysql_fetch_row($q0);
 $id = $id[0];
 
 if ($id == "")
 {
-	$q0 = mysql_query("SELECT customers.id FROM vericon.customers LEFT JOIN vericon.welcome_lock ON customers.id = welcome_lock.id WHERE customers.status = 'Waiting Welcome Call' AND welcome_lock.id IS NULL ORDER BY RAND()") or die(mysql_error());
-	$id = mysql_fetch_row($q0);
-	$id = $id[0];
-}
-
-if ($id == "")
-{
-	echo "<b>No More Customers Waiting Welcome Call</b>";
+	echo "<b>No More $type Customers Waiting Welcome Call</b>";
 	exit;
 }
 else
