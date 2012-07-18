@@ -6,9 +6,9 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 */
 
 // Define a destination
-$targetFolder = '/qa/tmp'; // Relative to the root and should match the upload folder in the uploader script
+$targetFolder = '/var/vtmp'; // Relative to the root and should match the upload folder in the uploader script
 
-if (file_exists($_SERVER['DOCUMENT_ROOT'] . $targetFolder . '/' . $_POST['filename'])) {
+if (file_exists($targetFolder . '/' . $_POST['filename'])) {
 	echo 1;
 } else {
 	echo 0;

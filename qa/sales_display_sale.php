@@ -292,7 +292,7 @@ $q1 = mysql_query("SELECT * FROM vericon.recordings WHERE sale_id = '$data[id]'"
 $v = mysql_fetch_row($q1);
 if ($v[0] == 0)
 {
-	if (file_exists("/var/vericon/qa/tmp/" . $data["lead_id"] . ".gsm"))
+	if (file_exists("/var/vtmp/ns_" . $data["lead_id"] . ".gsm"))
 	{
 		echo '<img src="../images/check_icon.png">';
 		$v_check = 1;

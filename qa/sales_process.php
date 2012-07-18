@@ -8,9 +8,9 @@ if ($method == "rename_rec")
 	$lead_id = $_GET["lead_id"];
 	$file = $_GET["file"];
 	
-	if (file_exists("/var/vericon/qa/tmp/" . $file["name"]))
+	if (file_exists("/var/vtmp/" . $file["name"]))
 	{
-		exec("mv /var/vericon/qa/tmp/" . $file["name"] . " /var/vericon/qa/tmp/" . $lead_id . ".gsm");
+		exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/ns_" . $lead_id . ".gsm");
 		echo 1;
 	}
 	else
@@ -31,7 +31,7 @@ elseif ($method == "approve")
 	$data = mysql_fetch_assoc($q);
 	
 	$lead_id = $data["lead_id"];
-	$filename = "/var/vericon/qa/tmp/" . $lead_id . ".gsm";
+	$filename = "/var/vtmp/ns_" . $lead_id . ".gsm";
 	
 	$q1 = mysql_query("SELECT * FROM vericon.recordings WHERE sale_id = '$id'") or die(mysql_error());
 	
@@ -86,7 +86,7 @@ elseif ($method == "approve")
 			mysql_query("INSERT INTO vericon.packages_log (id, cli, plan, status, edit_by) VALUES ('$account_number', '$packages[1]', '$packages[2]', 'P', '$verifier')") or die(mysql_error());
 		}
 		
-		$command = "mv /var/vericon/qa/tmp/" . $data["lead_id"] . ".gsm /var/rec/" . md5($account_number . date("Y-m-d H:i:s")) . ".gsm";
+		$command = "mv /var/vtmp/ns_" . $data["lead_id"] . ".gsm /var/rec/" . md5($account_number . date("Y-m-d H:i:s")) . ".gsm";
 		exec($command);
 		
 		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$account_number', '$data[id]', 'New Sale',  '" . mysql_real_escape_string(md5($account_number . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
@@ -125,7 +125,7 @@ elseif ($method == "reject")
 			mysql_query("UPDATE vericon.qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', lead_check = '$lead', recording_check = '$recording', details_check = '$details', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		}
 					
-		$command = "rm /var/vericon/qa/tmp/" . $data["lead_id"] . ".gsm";
+		$command = "rm /var/vtmp/ns_" . $data["lead_id"] . ".gsm";
 		exec($command);
 		
 		echo "submitted";
