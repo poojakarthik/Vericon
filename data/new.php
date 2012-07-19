@@ -11,17 +11,13 @@ div#users-contain table td { border: 1px solid #eee; padding: .3em 5px; text-ali
 <script>
 function Business()
 {
-	var date = $( "#datepicker" );
-	
-	window.open("new_process.php?type=Business&date=" + date.val(), 'Business', 'width=1, height=1, x=800');
+	window.location = "new_export.php?method=Business&date=" + $( "#datepicker" ).val();
 }
 </script>
 <script>
 function Residential()
 {
-	var date = $( "#datepicker" );
-	
-	window.open("new_process.php?type=Residential&date=" + date.val(), 'Residential', 'width=1, height=1, x=800');
+	window.location = "new_export.php?method=Residential&date=" + $( "#datepicker" ).val();
 }
 </script>
 
