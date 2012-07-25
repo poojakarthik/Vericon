@@ -4,6 +4,7 @@ As of 04/06/2012
 | Table of Contents |
 | ------------- |
 | [ADSL](#adsl) |
+| [Archive](#archive) |
 | [GNAF](#gnaf) |
 | [Leads](#leads) |
 | [PAF](#paf) |
@@ -40,6 +41,105 @@ CREATE TABLE IF NOT EXISTS `Enabled_Exchanges` (
   `HIBIS` varchar(32) NOT NULL,
   `HIBIS_Data` varchar(32) NOT NULL,
   KEY `Range_From` (`Range_From`,`Range_To`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+
+##Archive
+```sql
+--
+-- Table structure for table `mcrm_customers`
+--
+
+CREATE TABLE IF NOT EXISTS `mcrm_customers` (
+  `id` varchar(128) NOT NULL,
+  `status` varchar(32) NOT NULL,
+  `campaign` varchar(32) NOT NULL,
+  `saleTS` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `saleAgent` varchar(32) NOT NULL,
+  `tpvAgent` varchar(32) NOT NULL,
+  `tpvTS` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `fname` varchar(32) NOT NULL,
+  `sname` varchar(32) NOT NULL,
+  `dob` varchar(32) NOT NULL,
+  `addr1` varchar(50) NOT NULL,
+  `addr2` varchar(50) NOT NULL,
+  `suburb` varchar(50) NOT NULL,
+  `state` varchar(32) NOT NULL,
+  `postcode` varchar(4) NOT NULL,
+  `p_addr1` varchar(50) NOT NULL,
+  `p_addr2` varchar(50) NOT NULL,
+  `p_suburb` varchar(50) NOT NULL,
+  `p_state` varchar(32) NOT NULL,
+  `p_postcode` varchar(4) NOT NULL,
+  `email` varchar(32) NOT NULL,
+  `mobile` varchar(32) NOT NULL,
+  `lines` varchar(32) NOT NULL,
+  `abn` varchar(32) NOT NULL,
+  `biz_name` varchar(128) NOT NULL,
+  `biz_type` varchar(32) NOT NULL,
+  `biz_start` varchar(32) NOT NULL,
+  `idType` varchar(32) NOT NULL,
+  `biz_asic` varchar(32) NOT NULL,
+  `biz_position` varchar(128) NOT NULL,
+  `idNum` varchar(32) NOT NULL,
+  `billing` varchar(32) NOT NULL,
+  `payment` varchar(32) NOT NULL,
+  `ongoing_credit` varchar(32) NOT NULL,
+  `agentNotes` text NOT NULL,
+  `tpvNotes` text NOT NULL,
+  `tpvFail` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`),
+  FULLTEXT KEY `search` (`saleAgent`,`fname`,`sname`,`dob`,`addr1`,`addr2`,`suburb`,`postcode`,`p_addr1`,`p_addr2`,`p_suburb`,`p_postcode`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `mcrm_packages`
+--
+
+CREATE TABLE IF NOT EXISTS `mcrm_packages` (
+  `sid` varchar(32) NOT NULL,
+  `line` varchar(32) NOT NULL,
+  `plan` varchar(32) NOT NULL,
+  KEY `sid` (`sid`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `mytpv_sales`
+--
+
+CREATE TABLE IF NOT EXISTS `mytpv_sales` (
+  `sdate` varchar(512) NOT NULL,
+  `stime` varchar(512) NOT NULL,
+  `vcode` varchar(512) NOT NULL,
+  `cencode` varchar(512) NOT NULL,
+  `result` varchar(512) NOT NULL,
+  `custFname` varchar(512) NOT NULL,
+  `custLname` varchar(512) NOT NULL,
+  `comments` varchar(1016) NOT NULL,
+  `verificationcode` varchar(512) NOT NULL,
+  `camp_id` varchar(512) NOT NULL,
+  `salescode` varchar(512) NOT NULL,
+  `phone1` varchar(512) NOT NULL,
+  `phone2` varchar(512) NOT NULL,
+  `phone3` varchar(512) NOT NULL,
+  `phone4` varchar(512) NOT NULL,
+  `camp_name` varchar(512) NOT NULL,
+  `BillingOption` varchar(512) NOT NULL,
+  `DOB` varchar(512) NOT NULL,
+  `PhysicalAddress` varchar(512) NOT NULL,
+  `PostalAddress` varchar(512) NOT NULL,
+  `Mobile` varchar(512) NOT NULL,
+  `email` varchar(512) NOT NULL,
+  `IDForm` varchar(512) NOT NULL,
+  `IDNo` varchar(512) NOT NULL,
+  `DirectDebit` varchar(512) NOT NULL,
+  `DirectDebit1` varchar(512) NOT NULL,
+  `DirectDebit2` varchar(512) NOT NULL,
+  `DirectDebit3` varchar(512) NOT NULL,
+  `DirectDebit4` varchar(512) NOT NULL,
+  `DirectDebit5` varchar(512) NOT NULL
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 
@@ -929,6 +1029,24 @@ CREATE TABLE IF NOT EXISTS `packages` (
   `id` varchar(16) NOT NULL,
   `cli` varchar(16) NOT NULL,
   `plan` varchar(64) NOT NULL,
+  `status` varchar(32) NOT NULL,
+  `edit_by` varchar(8) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `packages_log`
+--
+
+CREATE TABLE IF NOT EXISTS `packages_log` (
+  `id` varchar(16) NOT NULL,
+  `cli` varchar(16) NOT NULL,
+  `plan` varchar(64) NOT NULL,
+  `status` varchar(32) NOT NULL,
+  `edit_by` varchar(8) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `id` (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
@@ -1271,7 +1389,6 @@ CREATE TABLE IF NOT EXISTS `welcome` (
   `status` varchar(64) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `user` varchar(8) NOT NULL,
-  `u_type` varchar(32) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
