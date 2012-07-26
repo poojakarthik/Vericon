@@ -336,29 +336,22 @@ width:740px;
 min-height:100px;
 margin-left:auto;
 margin-right:auto;
-margin-top:20px;
-border-top:1px dotted #999;
-border-bottom:1px dotted #999;
-font-family:Tahoma, Geneva, sans-serif;
-font-size:12px;
 color:#666666;
-padding:10px;
-line-height:1.5em;
 }
 	
 #script_text2{
-font-family:Tahoma, Geneva, sans-serif;
+/*font-family:Tahoma, Geneva, sans-serif;
 font-size:13px;
-color:#666666;
+color:#666666;*/
 height:335px;
-line-height:1.5em;
+/*line-height:1.5em;*/
 }
 
 #script_text2 table{
-font-family:Tahoma, Geneva, sans-serif;
+/*font-family:Tahoma, Geneva, sans-serif;
 font-size:13px;
 color:#666666;
-line-height:1.5em;
+line-height:1.5em;*/
 }
 
 .back{
@@ -478,6 +471,7 @@ select {
    /*border: 1px solid #ccc;*/
    font-family:Tahoma, Geneva, sans-serif;
    height: 20px;
+   padding: 1px;
 }
 
 #footer{

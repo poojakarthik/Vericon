@@ -1,376 +1,40 @@
 <?php
-include "../js/tpv-js.php";
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
-?>
-<html>
-<head>
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
-?>
-<style>
-.cancel
-{
-	background-image:url('../images/cancel_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-}
 
-.cancel:hover
-{
-	background-image:url('../images/cancel_btn_hover.png');
-	cursor:pointer;
-}
-
-.submit
-{
-	background-image:url('../images/submit_form_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	margin-right:10px;
-}
-
-.submit:hover
-{
-	background-image:url('../images/submit_form_btn_hover.png');
-	cursor:pointer;
-}
-
-.addpackage
-{
-	background-image:url('../images/add_package_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	margin-right:10px;
-}
-
-.addpackage:hover
-{
-	background-image:url('../images/add_package_btn_hover.png');
-	cursor:pointer;
-}
-
-.dd
-{
-	background-image:url('../images/dd_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	margin-top:10px;
-}
-
-.dd:hover
-{
-	background-image:url('../images/dd_btn_hover.png');
-	cursor:pointer;
-}
-
-.edit_details
-{
-	background-image:url('../images/edit_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	margin-top:10px;
-}
-
-.edit_details:hover
-{
-	background-image:url('../images/edit_btn_hover.png');
-	cursor:pointer;
-}
-
-.search
-{
-	background-image:url('../images/search_btn_2.png');
-	background-repeat:no-repeat;
-	height:25px;
-	width:85px;
-	border:none;
-	background-color:transparent;
-	margin-right:10px;
-}
-
-.search:hover
-{
-	background-image:url('../images/search_btn_hover_2.png');
-	cursor:pointer;
-}
-
-html {
-	overflow-y: auto;
-}
-
-div#users-contain table { margin: 1em 0; border-collapse: collapse; }
-div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
-</style>
-<script> //add packages
-$(function() {
-	$( "#dialog:ui-dialog" ).dialog( "destroy" );
-	
-	var id = "<?php echo $_GET["id"]; ?>",
-		cli = $( "#add_cli" ),
-		plan = $( "#add_plan" ),
-		tips = $( ".error" );
-
-	function updateTips( t ) {
-		tips
-			.text( t )
-			.addClass( "ui-state-highlight" );
-		setTimeout(function() {
-			tips.removeClass( "ui-state-highlight", 1500 );
-		}, 500 );
-	}
-
-	$( "#dialog-form" ).dialog({
-		autoOpen: false,
-		height: 200,
-		width: 275,
-		modal: true,
-		resizable: false,
-		draggable: false,
-		buttons: {
-			"Add Package": function() {
-				if (cli.val() == "")
-				{
-					updateTips("Enter the CLI!");
-				}
-				else if (plan.val() == "")
-				{
-					updateTips("Select a plan!");
-				}
-				else
-				{
-					$.get("../../tpv/verification_submit.php?method=add", { id: id, cli: cli.val(), plan: plan.val() },
-					function(data) {
-						if (data == "added")
-						{
-							$( "#dialog-form" ).dialog( "close" );
-							var id = '<?php echo $_GET["id"]; ?>';
-							$( '#packages' ).load('../../tpv/packages.php?id=' + id);
-						}
-						else
-						{
-							updateTips(data);
-						}
-					});
-				}
-			},
-			Cancel: function() {
-				$( this ).dialog( "close" );
-			}
-		},
-		close: function() {
-		}
-	});
-});
-
-function Add_Package()
-{
-	$( "#dialog-form" ).dialog( "open" );
-}
-</script>
-<script> //edit packages
-$(function() {
-	$( "#dialog:ui-dialog3" ).dialog( "destroy" );
-	
-	var id = "<?php echo $_GET["id"]; ?>",
-		cli = $( "#edit_cli" ),
-		plan = $( "#edit_plan" ),
-		cli2 = $( "#original_edit_cli" ),
-		tips = $( ".error3" );
-
-	function updateTips( t ) {
-		tips
-			.text( t )
-			.addClass( "ui-state-highlight" );
-		setTimeout(function() {
-			tips.removeClass( "ui-state-highlight", 1500 );
-		}, 500 );
-	}
-
-	$( "#dialog-form3" ).dialog({
-		autoOpen: false,
-		height: 200,
-		width: 275,
-		modal: true,
-		resizable: false,
-		draggable: false,
-		buttons: {
-			"Edit Package": function() {
-				if (cli.val() == "")
-				{
-					updateTips("Enter the CLI!");
-				}
-				else if (plan.val() == "")
-				{
-					updateTips("Select a plan!");
-				}
-				else
-				{
-					$.get("../../tpv/verification_submit.php?method=edit", { id: id, cli: cli.val(), plan: plan.val(), cli2: cli2.val() },
-					function(data) {
-						if (data == "editted")
-						{
-							$( "#dialog-form3" ).dialog( "close" );
-							var id = '<?php echo $_GET["id"]; ?>';
-							$( '#packages' ).load('../../tpv/packages.php?id=' + id);
-						}
-						else
-						{
-							updateTips(data);
-						}
-					});
-				}
-			},
-			Cancel: function() {
-				$( this ).dialog( "close" );
-			}
-		},
-		close: function() {
-		}
-	});
-});
-
-function Edit_Package(cli,plan)
-{
-	$( "#edit_cli" ).val(cli);
-	$( "#edit_plan" ).load("../tpv/plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#edit_cli').val());
-	$( "#edit_plan" ).val(plan);
-	$( "#original_edit_cli" ).val(cli);
-	$( "#dialog-form3" ).dialog( "open" );
-}
-</script>
-<script> //delete packages
-function Delete_Package(cli)
-{
-	var id = "<?php echo $_GET["id"]; ?>",
-		cli = cli;
-	
-	$.get("../../tpv/verification_submit.php?method=delete", { id: id, cli: cli},
-	function(data) {
-		if (data == "deleted")
-		{
-			var id = '<?php echo $_GET["id"]; ?>';
-			$( '#packages' ).load('../../tpv/packages.php?id=' + id);
-		}
-	});
-}
-</script>
-<script>
-function Physical_ID(id)
-{
-	$( "#physical" ).val(id)
-}
-
-function Physical_Display()
-{
-	var id = $( "#physical" );
-	$( '#physical_address' ).load('../../tpv/address.php?id=' + id.val());
-}
-
-function Postal_ID(id)
-{
-	$( "#postal" ).val(id)
-}
-
-function Postal_Display(text)
-{
-	var id = $( "#postal" );
-	$( '#postal_address' ).load('../../tpv/address.php?id=' + id.val());
-}
-</script>
-<script>
-function Plan_Dropdown()
-{
-	$( "#add_plan" ).val("");
-	$( "#add_plan" ).load("../tpv/plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#add_cli').val());
-}
-</script>
-<script>
-function Plan_Dropdown_Edit()
-{
-	$( "#edit_plan" ).load("../tpv/plans.php?type=" + $( "#type" ).val() + "&cli=" + $('#edit_cli').val());
-}
-</script>
-
-</head>
-<body>
-
-<div id="dialog-form" title="Add a Package">
-<p class="error">All fields are required</p><br />
-<table>
-<tr>
-<td width="50px">CLI </td>
-<td><input type="text" size="15" id="add_cli" onChange="Plan_Dropdown()" style="margin-top:0px;" /></td>
-</tr>
-<tr>
-<td>Plan </td>
-<td><select id="add_plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
-<option></option>
-</select></td>
-</tr>
-</table>
-</div>
-
-<div id="dialog-form3" title="Edit Package">
-<p class="error3">All fields are required</p><br />
-<input type="hidden" id="original_edit_cli" value="" />
-<table>
-<tr>
-<td width="50px">CLI </td>
-<td><input type="text" size="15" id="edit_cli" onChange="Plan_Dropdown_Edit()" style="margin-top:0px;" /></td>
-</tr>
-<tr>
-<td>Plan </td>
-<td><select id="edit_plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
-<option></option>
-</select></td>
-</tr>
-</table>
-</div>
-
-<div style="display:none;">
-<img src="../images/back_hover_btn.png" /><img src="../images/next_hover_btn.png" /><img src="../images/add_package_btn_hover.png" /><img src="../images/submit_form_btn_hover.png" /><img src="../images/cancel_btn_hover.png" /><img src="../images/loading.gif"><img src="../images/dd_btn_hover.png"><img src="../images/edit_btn_hover.png">
-</div>
-
-<?php
-//declare variables
 $id = $_GET['id'];
-$alias = $_GET['alias'];
-$campaign = $_GET['campaign'];
+$user = $_GET["user"];
+
+$q = mysql_query("SELECT campaign,type FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+$da = mysql_fetch_row($q);
+
+$q1 = mysql_query("SELECT alias FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
+$da2 = mysql_fetch_row($q1);
+
+$alias = $da2[0];
+$campaign = $da[0] . " " . $da[1];
 $campaign_check = "";
 $website = "";
 $number = "";
-$plan = $_GET['plan'];
+$plan = str_replace("_", " ", $_GET['plan']);
 $page = $_GET['page'];
 $date = date('jS \of F Y');
 
 include "source/convert.php";
 include "source/input.php";
 include "source/questions.php";
-
 ?>
+
+<script>
+if ($( "#Btn_Next") != null)
+{
+	setTimeout(function() {$( "#Btn_Next").removeAttr("style"); }, 1000);
+}
+</script>
 
 <table width="100%" border="0" id="script_text2" style="border-collapse: collapse; margin: 0; padding: 0; height:380px;">
 <tr height="98%" valign="top">
 <td colspan="2">
 <?php
-
 $end1 = '</td>
 </tr>
 <tr height="2%" valign="bottom">
@@ -380,7 +44,7 @@ $end1 = '</td>
 
 $back = '<input type="button" onClick="Back()" id="Btn_Back" class="back" />';
 
-$cancel_btn = '</td><td width="33.33%" align="center"><input type="button" id="Btn_Cancel" onClick="parent.Cancel()" class="cancel" /><img src="../images/loading.gif" id="image_load" style="display:none;"></td>';
+$cancel_btn = '</td><td width="33.33%" align="center"><button id="Btn_Cancel" onClick="Cancel()" class="btn_red">Cancel</button><img src="../images/loading.gif" id="image_load" style="display:none;"></td>';
 
 $next_btn = '<td width="33.33%" align="right"></td>';
 
@@ -474,9 +138,10 @@ elseif ($plan[0] == 'B')
 }
 else
 {
-	echo "Loading...";
+	echo "Error! Script does not exist for this plan";
 }
 
 ?>
-</body>
-</html>
+</td>
+</tr>
+</table>

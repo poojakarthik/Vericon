@@ -107,83 +107,31 @@ if($page == 16)
 if($page == 17)
 {
 	echo $landline["rates"];
-	$q4 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id'") or die(mysql_error());
+	$q4 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id' ORDER BY plan DESC") or die(mysql_error());
 	while ($plan_rate = mysql_fetch_assoc($q4))
 	{
-		$q = mysql_query("SELECT name FROM plan_matrix WHERE id = '$plan_rate[plan]'") or die(mysql_error());
-		$plan_name = mysql_fetch_row($q);
-		$plan_rate["plan"] = $plan_name[0];
+		$q = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($campaign) . "'") or die(mysql_error());
+		$c = mysql_fetch_row($q);
+		$campaign_id = $c[0];
+		
+		$q = mysql_query("SELECT * FROM script_plans WHERE id = '$plan_rate[plan]' AND campaign = '$campaign_id'") or die(mysql_error());
+		$plan_script = mysql_fetch_assoc($q);
 		
 		if($pl[$plan_rate["plan"]] == 0)
 		{
-			if($plan_rate["plan"] == "Bundle $84.95 24 Month Contract")
+			if ($plan_rate["plan"] == "121RPX039" || $plan_rate["plan"] == "121BPX039")
 			{
-				echo $bundle["84.95"];
+				echo '<p><b><span style="color:#000080;">If your stated line is a duet line, a standard charge of $6 including GST will apply. If not, the line will be charged as an additional add–on line.</span></b></p>';
 			}
-			elseif($plan_rate["plan"] == "Bundle $97.95 24 Month Contract")
-			{
-				echo $bundle["97.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $99.95 24 Month Contract")
-			{
-				echo $bundle["99.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $114.95 24 Month Contract")
-			{
-				echo $bundle["114.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $122.95 24 Month Contract")
-			{
-				echo $bundle["122.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $124.95 24 Month Contract")
-			{
-				echo $bundle["124.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $119.95 24 Month Contract")
-			{
-				echo $bundle["119.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $129.95 24 Month Contract")
-			{
-				echo $bundle["129.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $134.95 24 Month Contract")
-			{
-				echo $bundle["134.95"];
-			}
-			elseif($plan_rate["plan"] == "Bundle $149.95 24 Month Contract")
-			{
-				echo $bundle["149.95"];
-			}
-			elseif($plan_rate["plan"] == "$49.95 24 Month Contract")
-			{
-				echo $landline["49.95"];
-			}
-			elseif($plan_rate["plan"] == "$59.95 24 Month Contract")
-			{
-				echo $landline["59.95"];
-			}
-			elseif($plan_rate["plan"] == "$64.95 12 Month Contract")
-			{
-				echo $landline["64.95"];
-			}
-			elseif($plan_rate["plan"] == "$99.95 24 Month Contract")
-			{
-				echo $landline["99.95"];
-			}
-			elseif($plan_rate["plan"] == "$104.95 12 Month Contract")
-			{
-				echo $landline["104.95"];
-			}
-			elseif($plan_rate["plan"] == "Addon")
-			{
-				echo $landline["duet"];
-			}
-			else
-			{
-				echo "<b>" . $plan_rate["plan"] . "</b> is not a Contract plan, must be verified in a seperate recording!<br>Please go back and remove it from the packages!";
-			}
+			
+			echo "<table width='100%'>";
+			echo "<tr>";
+			echo "<td style='padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;'>";
+			echo $plan_script["script"];
+			echo "</td>";
+			echo "</tr>";
+			echo "</table><br>";
+			
 			$pl[$plan_rate["plan"]] = 1;
 		}
 	}
@@ -241,7 +189,7 @@ if($page == 24)
 {
 	echo $internet[25];
 	echo $input["edit_details"];
-	$next_btn = '<td width="33.33%" align="right"><input type="button" onClick="parent.Submit()" style="display: none;" id="Btn_Next" class="submit" /></td>';
+	$next_btn = '<td width="33.33%" align="right"><input type="button" onClick="parent.Submit()" style="display: none;" id="Btn_Next"  class="btn" value="SUBMIT" /></td>';
 }
 
 ?>

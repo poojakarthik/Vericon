@@ -1256,6 +1256,18 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
 ```
 ```sql
 --
+-- Table structure for table `script_plans`
+--
+
+CREATE TABLE IF NOT EXISTS `script_plans` (
+  `id` varchar(16) NOT NULL,
+  `campaign` varchar(32) NOT NULL,
+  `script` text NOT NULL,
+  PRIMARY KEY (`id`,`campaign`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
 -- Table structure for table `sct_dnc`
 --
 
@@ -1378,6 +1390,19 @@ CREATE TABLE IF NOT EXISTS `updates` (
   `message` longtext NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `verification_lock`
+--
+
+CREATE TABLE IF NOT EXISTS `verification_lock` (
+  `id` varchar(16) NOT NULL,
+  `user` varchar(8) NOT NULL,
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user` (`user`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
 --

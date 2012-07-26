@@ -16,15 +16,6 @@ include "../script/source/questions.php";
 .line{
 	width:100%;
 }
-.dd{
-	display:none;
-}
-.other_plans{
-	display:none;
-}
-.addon{
-	display:none;
-}
 </style>
 </head>
 

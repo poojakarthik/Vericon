@@ -95,39 +95,31 @@ if($page == 14)
 if($page == 15)
 {
 	echo $landline["rates"];
-	$q4 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id'") or die(mysql_error());
+	$q4 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id' ORDER BY plan DESC") or die(mysql_error());
 	while ($plan_rate = mysql_fetch_assoc($q4))
 	{
-		$q = mysql_query("SELECT name FROM plan_matrix WHERE id = '$plan_rate[plan]'") or die(mysql_error());
-		$plan_name = mysql_fetch_row($q);
-		$plan_rate["plan"] = $plan_name[0];
+		$q = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($campaign) . "'") or die(mysql_error());
+		$c = mysql_fetch_row($q);
+		$campaign_id = $c[0];
+		
+		$q = mysql_query("SELECT * FROM script_plans WHERE id = '$plan_rate[plan]' AND campaign = '$campaign_id'") or die(mysql_error());
+		$plan_script = mysql_fetch_assoc($q);
 		
 		if($pl[$plan_rate["plan"]] == 0)
 		{
-			if($plan_rate["plan"] == "$54.95 No Contract")
+			if ($plan_rate["plan"] == "121RPX039" || $plan_rate["plan"] == "121BPX039")
 			{
-				echo $landline["54.95"];
+				echo '<p><b><span style="color:#000080;">If your stated line is a duet line, a standard charge of $6 including GST will apply. If not, the line will be charged as an additional add–on line.</span></b></p>';
 			}
-			elseif($plan_rate["plan"] == "$69.95 No Contract")
-			{
-				echo $landline["69.95"];
-			}
-			elseif($plan_rate["plan"] == "$79.95 No Contract")
-			{
-				echo $landline["79.95"];
-			}
-			elseif($plan_rate["plan"] == "$109.95 No Contract")
-			{
-				echo $landline["109.95"];
-			}
-			elseif($plan_rate["plan"] == "Addon")
-			{
-				echo $landline["duet"];
-			}
-			else
-			{
-				echo $plan_rate["plan"] . " is not a No Contract plan, must be verified in a seperate recording!<br>Please go back and remove it from the packages!";
-			}
+			
+			echo "<table width='100%'>";
+			echo "<tr>";
+			echo "<td style='padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;'>";
+			echo $plan_script["script"];
+			echo "</td>";
+			echo "</tr>";
+			echo "</table><br>";
+			
 			$pl[$plan_rate["plan"]] = 1;
 		}
 	}
@@ -165,7 +157,7 @@ if($page == 20)
 {
 	echo $landline[23];
 	echo $input["edit_details"];
-	$next_btn = '<td width="33.33%" align="right"><input type="button" onClick="parent.Submit()" style="display: none;" id="Btn_Next" class="submit" /></td>';
+	$next_btn = '<td width="33.33%" align="right"><input type="button" onClick="parent.Submit()" style="display: none;" id="Btn_Next" class="btn" value="SUBMIT" /></td>';
 }
 
 ?>
