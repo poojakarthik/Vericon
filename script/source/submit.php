@@ -101,14 +101,36 @@ elseif ($action == "physical")
 {
 	$physical = $_GET["physical"];
 	
-	mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
+	if ($physical == "")
+	{
+		echo "Please enter the customer's physical address";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
+	}
 	echo "submitted";
 }
 elseif ($action == "postal")
 {
 	$postal = $_GET["postal"];
 	
-	mysql_query("UPDATE sales_customers SET postal = '" . mysql_escape_string($postal) . "' WHERE id = '$id'") or die(mysql_error());
+	if ($postal == "")
+	{
+		echo "Please enter the customer's postal address";
+	}
+	elseif ($postal == "same")
+	{
+		$q = mysql_query("SELECT physical FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+		$da = mysql_fetch_row($q);
+		
+		mysql_query("UPDATE sales_customers SET postal = '" . mysql_real_escape_string($da[0]) . "' WHERE id = '$id'") or die(mysql_error());
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET postal = '" . mysql_real_escape_string($postal) . "' WHERE id = '$id'") or die(mysql_error());
+	}
+	
 	echo "submitted";
 }
 elseif ($action == "mobile")
@@ -132,8 +154,7 @@ elseif ($action == "mobile")
 elseif ($action == "email")
 {
 	$email = $_GET["email"];
-	$billing = $_GET["billing"];
-	$welcome = $_GET["welcome"];
+	$promotions = $_GET["promotions"];
 	
 	function check_email_address($email) //email validation function
 	{
@@ -176,21 +197,19 @@ elseif ($action == "email")
 	{
 		echo "Please enter the customer's email address";
 	}
-	elseif ($email == "N/A" && $billing == "email")
-	{
-		echo 'Please enter a valid email address';
-	}
 	elseif ($email != "N/A" && !check_email_address($email))
 	{
 		echo 'Please enter a valid email address';
 	}
-	elseif ($welcome == "")
+	elseif ($promotions == "")
 	{
-		echo 'Please choose a welcome letter method';
+		echo 'Please select if the customer allows promotions';
 	}
 	else
 	{
-		mysql_query("UPDATE sales_customers SET email = '" . mysql_escape_string($email) . "', billing = '" . mysql_escape_string($billing) . "', welcome = '" . mysql_escape_string($welcome) . "' WHERE id = '$id'") or die(mysql_error());
+		if ($email == "N/A") { $billing = "post"; } else { $billing = "email"; }
+		
+		mysql_query("UPDATE sales_customers SET email = '" . mysql_real_escape_string($email) . "', billing = '" . mysql_real_escape_string($billing) . "', welcome = '" . mysql_real_escape_string($billing) . "', promotions = '" . mysql_real_escape_string($promotions) . "' WHERE id = '$id'") or die(mysql_error());
 		echo "submitted";
 	}
 }

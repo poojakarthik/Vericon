@@ -66,30 +66,35 @@ switch ($data["id_type"])
 $(function() {
 	$( "#datepicker" ).datepicker( {
 		showOn: "button",
-		buttonImage: "../images/calendar.gif",
+		buttonImage: "../images/calendar.png",
 		buttonImageOnly: true,
 		dateFormat: "yy-mm-dd",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
 		altField: "#datepicker2",
 		altFormat: "dd/mm/yy",
 		changeMonth: true,
 		changeYear: true,
 		maxDate: "-216M",
-		yearRange: "-100Y:-18Y" });
+		yearRange: "-100Y:-18Y"
+	});
 });
 </script>
 
 <script>
 function Email()
 {
-	$( "#email" ).val("");
-	$( "#email" ).removeAttr("disabled");
-}
-
-function Post()
-{
-	$( "#email" ).val("N/A");
-	$( "#welcome_p" ).prop("checked", true);
-	$( "#email" ).attr("disabled", true);
+	if ($('#no_email').attr('checked'))
+	{
+		$( "#email" ).val("N/A");
+		$( "#email" ).attr("disabled", true);
+	}
+	else
+	{
+		$( "#email" ).val("");
+		$( "#email" ).removeAttr("disabled");
+	}
 }
 
 function Mobile()
@@ -106,71 +111,88 @@ function Mobile()
 	}
 }
 
-window.onload=function()
+if ( $( "#mobile" ) != null && $( "#mobile" ).val() == "N/A" )
 {
-	setTimeout(enableIt,1000)
-	if ( $( "#mobile" ) != null && $( "#mobile" ).val() == "N/A" )
+	$( "#no_mobile" ).prop("checked", true);
+	$( "#mobile" ).attr("disabled", true);
+}
+
+if ( $( "#email" ) != null && $( "#email" ).val() == "N/A" )
+{
+	$( "#no_email" ).prop("checked", true);
+	$( "#email" ).attr("disabled", true);
+}
+
+if ( "<?php echo $data["welcome"]; ?>" == "post" )
+{
+	$( "#welcome_p" ).prop("checked", true);
+}
+else if ( "<?php echo $data["welcome"]; ?>" == "email" )
+{
+	$( "#welcome_e" ).prop("checked", true);
+}
+
+if ( $( '#physical' ).val() != undefined )
+{
+	$.get("../source/gnafGet.php?type=display", { id: "<?php echo $data["physical"]; ?>" }, function(data) {
+		var n = data.split("}");
+		$( "#display_physical1" ).val(n[0]);
+		$( "#display_physical2" ).val(n[1]);
+		$( "#display_physical3" ).val(n[2]);
+		$( "#display_physical4" ).val(n[3]);
+	});
+}
+
+if ( $( '#postal' ).val() != undefined )
+{
+	if ("<?php echo $data["physical"]; ?>" == "<?php echo $data["postal"]; ?>")
 	{
-		$( "#no_mobile" ).prop("checked", true);
-		$( "#mobile" ).attr("disabled", true);
-	}
-	
-	if ( $( "#email" ) != null && $( "#email" ).val() == "N/A" )
-	{
-		$( "#billing_p" ).prop("checked", true);
-		$( "#welcome_p" ).prop("checked", true);
-		$( "#email" ).attr("disabled", true);
+		$( "#display_postal1" ).val("SAME AS PHYSICAL");
+		$( "#display_postal2" ).val("");
+		$( "#display_postal3" ).val("");
+		$( "#display_postal4" ).val("");
+		$( "#display_postal1" ).attr("disabled","disabled");
+		$( "#display_postal2" ).attr("disabled","disabled");
+		$( "#display_postal3" ).attr("disabled","disabled");
+		$( "#display_postal4" ).attr("disabled","disabled");
+		$( "#postal_link" ).attr("disabled","disabled");
+		$( "#postal_link" ).removeAttr("onclick");
+		$( "#postal_same" ).prop("checked", true);
 	}
 	else
 	{
-		$( "#billing_e" ).prop("checked", true);
-		$( "#welcome_e" ).prop("checked", true);
-	}
-	
-	if ( "<?php echo $data["welcome"]; ?>" == "post" )
-	{
-		$( "#welcome_p" ).prop("checked", true);
-	}
-	else if ( "<?php echo $data["welcome"]; ?>" == "email" )
-	{
-		$( "#welcome_e" ).prop("checked", true);
-	}
-	
-	if ( $( '#physical_address' ) != null )
-	{
-		var id = $( "#physical" );
-		$( '#physical_address' ).load('../../tpv/address.php?id=' + id.val());
-	}
-	
-	if ( $( '#postal_address' ) != null )
-	{
-		var id = $( "#postal" );
-		$( '#postal_address' ).load('../../tpv/address.php?id=' + id.val());
-	}
-
-	if ( $( '#packages' ) != null )
-	{
-		var id = '<?php echo $id; ?>';
-		$( '#packages' ).load('../../tpv/packages.php?id=' + id);
-	}
-	
-	if ( $( "#abn" ).val() != undefined )
-	{
-		$.getJSON("../../source/abrGet.php", {abn: $("#abn").val() },
-			function(data){
-				if( data['organisationName'] != null) {
-					$(".bus_name").html( data['organisationName'] );
-				}
-				else if (data['tradingName'] != null) {
-					$(".bus_name").html( data['tradingName'] );
-				}
-				else {
-					$(".bus_name").html( data['entityName'] );
-				}
-				$(".abn_status").html( data['entityStatus'] );
-				$(".bus_type").html( data['entityDescription'] );
+		$.get("../source/gnafGet.php?type=display", { id: "<?php echo $data["postal"]; ?>" }, function(data) {
+			var n = data.split("}");
+			$( "#display_postal1" ).val(n[0]);
+			$( "#display_postal2" ).val(n[1]);
+			$( "#display_postal3" ).val(n[2]);
+			$( "#display_postal4" ).val(n[3]);
 		});
 	}
+}
+
+if ( $( '#packages' ) != null )
+{
+	var id = '<?php echo $id; ?>';
+	$( '#packages' ).load('../../tpv/packages.php?id=' + id);
+}
+
+if ( $( "#abn" ).val() != undefined )
+{
+	$.getJSON("../../source/abrGet.php", {abn: $("#abn").val() },
+		function(data){
+			if( data['organisationName'] != null) {
+				$(".bus_name").html( data['organisationName'] );
+			}
+			else if (data['tradingName'] != null) {
+				$(".bus_name").html( data['tradingName'] );
+			}
+			else {
+				$(".bus_name").html( data['entityName'] );
+			}
+			$(".abn_status").html( data['entityStatus'] );
+			$(".bus_type").html( data['entityDescription'] );
+	});
 }
 </script>
 
@@ -217,16 +239,16 @@ $input["bus_info"] = $line . "<br><br><table border='0' width='100%'>
 </table>";
 
 $input["name"] = $line . "<br><br><table border='0' width='100%'>
-<tr><td width='95px'>Title<span style='color:#ff0000;'>*</span> </td><td><select id='title' style='margin-left:0px; margin-bottom: 0px; width:75px; height:25px; padding: 1px 0 0;'>
+<tr><td width='95px'>Title<span style='color:#ff0000;'>*</span> </td><td><select id='title' style='width:50px;'>
 <option $mr>Mr</option>
 <option $mrs>Mrs</option>
 <option $miss>Miss</option>
 <option $ms>Ms</option>
 <option $dr>Dr</option>
 </select></td></tr>
-<tr><td width='95px'>First Name<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='first' value='$firstname'></td></tr>
-<tr><td width='95px'>Middle Name </td><td><input type='text' size='25' id='middle' value='$middlename'></td></tr>
-<tr><td width='95px'>Last Name<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='last' value='$lastname'></td></tr>
+<tr><td width='95px'>First Name<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='first' style='width:150px;' value='$firstname'></td></tr>
+<tr><td width='95px'>Middle Name </td><td><input type='text' id='middle' style='width:150px;' value='$middlename'></td></tr>
+<tr><td width='95px'>Last Name<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='last' style='width:150px;' value='$lastname'></td></tr>
 </table>";
 
 $input["dob"] = $line . "<br><br><table border='0' width='100%'>
@@ -234,51 +256,58 @@ $input["dob"] = $line . "<br><br><table border='0' width='100%'>
 </table>";
 
 $input["id_info"] = $line . "<br><br><table border='0' width='100%'>
-<tr><td width='95px'>ID Type<span style='color:#ff0000;'>*</span> </td><td><select id='id_type' style='margin-left:0px; margin-bottom: 0px; width:168px; height:25px; padding: 1px 0 0;'>
+<tr><td width='95px'>ID Type<span style='color:#ff0000;'>*</span> </td><td><select id='id_type' style='width:192px;'>
 <option $drl>Driver's Licence (AUS)</option>
 <option $mcc>Medicare Card</option>
 <option $hcc>Healthcare Card</option>
 <option $ppt>Passport</option>
 <option $pnc>Pension Card</option>
 </select></td></tr>
-<tr><td width='95px'>ID Number<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='id_num' value='$id_num'></td></tr>
+<tr><td width='95px'>ID Number<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='id_num' value='$id_num' style='width: 190px;'></td></tr>
 </table>";
 
 $input["physical"] = $line . "<input type='hidden' id='physical' value='$physical'><br><br>
-<div id='physical_address'></div><br><input type='button' onclick='parent.Physical()' class='search' value=''>";
+<table width='100%'>
+<tr><td><input type='text' id='display_physical1' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_physical2' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_physical3' readonly style='width:45px;' /> <input type='text' id='display_physical4' readonly style='width:55px;' /></td></tr>
+</table><br><button onclick='Physical()' class='btn'>Search</button>";
 
 $input["postal"] = $line . "<input type='hidden' id='postal' value='$postal'><br><br>
-<div id='postal_address'></div><br><input type='button' onclick='parent.Postal()' class='search' value=''>";
+<table width='100%'>
+<tr><td><input type='text' id='display_postal1' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_postal2' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_postal3' readonly style='width:45px;' /> <input type='text' id='display_postal4' readonly style='width:55px;' /> <input type='checkbox' id='postal_same' onclick='Postal_Same()' style='height:auto;' /> Same as Physical</td></tr>
+</table><br><button onclick='Postal()' id='postal_link' class='btn'>Search</button>";
 
 $input["mobile"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>Mobile<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='mobile' value='$mobile' /> <input type='checkbox' id='no_mobile' onclick='Mobile()' style='height:auto;' /> <span>N/A</span></td></tr>
 </table>";
 
 $input["email"] = $line . "<br><br><table border='0' width='100%'>
-<tr><td width='105px'>Billing<span style='color:#ff0000;'>*</span> </td><td><input type='radio' name='billing' id='billing_e' value='email' onclick='Email()' style='height:auto;' /> E-Bill &nbsp; <input type='radio' name='billing' id='billing_p' onclick='Post()' value='post' style='height:auto;' /> Post</td></tr>
-<tr><td width='105px'>Welcome Letter<span style='color:#ff0000;'>*</span> </td><td><input type='radio' name='welcome' id='welcome_e' value='email' style='height:auto;' /> E-Mail &nbsp; <input type='radio' name='welcome' id='welcome_p' value='post' style='height:auto;' /> Post</td></tr>
-<tr><td width='105px'>E-Mail<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='email' value='$email' /></td></tr>
+<tr><td width='105px'>E-Mail<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='email' value='$email' /> <input type='checkbox' id='no_email' onclick='Email()' style='height:auto;' /> <span>N/A</span></td></tr>
+<tr><td width='105px'>Promotions<span style='color:#ff0000;'>*</span> </td><td><input type='radio' name='promotions' value='Y' style='height:auto;' /> Yes &nbsp; <input type='radio' name='promotions' value='N' style='height:auto;' /> No</td></tr>
 </table>";
 
 $input["email2"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>E-Mail<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='email2' value='$email' /></td></tr>
 </table>";
 
-$input["lines"] = $line . "<div class='demo'><div id='users-contain' class='ui-widget'>
-<table id='users' class='ui-widget ui-widget-content' width='65%' style='margin-top:0px;'>
+$input["lines"] = $line . "<div id='users-contain' class='ui-widget'>
+<table id='users' class='ui-widget ui-widget-content' width='90%' style='margin-top:0px;'>
 <thead>
 <tr class='ui-widget-header'>
-<th>CLI</th>
-<th colspan='3'>Plan</th>
+<th width='20%'>CLI</th>
+<th width='70%'>Plan</th>
+<th width='10%' colspan='2'>Edit</th>
 </tr>
 </thead>
 <tbody id='packages'>
 </tbody>
 </table>
-<input type='button' onclick='Add_Package()' class='addpackage' />
-<input type='hidden' id='type' value='$data[type]'>
-</div></div>";
+<button onclick='Add_Package()' class='btn'>Add Package</button>
+</div>";
 
-$input["edit_details"] = "<input type='button' onclick='parent.Edit_Details(\"$id\")' class='edit_details' />";
-
+//$input["edit_details"] = "<input type='button' onclick='parent.Edit_Details(\"$id\")' class='edit_details' />";
+$input["edit_details"] = "";
 ?>
