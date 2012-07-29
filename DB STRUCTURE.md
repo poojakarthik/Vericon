@@ -859,6 +859,8 @@ CREATE TABLE IF NOT EXISTS `currentuser` (
 
 CREATE TABLE IF NOT EXISTS `customers` (
   `id` varchar(15) NOT NULL,
+  `sf_id` varchar(64) NOT NULL,
+  `tb_id` varchar(32) NOT NULL,
   `status` varchar(64) NOT NULL,
   `last_edit_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `last_edit_by` varchar(8) NOT NULL,
@@ -901,6 +903,8 @@ CREATE TABLE IF NOT EXISTS `customers` (
 
 CREATE TABLE IF NOT EXISTS `customers_log` (
   `id` varchar(15) NOT NULL,
+  `sf_id` varchar(64) NOT NULL,
+  `tb_id` varchar(32) NOT NULL,
   `status` varchar(64) NOT NULL,
   `last_edit_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `last_edit_by` varchar(8) NOT NULL,
@@ -1251,7 +1255,8 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
   `lead_id` varchar(10) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `cli` varchar(10) NOT NULL,
-  `plan` varchar(300) NOT NULL
+  `plan` varchar(300) NOT NULL,
+  KEY `lead_id` (`lead_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```
 ```sql
@@ -1412,8 +1417,11 @@ CREATE TABLE IF NOT EXISTS `verification_lock` (
 CREATE TABLE IF NOT EXISTS `welcome` (
   `id` varchar(16) NOT NULL,
   `status` varchar(64) NOT NULL,
+  `centre` varchar(16) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
   `user` varchar(8) NOT NULL,
+  `dd` int(1) NOT NULL,
+  `cancellation_reason` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
