@@ -12,6 +12,11 @@
 0 1 * * * /var/vericon/cron/db_backup.sh
 ```
 ##Other
+###Additional Libraries
+```
+apt-get install libssh2-php
+apt-get install dos2unix
+```
 ###Directories
 ```
 /var
