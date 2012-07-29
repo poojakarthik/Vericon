@@ -45,6 +45,7 @@ else
 <input type="hidden" id="processing_type" value="" />
 <input type="hidden" id="rec_store" value="" />
 <input type="hidden" id="account_id" value="<?php echo $id; ?>" />
+<input type="hidden" id="done_dd" value="0" />
 <script> //dob datepicker
 $(function() {
 	$( "#datepicker" ).datepicker( {
@@ -356,7 +357,7 @@ switch ($data["title"])
 <td width="150px"><input type="text" id="payway" readonly="readonly" style="width:148px;" value="<?php echo $data["payway"]; ?>" /></td>
 <td width="75px" align="right">DD Type</td>
 <td width="150px"><input type="text" id="dd_type" readonly="readonly" style="width:148px;" value="<?php echo $data["dd_type"]; ?>" /></td>
-<td colspan="2" align="right" style="padding-right:10px;"><button onclick="DD()" class="btn2">Direct Debit</button></td>
+<td colspan="2" align="right" style="padding-right:10px;"><?php if ($data["payway"] == "") { ?><button id="dd_btn" onclick="DD()" class="btn2">Direct Debit</button><?php } else { ?><button onclick="DD()" class="btn2" disabled="disabled">Direct Debit</button><?php } ?></td>
 </tr>
 </table>
 </td>

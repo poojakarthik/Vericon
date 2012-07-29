@@ -207,6 +207,8 @@ $(function() {
 				function(data) {
 					if (data.substring(0,4) == "done")
 					{
+						$( "#dd_btn" ).attr("disabled", true);
+						$( "#done_dd" ).val("yes");
 						$( "#payway" ).val(data.substring(4));
 						$( "#dd_type" ).val(cardtype.val());
 						$( "#dialog-confirm_dd_cc" ).dialog( "close" );
@@ -260,6 +262,8 @@ $(function() {
 				function(data) {
 					if (data.substring(0,4) == "done")
 					{
+						$( "#dd_btn" ).attr("disabled", true);
+						$( "#done_dd" ).val("yes");
 						$( "#payway" ).val(data.substring(4));
 						$( "#dialog-confirm_dd_bank" ).dialog( "close" );
 					}
@@ -636,14 +640,15 @@ function Approve()
 		payway = $( "#payway" ),
 		dd_type = $( "#dd_type" ),
 		user = "<?php echo $ac["user"]; ?>",
-		rec = $( "#rec_store" );
+		rec = $( "#rec_store" ),
+		dd = $( "#done_dd" );
 		
 		if ($('#postal_same').attr('checked'))
 		{
 			postal = $( "#physical" );
 		}
 	
-	$.get("customers_submit.php?method=approve", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val() },
+	$.get("customers_submit.php?method=approve", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val(), dd: dd.val() },
 	function(data) {
 		if (data == "submitted")
 		{
@@ -714,14 +719,15 @@ $(function() {
 					payway = $( "#payway" ),
 					dd_type = $( "#dd_type" ),
 					user = "<?php echo $ac["user"]; ?>",
-					rec = $( "#rec_store" );
+					rec = $( "#rec_store" ),
+					dd = $( "#done_dd" );
 					
 					if ($('#postal_same').attr('checked'))
 					{
 						postal = $( "#physical" );
 					}
 				
-				$.get("customers_submit.php?method=upgrade", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val() },
+				$.get("customers_submit.php?method=upgrade", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val(), dd: dd.val() },
 				function(data) {
 					if (data == "submitted")
 					{

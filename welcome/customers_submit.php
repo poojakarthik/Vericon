@@ -518,6 +518,7 @@ elseif ($method == "approve")
 	$dd_type = $_GET["dd_type"];
 	$user = $_GET["user"];
 	$rec = $_GET["rec"];
+	$dd = $_GET["dd"];
 	
 	$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'");
 	$data = mysql_fetch_assoc($q);
@@ -660,7 +661,7 @@ elseif ($method == "approve")
 		if ($email == "N/A") { $billing = "post"; } else { $email = strtolower($email); $billing = "email"; }
 		$timestamp = date("Y-m-d H:i:s");
 		
-		mysql_query("INSERT INTO vericon.welcome (id, status, centre, timestamp, user) VALUES ('$id', 'Cancel', '$data[centre]', '$timestamp', '$user')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.welcome (id, status, centre, timestamp, user, dd) VALUES ('$id', 'Cancel', '$data[centre]', '$timestamp', '$user', '$dd')") or die(mysql_error());
 		
 		mysql_query("UPDATE vericon.customers SET status = 'Waiting Provisioning', last_edit_by = '$user', title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', credit = '" . mysql_real_escape_string($credit) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
@@ -798,6 +799,7 @@ elseif ($method == "upgrade")
 	$dd_type = $_GET["dd_type"];
 	$user = $_GET["user"];
 	$rec = $_GET["rec"];
+	$dd = $_GET["dd"];
 	
 	$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'");
 	$data = mysql_fetch_assoc($q);
@@ -940,7 +942,7 @@ elseif ($method == "upgrade")
 		if ($email == "N/A") { $billing = "post"; } else { $email = strtolower($email); $billing = "email"; }
 		$timestamp = date("Y-m-d H:i:s");
 		
-		mysql_query("INSERT INTO vericon.welcome (id, status, centre, timestamp, user) VALUES ('$id', 'Cancel', '$data[centre]', '$timestamp', '$user')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.welcome (id, status, centre, timestamp, user, dd) VALUES ('$id', 'Cancel', '$data[centre]', '$timestamp', '$user', '$dd')") or die(mysql_error());
 		
 		mysql_query("UPDATE vericon.customers SET status = 'Waiting Provisioning', last_edit_by = '$user', title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', credit = '" . mysql_real_escape_string($credit) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
