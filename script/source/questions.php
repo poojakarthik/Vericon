@@ -64,8 +64,9 @@ $landline[13] = "<p>Is that the same as your <b>mailing address</b>?</p>";
 
 $landline[14] = "<p>Could you please state your mobile phone number as an alternate contact?</p>";
 
-$landline[15] = "<p>A paper invoice is a cost of \$2 otherwise we can email the invoice free of charge. Please provide your email address for billing purposes. Do you also consent to this email address being used for the delivery of notifications and future offers?</p>
-<p><i><span style=\"color:#FF0000;\">Advise of \$2 Admin Fee if paper bill, otherwise repeat the email address back to the customer phonetically</span></i></p>";
+$landline[15] = "<p>A paper invoice is a cost of \$2 otherwise we can email the invoice free of charge. Please provide your email address for billing purposes.</p>
+<p><i><span style=\"color:#FF0000;\">Advise of \$2 Admin Fee if paper bill, otherwise repeat the email address back to the customer phonetically</span></i></p>
+<br><p>Do you also allow us to send you notifications and future offers to your email address or postal address?</p>";
 
 $landline[16] = "<p>Could you please confirm that you are the authorised contact of the business and have the authority and provide consent to transfer your existing phone services from your current service provider to <b>$campaign</b>?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
@@ -97,16 +98,17 @@ $landline[21] = "<p><b>$campaign</b> bills on a pro rata basis, this means that 
 <p>Do you understand this? <b>Yes or No</b></p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$landline[22] = "<br><p>We will send a welcome pack to the email address you have provided within 5 days.</p>";
+$landline[22] = "";
 
-$landline[23] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to your current provider, <b>SUBJECT TO CREDIT APPROVAL</b>. The transfer can typically take approx. 10 to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
+$landline[23] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to your current provider, <b>SUBJECT TO CREDIT APPROVAL</b>. Receipt of the welcome pack could take up to 10 days depending on your location. You will receive a welcome call within the next 3 days. The transfer can typically take approx. 10 to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
 <p>I will now stop the recording.</p>
 <p><i><b><span style=\"color:#FF0000;\">RECORDING STOPS HERE</span></b></i></p>";
 
 $landline[24] = "<p>You have the right to cancel this agreement by contacting us within 10 business days from and including the day after you receive written confirmation of this agreement. Do you understand this?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$landline["No_Contract_ETF"] = "<p>Do you understand this?</p>
+$landline["No_Contract_ETF"] = "<p>If you receive a better deal from one of our competitors, please give us a call and we will try to match or better that deal for you.</p>
+<p>Do you understand this?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
 $landline["Contract_ETF"] = "<p>If the landline contract is cancelled or terminated within the contract term then an early termination fee is charged which is \$199 per line.</p>
@@ -125,8 +127,9 @@ $landline["dd2"] = "<button onclick=\"DD('$campaign')\" class=\"btn\">Direct Deb
 
 $landline["dd3"] = "<p>Do you agree to receive a monthly e-mail telephone bill, which you'll receive in the 2nd week of the month?</p>
 <p><b>->CUSTOMER MUST SAY <span style='color:#FF0000;'>YES</span></b></p><br>
-<p>Please state your preferred email address?</p>
-<p><i><span style='color:#FF0000;'>Spell back to customer slowly to confirm.</span></i></p>";
+<p>Please state your preferred email address</p>
+<p><i><span style='color:#FF0000;'>Spell back to customer slowly to confirm.</span></i></p>
+<br><p>Do you also allow us to send you notifications and future offers to your email address or postal address?</p>";
 
 
 //ADSL & Wireless
@@ -228,7 +231,7 @@ $internet[19] = "<p>If the internet contract is cancelled or terminated within t
 
 $internet[20] = "<p><b>$campaign</b> offers a $2.00 discount if you opt for email billing.</p>
 <p>Are you happy to receive an emailed invoice?</p>
-<p>Do you also consent to this email address being used for the delivery of notifications and future offers?</p>";
+<br><p>Do you also allow us to send you notifications and future offers to your email address or postal address?</p>";
 
 $internet[21] = "<p>For a limited time, <b>$campaign</b> will offer a bonus discount of $3.00 off your monthly bill, if you choose direct debit.</p>
 <p>Would you like me to set this up for you?</p><br>";
@@ -241,13 +244,13 @@ $internet[23] = "<p><b>$campaign</b> bills on a pro rata basis, this means that 
 <p>Do you understand this? <b>Yes or No</b></p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$internet[24] = "<br><p>We will send a welcome pack to the email address you have provided within 5 days.</p>";
+$internet[24] = "";
 
-$internet[25] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL and TELEPHONE LINE TESTING</b>. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
+$internet[25] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL and TELEPHONE LINE TESTING</b>. Receipt of the welcome pack could take up to 10 days depending on your location. You will receive a welcome call within the next 3 days. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
 <p>I will now stop the recording.</p>
 <p><i><b><span style=\"color:#FF0000;\">RECORDING STOPS HERE</span></b></i></p>";
 
-$internet[26] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL</b>. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
+$internet[26] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL</b>. Receipt of the welcome pack could take up to 10 days depending on your location. You will receive a welcome call within the next 3 days. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
 <p>I will now stop the recording.</p>
 <p><i><b><span style=\"color:#FF0000;\">RECORDING STOPS HERE</span></b></i></p>";
 

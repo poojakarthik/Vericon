@@ -403,7 +403,7 @@ function Next(id,action)
 		var email = $( "#email2" ),
 			promotions = $('input[name=promotions]:checked');
 			
-		$.get("../script/source/submit.php", { id: id, action: "email", email: email.val(), promotions: promotions.val() },
+		$.get("../script/source/submit.php", { id: id, action: "email2", email: email.val(), promotions: promotions.val() },
 			function(data) {
 				if (data == "submitted")
 				{

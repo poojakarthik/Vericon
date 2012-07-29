@@ -291,6 +291,7 @@ $input["email"] = $line . "<br><br><table border='0' width='100%'>
 
 $input["email2"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>E-Mail<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='email2' value='$email' /></td></tr>
+<tr><td width='105px'>Promotions<span style='color:#ff0000;'>*</span> </td><td><input type='radio' name='promotions' value='Y' style='height:auto;' /> Yes &nbsp; <input type='radio' name='promotions' value='N' style='height:auto;' /> No</td></tr>
 </table>";
 
 $input["lines"] = $line . "<div id='users-contain' class='ui-widget'>

@@ -195,5 +195,66 @@ elseif ($action == "email")
 		echo "submitted";
 	}
 }
-
+elseif ($action == "email2")
+{
+	$email = $_GET["email"];
+	$promotions = $_GET["promotions"];
+	
+	function check_email_address($email) //email validation function
+	{
+		if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) 
+		{
+			return false;
+		}
+		$email_array = explode("@", $email);
+		$local_array = explode(".", $email_array[0]);
+		for ($i = 0; $i < sizeof($local_array); $i++) 
+		{
+			if(!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$",$local_array[$i]))
+			{
+				return false;
+			}
+		}
+		if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1]))
+		{
+			$domain_array = explode(".", $email_array[1]);
+			if (sizeof($domain_array) < 2)
+			{
+				return false;
+			}
+			for ($i = 0; $i < sizeof($domain_array); $i++)
+			{
+				if(!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$",$domain_array[$i]))
+				{
+					return false;
+				}
+			}
+		}
+		if(!checkdnsrr($email_array[1],'MX'))
+		{
+			return false;
+		}
+		return true;
+	}
+	
+	if ($email == "")
+	{
+		echo "Please enter the customer's email address";
+	}
+	elseif (!check_email_address($email))
+	{
+		echo 'Please enter a valid email address';
+	}
+	elseif ($promotions == "")
+	{
+		echo 'Please select if the customer allows promotions';
+	}
+	else
+	{
+		if ($email == "N/A") { $billing = "post"; } else { $billing = "email"; }
+		
+		mysql_query("UPDATE sales_customers SET email = '" . mysql_real_escape_string($email) . "', billing = '" . mysql_real_escape_string($billing) . "', welcome = '" . mysql_real_escape_string($billing) . "', promotions = '" . mysql_real_escape_string($promotions) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+}
 ?>
