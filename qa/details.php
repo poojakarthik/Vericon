@@ -70,9 +70,9 @@ if ($ac["status"] == "Disabled")
 <title><?php echo "VeriCon :: Quality Assurance :: Customer Details"; ?></title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<link rel="stylesheet" href="../jquery/css/custom-theme/jquery-ui-1.8.20.custom.css">
+<link rel="stylesheet" href="../jquery/css/custom-theme/jquery-ui-1.8.22.custom.css">
 <script src="../jquery/js/jquery-1.7.2.min.js"></script>
-<script src="../jquery/js/jquery-ui-1.8.20.custom.min.js"></script>
+<script src="../jquery/js/jquery-ui-1.8.22.custom.min.js"></script>
 <script type="text/javascript" src="../js/ddsmoothmenu.js"></script>
 <script type="text/javascript">
 ddsmoothmenu.init({
