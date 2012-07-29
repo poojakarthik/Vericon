@@ -2,7 +2,8 @@
 
 ##Crontabs
 ```
-0 0 * * * php /var/vericon/cron/nightly_clear.php
+* * * * * php /var/vericon/cron/lock_clear.php &> /dev/null
+0 0 * * * php /var/vericon/cron/nightly_clear.php &> /dev/null
 2 0 * * * php /var/vericon/cron/welcome.php &> /dev/null
 5 0 * * * php /var/vericon/cron/new_dsr.php Business &> /dev/null
 5 0 * * * php /var/vericon/cron/new_dsr.php Residential &> /dev/null
