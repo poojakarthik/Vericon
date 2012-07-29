@@ -8,9 +8,9 @@ $action = $_GET["action"];
 
 if ($action == "bus_info")
 {
-	$abn = $_GET["abn"];
+	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
-	$position = $_GET["position"];
+	$position = trim($_GET["position"]);
 	
 	if ($abn_status != "Active")
 	{
@@ -30,9 +30,9 @@ if ($action == "bus_info")
 elseif ($action == "name")
 {
 	$title = $_GET["title"];
-	$first = $_GET["first"];
-	$middle = $_GET["middle"];
-	$last = $_GET["last"];
+	$first = trim(strtoupper(substr($_GET["first"],0,1)) . strtolower(substr($_GET["first"],1)));
+	$middle = trim(strtoupper(substr($_GET["middle"],0,1)) . strtolower(substr($_GET["middle"],1)));
+	$last = trim(strtoupper(substr($_GET["last"],0,1)) . strtolower(substr($_GET["last"],1)));
 	
 	if ($title == "")
 	{
@@ -56,20 +56,13 @@ elseif ($action == "dob")
 {
 	$dob = $_GET["dob"];
 	
-	if ($dob == "0000-00-00" || $dob == "")
-	{
-		echo "Please enter the customer's date of birth";
-	}
-	else
-	{
-		mysql_query("UPDATE sales_customers SET dob = '" . mysql_escape_string($dob) . "' WHERE id = '$id'") or die(mysql_error());
-		echo "submitted";
-	}
+	mysql_query("UPDATE sales_customers SET dob = '" . mysql_escape_string($dob) . "' WHERE id = '$id'") or die(mysql_error());
+	echo "submitted";
 }
 elseif ($action == "id_info")
 {
 	$id_type = $_GET["id_type"];
-	$id_num = $_GET["id_num"];
+	$id_num = trim($_GET["id_num"]);
 	
 	if ($id_type == "")
 	{
@@ -101,25 +94,14 @@ elseif ($action == "physical")
 {
 	$physical = $_GET["physical"];
 	
-	if ($physical == "")
-	{
-		echo "Please enter the customer's physical address";
-	}
-	else
-	{
-		mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
-	}
+	mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
 	echo "submitted";
 }
 elseif ($action == "postal")
 {
 	$postal = $_GET["postal"];
 	
-	if ($postal == "")
-	{
-		echo "Please enter the customer's postal address";
-	}
-	elseif ($postal == "same")
+	if ($postal == "same")
 	{
 		$q = mysql_query("SELECT physical FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
 		$da = mysql_fetch_row($q);
