@@ -7,7 +7,14 @@ include "../source/header.php";
 <style>
 #physical_address_code { height:120px; margin:0px; overflow-y:auto; border:1px solid black; padding:3px; }
 #postal_address_code  { height:120px; margin:0px; overflow-y:auto; border:1px solid black; padding:3px; }
-ui-dialog { padding: .3em; }
+.ui-dialog { padding: .3em; }
+.ui-dialog0 { padding: .3em; }
+.ui-dialog2 { padding: .3em; }
+.ui-dialog3 { padding: .3em; }
+.ui-dialog4 { padding: .3em; }
+.ui-dialog_dd { padding: .3em; }
+.ui-dialog_dd_cc { padding: .3em; }
+.ui-dialog_dd_bank { padding: .3em; }
 .ui-dialog_form0 { padding: .3em; }
 .ui-dialog_physical { padding: .3em; }
 .ui-dialog_physical_confirm { padding: .3em; }
@@ -27,6 +34,8 @@ ui-dialog { padding: .3em; }
 .validateTips4 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips5 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips6 { border: 1px solid transparent; padding: 0.3em; }
+.validateTips7 { border: 1px solid transparent; padding: 0.3em; }
+.validateTips8 { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPhysical { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPostal { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsMB { border: 1px solid transparent; padding: 0.3em; }
@@ -125,6 +134,147 @@ function Residential_Customers()
 		$( "#display" ).show('blind', '', 'slow');
 	});
 }
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog_dd" ).dialog( "destroy" );
+	
+	$( "#dialog-confirm_dd" ).dialog({
+		autoOpen: false,
+		height: 100,
+		width: 275,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind"
+	});
+});
+
+function DD_CC()
+{
+	$( "#dialog-confirm_dd" ).dialog( "close" );
+	$( "#dialog-confirm_dd_cc" ).dialog( "open" );
+	
+}
+
+function DD_Bank()
+{
+	$( "#dialog-confirm_dd" ).dialog( "close" );
+	$( "#dialog-confirm_dd_bank" ).dialog( "open" );
+}
+
+function DD()
+{
+	$( "#dialog-confirm_dd" ).dialog( "open" );
+}
+</script>
+<script> // DD Credit
+$(function() {
+	$( "#dialog:ui-dialog_dd_cc" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips7" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+	
+	$( "#dialog-confirm_dd_cc" ).dialog({
+		autoOpen: false,
+		height: 225,
+		width: 275,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind",
+		buttons: {
+			"Submit": function() {
+				var id = $( "#account_id" ),
+					user = "<?php echo $ac["user"]; ?>",
+					cardholder = $( "#cardholder" ),
+					cardtype = $( "#card_type" ),
+					cardnumber = $( "#card_number" ),
+					cardexpiry_m = $( "#card_expiry_m" ),
+					cardexpiry_y = $( "#card_expiry_y" );
+				
+				$.get("customers_submit.php?method=dd", { id: id.val(), type: "CC", user: user, cardholder: cardholder.val(), cardtype: cardtype.val(), cardnumber: cardnumber.val(), cardexpiry_m: cardexpiry_m.val(), cardexpiry_y: cardexpiry_y.val() },
+				function(data) {
+					if (data.substring(0,4) == "done")
+					{
+						$( "#payway" ).val(data.substring(4));
+						$( "#dd_type" ).val(cardtype.val());
+						$( "#dialog-confirm_dd_cc" ).dialog( "close" );
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+</script>
+<script> // DD Bank
+$(function() {
+	$( "#dialog:ui-dialog_dd_bank" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips8" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+	
+	$( "#dialog-confirm_dd_bank" ).dialog({
+		autoOpen: false,
+		height: 200,
+		width: 275,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind",
+		buttons: {
+			"Submit": function() {
+				var id = $( "#account_id" ),
+					accountname = $( "#accountname" ),
+					bsb = $( "#bsb" ),
+					accountnumber = $( "#accountnumber" ),
+					user = "<?php echo $ac["user"]; ?>";
+				
+				$.get("customers_submit.php?method=dd", { id: id.val(), type: "Bank", accountname: accountname.val(), bsb: bsb.val(), accountnumber: accountnumber.val(), user: user },
+				function(data) {
+					if (data.substring(0,4) == "done")
+					{
+						$( "#payway" ).val(data.substring(4));
+						$( "#dialog-confirm_dd_bank" ).dialog( "close" );
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
 </script>
 <script> //add packages
 $(function() {
@@ -1739,6 +1889,61 @@ function Postal_Same()
 }
 </style>
 <input type="file" name="file_upload" id="file_upload" />
+</div>
+
+<div id="dialog-confirm_dd" title="Direct Debit Switch">
+<table width="100%" height="55px">
+<tr height="100%">
+<td valign="middle" align="center"><button onclick="DD_CC()" class="btn">Credit Card</button></td>
+<td valign="middle" align="center"><button onclick="DD_Bank()" class="btn">Bank Account</button></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm_dd_cc" title="Direct Debit - Credit Card">
+<p class="validateTips7">All fields are required</p><br />
+<table>
+<tr>
+<td width="85px">Cardholder Name </td>
+<td><input type="text" id="cardholder" style="width:150px;" value="" /></td>
+</tr>
+<tr>
+<td width="85px">Card Type </td>
+<td><select id="card_type" style="width:151px;">
+<option></option>
+<option>AMEX</option>
+<option>DINERS</option>
+<option>MASTERCARD</option>
+<option>VISA</option>
+</select></td>
+</tr>
+<tr>
+<td width="85px">Card Number </td>
+<td><input type="text" id="card_number" style="width:150px;" value="" /></td>
+</tr>
+<tr>
+<td width="85px">Card Expiry Date </td>
+<td><input type="text" id="card_expiry_m" style="width:25px;" value="" /> / <input type="text" id="card_expiry_y" style="width:25px;" value="" /></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm_dd_bank" title="Direct Debit - Bank Account">
+<p class="validateTips8">All fields are required</p><br />
+<table>
+<tr>
+<td width="85px">Account Name </td>
+<td><input type="text" id="accountname" style="width:150px;" value="" /></td>
+</tr>
+<tr>
+<td width="85px">BSB </td>
+<td><input type="text" id="bsb" style="width:75px;" value="" /></td>
+</tr>
+<tr>
+<td width="85px">Account Number </td>
+<td><input type="text" id="accountnumber" style="width:150px;" value="" /></td>
+</tr>
+</table>
 </div>
 
 <div id="dialog-form" title="Call Type">

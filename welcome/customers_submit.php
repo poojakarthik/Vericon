@@ -12,6 +12,442 @@ if ($method == "call_back")
 	
 	echo "done";
 }
+elseif ($method == "dd")
+{
+	$id = $_GET["id"];
+	$type = $_GET["type"];
+	$user = $_GET["user"];
+	
+	if ($type == "CC")
+	{
+		$cardholder = $_GET["cardholder"];
+		$cardtype = $_GET["cardtype"];
+		$cardnumber = $_GET["cardnumber"];
+		$cardexpiry_m = $_GET["cardexpiry_m"];
+		$cardexpiry_y = $_GET["cardexpiry_y"];
+		
+		if ($cardholder == "")
+		{
+			echo "Please enter the cardholder's name";
+		}
+		elseif ($cardtype == "")
+		{
+			echo "Please select the card type";
+		}
+		elseif ($cardnumber == "")
+		{
+			echo "Please enter the card number";
+		}
+		elseif ($cardexpiry_m == "" || ($cardexpiry_m < 1 || $cardexpiry_m > 12))
+		{
+			echo "Please enter a valid card expiry month";
+		}
+		elseif ($cardexpiry_y == "" || !preg_match("/^[0-9]{2}$/",$cardexpiry_y))
+		{
+			echo "Please enter a valid card expiry year";
+		}
+		else
+		{
+			$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'") or die(mysql_error());
+			$data = mysql_fetch_assoc($q);
+			
+			$q2 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+			$c = mysql_fetch_row($q2);
+			$campaign_id = $c[0];
+			
+			$p_i = 0;
+			$b_i = 0;
+			$p = 1;
+			$p_packages = array();
+			$b_packages = array();
+			$p_cli = array();
+			$q2 = mysql_query("SELECT * FROM vericon.packages WHERE id = '$data[id]' ORDER BY plan DESC") or die(mysql_error());
+			while ($pack = mysql_fetch_assoc($q2))
+			{
+				$q3 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$pack[plan]' AND campaign = '" . mysql_real_escape_string($campaign_id) . "'") or die(mysql_error());
+				$da = mysql_fetch_assoc($q3);
+				if ($da["type"] == "PSTN")
+				{
+					$p_packages[$p_i] = $pack["cli"] . "," . $da["s_id"];
+					$p_i++;
+				}
+				elseif ($da["type"] == "Bundle")
+				{
+					$b_packages[$b_i] = $pack["cli"] . "," . $da["s_id"];
+					$b_i++;
+				}
+			}
+			
+			if ($b_i >= 1)
+			{
+				foreach ($b_packages as $row)
+				{
+					$package = explode(",", $row);
+					$p_cli[$p] = $package[0];
+					$p++;
+				}
+			}
+			
+			if ($p_i >= 1)
+			{
+				foreach ($p_packages as $row)
+				{
+					$package = explode(",", $row);
+					$p_cli[$p] = $package[0];
+					$p++;
+				}
+			}
+			
+			if (substr($data["postal"],0,2) == "GA")
+			{
+				$q5 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE address_detail_pid = '$data[postal]'") or die(mysql_error());
+				$data2 = mysql_fetch_assoc($q5);
+				
+				if ($data2["number_first"] == 0 && $data2["number_last"] == 0)
+				{
+					$street = "LOT " . $data2["lot_number"] . $data2["lot_number_suffix"];
+				}		
+				elseif ($data2["flat_number"] != 0)
+				{
+					$street = $data2["flat_type_code"] . " " . $data2["flat_number"] . $data2["flat_number_suffix"] . "/";
+				}
+				elseif ($data2["level_number"] != 0)
+				{
+					$street = "LEVEL " . $data2["level_number"] . $data2["level_number_suffix"] . "/";
+				}
+				
+				if ($data2["number_first"] != 0)
+				{
+					$street .= $data2["number_first"] . $data2["number_first_suffix"];
+				}
+				
+				if ($data2["number_last"] != 0)
+				{
+					$street .= "-" . $data2["number_last"];
+				}
+				
+				$street .= " " . $data2["street_name"] . " ";
+			
+				if ($data2["street_suffix_code"] != "")
+				{
+					$street .= $data2["street_type_code"] . " " . $data2["street_suffix_code"];
+				}
+				else
+				{
+					$street .= $data2["street_type_code"];
+				}
+				
+				$suburb = $data2["locality_name"];
+				$state = $data2["state"];
+				$postcode = $data2["postcode"];
+			}
+			elseif (substr($data["postal"],0,2) == "MA")
+			{
+				$q5 = mysql_query("SELECT * FROM vericon.address WHERE id = '$data[postal]'") or die(mysql_error());
+				$data2 = mysql_fetch_assoc($q5);
+				
+				if ($data2["building_type"] == "PO BOX")
+				{
+					$street = $data2["building_number"];
+				}
+				else
+				{
+					if ($data2["building_type"] == "LOT")
+					{
+						$street = "LOT " . $data2["building_number"] . $data2["building_number_suffix"];
+					}		
+					elseif ($data2["building_type"] == "LEVEL")
+					{
+						$street = "LEVEL " . $data2["building_number"] . $data2["building_number_suffix"] . "/";
+					}
+					elseif ($data2["building_type"] != "" && $data2["number_first"] != "")
+					{
+						$street = $data2["building_type"] . " " . $data2["building_number"] . $data2["building_number_suffix"] . "/" . $data2["number_first"] . $data2["number_first_suffix"];
+					}
+					elseif ($data2["building_type"] != "" && $data2["number_first"] == "")
+					{
+						$street = $data2["building_type"] . " " . $data2["building_number"] . $data2["building_number_suffix"];
+					}
+					
+					if ($data2["number_last"] != "")
+					{
+						$street .= "-" . $data2["number_last"];
+					}
+					
+					if ($data2["building_name"] != "" && $data2["street_name"] == "")
+					{
+						$street .= " " . $data2["building_name"];
+					}
+					elseif ($data2["building_name"] != "" && $data2["street_name"] != "")
+					{
+						$street .= " " . $data2["building_name"] . " " . $data2["street_name"] . " " . $data2["street_type"];
+					}
+					else
+					{
+						$street .= " " . $data2["street_name"] . " " . $data2["street_type"];
+					}
+				}
+				
+				$suburb = $data2["suburb"];
+				$state = $data2["state"];
+				$postcode = $data2["postcode"];
+			}
+			
+			if ($data["middlename"] != "")
+			{
+				$name = $data["title"] . " " . $data["firstname"] . " " . $data["middlename"] . " " . $data["lastname"];
+			}
+			else
+			{
+				$name = $data["title"] . " " . $data["firstname"] . " " . $data["lastname"];
+			}
+			
+			if ($data["email"] == "N/A") { $email = ""; } else { $email = $data["email"]; }
+			
+			$cardexpiry_m = str_pad($cardexpiry_m, 2, 0, STR_PAD_LEFT);
+			$cardexpiry_y = str_pad($cardexpiry_y, 2, 0, STR_PAD_LEFT);
+			
+			$header = "Customer Number,Customer Name,Email Address,Phone Number,Street,Suburb,State,Post Code,Cardholder Name,Card Number,Card Expiry Month,Card Expiry Year";
+			
+			$body = "";
+			
+			$body .= '"SP' . $p_cli[1] . '",';
+			$body .= '"' . $name . '",';
+			$body .= '"' . $email . '",';
+			$body .= '"' . $p_cli[1] . '",';
+			$body .= '"' . $street . '",';
+			$body .= '"' . $suburb . '",';
+			$body .= '"' . $state . '",';
+			$body .= '"' . $postcode . '",';
+			$body .= '"' . $cardholder . '",';
+			$body .= '"' . $cardnumber . '",';
+			$body .= '"' . $cardexpiry_m . '",';
+			$body .= '"' . $cardexpiry_y . '"';
+			
+			$filename = "/var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			$fh = fopen($filename, 'w+') or die("can't open file");
+			fwrite($fh, $header);
+			fwrite($fh, "\n");
+			fwrite($fh, $body);
+			fclose($fh);
+			
+			$command = "zip -P " . md5($id) . md5(date("Y-m-d_H-i-s")) . " /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".zip /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			exec($command);
+			exec("rm /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv");
+			
+			echo "doneSP" . $p_cli[1];
+		}
+	}
+	elseif ($type == "Bank")
+	{
+		$accountname = $_GET["accountname"];
+		$bsb = $_GET["bsb"];
+		$accountnumber = $_GET["accountnumber"];
+		
+		if ($accountname == "")
+		{
+			echo "Please enter the customer's account name";
+		}
+		elseif ($bsb == "")
+		{
+			echo "Please select the customer's BSB";
+		}
+		elseif ($accountnumber == "")
+		{
+			echo "Please enter the customer's account number";
+		}
+		else
+		{
+			$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'") or die(mysql_error());
+			$data = mysql_fetch_assoc($q);
+			
+			$q2 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+			$c = mysql_fetch_row($q2);
+			$campaign_id = $c[0];
+			
+			$p_i = 0;
+			$b_i = 0;
+			$p = 1;
+			$p_packages = array();
+			$b_packages = array();
+			$p_cli = array();
+			$q2 = mysql_query("SELECT * FROM vericon.packages WHERE id = '$data[id]' ORDER BY plan DESC") or die(mysql_error());
+			while ($pack = mysql_fetch_assoc($q2))
+			{
+				$q3 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$pack[plan]' AND campaign = '" . mysql_real_escape_string($campaign_id) . "'") or die(mysql_error());
+				$da = mysql_fetch_assoc($q3);
+				if ($da["type"] == "PSTN")
+				{
+					$p_packages[$p_i] = $pack["cli"] . "," . $da["s_id"];
+					$p_i++;
+				}
+				elseif ($da["type"] == "Bundle")
+				{
+					$b_packages[$b_i] = $pack["cli"] . "," . $da["s_id"];
+					$b_i++;
+				}
+			}
+			
+			if ($b_i >= 1)
+			{
+				foreach ($b_packages as $row)
+				{
+					$package = explode(",", $row);
+					$p_cli[$p] = $package[0];
+					$p++;
+				}
+			}
+			
+			if ($p_i >= 1)
+			{
+				foreach ($p_packages as $row)
+				{
+					$package = explode(",", $row);
+					$p_cli[$p] = $package[0];
+					$p++;
+				}
+			}
+			
+			if (substr($data["postal"],0,2) == "GA")
+			{
+				$q5 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE address_detail_pid = '$data[postal]'") or die(mysql_error());
+				$data2 = mysql_fetch_assoc($q5);
+				
+				if ($data2["number_first"] == 0 && $data2["number_last"] == 0)
+				{
+					$street = "LOT " . $data2["lot_number"] . $data2["lot_number_suffix"];
+				}		
+				elseif ($data2["flat_number"] != 0)
+				{
+					$street = $data2["flat_type_code"] . " " . $data2["flat_number"] . $data2["flat_number_suffix"] . "/";
+				}
+				elseif ($data2["level_number"] != 0)
+				{
+					$street = "LEVEL " . $data2["level_number"] . $data2["level_number_suffix"] . "/";
+				}
+				
+				if ($data2["number_first"] != 0)
+				{
+					$street .= $data2["number_first"] . $data2["number_first_suffix"];
+				}
+				
+				if ($data2["number_last"] != 0)
+				{
+					$street .= "-" . $data2["number_last"];
+				}
+				
+				$street .= " " . $data2["street_name"] . " ";
+			
+				if ($data2["street_suffix_code"] != "")
+				{
+					$street .= $data2["street_type_code"] . " " . $data2["street_suffix_code"];
+				}
+				else
+				{
+					$street .= $data2["street_type_code"];
+				}
+				
+				$suburb = $data2["locality_name"];
+				$state = $data2["state"];
+				$postcode = $data2["postcode"];
+			}
+			elseif (substr($data["postal"],0,2) == "MA")
+			{
+				$q5 = mysql_query("SELECT * FROM vericon.address WHERE id = '$data[postal]'") or die(mysql_error());
+				$data2 = mysql_fetch_assoc($q5);
+				
+				if ($data2["building_type"] == "PO BOX")
+				{
+					$street = $data2["building_number"];
+				}
+				else
+				{
+					if ($data2["building_type"] == "LOT")
+					{
+						$street = "LOT " . $data2["building_number"] . $data2["building_number_suffix"];
+					}		
+					elseif ($data2["building_type"] == "LEVEL")
+					{
+						$street = "LEVEL " . $data2["building_number"] . $data2["building_number_suffix"] . "/";
+					}
+					elseif ($data2["building_type"] != "" && $data2["number_first"] != "")
+					{
+						$street = $data2["building_type"] . " " . $data2["building_number"] . $data2["building_number_suffix"] . "/" . $data2["number_first"] . $data2["number_first_suffix"];
+					}
+					elseif ($data2["building_type"] != "" && $data2["number_first"] == "")
+					{
+						$street = $data2["building_type"] . " " . $data2["building_number"] . $data2["building_number_suffix"];
+					}
+					
+					if ($data2["number_last"] != "")
+					{
+						$street .= "-" . $data2["number_last"];
+					}
+					
+					if ($data2["building_name"] != "" && $data2["street_name"] == "")
+					{
+						$street .= " " . $data2["building_name"];
+					}
+					elseif ($data2["building_name"] != "" && $data2["street_name"] != "")
+					{
+						$street .= " " . $data2["building_name"] . " " . $data2["street_name"] . " " . $data2["street_type"];
+					}
+					else
+					{
+						$street .= " " . $data2["street_name"] . " " . $data2["street_type"];
+					}
+				}
+				
+				$suburb = $data2["suburb"];
+				$state = $data2["state"];
+				$postcode = $data2["postcode"];
+			}
+			
+			if ($data["middlename"] != "")
+			{
+				$name = $data["title"] . " " . $data["firstname"] . " " . $data["middlename"] . " " . $data["lastname"];
+			}
+			else
+			{
+				$name = $data["title"] . " " . $data["firstname"] . " " . $data["lastname"];
+			}
+			
+			if ($data["email"] == "N/A") { $email = ""; } else { $email = $data["email"]; }
+			
+			$cardexpiry_m = str_pad($cardexpiry_m, 2, 0, STR_PAD_LEFT);
+			$cardexpiry_y = str_pad($cardexpiry_y, 2, 0, STR_PAD_LEFT);
+			
+			$header = "Customer Number,Customer Name,Email Address,Phone Number,Street,Suburb,State,Post Code,Account Name,BSB,Account Number";
+			
+			$body = "";
+			
+			$body .= '"SP' . $p_cli[1] . '",';
+			$body .= '"' . $name . '",';
+			$body .= '"' . $email . '",';
+			$body .= '"' . $p_cli[1] . '",';
+			$body .= '"' . $street . '",';
+			$body .= '"' . $suburb . '",';
+			$body .= '"' . $state . '",';
+			$body .= '"' . $postcode . '",';
+			$body .= '"' . $accountname . '",';
+			$body .= '"' . $bsb . '",';
+			$body .= '"' . $accountnumber . '"';
+			
+			$filename = "/var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			$fh = fopen($filename, 'w+') or die("can't open file");
+			fwrite($fh, $header);
+			fwrite($fh, "\n");
+			fwrite($fh, $body);
+			fclose($fh);
+			
+			$command = "zip -P " . md5($id) . md5(date("Y-m-d_H-i-s")) . " /var/vtmp/DD_" . $id . ".zip /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			exec($command);
+			exec("rm /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv");
+			
+			echo "doneSP" . $p_cli[1];
+		}
+	}
+}
 elseif ($method == "reject")
 {
 	$id = $_GET["id"];
@@ -50,6 +486,8 @@ elseif ($method == "reject")
 		
 		$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
 		exec($command);
+		
+		exec("rm /var/vtmp/DD_" . $id . ".zip");
 		
 		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
 		
@@ -230,6 +668,37 @@ elseif ($method == "approve")
 		
 		$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
 		exec($command);
+		
+		if (file_exists("/var/vtmp/DD_" . $id . ".zip"))
+		{
+			$srcFile = '/var/vtmp/DD_' . $id . '.zip';
+			$dstFile = '/payway_files/DD_' . $id . '.zip';
+			
+			// Create connection the the remote host
+			$conn = ssh2_connect('ftp.telecaregroup.com', 2422);
+			ssh2_auth_password($conn, 'vericonsys', 'v3r1n0(159');
+			
+			// Create SFTP session
+			$sftp = ssh2_sftp($conn);
+			
+			$sftpStream = @fopen('ssh2.sftp://'.$sftp.$dstFile, 'w');
+			
+			$data_to_send = @file_get_contents($srcFile);
+			
+			if (!$sftpStream) {
+				echo "Could not open remote file: $dstFile";
+			}
+			elseif ($data_to_send === false) {
+				echo "Could not open local file: $srcFile.";
+			}
+			elseif (@fwrite($sftpStream, $data_to_send) === false) {
+				echo "Could not send data from file: $srcFile.";
+			}
+			
+			fclose($sftpStream);
+			
+			exec("rm /var/vtmp/DD_" . $id . ".zip");
+		}
 		
 		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
 		
@@ -479,6 +948,37 @@ elseif ($method == "upgrade")
 		
 		$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
 		exec($command);
+		
+		if (file_exists("/var/vtmp/DD_" . $id . ".zip"))
+		{
+			$srcFile = '/var/vtmp/DD_' . $id . '.zip';
+			$dstFile = '/payway_files/DD_' . $id . '.zip';
+			
+			// Create connection the the remote host
+			$conn = ssh2_connect('ftp.telecaregroup.com', 2422);
+			ssh2_auth_password($conn, 'vericonsys', 'v3r1n0(159');
+			
+			// Create SFTP session
+			$sftp = ssh2_sftp($conn);
+			
+			$sftpStream = @fopen('ssh2.sftp://'.$sftp.$dstFile, 'w');
+			
+			$data_to_send = @file_get_contents($srcFile);
+			
+			if (!$sftpStream) {
+				echo "Could not open remote file: $dstFile";
+			}
+			elseif ($data_to_send === false) {
+				echo "Could not open local file: $srcFile.";
+			}
+			elseif (@fwrite($sftpStream, $data_to_send) === false) {
+				echo "Could not send data from file: $srcFile.";
+			}
+			
+			fclose($sftpStream);
+			
+			exec("rm /var/vtmp/DD_" . $id . ".zip");
+		}
 		
 		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
 		

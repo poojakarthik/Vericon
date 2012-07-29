@@ -340,45 +340,23 @@ switch ($data["title"])
 </table>
 </td>
 </tr>
-<?php
-switch ($data["dd_type"])
-{
-	case "AMEX":
-	$amex="selected";
-	break;
-	case "DINERS":
-	$diners="selected";
-	break;
-	case "MASTERCARD":
-	$mastercard="selected";
-	break;
-	case "VISA":
-	$visa="selected";
-	break;
-}
-?>
 <tr>
 <td colspan="2">
 <table border="0" width="100%" style="margin-bottom:10px;">
 <tr>
-<td colspan="6"><img src="../images/other_details_header.png" width="105" height="15" style="padding-left:3px;"/></td>
+<td colspan="8"><img src="../images/other_details_header.png" width="105" height="15" style="padding-left:3px;"/></td>
 </tr>
 <tr>
-<td colspan="6"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
+<td colspan="8"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
 </tr>
 <tr>
-<td width="85px" style="padding-left:2px;">Credit Offered</td>
-<td><input type="text" id="credit" style="width:150px;" value="<?php echo $data["credit"]; ?>" /></td>
-<td width="85px" align="right">Payway ID</td>
-<td><input type="text" id="payway" style="width:150px;" value="<?php echo $data["payway"]; ?>" /></td>
-<td width="85px" align="right">DD Type</td>
-<td style="padding-right:2px;"><select id="dd_type" style="width:150px;">
-<option></option>
-<option <?php echo $amex; ?>>AMEX</option>
-<option <?php echo $diners; ?>>DINERS</option>
-<option <?php echo $mastercard; ?>>MASTERCARD</option>
-<option <?php echo $visa; ?>>VISA</option>
-</select></td>
+<td width="100px" style="padding-left:2px;">Credit Offered ($)</td>
+<td width="50px"><input type="text" id="credit" style="width:30px;" value="<?php echo $data["credit"]; ?>" /></td>
+<td width="75px" align="right">Payway ID</td>
+<td width="150px"><input type="text" id="payway" readonly="readonly" style="width:148px;" value="<?php echo $data["payway"]; ?>" /></td>
+<td width="75px" align="right">DD Type</td>
+<td width="150px"><input type="text" id="dd_type" readonly="readonly" style="width:148px;" value="<?php echo $data["dd_type"]; ?>" /></td>
+<td colspan="2" align="right" style="padding-right:10px;"><button onclick="DD()" class="btn2">Direct Debit</button></td>
 </tr>
 </table>
 </td>
