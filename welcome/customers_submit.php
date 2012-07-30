@@ -484,12 +484,22 @@ elseif ($method == "reject")
 		
 		mysql_query("INSERT INTO vericon.customers_log (id, status, last_edit_by, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type, billing_comments, other_comments) VALUES ('$data[id]', 'Cancelled', '$user', '$data[industry]', '$data[lead_id]', '$data[sale_id]', '$data[timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($data["title"]) . "', '" . mysql_real_escape_string($data["firstname"]) . "', '" . mysql_real_escape_string($data["middlename"]) . "', '" . mysql_real_escape_string($data["lastname"]) . "', '" . mysql_real_escape_string($data["dob"]) . "', '" . mysql_real_escape_string($data["email"]) . "', '" . mysql_real_escape_string($data["mobile"]) . "', '$data[billing]', '$data[welcome]', '$data[promotions]', '$data[physical]', '$data[postal]', '" . mysql_real_escape_string($data["id_type"]) . "', '" . mysql_real_escape_string($data["id_num"]) . "', '" . mysql_real_escape_string($data["abn"]) . "', '" . mysql_real_escape_string($data["position"]) . "', '" . mysql_real_escape_string($data["credit"]) . "', '" . mysql_real_escape_string($data["payway"]) . "', '" . mysql_real_escape_string($data["dd_type"]) . "', '" . mysql_real_escape_string($data["billing_comments"]) . "', '" . mysql_real_escape_string($data["other_comments"]) . "')") or die(mysql_error());
 		
-		$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
-		exec($command);
+		if (substr($rec,-3) == "gsm")
+		{
+			$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
+			exec($command);
+			
+			mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
+		}
+		elseif (substr($rec,-3) == "mp3")
+		{
+			$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".mp3";
+			exec($command);
+			
+			mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".mp3") . "')") or die(mysql_error());
+		}
 		
 		exec("rm /var/vtmp/DD_" . $id . ".zip");
-		
-		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
 		
 		mysql_query("DELETE FROM vericon.welcome_lock WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
@@ -667,8 +677,20 @@ elseif ($method == "approve")
 		
 		mysql_query("INSERT INTO vericon.customers_log (id, status, last_edit_by, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type, billing_comments, other_comments) VALUES ('$data[id]', 'Waiting Provisioning', '$user', '$data[industry]', '$data[lead_id]', '$data[sale_id]', '$data[timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($title) . "', '" . mysql_real_escape_string($first) . "', '" . mysql_real_escape_string($middle) . "', '" . mysql_real_escape_string($last) . "', '" . mysql_real_escape_string($dob) . "', '" . mysql_real_escape_string($email) . "', '" . mysql_real_escape_string($mobile) . "', '$billing', '$billing', '$data[promotions]', '$physical', '$postal', '" . mysql_real_escape_string($id_type) . "', '" . mysql_real_escape_string($id_num) . "', '" . mysql_real_escape_string($abn) . "', '" . mysql_real_escape_string($position) . "', '" . mysql_real_escape_string($credit) . "', '" . mysql_real_escape_string($payway) . "', '" . mysql_real_escape_string($dd_type) . "', '" . mysql_real_escape_string($data["billing_comments"]) . "', '" . mysql_real_escape_string($data["other_comments"]) . "')") or die(mysql_error());
 		
-		$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
-		exec($command);
+		if (substr($rec,-3) == "gsm")
+		{
+			$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
+			exec($command);
+			
+			mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
+		}
+		elseif (substr($rec,-3) == "mp3")
+		{
+			$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".mp3";
+			exec($command);
+			
+			mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".mp3") . "')") or die(mysql_error());
+		}
 		
 		if (file_exists("/var/vtmp/DD_" . $id . ".zip"))
 		{
@@ -700,8 +722,6 @@ elseif ($method == "approve")
 			
 			exec("rm /var/vtmp/DD_" . $id . ".zip");
 		}
-		
-		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
 		
 		mysql_query("DELETE FROM vericon.welcome_lock WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
@@ -948,8 +968,20 @@ elseif ($method == "upgrade")
 		
 		mysql_query("INSERT INTO vericon.customers_log (id, status, last_edit_by, industry, lead_id, sale_id, timestamp, agent, centre, campaign, type, title, firstname, middlename, lastname, dob, email, mobile, billing, welcome, promotions, physical, postal, id_type, id_num, abn, position, credit, payway, dd_type, billing_comments, other_comments) VALUES ('$data[id]', 'Waiting Provisioning', '$user', '$data[industry]', '$data[lead_id]', '$data[sale_id]', '$data[timestamp]', '$data[agent]', '$data[centre]', '$data[campaign]', '$data[type]', '" . mysql_real_escape_string($title) . "', '" . mysql_real_escape_string($first) . "', '" . mysql_real_escape_string($middle) . "', '" . mysql_real_escape_string($last) . "', '" . mysql_real_escape_string($dob) . "', '" . mysql_real_escape_string($email) . "', '" . mysql_real_escape_string($mobile) . "', '$billing', '$billing', '$data[promotions]', '$physical', '$postal', '" . mysql_real_escape_string($id_type) . "', '" . mysql_real_escape_string($id_num) . "', '" . mysql_real_escape_string($abn) . "', '" . mysql_real_escape_string($position) . "', '" . mysql_real_escape_string($credit) . "', '" . mysql_real_escape_string($payway) . "', '" . mysql_real_escape_string($dd_type) . "', '" . mysql_real_escape_string($data["billing_comments"]) . "', '" . mysql_real_escape_string($data["other_comments"]) . "')") or die(mysql_error());
 		
-		$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
-		exec($command);
+		if (substr($rec,-3) == "gsm")
+		{
+			$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm";
+			exec($command);
+			
+			mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
+		}
+		elseif (substr($rec,-3) == "mp3")
+		{
+			$command = "mv /var/vtmp/wc_" . $rec . " /var/rec/" . md5($data["id"] . date("Y-m-d H:i:s")) . ".mp3";
+			exec($command);
+			
+			mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".mp3") . "')") or die(mysql_error());
+		}
 		
 		if (file_exists("/var/vtmp/DD_" . $id . ".zip"))
 		{
@@ -981,8 +1013,6 @@ elseif ($method == "upgrade")
 			
 			exec("rm /var/vtmp/DD_" . $id . ".zip");
 		}
-		
-		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$data[id]', '$data[sale_id]', 'Welcome Call',  '" . mysql_real_escape_string(md5($data["id"] . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
 		
 		mysql_query("DELETE FROM vericon.welcome_lock WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
