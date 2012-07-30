@@ -259,7 +259,20 @@ elseif ($method == "verifier") //list verifiers
 	$term = explode(" ",$_GET["term"]);
 	$centre = $_GET["centre"];
 	
-	$q = mysql_query("SELECT * FROM vericon.auth WHERE centre = '$centre' AND (first LIKE '" . mysql_real_escape_string($term[0]) . "%' AND last LIKE '" . mysql_real_escape_string($term[1]) . "%') AND status = 'Enabled'") or die(mysql_error());
+	if ($centre == "CC51" || $centre == "CC52" || $centre == "CC53" || $centre == "CC54")
+	{
+		$inc = " (centre = 'CC51' OR centre = 'CC52' OR centre = 'CC53' OR centre = 'CC54') ";
+	}
+	elseif ($centre == "CC61" || $centre == "CC63")
+	{
+		$inc = " (centre = 'CC61' OR centre = 'CC63') ";
+	}
+	elseif ($centre == "CC71" || $centre == "CC72" || $centre == "CC73" || $centre == "CC74")
+	{
+		$inc = " (centre = 'CC71' OR centre = 'CC72' OR centre = 'CC73' OR centre = 'CC74') ";
+	}
+	
+	$q = mysql_query("SELECT * FROM vericon.auth WHERE" . $inc . "AND (first LIKE '" . mysql_real_escape_string($term[0]) . "%' AND last LIKE '" . mysql_real_escape_string($term[1]) . "%') AND status = 'Enabled'") or die(mysql_error());
 	echo '[';
 	while ($data = mysql_fetch_assoc($q))
 	{
