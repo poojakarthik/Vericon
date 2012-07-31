@@ -1,101 +1,33 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Accounts</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
+
+$q = mysql_query("SELECT centre FROM vericon.centres ORDER BY centre ASC") or die(mysql_error());
+while($centre = mysql_fetch_row($q))
+{
+	$centres .= $centre[0] . ",";
+}
+$centres = substr($centres,0,-1);
 ?>
 <style>
 div#users-contain table { margin: 1em 0; margin-bottom:0; border-collapse: collapse; }
 div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
-div#users-contain table td { border: 1px solid #eee; padding: .1em 10px; text-align: left; }
+div#users-contain table td { border: 1px solid #eee; padding: .3em 5px; text-align: left; }
 </style>
-<script>
-$(function() {
-	$( "#datepicker" ).datepicker( {
-		showOn: "button",
-		buttonImage: "../images/calendar.gif",
-		buttonImageOnly: true,
-		dateFormat: "yy-mm-dd",
-		altField: "#datepicker2",
-		altFormat: "dd/mm/yy",
-		changeMonth: true,
-		changeYear: true,
-		maxDate: "0d",
-		onSelect: function(dateText, inst) {
-			var user = "<?php echo $ac["user"] ?>",
-				date2 = $( "#datepicker3" );
-			
-			$( "#display" ).load('display.php?user=' + user + '&date1=' + dateText + '&date2=' + date2.val());
-		}});
-});
-</script>
-<script>
-$(function() {
-	$( "#datepicker3" ).datepicker( {
-		showOn: "button",
-		buttonImage: "../images/calendar.gif",
-		buttonImageOnly: true,
-		dateFormat: "yy-mm-dd",
-		altField: "#datepicker4",
-		altFormat: "dd/mm/yy",
-		changeMonth: true,
-		changeYear: true,
-		maxDate: "0d",
-		onSelect: function(dateText, inst) {
-			var user = "<?php echo $ac["user"] ?>",
-				date1 = $( "#datepicker" );
-			
-			$( "#display" ).load('display.php?user=' + user + '&date1=' + date1.val() + '&date2=' + dateText);
-		}});
-});
-</script>
-</head>
 
-<body>
-<div style="display:none;">
-
-</div>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/accounts_menu.php";
-?>
-
-<div id="text">
-
-<table width="100%">
-<tr>
-<td align="left"><img src="../images/sale_stats_header.png" width="110" height="25" /></td>
-<td align="right" style="padding-right:10px;">
-<input type='text' size='9' id='datepicker2' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /> to <input type='text' size='9' id='datepicker4' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker3' value='<?php echo date("Y-m-d"); ?>' />
-</td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
-</tr>
-</table>
 <div id="display">
 <script>
-var user = "<?php echo $ac["user"] ?>",
-	date1 = $( "#datepicker" );
-	date2 = $( "#datepicker3" );
+var centres = "<?php echo $centres; ?>",
+	date1 = "<?php echo date("Y-m-d"); ?>",
+	date2 = "<?php echo date("Y-m-d"); ?>";
 
-$( "#display" ).load('display.php?user=' + user + '&date1=' + date1.val() + '&date2=' + date2.val());
+$( "#display" ).load('index_display.php?centres=' + centres + '&date1=' + date1 + '&date2=' + date2,
+function() {
+	$( "#display" ).show('blind', '' , 'slow');
+});
 </script>
 </div>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

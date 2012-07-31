@@ -1,6 +1,5 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
 $centre = $_GET["centre"];
 $date = $_GET["date"];
@@ -11,6 +10,55 @@ $week1 = date("W", strtotime($date1));
 $date2 = date("Y-m-d", strtotime($year . "W" . $week . "7"));
 $week2 = date("W", strtotime($date2));
 ?>
+
+<script>
+$(function() {
+	$( "#datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>",
+		onSelect: function(dateText, inst) {
+			var centre = "<?php echo $centre; ?>";
+			
+			$( "#display" ).hide( 'blind', '', 'slow', function() {
+				$( "#display" ).load('timesheet_display.php?centre=' + centre + '&date=' + dateText, function(){
+					$( "#display" ).show( 'blind', '', 'slow');
+				});
+			});
+		}});
+});
+</script>
+
+<table width="100%">
+<tr>
+<td align="left"><img src="../images/centre_timesheet_header.png" width="175" height="25" style="margin-left:3px;" /></td>
+<td align="right" style="padding-right:10px;"><select id="centre" style="width:75px;" onchange="Centre()">
+<option>Centre</option>
+<?php
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+while ($centres = mysql_fetch_row($q))
+{
+	echo "<option>" . $centres[0] . "</option>";
+}
+?>
+</select>
+<input type='text' size='9' id='from' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date1)); ?>" /> to <input type='text' size='9' id='to' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date2)); ?>" /><input type='hidden' id='datepicker' value="<?php echo $date; ?>" /></td>
+</tr>
+<tr>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+</table>
+
+<script>
+$( "#centre" ).val("<?php echo $centre; ?>");
+</script>
 
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
@@ -29,7 +77,7 @@ $week2 = date("W", strtotime($date2));
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2' GROUP BY user ORDER BY user ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centre' AND date BETWEEN '$date1' AND '$date2' GROUP BY user ORDER BY user ASC") or die(mysql_error());
 
 if ($centre == "Centre")
 {
@@ -43,13 +91,13 @@ else
 {
 	while ($data = mysql_fetch_assoc($q))
 	{
-		$q0 = mysql_query("SELECT first,last FROM auth WHERE user = '$data[user]'") or die(mysql_error());
+		$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[user]'") or die(mysql_error());
 		$user = mysql_fetch_row($q0);
 		
-		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg),SUM(annual),SUM(sick) FROM timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
+		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg),SUM(annual),SUM(sick) FROM vericon.timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
-		$q2 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$q2 = mysql_query("SELECT rate FROM vericon.timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
 		$r = mysql_fetch_row($q2);
 		
 		$hours_d = number_format($da[0],2);
@@ -62,7 +110,7 @@ else
 		$payg_d = "\$" . number_format($payg,2);
 		$net = $gross - $payg;
 		$net_d = "\$" . number_format($net,2);
-		$other_d = "<input type='button' onclick='More_Display(\"$data[user]\",\"$user[0] $user[1]\")' class='more' title='More'>";
+		$other_d = "<button onclick='More_Display(\"$data[user]\")' class='icon_notes' title='More'></button>";
 
 		if ($da[0] == "" || $da[0] == 0)
 		{
@@ -101,7 +149,7 @@ else
 		echo "</tr>";
 	}
 	
-	$q1 = mysql_query("SELECT m_cost FROM timesheet_mcost WHERE centre = '$centre' AND week = '$week'") or die(mysql_error());
+	$q1 = mysql_query("SELECT m_cost FROM vericon.timesheet_mcost WHERE centre = '$centre' AND week = '$week'") or die(mysql_error());
 	$da = mysql_fetch_row($q1);
 	
 	if ($da[0] == "")
@@ -130,8 +178,8 @@ if ($centre != "Centre" && mysql_num_rows($q) != 0)
 ?>
 <center><table width="98%">
 <tr>
-<td align="left"><input type="button" onclick="Export()" class="export" /></td>
-<td align="right"><input type="button" onclick="Edit_View()" class="edit" /></td>
+<td align="left"><button onclick="Export()" class="btn">Export</button></td>
+<td align="right"><button onclick="Edit_View()" class="btn">Edit</button></td>
 </tr>
 </table></center>
 <?php

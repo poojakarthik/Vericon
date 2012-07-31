@@ -1,39 +1,37 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Admin :: Users</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
-	label, input { display:block; }
-	input.text { margin-bottom:12px; width:95%; padding: .4em; font-family:Tahoma, Geneva, sans-serif;
-font-size:13px; }
-	fieldset { padding:0; border:0; margin-top:25px; }
-	h1 { font-size: 1.2em; margin: .6em 0; }
-	div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
-	div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
-	.ui-dialog .ui-state-error { padding: .3em; }
-	.validateTips { border: 1px solid transparent; padding: 0.3em; }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+div#users-contain table td { border: 1px solid #eee; padding: .6em 5px; text-align: left; }
+.ui-dialog .ui-state-highlight { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+.validateTips2  { border: 1px solid transparent; padding: 0.3em; }
+.validateTips3  { border: 1px solid transparent; padding: 0.3em; }
+.validateTips4  { border: 1px solid transparent; padding: 0.3em; }
+.ui-autocomplete-loading { background: white url('../images/ajax-loader.gif') right center no-repeat; }
 </style>
+<script>
+function Display(page)
+{
+	$( "#display2" ).load("users_display2.php?page=" + page);
+}
+</script>
 <script> // create user modal
 $(function() {
 	$( "#dialog:ui-dialog" ).dialog( "destroy" );
 	
 	var password = $( "#password" ),
 		password2 = $( "#password2" ),
-		type = $( "#type" ),
-		access = $( "#access" ),
-		centre = $( "#centre" ),
 		first = $( "#first" ),
 		last = $( "#last" ),
+		access = $( "#access" ),
+		centre = $( "#centre" ),
+		designation = $( "#designation" ),
 		alias = $( "#alias" ),
-		allFields = $( [] ).add( password ).add( password2 ).add( type ).add( access ).add( centre ).add( first ).add( last ).add( alias ),
+		allFields = $( [] ).add( password ).add( password2 ).add( first ).add( last ).add( access ).add( centre ).add( designation ).add( alias ),
 		tips = $( ".validateTips" );
 
 	function updateTips( t ) {
@@ -54,7 +52,7 @@ $(function() {
 			return true;
 		}
 	}
-
+	
 	function checkRegexp( o, regexp, n ) {
 		if ( !( regexp.test( o.val() ) ) ) {
 			updateTips( n );
@@ -66,147 +64,87 @@ $(function() {
 	
 	$( "#dialog-form" ).dialog({
 		autoOpen: false,
-		height: 430,
-		width: 350,
+		height: 420,
+		width: 315,
 		modal: true,
 		resizable: false,
 		draggable: false,
+		show: 'blind',
+		hide: 'blind',
 		buttons: {
-			"Create an Account": function() {
+			"Submit": function() {
 				var bValid = true;
-				allFields.removeClass( "ui-state-error" );
-
-				bValid = bValid && checkLength( first, "first", 2, 20 );
-				bValid = bValid && checkLength( last, "last", 2, 20 );
-				bValid = bValid && checkLength( password, "password", 6, 16 );
-				bValid = bValid && checkLength( password2, "password2", 6, 16 );
-				bValid = bValid && checkRegexp( first, /^[a-zA-Z]+$/i, "First Name may only consist of letters." );
-				bValid = bValid && checkRegexp( last, /^[a-zA-Z]+$/i, "Last Name may only consist of letters." );
+				bValid = bValid && checkLength( first, "First Name", 2, 30 );
+				bValid = bValid && checkRegexp( first, /^[a-zA-Z '-]+$/i, "First Name may only contain letters, dashes, apostrophes and spaces." );
+				bValid = bValid && checkLength( last, "Last Name", 2, 30 );
+				bValid = bValid && checkRegexp( last, /^[a-zA-Z '-]+$/i, "Last Name may only contain letters, dashes, apostrophes and spaces." );
+				bValid = bValid && checkLength( password, "Password", 6, 16 );
 				
 				if ( bValid ) {
-					$.get("users_submit.php?method=create", { first: first.val(), last: last.val(), password: password.val(), password2: password2.val(), type: type.val(), access: access.val(), centre: centre.val(), alias: alias.val() },
-function(data) {
-   
-   if (data.substring(0,7) == "created")
-   {
-	   $( "#dialog-form" ).dialog( "close" );
-	   $( ".user-created" ).html(data.substring(7));
-	   $( "#dialog-confirm3" ).dialog( "open" );
-   }
-   else
-   {
-		updateTips(data);
-   }
-});
+					$.get("users_submit.php?method=create", { first: first.val(), last: last.val(), password: password.val(), password2: password2.val(), access: access.val(), centre: centre.val(), designation: designation.val(), alias: alias.val() },
+					function(data) {
+						if (data.substring(0,7) == "created")
+						{
+							allFields.val( "" );
+							tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+							$( "#dialog-form" ).dialog( "close" );
+							$( ".user-created" ).html(data.substring(7));
+							$( "#dialog-confirm" ).dialog( "open" );
+					   }
+					   else
+						{
+							updateTips(data);
+						}
+					});
 				}
 			},
 			Cancel: function() {
 				$( this ).dialog( "close" );
+				allFields.val( "" );
+				tips.html('<span style="color:#ff0000;">*</span> Required Fields');
 			}
 		},
 		close: function() {
-			allFields.val( "" ).removeClass( "ui-state-error" );
+			allFields.val( "" );
+			tips.html('<span style="color:#ff0000;">*</span> Required Fields');
 		}
 	});
-
-	$( "#create-user" )
-		.button()
-		.click(function() {
-			$( "#dialog-form" ).dialog( "open" );
-		});
 });
+
+function Create()
+{
+	$( "#dialog-form" ).dialog( "open" );
+}
 </script>
 <script> // user created confirmation
-	$(function() {
-		$( "#dialog:ui-dialog3" ).dialog( "destroy" );
-	
-		$( "#dialog-confirm3" ).dialog({
-			autoOpen: false,
-			resizable: false,
-			draggable: false,
-			height:140,
-			modal: true,
-			buttons: {
-				"OK": function() {
-					$( this ).dialog( "close" );
-					location.reload();
-				}
-			}
-		});
+$(function() {
+	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:250,
+		height:100,
+		modal: true,
+		show: 'blind',
+		hide: 'blind',
+		close: function() {
+			var page_link = $( "#page_link" );
+			$( "#display2" ).load("users_display2.php" + page_link.val());
+		}
 	});
-</script>
-<script> // disable confirmation
-	$(function() {
-		$( "#dialog:ui-dialog" ).dialog( "destroy" );
-	
-		$( "#dialog-confirm" ).dialog({
-			autoOpen: false,
-			resizable: false,
-			draggable: false,
-			height:140,
-			modal: true,
-			buttons: {
-				"Disable User": function() {
-					var disable_user = $( "#disable_user" ).val();
-					$.get("users_submit.php?method=disable", { username: disable_user });
-					$( this ).dialog( "close" );
-					setTimeout( "location.reload()", 500 );
-				},
-				Cancel: function() {
-					$( this ).dialog( "close" );
-				}
-			}
-		});
-	});
-	function Disable(user)
-	{
-		$( "#disable_user" ).val(user);
-		$( "#dialog-confirm" ).dialog( "open" );
-	}
-</script>
-<script> // enable confirmation
-	$(function() {
-		$( "#dialog:ui-dialog2" ).dialog( "destroy" );
-	
-		$( "#dialog-confirm2" ).dialog({
-			autoOpen: false,
-			resizable: false,
-			draggable: false,
-			height:140,
-			modal: true,
-			buttons: {
-				"Enable User": function() {
-					var enable_user = $( "#enable_user" ).val();
-					$.get("users_submit.php?method=enable", { username: enable_user });
-					$( this ).dialog( "close" );
-					setTimeout( "location.reload()", 500 );
-				},
-				Cancel: function() {
-					$( this ).dialog( "close" );
-				}
-			}
-		});
-	});
-	function Enable(user)
-	{
-		$( "#enable_user" ).val(user);
-		$( "#dialog-confirm2" ).dialog( "open" );
-	}
+});
 </script>
 <script> // modify user modal
 $(function() {
-	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
+	$( "#dialog:ui-dialog3" ).dialog( "destroy" );
 	
 	var username = $( "#m_username" ),
-		password = $( "#m_password" ),
-		password2 = $( "#m_password2" ),
-		type = $( "#m_type" ),
 		access = $( "#m_access" ),
-		first = $( "#m_first" ),
-		last = $( "#m_last" ),
 		centre = $( "#m_centre" ),
+		designation = $( "#m_designation" ),
 		alias = $( "#m_alias" ),
-		allFields = $( [] ).add( username ).add( password ).add( password2 ).add( type ).add( access ).add( first ).add( last ).add( centre ).add( alias ),
 		tips = $( ".validateTips2" );
 
 	function updateTips( t ) {
@@ -227,351 +165,503 @@ $(function() {
 			return true;
 		}
 	}
+	
+	$( "#dialog-form2" ).dialog({
+		autoOpen: false,
+		height: 360,
+		width: 315,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				$.get("users_submit.php?method=modify", { username: username.val(), access: access.val(), centre: centre.val(), designation: designation.val(), alias: alias.val() },
+				function(data) {
+					if (data == "modified")
+					{
+						$( "#dialog-form2" ).dialog( "close" );
+						tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+						var page_link = $( "#page_link" );
+						$( "#display2" ).load("users_display2.php" + page_link.val());
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+				$( this ).dialog( "close" );
+			}
+		},
+		close: function() {
+			tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+		}
+	});
+});
 
-	function checkRegexp( o, regexp, n ) {
-		if ( !( regexp.test( o.val() ) ) ) {
-			updateTips( n );
+function Modify(user)
+{
+	$("#m_access option:selected").removeAttr("selected");
+	$( "#m_username" ).val(user);
+	$.get("users_submit.php", { method: "first", user: user }, function(data) { $( "#m_first" ).val(data); });
+	$.get("users_submit.php", { method: "last", user: user }, function(data) { $( "#m_last" ).val(data); });
+	$.get("users_submit.php", { method: "access", user: user }, function(data) {
+		var acc_type = data.split(',');
+		
+		for (i = 0; i < acc_type.length; i++)
+		{
+			l = "#m_access option[value='" + acc_type[i] + "']";
+			$( l ).attr("selected","selected");
+		}
+	});
+	$.get("users_submit.php", { method: "centre", user: user }, function(data) { $( "#m_centre" ).val(data); });
+	$.get("users_submit.php", { method: "designation", user: user }, function(data) { $( "#m_designation" ).val(data); });
+	$.get("users_submit.php", { method: "alias", user: user }, function(data) { $( "#m_alias" ).val(data); });
+	$( "#dialog-form2" ).dialog( "open" );
+}
+</script>
+<script> // modify password modal
+$(function() {
+	$( "#dialog:ui-dialog6" ).dialog( "destroy" );
+	
+	var username = $( "#m_username2" ),
+		password = $( "#m_password" ),
+		password2 = $( "#m_password2" ),
+		tips = $( ".validateTips4" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	function checkLength( o, n, min, max ) {
+		if ( o.val().length > max || o.val().length < min ) {
+			updateTips( "Length of " + n + " must be between " +
+				min + " and " + max + "." );
 			return false;
 		} else {
 			return true;
 		}
 	}
 	
-	$( "#dialog-form2" ).dialog({
+	$( "#dialog-form4" ).dialog({
 		autoOpen: false,
-		height: 430,
-		width: 350,
+		height: 240,
+		width: 315,
 		modal: true,
 		resizable: false,
 		draggable: false,
+		show: 'blind',
+		hide: 'blind',
 		buttons: {
-			"Modify an account": function() {
+			"Submit": function() {
 				var bValid = true;
-				allFields.removeClass( "ui-state-error" );
-
-				bValid = bValid && checkLength( password, "password", 6, 16 );
-				bValid = bValid && checkLength( password2, "password2", 6, 16 );
+				bValid = bValid && checkLength( password, "Password", 6, 16 );
 				
-				if ( bValid ) {
-					$.get("users_submit.php?method=modify", { username: username.val(), password: password.val(), password2: password2.val(), type: type.val(), access: access.val(), centre: centre.val(), alias: alias.val() },
-function(data) {
-   
-   if (data == "modified")
-   {
-	   $( "#dialog-form2" ).dialog( "close" );
-	   location.reload();
-   }
-   else
-   {
-		updateTips(data);
-   }
-});
+				if (bValid)
+				{
+					$.get("users_submit.php?method=modify_pw", { username: username.val(), password: password.val(), password2: password2.val() },
+					function(data) {
+						if (data == "modified")
+						{
+							$( "#dialog-form4" ).dialog( "close" );
+							tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+							var page_link = $( "#page_link" );
+							$( "#display2" ).load("users_display2.php" + page_link.val());
+						}
+						else
+						{
+							updateTips(data);
+						}
+					});
 				}
 			},
 			Cancel: function() {
+				tips.html('<span style="color:#ff0000;">*</span> Required Fields');
 				$( this ).dialog( "close" );
 			}
 		},
 		close: function() {
-			allFields.val( "" ).removeClass( "ui-state-error" );
+			tips.html('<span style="color:#ff0000;">*</span> Required Fields');
 		}
 	});
 });
-	function Modify(user,first,last,type,access,centre,alias)
-	{
-		var acc_type = type.split(',');
-		for (i = 0; i < acc_type.length; i++)
-		{
-			l = "#m_type option:contains('" + acc_type[i] + "'),";
-			$( l ).attr("selected","selected");
-		}
 
-		$( "#m_username" ).val(user);
-		$( "#m_first" ).val(first);
-		$( "#m_last" ).val(last);
-		$( "#m_access" ).val(access);
-		$( "#m_centre" ).val(centre);
-		$( "#m_alias" ).val(alias);
-		$( "#dialog-form2" ).dialog( "open" );
-	}
+function Modify_PW(user)
+{
+	$( "#m_username2" ).val(user);
+	$.get("users_submit.php", { method: "first", user: user }, function(data) { $( "#m_first2" ).val(data); });
+	$.get("users_submit.php", { method: "last", user: user }, function(data) { $( "#m_last2" ).val(data); });
+	$( "#m_password" ).val("");
+	$( "#m_password2" ).val("");
+	$( "#dialog-form4" ).dialog( "open" );
+}
 </script>
-<script> //search button
+<script> // modify access modal
 $(function() {
-	$( "input:submit", ".demo" ).button();
+	$( "#dialog:ui-dialog7" ).dialog( "destroy" );
+	
+	var username = $( "#m_username3" );
+
+	$( "#dialog-form5" ).dialog({
+		autoOpen: false,
+		height: 450,
+		width: 500,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				var pages = new Array();
+
+				$('#access_pages input:checked').each(function() {
+					page = $(this).val();
+					pages.push(page);
+				});
+				
+				$.get("users_submit.php?method=modify_access", { username: username.val(), pages: pages }, function(data) {
+					if (data == "modified")
+					{
+						$( "#dialog-form5" ).dialog( "close" );
+						var page_link = $( "#page_link" );
+						$( "#display2" ).load("users_display2.php" + page_link.val());
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
 });
+
+function Modify_Access(user)
+{
+	$( "#m_username3" ).val(user);
+	$( "#access_pages" ).load("users_submit.php?method=pages&username=" + user, function() {
+		$( "#dialog-form5" ).dialog( "open" );
+	});
+}
 </script>
-</head>
+<script> // disable confirmation
+$(function() {
+	$( "#dialog:ui-dialog4" ).dialog( "destroy" );
 
-<body>
-<div id="main_wrapper">
+	$( "#dialog-confirm2" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		height:140,
+		modal: true,
+		buttons: {
+			"Disable User": function() {
+				var disable_user = $( "#disable_user" ).val();
+				$.get("users_submit.php?method=disable", { username: disable_user }, function (data) {
+					$( "#dialog-confirm2" ).dialog( "close" );
+					var page_link = $( "#page_link" );
+					$( "#display2" ).load("users_display2.php" + page_link.val());
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+function Disable(user)
+{
+	$( "#disable_user" ).val(user);
+	$( "#dialog-confirm2" ).dialog( "open" );
+}
+</script>
+<script> // enable confirmation
+$(function() {
+	$( "#dialog:ui-dialog5" ).dialog( "destroy" );
 
+	$( "#dialog-confirm3" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		height:140,
+		modal: true,
+		buttons: {
+			"Enable User": function() {
+				var enable_user = $( "#enable_user" ).val();
+				$.get("users_submit.php?p=users&method=enable", { username: enable_user }, function (data) {
+					$( "#dialog-confirm3" ).dialog( "close" );
+					var page_link = $( "#page_link" );
+					$( "#display2" ).load("users_display2.php" + page_link.val());
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+function Enable(user)
+{
+	$( "#enable_user" ).val(user);
+	$( "#dialog-confirm3" ).dialog( "open" );
+}
+</script>
+<script> // search users
+$(function() {
+	$( "#dialog:ui-dialog6" ).dialog( "destroy" );
+	
+	var agent = $( "#search_agent" ),
+		tips = $( ".validateTips3" );
+	
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-form3" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:250,
+		height:125,
+		modal: true,
+		show: 'blind',
+		hide: 'blind'
+	});
+});
+
+$(function() {
+	$( "#search_box" ).autocomplete({
+		source: function(request, response) {
+			$.ajax({
+				url: "users_submit.php",
+				dataType: "json",
+				data: {
+					method: "search",
+					term : request.term
+				},
+				success: function(data) {
+					response(data);
+				}
+			});
+		},
+		minLength: 2,
+		select: function( event, ui ) {
+			$( "#search_agent" ).val(ui.item.id);
+			$( "#dialog-form3" ).dialog( "close" );
+			$( "#display2" ).load("users_display2.php?query=" + ui.item.id);
+		}
+	});
+});
+
+function Search()
+{
+	$( "#search_agent" ).val("");
+	$( "#search_box" ).val("");
+	$( "#dialog-form3" ).dialog( "open" );
+}
+</script>
+
+<div id="dialog-form" title="Create User">
+	<p class="validateTips"><span style="color:#ff0000;">*</span> Required Fields</p>
+<table>
+<tr>
+<td width="105px">Username </td>
+<td><input type="text" style="width:150px;" value="Automatically Generated" disabled="disabled"></td>
+</tr>
+<tr>
+<td>First Name<span style="color:#ff0000;">*</span> </td>
+<td><input id="first" type="text" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Last Name<span style="color:#ff0000;">*</span> </td>
+<td><input id="last" type="text" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="password" type="password" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="password2" type="password" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Access<span style="color:#ff0000;">*</span> </td>
+<td><select id="access" multiple="multiple" style="width:152px; height:100px;">
 <?php
-include "../source/header.php";
-include "../source/admin_menu.php";
+$q = mysql_query("SELECT id,name FROM vericon.portals WHERE status = '1' AND id != 'MA' ORDER BY name ASC") or die(mysql_error());
+while($portals = mysql_fetch_row($q))
+{
+	echo "<option value='$portals[0]'>" . $portals[1] . "</option>";
+}
 ?>
+</select></td>
+</tr>
+<tr>
+<td>Centre </td>
+<td><select id="centre" style="width:152px;">
+<option></option>
+<?php
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+while($centres = mysql_fetch_row($q))
+{
+	echo "<option>" . $centres[0] . "</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td>Designation </td>
+<td><select id="designation" style="width:152px;">
+<option></option>
+<option>Team Leader</option>
+<option>Closer</option>
+<option>Agent</option>
+<option>Probation</option>
+</select></td>
+</tr>
+<tr>
+<td>Alias </td>
+<td><input id="alias" type="text" style="width:150px;"></td>
+</tr>
+</table>
+</div>
 
-<div id="text" class="demo">
+<div id="dialog-confirm" title="User Created">
+	<p class="user-created"></p>
+</div>
 
-<div id="dialog-confirm" title="Disable User?">
+<div id="dialog-form2" title="Edit User">
+	<p class="validateTips2"><span style="color:#ff0000;">*</span> Required Fields</p>
+<table>
+<tr>
+<td width="105px">Username </td>
+<td><input id="m_username" type="text" style="width:150px;" disabled="disabled" value=""></td>
+</tr>
+<tr>
+<td>First Name </td>
+<td><input id="m_first" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Last Name </td>
+<td><input id="m_last" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Access<span style="color:#ff0000;">*</span> </td>
+<td><select id="m_access" multiple="multiple" style="width:152px; height:100px;">
+<?php
+$q = mysql_query("SELECT id,name FROM vericon.portals WHERE status = '1' AND id != 'MA' ORDER BY name ASC") or die(mysql_error());
+while($portals = mysql_fetch_row($q))
+{
+	echo "<option value='$portals[0]'>" . $portals[1] . "</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td>Centre </td>
+<td><select id="m_centre" style="width:152px;">
+<option></option>
+<?php
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+while($centres = mysql_fetch_row($q))
+{
+	echo "<option>" . $centres[0] . "</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td>Designation </td>
+<td><select id="m_designation" style="width:152px;">
+<option></option>
+<option>Team Leader</option>
+<option>Closer</option>
+<option>Agent</option>
+<option>Probation</option>
+</select></td>
+</tr>
+<tr>
+<td>Alias </td>
+<td><input id="m_alias" type="text" style="width:150px;"></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-form4" title="Edit Password">
+	<p class="validateTips4"><span style="color:#ff0000;">*</span> Required Fields</p>
+<table>
+<tr>
+<td width="105px">Username </td>
+<td><input id="m_username2" type="text" style="width:150px;" disabled="disabled" value=""></td>
+</tr>
+<tr>
+<td>First Name </td>
+<td><input id="m_first2" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Last Name </td>
+<td><input id="m_last2" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="m_password" type="password" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="m_password2" type="password" style="width:150px;"></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-form5" title="Edit Access">
+<input id="m_username3" type="hidden" value="">
+<div id="access_pages">
+</div>
+</div>
+
+<div id="dialog-confirm2" title="Disable User?">
 	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure you would like to disable this user?</p>
     <input type="hidden" id="disable_user" value="" />
 </div>
 
-<div id="dialog-confirm2" title="Enable User?">
+<div id="dialog-confirm3" title="Enable User?">
 	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure you would like to enable this user?</p>
     <input type="hidden" id="enable_user" value="" />
 </div>
 
-<div id="dialog-confirm3" title="User Created">
-	<p class="user-created"></p>
+<div id="dialog-form3" title="Search">
+<p class="validateTips3">Please Type the Agent's Name Below</p><br />
+Agent: <input type="text" id="search_box" size="25" />
+<input type="hidden" id="search_agent" value="" />
 </div>
 
-<div id="dialog-form" title="Create User">
-	<p class="validateTips"><span style="color:#ff0000;">*</span> Required Fields</p>
-
-<table>
-<form autocomplete="off">
-<tr><td>Username<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" size="25" value="Automatically Generated" disabled="disabled"></td></tr>
-<tr><td>First Name<span style="color:#ff0000;">*</span> </td>
-<td><input id="first" name="first" type="text" size="25"></td></tr>
-<tr><td>Last Name<span style="color:#ff0000;">*</span> </td>
-<td><input id="last" name="last" type="text" size="25"></td></tr>
-<tr><td>Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="password" name="password" type="password" size="25"></td></tr>
-<tr><td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="password2" name="password2" type="password" size="25"></td></tr>
-<tr><td>Account Type<span style="color:#ff0000;">*</span> </td>
-<td><select id="type" name="type" multiple="multiple" style="margin:0; width:165px; height:60px;">
-<option>Admin</option>
-<option>Accounts</option>
-<option>CCT</option>
-<option>CS</option>
-<option>HR</option>
-<option>Leads</option>
-<option>Operations</option>
-<option>QA</option>
-<option>Sales</option>
-<option>Self</option>
-<option>TPV</option>
-</select></td></tr>
-<tr><td>Access Level<span style="color:#ff0000;">*</span> </td>
-<td><select id="access" name="access" style="margin:0; width:165px;">
-<option></option>
-<option>Admin</option>
-<option>Agent</option>
-</select></td></tr>
-<tr><td>Centre: </td>
-<td><select id="centre" name="centre" style="margin:0; width:165px;">
-<option></option>
-<?php
-$q0 = mysql_query("SELECT * FROM centres ORDER BY centre ASC") or die(mysql_error());
-while ($centres = mysql_fetch_assoc($q0))
-{
-	echo "<option>" . $centres["centre"] . "</option>";
-}
-?>
-</select></td></tr>
-<tr><td>Alias: </td>
-<td><input id="alias" name="alias" type="text" size="25"></td></tr>
-</form>
-</table>
+<div id="display">
+<script>
+$( "#display" ).hide();
+$( "#display" ).load('users_display.php',
+function() {
+	$( "#display2" ).load('users_display2.php?page=0',
+	function() {
+		$( "#display" ).show('blind', '' , 'slow');
+	});
+});
+</script>
 </div>
 
-<div id="dialog-form2" title="Modify User">
-	<p class="validateTips2"><span style="color:#ff0000;">*</span> Required Fields</p>
-
-<table>
-<form autocomplete="off">
-<tr><td>Username<span style="color:#ff0000;">*</span> </td>
-<td><input id="m_username" name="m_username" type="text" size="25" disabled="disabled" value=""></td></tr>
-<tr><td>First Name<span style="color:#ff0000;">*</span> </td>
-<td><input id="m_first" name="m_first" type="text" size="25" disabled="disabled"></td></tr>
-<tr><td>Last Name<span style="color:#ff0000;">*</span> </td>
-<td><input id="m_last" name="m_last" type="text" size="25" disabled="disabled"></td></tr>
-<tr><td>Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="m_password" name="m_password" type="password" size="25"></td></tr>
-<tr><td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="m_password2" name="m_password2" type="password" size="25"></td></tr>
-<tr><td>Account Type<span style="color:#ff0000;">*</span> </td>
-<td><select id="m_type" name="m_type" multiple="multiple" style="margin:0; width:165px; height:60px;">
-<option>Admin</option>
-<option>Accounts</option>
-<option>CCT</option>
-<option>CS</option>
-<option>HR</option>
-<option>Leads</option>
-<option>Operations</option>
-<option>QA</option>
-<option>Sales</option>
-<option>Self</option>
-<option>TPV</option>
-</select></td></tr>
-<tr><td>Access Level<span style="color:#ff0000;">*</span> </td>
-<td><select id="m_access" name="m_access" style="margin:0; width:165px;">
-<option></option>
-<option>Admin</option>
-<option>Agent</option>
-</select></td></tr>
-<tr><td>Centre: </td>
-<td><select id="m_centre" name="m_centre" style="margin:0; width:165px;">
-<option></option>
-<?php
-$q0 = mysql_query("SELECT * FROM centres ORDER BY centre ASC") or die(mysql_error());
-while ($centres = mysql_fetch_assoc($q0))
-{
-	echo "<option>" . $centres["centre"] . "</option>";
-}
-?>
-</select></td></tr>
-<tr><td>Alias: </td>
-<td><input id="m_alias" name="m_alias" type="text" size="25"></td></tr>
-</form>
-</table>
-</div>
-
-	<p><img src="../images/vericon_users_header.png" width="155" height="25" /></p>
-	<p><img src="../images/line.png" width="740" height="9" /></p><br />
-    <table border="0">
-    <form method="get" action="users.php" autocomplete="off">
-    <tr><td>Search By: </td>
-    <td><select name="method" style="width:120px;">
-    <option value="user">Username</option>
-    <option value="type">Account Type</option>
-     <option value="centre">Centre</option>
-    </select></td>
-    <td><input name="query" type="text" size="25" style="height:28px;"></td>
-    <td><input type="submit" value="Search" style="height:30px; padding-bottom:5px; padding: 0em 1em 3px;" /></td></tr>
-    </form>
-    </table>
-<div id="users-contain" class="ui-widget">
-	<table id="users" class="ui-widget ui-widget-content">
-		<thead>
-			<tr class="ui-widget-header ">
-				<th>Username</th>
-				<th>Full Name</th>
-                <th>Account Type</th>
-                <th>Access Level</th>
-                <th colspan="2">Edit User</th>
-			</tr>
-		</thead>
-		<tbody>
-        <?php
-		mysql_connect('localhost','vericon','18450be');
-		mysql_select_db('vericon');
-		
-		$method = $_GET["method"];
-		$query = $_GET["query"];
-		
-		if ($query == "")
-		{
-			$check = mysql_query("SELECT * FROM auth") or die(mysql_error());
-			$rows = mysql_num_rows($check);
-			
-			if($rows == 0)
-			{
-				echo "<tr>";
-				echo "<td colspan='6'>No Users?!?!?!</td>";
-				echo "</tr>";
-			}
-			else
-			{
-				$st = $_GET["page"]*10;
-				$q = mysql_query("SELECT * FROM auth LIMIT $st , 10") or die(mysql_error());
-				
-				while($r = mysql_fetch_assoc($q))
-				{
-					echo "<tr>";
-					echo "<td>" . $r["user"] . "</td>";
-					echo "<td>" . $r["last"] . ", " . $r["first"] . "</td>";
-					echo "<td>" . $r["type"] . "</td>";
-					echo "<td>" . $r["access"] . "</td>";
-					echo "<td><a onclick='Modify(\"$r[user]\",\"$r[first]\",\"$r[last]\",\"$r[type]\",\"$r[access]\",\"$r[centre]\",\"$r[alias]\")' style='cursor:pointer; text-decoration:underline;'>Modify</a></td>";
-					if($r["status"] == "Enabled")
-					{
-						echo "<td><a onclick='Disable(\"$r[user]\")' style='cursor:pointer; text-decoration:underline;'>Disable</a></td>";
-					}
-					else
-					{
-						echo "<td><a onclick='Enable(\"$r[user]\")' style='cursor:pointer; text-decoration:underline;'>Enable</a></td>";
-					}
-					echo "</tr>";
-				}
-			}
-		}
-		else
-		{
-			$check = mysql_query("SELECT * FROM auth WHERE " . $method . " LIKE '%" . mysql_escape_string($query) . "%'") or die(mysql_error());
-			$rows = mysql_num_rows($check);
-		
-			if($rows == 0)
-			{
-				echo "<tr>";
-				echo "<td colspan='6'>No Results Found!</td>";
-				echo "</tr>";
-			}
-			else
-			{
-				$st = $_GET["page"]*10;
-				$q = mysql_query("SELECT * FROM auth WHERE " . $method . " LIKE '%" . mysql_escape_string($query) . "%' ORDER BY user ASC LIMIT $st , 10") or die(mysql_error());
-
-				while($r = mysql_fetch_assoc($q))
-				{
-					echo "<tr>";
-					echo "<td>" . $r["user"] . "</td>";
-					echo "<td>" . $r["last"] . ", " . $r["first"] . "</td>";
-					echo "<td>" . $r["type"] . "</td>";
-					echo "<td>" . $r["access"] . "</td>";
-					echo "<td><a onclick='Modify(\"$r[user]\",\"$r[first]\",\"$r[last]\",\"$r[type]\",\"$r[access]\",\"$r[centre]\",\"$r[alias]\")' style='cursor:pointer; text-decoration:underline;'>Modify</a></td>";
-					if($r["status"] == "Enabled")
-					{
-						echo "<td><a onclick='Disable(\"$r[user]\")' style='cursor:pointer; text-decoration:underline;'>Disable</a></td>";
-					}
-					else
-					{
-						echo "<td><a onclick='Enable(\"$r[user]\")' style='cursor:pointer; text-decoration:underline;'>Enable</a></td>";
-					}
-					echo "</tr>";
-				}
-			}
-		}
-		?>
-		</tbody>
-	</table>
-</div>
-
-<button id="create-user">Create new user</button><br /><br />
-
-<table width="100%" style="border:0;">
-<tr>
-<td align="left">
-<?php
-if (($st - 10) < $rows && $_GET["page"] > 0)
-{
-    $page = $_GET["page"]-1;
-    echo "<a href='?page=$page&method=$method&query=$query' class='back'></a>";
-}
-?>
-</td>
-<td align="right">
-<?php
-if (($st + 10) < $rows)
-{
-	$page = $_GET["page"]+1;
-	echo "<a href='?page=$page&method=$method&query=$query' class='next'></a>";
-}
-?>
-</td>
-</tr>
-</table>
-
-</div>
-
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

@@ -1,14 +1,6 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Customer Care :: Rates</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <script>
 $(function() {
@@ -66,17 +58,6 @@ $(function() {
 	$( "input:submit", ".demo" ).button();
 });
 </script>
-</head>
-
-<body>
-<div id="main_wrapper">
-
-<?php
-include "../source/header.php";
-include "../source/cct_menu.php";
-?>
-
-<div id="text" class="demo">
 
 <div id="dialog-confirm" title="Plan Rates">
 	<p class="rates"></p>
@@ -96,13 +77,5 @@ include "../source/cct_menu.php";
 
 <?php
 include "../source/international.php";
-?>
-
-</div>
-
-</div> 
-<?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

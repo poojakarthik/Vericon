@@ -7,8 +7,8 @@ if ($browser["name"] == "Firefox" && $browser["version"] >= 11)
 }
 else
 {
-	echo "<h1>Sorry VeriCon is not supported by your web browser<br>Please use <b>Firefox version 11 or above</b> to access VeriCon</h1>";
-	echo '<a onclick="Firefox()" target="_blank" style="cursor:pointer; margin-left:300px;"><img src="../images/firefox_download.png" /></a>';
+	echo "<h1>Sorry VeriCon is not supported by your web browser<br>Please use Firefox version 11 or above</h1><br>";
+	echo '<h1><a href="http://www.mozilla.org/en-US/firefox/new/">Click Here to Download the Latest Version of Firefox</a></h1>';
 	exit;
 }
 
@@ -60,8 +60,6 @@ elseif ($acc[$d[1]] != true)
 	exit;
 }
 
-$access_level = $ac["access"];
-
 if ($ac["status"] == "Disabled")
 {
 	setcookie("hash", "", time()-86400);
@@ -78,6 +76,7 @@ if($_GET["attempt"] == "badip")
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
 <title>VeriCon :: Login</title>
 <link rel="shortcut icon" href="./images/vericon.ico">
 <link rel="stylesheet" href="css/style.css" type="text/css"/>

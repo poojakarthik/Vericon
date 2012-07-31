@@ -22,7 +22,7 @@ else
 
 //Landline
 
-$landline[1] = "<p>Thank you <b>$first_name</b>, my name is $alias from <b>$campaign</b> and today’s date is $date. Do you allow <b>$campaign</b> to act on your behalf and carry out the transfer of your phone services and conduct a standard credit check?</p>
+$landline[1] = "<p>Thank you <b>$first_name</b>, my name is $alias from <b>$campaign</b> and today's date is $date. Do you allow <b>$campaign</b> to act on your behalf and carry out the transfer of your phone services and conduct a standard credit check?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
 $landline[2] = "<p>Please confirm that you are authorised to make this transfer, and your name appears on the bill.</p>
@@ -47,7 +47,7 @@ $landline[7] = "<p>Could you please repeat this sentence after me;</p>
 <p><u>I understand that <b>$campaign</b> is an independent company, and is not a part of Telstra; either Wholesale or Retail, or of any other carrier and I agree to use <b>$campaign</b> as my new service provider.</u></p>
 <p><b>->CUSTOMER MUST <span style=\"color:#FF0000;\">REPEAT CLEARLY</span></b></p>";
 
-$landline[8] = "<p>Could you please state your <b>company’s full name, your position in the company, and that company’s ABN</b>?</p>
+$landline[8] = "<p>Could you please state your <b>company's full name, your position in the company, and that company's ABN</b>?</p>
 <p><i><span style=\"color:#FF0000;\">Customer must clearly state the full company name and ABN</span></i></p>";
 
 $landline[9] = "<p>Please state your <b>full name</b> including the spelling of your first and last name.</p>
@@ -56,7 +56,7 @@ $landline[9] = "<p>Please state your <b>full name</b> including the spelling of 
 $landline[10] = "<p>Please state your <b>DOB</b> as it appears on your birth certificate.</p>
 <p><i><span style=\"color:#FF0000;\">Customer must clearly state their DOB</span></i></p>";
 
-$landline[11] = "<p>Please state your Drivers Licence No.……..…<strong>OR</strong> <u>other form of ID</u> (e.g. Medicare Card………..)</p>";
+$landline[11] = "<p>Please state your Drivers Licence No...<strong>OR</strong> <u>other form of ID</u> (e.g. Medicare Card...)</p>";
 
 $landline[12] = "<p>Please state your <b>full physical address</b> including any shop, unit, level, or lot numbers.</p>";
 
@@ -64,8 +64,9 @@ $landline[13] = "<p>Is that the same as your <b>mailing address</b>?</p>";
 
 $landline[14] = "<p>Could you please state your mobile phone number as an alternate contact?</p>";
 
-$landline[15] = "<p>A paper invoice is a cost of \$2 otherwise we can email the invoice free of charge. Please provide your email address for billing purposes. Do you also consent to this email address being used for the delivery of notifications and future offers?</p>
-<p><i><span style=\"color:#FF0000;\">Advise of \$2 Admin Fee if paper bill, otherwise repeat the email address back to the customer phonetically</span></i></p>";
+$landline[15] = "<p>A paper invoice is a cost of \$2 otherwise we can email the invoice free of charge. Please provide your email address for billing purposes.</p>
+<p><i><span style=\"color:#FF0000;\">Advise of \$2 Admin Fee if paper bill, otherwise repeat the email address back to the customer phonetically</span></i></p>
+<br><p>Do you also allow us to send you notifications and future offers to your email address or postal address?</p>";
 
 $landline[16] = "<p>Could you please confirm that you are the authorised contact of the business and have the authority and provide consent to transfer your existing phone services from your current service provider to <b>$campaign</b>?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
@@ -97,16 +98,17 @@ $landline[21] = "<p><b>$campaign</b> bills on a pro rata basis, this means that 
 <p>Do you understand this? <b>Yes or No</b></p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$landline[22] = "<br><p>We will send a welcome pack to the email address you have provided within 5 days.</p>";
+$landline[22] = "";
 
-$landline[23] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to your current provider, <b>SUBJECT TO CREDIT APPROVAL</b>. The transfer can typically take approx. 10 to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
+$landline[23] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to your current provider, <b>SUBJECT TO CREDIT APPROVAL</b>. Receipt of the welcome pack could take up to 10 days depending on your location. You will receive a welcome call within the next 3 days. The transfer can typically take approx. 10 to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
 <p>I will now stop the recording.</p>
 <p><i><b><span style=\"color:#FF0000;\">RECORDING STOPS HERE</span></b></i></p>";
 
 $landline[24] = "<p>You have the right to cancel this agreement by contacting us within 10 business days from and including the day after you receive written confirmation of this agreement. Do you understand this?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$landline["No_Contract_ETF"] = "<p>Do you understand this?</p>
+$landline["No_Contract_ETF"] = "<p>If you receive a better deal from one of our competitors, please give us a call and we will try to match or better that deal for you.</p>
+<p>Do you understand this?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
 $landline["Contract_ETF"] = "<p>If the landline contract is cancelled or terminated within the contract term then an early termination fee is charged which is \$199 per line.</p>
@@ -117,170 +119,22 @@ $landline["NRO"] = "<p>The No Risk offer will attempt to match any comparable ad
 <p>If you agree to the termination fees and wish to proceed, please state a clear YES</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$landline["rates"] = "<p>I’ll just confirm the rates you have been offered are as follows:</p><br>";
+$landline["rates"] = "<p>I'll just confirm the rates you have been offered are as follows:</p><br>";
 
-$landline["49.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$49.95 inc. GST</b> per line including the line rental with a minimum spend of \$1198.80 inc. GST over a 24 month contract.</span></p>
-<p>All local calls are included.</p>
-<p>All other calls are charged on top of <b>\$49.95</b> examples are, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
+$landline["dd"] = "<button onclick=\"DD('$campaign')\" class=\"btn\">Direct Debit</button>";
 
-$landline["54.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$54.95 inc. GST</b> per line including the line rental.</span></p>
-<p>All local calls are included.</p>
-<p>All other calls are charged on top of <b>\$54.95</b> examples are, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
+$landline["dd2"] = "<button onclick=\"DD('$campaign')\" class=\"btn\">Direct Debit</button>";
 
-$landline["59.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$59.95 inc. GST</b> per line including the line rental with a minimum spend of \$1438.80 inc. GST over a 24 month contract.</span></p>
-<p>All local & national calls are included.</p>
-<p>All other calls are charged on top of <b>\$59.95</b> examples are, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Calls to mobiles are charged at 99c per call.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["64.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$64.95 inc. GST</b> per line including the line rental with a minimum spend of \$779.40 inc. GST over a 12 month contract.</span></p>
-<p>All local & national calls are included.</p>
-<p>All other calls are charged on top of <b>\$64.95</b> examples are, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Calls to mobiles are charged at 99c per call.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["69.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$69.95 inc. GST</b> per line including the line rental.</span></p>
-<p>All local & national calls are included.</p>
-<p>All other calls are charged on top of <b>\$69.95</b> examples are, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Calls to mobiles are charged at 99c per call.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["79.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$79.95 inc. GST</b> per line including the line rental.</span></p>
-<p>All local & national calls are included.</p>
-<p>All other calls are charged on top of <b>\$79.95</b> examples are, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Calls to mobiles are charged at 20c per call.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["99.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$99.95 inc. GST</b> per line including the line rental with a minimum spend of \$2398.80 inc. GST over a 24 month contract.</span></p>
-<p>All local, national & mobile calls within Australia are included.</p>
-<p>All other calls are charged on top of <b>\$99.95</b> examples are, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["104.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$104.95 inc. GST</b> per line including the line rental with a minimum spend of \$1259.40 inc. GST over a 12 month contract.</span></p>
-<p>All local, national & mobile calls within Australia are included.</p>
-<p>All other calls are charged on top of <b>\$104.95</b> examples are, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["109.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$109.95 inc. GST</b> per line including the line rental.</span></p>
-<p>All local, national & mobile calls within Australia are included.</p>
-<p>All other calls are charged on top of <b>\$109.95</b> examples are, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["addon1"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Line rental is \$39.95 per line.</span></p>
-<p>Your local calls are 20c per call/fax.</p>
-<p>National calls/faxes are 20c per minute with a 39c flagfall and capped at $1.10 for 30 mins.</p>
-<p>Calls to mobiles are 33c per minute with a 39c flagfall and capped at $1.35 for 10 mins.</p>
-<p><b><u>All charges include GST</u></b></p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["duet"] = "<p><b><span style=\"color:#000080;\">If your stated line is a duet line, a standard charge of \$6 including GST will apply. If not, the line will be charged as an additional add–on line.</span></b></p>
-<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Line rental is \$39.95 per line.</span></p>
-<p>Your local calls are 20c per call/fax.</p>
-<p>National calls/faxes are 20c per minute with a 39c flagfall and capped at $1.10 for 30 mins.</p>
-<p>Calls to mobiles are 33c per minute with a 39c flagfall and capped at $1.35 for 10 mins.</p>
-<p><b><u>All charges include GST</u></b></p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$landline["addon"] = "<input type=\"button\" onclick=\"parent.Addon()\" class=\"addon\" value=\"\">";
-
-$landline["other_nc"] = "<input type=\"button\" onclick=\"parent.Other_NC()\" class=\"other_plans\" value=\"\">";
-
-$landline["other_c"] = "<input type=\"button\" onclick=\"parent.Other_C()\" class=\"other_plans\" value=\"\">";
-
-$landline["dd"] = "<input type=\"button\" onclick=\"parent.DD('$campaign')\" class=\"dd\">";
-
-$landline["dd2"] = "<input type=\"button\" onclick=\"parent.DD('$campaign')\" class=\"dd\">";
-
-$landline["dd3"] = "<p>Do you agree to receive a monthly e-mail telephone bill, which you’ll receive in the 2nd week of the month?</p>
+$landline["dd3"] = "<p>Do you agree to receive a monthly e-mail telephone bill, which you'll receive in the 2nd week of the month?</p>
 <p><b>->CUSTOMER MUST SAY <span style='color:#FF0000;'>YES</span></b></p><br>
-<p>Please state your preferred email address?</p>
-<p><i><span style='color:#FF0000;'>Spell back to customer slowly to confirm.</span></i></p>";
+<p>Please state your preferred email address</p>
+<p><i><span style='color:#FF0000;'>Spell back to customer slowly to confirm.</span></i></p>
+<br><p>Do you also allow us to send you notifications and future offers to your email address or postal address?</p>";
 
 
 //ADSL & Wireless
 
-$internet[1] = "<p>Thank you <b>$first_name</b>, my name is $alias from <b>$campaign</b> and today’s date is $date. Do you allow <b>$campaign</b> to act on your behalf and carry out the transfer of your internet services and conduct a standard credit check?</p>
+$internet[1] = "<p>Thank you <b>$first_name</b>, my name is $alias from <b>$campaign</b> and today's date is $date. Do you allow <b>$campaign</b> to act on your behalf and carry out the transfer of your internet services and conduct a standard credit check?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
 $internet[2] = "<p>Please confirm that you are authorised to make this transfer, and your name appears on the bill.</p>
@@ -305,7 +159,7 @@ $internet[7] = "<p>Could you please repeat this sentence after me;</p>
 <p><u>I understand that <b>$campaign</b> is an independent company, and is not a part of Telstra; either Wholesale or Retail, or of any other carrier and I agree to use <b>$campaign</b> as my new internet service provider.</u></p>
 <p><b>->CUSTOMER MUST <span style=\"color:#FF0000;\">REPEAT CLEARLY</span></b></p>";
 
-$internet[8] = "<p>Could you please state your <b>company’s full name, your position in the company, and that company’s ABN</b>?</p>
+$internet[8] = "<p>Could you please state your <b>company's full name, your position in the company, and that company's ABN</b>?</p>
 <p><i><span style=\"color:#FF0000;\">Customer must clearly state the full company name and ABN</span></i></p>";
 
 $internet[9] = "<p>Please state your <b>full name</b> including the spelling of your first and last name.</p>
@@ -377,7 +231,7 @@ $internet[19] = "<p>If the internet contract is cancelled or terminated within t
 
 $internet[20] = "<p><b>$campaign</b> offers a $2.00 discount if you opt for email billing.</p>
 <p>Are you happy to receive an emailed invoice?</p>
-<p>Do you also consent to this email address being used for the delivery of notifications and future offers?</p>";
+<br><p>Do you also allow us to send you notifications and future offers to your email address or postal address?</p>";
 
 $internet[21] = "<p>For a limited time, <b>$campaign</b> will offer a bonus discount of $3.00 off your monthly bill, if you choose direct debit.</p>
 <p>Would you like me to set this up for you?</p><br>";
@@ -390,83 +244,20 @@ $internet[23] = "<p><b>$campaign</b> bills on a pro rata basis, this means that 
 <p>Do you understand this? <b>Yes or No</b></p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$internet[24] = "<br><p>We will send a welcome pack to the email address you have provided within 5 days.</p>";
+$internet[24] = "";
 
-$internet[25] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL and TELEPHONE LINE TESTING</b>. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
+$internet[25] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL and TELEPHONE LINE TESTING</b>. Receipt of the welcome pack could take up to 10 days depending on your location. You will receive a welcome call within the next 3 days. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
 <p>I will now stop the recording.</p>
 <p><i><b><span style=\"color:#FF0000;\">RECORDING STOPS HERE</span></b></i></p>";
 
-$internet[26] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL</b>. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
+$internet[26] = "<p>Thank you <b>$first_name</b>, your services will begin with us when we submit your application to our provisioning department, <b>SUBJECT TO CREDIT APPROVAL</b>. Receipt of the welcome pack could take up to 10 days depending on your location. You will receive a welcome call within the next 3 days. The transfer can typically take approx. up to 14 days. In the meantime, should you have any further questions, please contact <b>$campaign</b> on <b>$number</b>.</p>
 <p>I will now stop the recording.</p>
 <p><i><b><span style=\"color:#FF0000;\">RECORDING STOPS HERE</span></b></i></p>";
 
 $internet[27] = "<p>You have the right to cancel this agreement by contacting us within 10 business days from and including the day after you receive written confirmation of this agreement. Do you understand this?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
-$internet["rates"] = "<p>I’ll just confirm the rates you have been offered are as follows:</p><br>";
-
-$internet["15GB"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" height=\"5%\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\"><b>Metro</b></td>
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\"><b>Regional</b></td>
-<tr>
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Your plan fee is <b>\$54.95 per month inc. GST</b> with a minimum cost of $1318.80 over the 24 month contract.</span></p>
-<p>You have 15GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Your plan fee is <b>\$64.95 per month inc. GST</b> with a minimum cost of $1558.80 over the 24 month contract.</span></p>
-<p>You have 15GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$internet["500GB"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" height=\"5%\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\"><b>Metro</b></td>
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\"><b>Regional</b></td>
-<tr>
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Your plan fee is <b>\$67.95 per month inc. GST</b> with a minimum cost of $1630.80 over the 24 month contract.</span></p>
-<p>You have 500GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Your plan fee is <b>\$77.95 per month inc. GST</b> with a minimum cost of $1870.80 over the 24 month contract.</span></p>
-<p>You have 500GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$internet["Unlimited"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" height=\"5%\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\"><b>Metro</b></td>
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\"><b>Regional</b></td>
-<tr>
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Your plan fee is <b>\$69.95 per month inc. GST</b> with a minimum cost of $1678.80 over the 24 month contract.</span></p>
-<p>You have unlimited data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Your plan fee is <b>\$79.95 per month inc. GST</b> with a minimum cost of $1918.80 over the 24 month contract.</span></p>
-<p>You have unlimited data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
+$internet["rates"] = "<p>I'll just confirm the rates you have been offered are as follows:</p><br>";
 
 $internet["2GB"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
 <tr align=\"left\" valign=\"top\">
@@ -514,7 +305,7 @@ $internet["8GB"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-l
 
 //Bundle
 
-$bundle[1] = "<p>Thank you <b>$first_name</b>, my name is $alias from <b>$campaign</b> and today’s date is $date. Do you allow <b>$campaign</b> to act on your behalf and carry out the transfer of your phone and internet services and conduct a standard credit check?</p>
+$bundle[1] = "<p>Thank you <b>$first_name</b>, my name is $alias from <b>$campaign</b> and today's date is $date. Do you allow <b>$campaign</b> to act on your behalf and carry out the transfer of your phone and internet services and conduct a standard credit check?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
 $bundle[2] = "<p>Do you understand that by consenting to this voice recording, you are applying to transfer your services to <b>$campaign</b> and not just to receive information or paperwork from our company?</p>
@@ -533,144 +324,4 @@ $bundle[5] = "<p>Do you understand that you will be under a <b>24 month contract
 $bundle[6] = "<p>If the contract is cancelled or terminated within the contract term then an early termination fee is charged which is \$199 per service.</p>
 <p>If you agree to the termination fees and wish to proceed, please state a clear YES</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
-
-$bundle["84.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$84.95 inc. GST</b> per line including the line rental with a minimum spend of \$2038.80 inc. GST over a 24 month contract.</span></p>
-<p>All calls are charged on top of <b>\$84.95</b> examples are, local calls, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Local calls are charged at 29c per call.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p>You have 15GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["97.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$97.95 inc. GST</b> per line including the line rental with a minimum spend of \$2350.80 inc. GST over a 24 month contract.</span></p>
-<p>All calls are charged on top of <b>\$97.95</b> examples are, local calls, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Local calls are charged at 29c per call.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p>You have 500GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["99.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$99.95 inc. GST</b> per line including the line rental with a minimum spend of \$2398.80 inc. GST over a 24 month contract.</span></p>
-<p>All calls are charged on top of <b>\$99.95</b> examples are, local calls, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Local calls are charged at 29c per call.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p>You have unlimited data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["114.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$114.95 inc. GST</b> per line including the line rental with a minimum spend of \$2758.80 inc. GST over a 24 month contract.</span></p>
-<p>All local calls are included.</p>
-<p>All other calls are charged on top of <b>\$114.95</b> examples are, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p>You have 15GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["122.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$122.95 inc. GST</b> per line including the line rental with a minimum spend of \$2950.80 inc. GST over a 24 month contract.</span></p>
-<p>All local calls are included.</p>
-<p>All other calls are charged on top of <b>\$122.95</b> examples are, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p>You have 500GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["124.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$124.95 inc. GST</b> per line including the line rental with a minimum spend of \$2998.80 inc. GST over a 24 month contract.</span></p>
-<p>All local calls are included.</p>
-<p>All other calls are charged on top of <b>\$124.95</b> examples are, national calls, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>National calls and calls to mobiles are charged at 99c per call.</p>
-<p>You have unlimited data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["119.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$119.95 inc. GST</b> per line including the line rental with a minimum spend of \$2878.80 inc. GST over a 24 month contract.</span></p>
-<p>All local and national calls are included.</p>
-<p>All other calls are charged on top of <b>\$119.95</b> examples are, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Calls to mobiles are charged at 99c per call.</p>
-<p>You have 15GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["129.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$129.95 inc. GST</b> per line including the line rental with a minimum spend of \$3118.80 inc. GST over a 24 month contract.</span></p>
-<p>All local and national calls are included.</p>
-<p>All other calls are charged on top of <b>\$129.95</b> examples are, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Calls to mobiles are charged at 99c per call.</p>
-<p>You have 500GB of data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["134.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$134.95 inc. GST</b> per line including the line rental with a minimum spend of \$3238.80 inc. GST over a 24 month contract.</span></p>
-<p>All local and national calls are included.</p>
-<p>All other calls are charged on top of <b>\$134.95</b> examples are, mobile calls, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>Calls to mobiles are charged at 99c per call.</p>
-<p>You have unlimited data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
-$bundle["149.95"] = "<table cellspacing=\"0\" cellpadding=\"0pt\" style=\"table-layout:fixed;border-collapse:collapse;\">
-<tr align=\"left\" valign=\"top\">
-<td style=\"padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;\">
-<p><span style=\"color:#000080;\">Monthly plan fee of <b>\$149.95 inc. GST</b> per line including the line rental with a minimum spend of \$3598.80 inc. GST over a 24 month contract.</span></p>
-<p>All local, national & mobile calls within Australia are included.</p>
-<p>All other calls are charged on top of <b>\$149.95</b> examples are, line features, 13 &1300 #, directory assistance #, 19 &1900 #, monitor alarm # and international calls.</p>
-<p>You have unlimited data usage (No peak/off peak restriction times).</p>
-<p><b><span style=\"color:#FF0000;\">Please confirm that you accept these rates by saying a clear YES, only if you understand, and accept the terms.</span></b></p>
-<p><b><u>CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></u></b></p>
-</td>
-</tr>
-</table><br>";
-
 ?>

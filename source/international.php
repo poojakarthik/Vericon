@@ -4,11 +4,6 @@ mysql_select_db('vericon');
 
 $q = mysql_query("SELECT * FROM international ORDER BY country ASC") or die(mysql_error());
 ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: International Call Rates</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
 <style>
 .international_table{
 	font-family:Calibri;
@@ -38,10 +33,7 @@ $q = mysql_query("SELECT * FROM international ORDER BY country ASC") or die(mysq
 	color:#666666;
 }
 </style>
-</head>
-
-<body>
-<div class="container">
+<div class="container" style="overflow:hidden;">
     <div class="contents">
 	<script type="text/javascript" language="javascript">
 
@@ -89,8 +81,4 @@ while ($int = mysql_fetch_assoc($q))
          </tr>
        </table>
   </div>
-    
 </div>
-</body>
-
-</html>

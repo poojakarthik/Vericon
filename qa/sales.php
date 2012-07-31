@@ -1,154 +1,233 @@
 <?php
 include "../auth/iprestrict.php";
-?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head>
-<title>VeriCon :: Quality Assurance :: Centre Sales</title>
-<link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<?php
-include "../source/jquery.php";
+include "../source/header.php";
 ?>
 <style>
-.search
-{
-	background-image:url('../images/search_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-}
-
-.search:hover
-{
-	background-image:url('../images/search_btn_hover.png');
-	cursor:pointer;
-}
-
+ui-dialog { padding: .3em; }
+.ui-dialog_view_switch { padding: .3em; }
+.ui-dialog_form { padding: .3em; }
+.ui-dialog_script { padding: .3em; }
+.ui-dialog_lead { padding: .3em; }
+.ui-dialog_reject { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+.validateTips2 { border: 1px solid transparent; padding: 0.3em; }
+.validateTips3 { border: 1px solid transparent; padding: 0.3em; }
+.ui-state-highlight { padding: .3em; }
 div#users-contain table { margin: 1em 0; border-collapse: collapse; }
-div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+div#users-contain table td { border: 1px solid #eee; padding: .3em 5px; text-align: left; }
 </style>
 <script>
 $(function() {
-	$( "#datepicker" ).datepicker( {
-		showOn: "button",
-		buttonImage: "../images/calendar.gif",
-		buttonImageOnly: true,
-		dateFormat: "yy-mm-dd",
-		altField: "#datepicker2",
-		altFormat: "dd/mm/yy",
-		changeMonth: true,
-		changeYear: true,
-		maxDate: "0d" });
+	$( "#dialog:ui-dialog_view_switch" ).dialog( "destroy" );
+	
+	$( "#dialog-confirm_view_switch" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 375,
+		height: 100,
+		modal: true,
+		show: "blind",
+		hide: "blind"
+	});
+});
+
+function View(type)
+{
+	var date = $( "#store_date" ),
+		centre = $( "#store_centre" );
+	
+	$( "#store_type" ).val(type);
+	$( "#dialog-confirm_view_switch" ).dialog( "close" );
+	$( "#display2" ).hide('blind', '' , 'slow', function() {
+		$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type,
+		function() {
+			$( "#display2" ).show('blind', '' , 'slow');
+		});
+	});
+}
+
+function View_Switch(centre)
+{
+	$( "#store_centre" ).val(centre);
+	$( "#dialog-confirm_view_switch" ).dialog( "open" );
+}
+</script>
+<script>
+function View_Sale(id)
+{
+	$( "#display" ).hide('blind', '' , 'slow', function() {
+		$( "#display" ).load('sales_display_sale.php?id=' + id,
+		function() {
+			$( "#display" ).show('blind', '' , 'slow');
+		});
+	});
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+	
+	$( "#dialog-form" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:250,
+		height:100,
+		modal: true,
+		show: "blind",
+		hide: "blind"
+	});
 });
 </script>
 <script>
-function Display()
+function Approve()
 {
-	var centre = $( "#centre" ),
-		date = $( "#datepicker" );
-		
-	$( "#stats" ).load('sales_submit.php?method=stats&centre=' + centre.val() + '&date=' + date.val());
-	$( "#details" ).load('sales_submit.php?method=pending&centre=' + centre.val() + '&date=' + date.val());
+	var id = $( "#sale_id" ),
+		verifier = "<?php echo $ac["user"]; ?>",
+		lead = $( "#lead_check" ),
+		recording = $( "#recording_check" ),
+		details = $( "#details_check" );
 	
-	$( "#results" ).removeAttr('style');
-}
-
-function Display_Type()
-{
-	var centre = $( "#centre" ),
-		display_type = $( "#display_type" ),
-		date = $( "#datepicker" );
-	$( "#details" ).load('sales_submit.php?method=' + display_type.val() + '&centre=' + centre.val() + '&date=' + date.val());
+	$.get("sales_process.php?method=approve", { id: id.val(), verifier: verifier, lead: lead.val(), recording: recording.val(), details: details.val() }, function (data) {
+		if (data == 1)
+		{
+			var date = $( "#store_date" ),
+				centre = $( "#store_centre" ),
+				type = $( "#store_type" );
+			
+			$( "#display" ).hide('blind', '' , 'slow', function() {
+				$( "#display" ).load('sales_display.php?date=' + date.val(),
+				function() {
+					$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
+					function() {
+						$( "#display" ).show('blind', '' , 'slow');
+					});
+				});
+			});
+		}
+		else
+		{
+			$( ".validateTips" ).html(data);
+			$( "#dialog-form" ).dialog( "open" );
+		}
+	});
 }
 </script>
-</head>
+<script> //reject sale
+$(function() {
+	$( "#dialog:ui-dialog_reject" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips3" );
 
-<body>
-<div style="display:none;">
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
 
-</div>
-<div id="main_wrapper">
+	$( "#dialog-form_reject" ).dialog({
+		autoOpen: false,
+		height: 225,
+		width: 425,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		buttons: {
+			"Reject Sale": function() {
+				var id = $( "#sale_id" ),
+					verifier = "<?php echo $ac["user"]; ?>",
+					reason = $( "#reason" ),
+					lead = $( "#lead_check" ),
+					recording = $( "#recording_check" ),
+					details = $( "#details_check" );
+				
+				if (reason.val() == "")
+				{
+					updateTips("Please Write a Reason for Rejecting the Sale Below");
+				}
+				else
+				{
+					$.get("sales_process.php?method=reject",{id: id.val(), verifier: verifier, reason: reason.val(), lead: lead.val(), recording: recording.val(), details: details.val() },
+					function(data) {
+						if (data == "submitted")
+						{
+							$( "#dialog-form_reject" ).dialog( "close" );
+							var date = $( "#store_date" ),
+								centre = $( "#store_centre" ),
+								type = $( "#store_type" );
+							
+							$( "#display" ).hide('blind', '' , 'slow', function() {
+								$( "#display" ).load('sales_display.php?date=' + date.val(),
+								function() {
+									$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
+									function() {
+										$( "#display" ).show('blind', '' , 'slow');
+									});
+								});
+							});
+						}
+						else
+						{
+							updateTips(data);
+						}
+					});
+				}
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
 
-<?php
-include "../source/header.php";
-include "../source/qa_menu.php";
-?>
-
-<div id="text">
-
-<p><img src="../images/centre_sales_header.png" width="130" height="25" style="margin-left:3px;" /></p>
-<p><img src="../images/line.png" width="740" height="9" /></p>
-
-<table style="margin-top:5px;">
-<tr>
-<td>Centre </td>
-<td width="80px"><select id="centre" style="height:auto; margin:0; padding:0; width:70px;">
-<option></option>
-<?php
-$q = mysql_query("SELECT * FROM centres WHERE status = 'Active' ORDER BY centre ASC") or die(mysql_error());
-while ($centres = mysql_fetch_row($q))
+function Reject()
 {
-	echo "<option>" . $centres[0] . "</option>";
+	$( "#dialog-form_reject" ).dialog( "open" );
 }
-?>
-</select>
-</td>
-<td>Date</td>
-<td width="120px"><input type='text' size='11' id='datepicker2' readonly='readonly' value='<?php echo date("d/m/Y"); ?>' /><input type='hidden' id='datepicker' value='<?php echo date("Y-m-d"); ?>' /></td>
-<td><input type="button" onclick="Display()" class="search" value="" /></td>
+</script>
+
+<div id="dialog-confirm_view_switch" title="Sale Status Type">
+<table width="100%" height="55px">
+<tr height="100%">
+<td valign="middle" align="center"><button onclick="View('Pending')" class="btn">Pending</button></td>
+<td valign="middle" align="center"><button onclick="View('Approved')" class="btn">Approved</button></td>
+<td valign="middle" align="center"><button onclick="View('Rejected')" class="btn">Rejected</button></td>
 </tr>
 </table>
+</div>
 
-<div id="results" style="display:none;">
-<center>
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="80%">
-<thead>
-<tr class="ui-widget-header ">
-<th>Campaign</th>
-<th style="text-align:center;">Total Sales</th>
-<th style="text-align:center;">Reworks</th>
-<th style="text-align:center;">Pending</th>
-<th style="text-align:center;">Approved</th>
-<th style="text-align:center;">Rejected</th>
+<div id="dialog-form" title="Error">
+<span class='ui-icon ui-icon-alert' style='float:left; margin-right:.3em; margin-top:4px'></span><p class="validateTips"></p>
+</div>
+
+<div id="dialog-form_reject" title="Reject Sale">
+<p class="validateTips3">Please Write a Reason for Rejecting the Sale Below</p>
+<table width="100%">
+<tr>
+<td width="50px">Reason </td>
+<td><textarea id="reason" style="width:100%; height:100px; resize:none;"></textarea></td>
 </tr>
-</thead>
-<tbody id="stats">
-</tbody>
 </table>
 </div>
-</center>
-<p><img src="../images/sale_details_header2.png" width="125" height="25" style="margin-left:3px;" />
-<select id="display_type" onchange="Display_Type()" style="height:auto; margin:0; padding:0; width:85px; float:right; margin-right:10px;">
-<option value="pending">Pending</option>
-<option value="rejected">Rejected</option>
-<option value="approved">Approved</option>
-</select></p>
-<p><img src="../images/line.png" width="740" height="9" /></p>
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="100%">
-<thead>
-<tr class="ui-widget-header ">
-<th>Sale ID</th>
-<th>Lead ID</th>
-<th>Campaign</th>
-<th>Type</th>
-</tr>
-</thead>
-<tbody id="details">
-</tbody>
-</table>
-</div>
+
+<input type="hidden" id="store_date" value="" />
+<input type="hidden" id="store_centre" value="" />
+<input type="hidden" id="store_type" value="" />
+
+<div id="display">
+<script>
+$( "#display" ).load('sales_display.php?date=<?php echo date("Y-m-d"); ?>',
+function() {
+	$( "#display" ).show('blind', '' , 'slow');
+});
+</script>
 </div>
 
-</div>
-
-</div> 
 <?php
 include "../source/footer.php";
 ?>
-</body>
-</html>

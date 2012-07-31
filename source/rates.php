@@ -9,6 +9,8 @@ $(function() {
 		width:450,
 		height:350,
 		modal: true,
+		show: 'blind',
+		hide: 'blind',
 		buttons: {
 			"Close": function() {
 				$( this ).dialog( "close" );
@@ -28,6 +30,8 @@ $(function() {
 		width:450,
 		height:320,
 		modal: true,
+		show: 'blind',
+		hide: 'blind',
 		buttons: {
 			"Close": function() {
 				$( this ).dialog( "close" );
@@ -47,6 +51,8 @@ $(function() {
 		width:450,
 		height:420,
 		modal: true,
+		show: 'blind',
+		hide: 'blind',
 		buttons: {
 			"Close": function() {
 				$( this ).dialog( "close" );

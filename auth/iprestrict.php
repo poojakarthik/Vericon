@@ -167,8 +167,8 @@ if ($browser["name"] == "Firefox" && $browser["version"] >= 11)
 }
 else
 {
-	echo "<h1>Sorry VeriCon is not supported by your web browser<br>Please use <b>Firefox version 11 or above</b> to access VeriCon</h1>";
-	echo '<a onclick="Firefox()" target="_blank" style="cursor:pointer; margin-left:300px;"><img src="../images/firefox_download.png" /></a>';
+	echo "<h1>Sorry VeriCon is not supported by your web browser<br>Please use Firefox version 11 or above</h1><br>";
+	echo '<h1><a href="http://www.mozilla.org/en-US/firefox/new/">Click Here to Download the Latest Version of Firefox</a></h1>';
 	exit;
 }
 
@@ -216,6 +216,16 @@ for ($i = 0;$i < count($p1);$i++)
 
 $d = explode("/",$_SERVER['PHP_SELF']);
 
+$q3 = mysql_query("SELECT * FROM vericon.portals_pages WHERE portal = '$d[1]' AND link = '" . mysql_real_escape_string($d[2]) . "'") or die(mysql_error());
+$page_id = mysql_fetch_assoc($q3);
+
+$q4 = mysql_query("SELECT pages FROM vericon.portals_access WHERE user = '$ac[user]'") or die(mysql_error());
+$ap = mysql_fetch_row($q4);
+$access_pages = explode(",", $ap[0]);
+
+$q5 = mysql_query("SELECT * FROM vericon.portals WHERE id = '$d[1]'") or die(mysql_error());
+$portal_name = mysql_fetch_assoc($q5);
+
 if ($_SERVER[PHP_SELF] == "/index.php")
 {
 	if ($p != "")
@@ -228,7 +238,7 @@ elseif (mysql_num_rows($q1) != 1)
 	header("Location: ../index.php");
 	exit;
 }
-elseif (preg_match("/admin/",$p) || $d[1] == "manuals" || $d[1] == "mobile" || $_SERVER[PHP_SELF] == "/main.php" || $_SERVER[PHP_SELF] == "/update.php")
+elseif (preg_match("/admin/",$p) || $_SERVER[PHP_SELF] == "/main.php" || $d[1] == "ma")
 {
 	
 }
@@ -237,17 +247,25 @@ elseif ($acc[$d[1]] != true)
 	header("Location: ../index.php");
 	exit;
 }
-/*elseif ($ac["type"] == "Self")
+elseif (!in_array($page_id["id"], $access_pages))
 {
-	header("Location: ../update.php");
+	header("Location: ../index.php");
 	exit;
-}*/
-
-$access_level = $ac["access"];
+}
 
 if ($ac["status"] == "Disabled")
 {
 	setcookie("hash", "", time()-86400);
 	header("Location: ../index.php?attempt=banned");
+	exit;
 }
+
+$current_page = $portal_name["name"] . " :: " . $page_id["name"];
+if ($current_page == " :: ")
+{
+	$current_page = "Main";
+}
+mysql_query("UPDATE vericon.currentuser SET current_page = '" . mysql_real_escape_string($current_page) . "' WHERE hash = '" . $_COOKIE["hash"] . "' AND user = '$ac[user]'") or die(mysql_error());
+
+mysql_query("INSERT INTO vericon.log_access (user, page) VALUES ('$ac[user]' ,'" . mysql_real_escape_string($current_page) . "')") or die(mysql_error());
 ?>
