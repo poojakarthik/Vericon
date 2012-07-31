@@ -136,7 +136,9 @@ function Save()
 {
 	$( "#save_button" ).attr("disabled", "disabled");
 	
-	var users = new Array(),
+	var date = $( "#datepicker" ),
+		centre = "<?php echo $ac["centre"] ?>",
+		users = new Array(),
 		start = new Array(),
 		end = new Array(),
 		hours = new Array(),
@@ -151,22 +153,29 @@ function Save()
 		bonus.push($( "#" + user + "_bonus" ).val());
 	});
 	
-	var date = $( "#datepicker" ),
-		centre = "<?php echo $ac["centre"] ?>",
-		users = users.join(','),
-		start = start.join(','),
-		end = end.join(','),
-		hours = hours.join(','),
-		bonus = bonus.join(',');
-	
-	$.get("timesheet_process.php", { method: "save", date: date.val(), centre: centre, users: users, start: start, end: end, hours: hours, bonus: bonus }, function(data) {
-		$( "#display2" ).hide('blind', '' , 'slow', function() {
-			$( "#display2" ).load('timesheet_view.php?centre=' + centre + '&date=' + date.val(),
-			function() {
-				$( "#display2" ).show('blind', '' , 'slow');
-			});
+	var t = users.length,
+		i = 0;
+		
+	function Save_Get() {
+		$.get("timesheet_process.php", { method: "save", date: date.val(), centre: centre, users: users[i], start: start[i], end: end[i], hours: hours[i], bonus: bonus[i] }, function() {
+			if (i < t)
+			{
+				i++;
+				Save_Get();
+			}
+			else
+			{
+				$( "#display2" ).hide('blind', '' , 'slow', function() {
+					$( "#display2" ).load('timesheet_view.php?centre=' + centre + '&date=' + date.val(),
+					function() {
+						$( "#display2" ).show('blind', '' , 'slow');
+					});
+				});
+			}
 		});
-	});
+	}
+	
+	Save_Get();
 }
 </script>
 <script>
