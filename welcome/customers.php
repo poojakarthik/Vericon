@@ -84,17 +84,38 @@ $(function() {
 		'buttonClass' : 'btn',
 		'width'    : 102,
 		'onUploadSuccess' : function(file, data, response) {
-			$( "#rec_store" ).val(file["name"]);
-			if ($( "#processing_type" ).val() == "Upgrade")
-			{
-				$( "#dialog-form0" ).dialog( "close" );
-				setTimeout("Upgrade()", 500);
-			}
-			else if ($( "#processing_type" ).val() == "Complete")
-			{
-				$( "#dialog-form0" ).dialog( "close" );
-				setTimeout("Complete()", 500);
-			}
+			$( "#rec" ).attr("style", "display:none;");
+			$( "#rec2" ).html('<br><img src="../images/ajax-loader.gif"> Processing Voice File...');
+			$( "#rec2" ).removeAttr("style");
+			$.get("customers_submit.php", { method: "rename_rec", file: file, id: $( "#account_id" ).val() },
+			function(data2) {
+				if (data2 == 1)
+				{
+					$( "#rec2" ).html("<br>Voice File Successfully Uploaded");
+					setTimeout(function() {
+						$( "#rec2" ).attr("style", "display:none;");
+						$( "#dialog-form0" ).dialog( "close" );
+						if ($( "#processing_type" ).val() == "Upgrade")
+						{
+							Upgrade();
+							setTimeout("", 500);
+						}
+						else if ($( "#processing_type" ).val() == "Complete")
+						{
+							Complete();
+						}
+						$( "#rec" ).removeAttr("style");
+					}, 2000);
+				}
+				else
+				{
+					$( "#rec2" ).html("<br>Voice File Didn't Uploaded Successfully. Please try again");
+					setTimeout(function() {
+						$( "#rec" ).removeAttr("style");
+						$( "#rec2" ).attr("style", "display:none;");
+					}, 2000);
+				}
+			});
 		}
     });
 });
@@ -1894,7 +1915,11 @@ function Postal_Same()
 	background-image:url('../images/btn_hover.png');
 }
 </style>
+<div id="rec">
 <input type="file" name="file_upload" id="file_upload" />
+</div>
+<div id="rec2">
+</div>
 </div>
 
 <div id="dialog-confirm_dd" title="Direct Debit Switch">

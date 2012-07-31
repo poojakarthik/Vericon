@@ -11,7 +11,7 @@ $targetFolder = '/var/vtmp'; // Relative to the root
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
 	$targetPath = $targetFolder;
-	$targetFile = rtrim($targetPath,'/') . '/wc_' . $_FILES['Filedata']['name'];
+	$targetFile = rtrim($targetPath,'/') . '/' . $_FILES['Filedata']['name'];
 	
 	// Validate the file type
 	$fileTypes = array('gsm','mp3'); // File extensions
