@@ -98,10 +98,12 @@ function Approve()
 				type = $( "#store_type" );
 			
 			$( "#display" ).hide('blind', '' , 'slow', function() {
+				$( "#display_loading" ).show();
 				$( "#display" ).load('sales_display.php?date=' + date.val(),
 				function() {
 					$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
 					function() {
+						$( "#display_loading" ).hide();
 						$( "#display" ).show('blind', '' , 'slow');
 					});
 				});
@@ -162,10 +164,12 @@ $(function() {
 								type = $( "#store_type" );
 							
 							$( "#display" ).hide('blind', '' , 'slow', function() {
+								$( "#display_loading" ).show();
 								$( "#display" ).load('sales_display.php?date=' + date.val(),
 								function() {
 									$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
 									function() {
+										$( "#display_loading" ).hide();
 										$( "#display" ).show('blind', '' , 'slow');
 									});
 								});
@@ -219,10 +223,16 @@ function Reject()
 <input type="hidden" id="store_centre" value="" />
 <input type="hidden" id="store_type" value="" />
 
+<div id="display_loading">
+<center><img src="../images/ajax-loader.gif" /><br /><br />
+<p>Loading Sales. Please Wait...</p></center>
+</div>
+
 <div id="display">
 <script>
 $( "#display" ).load('sales_display.php?date=<?php echo date("Y-m-d"); ?>',
 function() {
+	$( "#display_loading" ).hide();
 	$( "#display" ).show('blind', '' , 'slow');
 });
 </script>

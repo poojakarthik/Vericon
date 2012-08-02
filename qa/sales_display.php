@@ -27,8 +27,10 @@ $(function() {
 		minDate: "<?php echo "2012-03-01"; ?>",
 		onSelect: function(dateText, inst) {
 			$( "#display" ).hide('blind', '' , 'slow', function() {
+				$( "#display_loading" ).show();
 				$( "#display" ).load('sales_display.php?date=' + dateText,
 				function() {
+					$( "#display_loading" ).hide();
 					$( "#display" ).show('blind', '' , 'slow');
 				});
 			});
