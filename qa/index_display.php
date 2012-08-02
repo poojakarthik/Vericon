@@ -1,6 +1,7 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
+$centres = explode(",",$_GET["centres"]);
 $date1 = $_GET["date1"];
 $date2 = $_GET["date2"];
 ?>
@@ -19,10 +20,14 @@ $(function() {
 		changeMonth: true,
 		changeYear: true,
 		maxDate: "0d",
+		minDate: "<?php echo "2012-03-01"; ?>",
 		onSelect: function(dateText, inst) {
-			var date2 = $( "#datepicker3" );
-			$( "#display" ).hide('blind', '' , 'slow', function() {
-				$( "#display" ).load('index_display.php?date1=' + dateText + '&date2=' + date2.val(),
+			var centres = "<?php echo $_GET["centres"]; ?>",
+				date2 = $( "#datepicker3" );
+			
+			$( "#display" ).hide('blind', '', 'slow',
+			function() {
+				$( "#display" ).load('index_display.php?centres=' + centres + '&date1=' + dateText + '&date2=' + date2.val(),
 				function() {
 					$( "#display" ).show('blind', '' , 'slow');
 				});
@@ -30,7 +35,6 @@ $(function() {
 		}});
 });
 </script>
-
 <script>
 $(function() {
 	$( "#datepicker3" ).datepicker( {
@@ -46,10 +50,14 @@ $(function() {
 		changeMonth: true,
 		changeYear: true,
 		maxDate: "0d",
+		minDate: "<?php echo "2012-03-01"; ?>",
 		onSelect: function(dateText, inst) {
-			var date1 = $( "#datepicker" );
-			$( "#display" ).hide('blind', '' , 'slow', function() {
-				$( "#display" ).load('index_display.php?date1=' + date1.val() + '&date2=' + dateText,
+			var centres = "<?php echo $_GET["centres"]; ?>",
+				date1 = $( "#datepicker" );
+			
+			$( "#display" ).hide('blind', '', 'slow',
+			function() {
+				$( "#display" ).load('index_display.php?centres=' + centres + '&date1=' + date1.val() + '&date2=' + dateText,
 				function() {
 					$( "#display" ).show('blind', '' , 'slow');
 				});
@@ -60,7 +68,7 @@ $(function() {
 
 <table width="100%">
 <tr>
-<td align="left" style="padding-left:5px;"><img src="../images/approved_sales_header.png" width="160" height="25" /></td>
+<td align="left" style="padding-left:5px;"><img src="../images/sale_stats_header.png" width="110" height="25" /></td>
 <td align="right" style="padding-right:10px;"><input type='text' size='9' id='datepicker2' readonly='readonly' value='<?php echo date("d/m/Y", strtotime($date1)); ?>' /><input type='hidden' id='datepicker' value='<?php echo $date1; ?>' /> to <input type='text' size='9' id='datepicker4' readonly='readonly' value='<?php echo date("d/m/Y", strtotime($date2)); ?>' /><input type='hidden' id='datepicker3' value='<?php echo $date2; ?>' /></td>
 </tr>
 <tr>
@@ -68,160 +76,403 @@ $(function() {
 </tr>
 </table>
 
-<center><table width="100%">
-<tr>
-<td width="33%" align="center" valign="top">
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content">
-<thead>
-<tr class="ui-widget-header ">
-<th colspan="4" style='text-align:center;'>Captive</th>
-</tr>
-<tr class="ui-widget-header ">
-<th>Centre</th>
-<th style='text-align:center;'>Bus</th>
-<th style='text-align:center;'>Resi</th>
-<th style='text-align:center;'>Total</th>
-</tr>
-</thead>
-<tbody>
-<?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE type = 'Captive' AND status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
-$total_bus = 0;
-$total_resi = 0;
-while ($centres = mysql_fetch_row($q))
+<center><div id="users-contain" class="ui-widget" style="width:98%">
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; margin-top:0px;">
+<?php //captive
+$total_b_approved = 0;
+$total_r_approved = 0;
+$total_approved = 0;
+$total_b_declined = 0;
+$total_r_declined = 0;
+$total_declined = 0;
+$total_b_line_issue = 0;
+$total_r_line_issue = 0;
+$total_line_issue = 0;
+$tt = 0;
+for ($i = 0; $i < count($centres); $i++)
 {
-	$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[0]' AND type = 'Business' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$business = mysql_num_rows($q1);
-	$total_bus += $business;
-
-	$q2 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[0]' AND type = 'Residential' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$residential = mysql_num_rows($q2);
-	$total_resi += $residential;
-	
-	$total = $business + $residential;
-	
-	echo "<tr>";
-	echo "<td>" . $centres[0] . "</td>";
-	echo "<td style='text-align:center;'>" . $business . "</td>";
-	echo "<td style='text-align:center;'>" . $residential . "</td>";
-	echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
-	echo "</tr>";
+	$q0 = mysql_query("SELECT centre FROM vericon.centres WHERE centre = '$centres[$i]' AND type = 'Captive'") or die(mysql_error());
+	if (mysql_num_rows($q0) != 0)
+	{
+		$captive[$centres[$i]] = 1;
+	}
 }
 
-$total = $total_bus + $total_resi;
-echo "<tr>";
-echo "<td><b>Total</b></td>";
-echo "<td style='text-align:center;'><b>" . $total_bus . "</b></td>";
-echo "<td style='text-align:center;'><b>" . $total_resi . "</b></td>";
-echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
-echo "</tr>";
-?>
-</tbody>
-</table>
-</div>
-</td>
-<td width="33%" align="center" valign="top">
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content">
-<thead>
-<tr class="ui-widget-header ">
-<th colspan="4" style='text-align:center;'>Outsource</th>
-</tr>
-<tr class="ui-widget-header ">
-<th>Centre</th>
-<th style='text-align:center;'>Bus</th>
-<th style='text-align:center;'>Resi</th>
-<th style='text-align:center;'>Total</th>
-</tr>
-</thead>
-<tbody>
-<?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE type = 'Outsourced' AND status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
-$total_bus = 0;
-$total_resi = 0;
-while ($centres = mysql_fetch_row($q))
+if (array_sum($captive) > 0)
 {
-	$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[0]' AND type = 'Business' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$business = mysql_num_rows($q1);
-	$total_bus += $business;
-
-	$q2 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[0]' AND type = 'Residential' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$residential = mysql_num_rows($q2);
-	$total_resi += $residential;
-	
-	$total = $business + $residential;
-	
-	echo "<tr>";
-	echo "<td>" . $centres[0] . "</td>";
-	echo "<td style='text-align:center;'>" . $business . "</td>";
-	echo "<td style='text-align:center;'>" . $residential . "</td>";
-	echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
-	echo "</tr>";
+	echo '<thead>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th rowspan="3">Centre</th>';
+	echo '<th colspan="9" style="text-align:center;">Captive</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th colspan="3" style="text-align:center;">Approved</th>';
+	echo '<th colspan="3" style="text-align:center;">Declined</th>';
+	echo '<th colspan="3" style="text-align:center;">Line Issue</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '</tr>';
+	echo '</thead>';
+	echo '<tbody>';
 }
 
-$total = $total_bus + $total_resi;
-echo "<tr>";
-echo "<td><b>Total</b></td>";
-echo "<td style='text-align:center;'><b>" . $total_bus . "</b></td>";
-echo "<td style='text-align:center;'><b>" . $total_resi . "</b></td>";
-echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
-echo "</tr>";
-?>
-</tbody>
-</table>
-</div>
-</td>
-<td width="33%" align="center" valign="top">
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content">
-<thead>
-<tr class="ui-widget-header ">
-<th colspan="4" style='text-align:center;'>Melbourne</th>
-</tr>
-<tr class="ui-widget-header ">
-<th>Centre</th>
-<th style='text-align:center;'>Bus</th>
-<th style='text-align:center;'>Resi</th>
-<th style='text-align:center;'>Total</th>
-</tr>
-</thead>
-<tbody>
-<?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE type = 'Self' AND status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
-$total_bus = 0;
-$total_resi = 0;
-while ($centres = mysql_fetch_row($q))
+for ($i = 0; $i < count($centres); $i++)
 {
-	$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[0]' AND type = 'Business' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$business = mysql_num_rows($q1);
-	$total_bus += $business;
-
-	$q2 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[0]' AND type = 'Residential' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
-	$residential = mysql_num_rows($q2);
-	$total_resi += $residential;
-	
-	$total = $business + $residential;
-	
-	echo "<tr>";
-	echo "<td>" . $centres[0] . "</td>";
-	echo "<td style='text-align:center;'>" . $business . "</td>";
-	echo "<td style='text-align:center;'>" . $residential . "</td>";
-	echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
-	echo "</tr>";
+	if ($captive[$centres[$i]] == 1)
+	{
+		$b_approved = 0;
+		$r_approved = 0;
+		$b_declined = 0;
+		$r_declined = 0;
+		$b_line_issue = 0;
+		$r_line_issue = 0;
+		
+		$q = mysql_query("SELECT status,type,COUNT(id) FROM vericon.sales_customers WHERE centre = '$centres[$i]' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2' GROUP BY status,type");
+		while ($data = mysql_fetch_row($q))
+		{
+			if ($data[0] == "Approved" && $data[1] == "Business") { $b_approved = $data[2];	}
+			elseif ($data[0] == "Approved" && $data[1] == "Residential") { $r_approved = $data[2];	}
+			elseif ($data[0] == "Declined" && $data[1] == "Business") { $b_declined = $data[2];	}
+			elseif ($data[0] == "Declined" && $data[1] == "Residential") { $r_declined = $data[2];	}
+			elseif ($data[0] == "Line Issue" && $data[1] == "Business") { $b_line_issue = $data[2];	}
+			elseif ($data[0] == "Line Issue" && $data[1] == "Residential") { $r_line_issue = $data[2];	}
+		}
+		
+		$total_b_approved += $b_approved;
+		$total_r_approved += $r_approved;
+		$approved = $b_approved + $r_approved;
+		$total_approved += $approved;
+		
+		$total_b_declined += $b_declined;
+		$total_r_declined += $r_declined;
+		$declined = $b_declined + $r_declined;
+		$total_declined += $declined;
+		
+		$total_b_line_issue += $b_line_issue;
+		$total_r_line_issue += $r_line_issue;
+		$line_issue = $b_line_issue + $r_line_issue;
+		$total_line_issue += $line_issue;
+		
+		$t = $approved + $declined + $line_issue;
+		$tt += $t;
+		
+		if ($t > 0)
+		{
+			echo "<tr>";
+			echo "<td>" . $centres[$i] . "</td>";
+			echo "<td style='text-align:center;'>" . $b_approved . "</td>";
+			echo "<td style='text-align:center;'>" . $r_approved . "</td>";
+			echo "<td style='text-align:center;'><b>" . $approved . "</b></td>";
+			echo "<td style='text-align:center;'>" . $b_declined . "</td>";
+			echo "<td style='text-align:center;'>" . $r_declined . "</td>";
+			echo "<td style='text-align:center;'><b>" . $declined . "</b></td>";
+			echo "<td style='text-align:center;'>" . $b_line_issue . "</td>";
+			echo "<td style='text-align:center;'>" . $r_line_issue . "</td>";
+			echo "<td style='text-align:center;'><b>" . $line_issue . "</b></td>";
+			echo "</tr>";
+		}
+	}
 }
 
-$total = $total_bus + $total_resi;
-echo "<tr>";
-echo "<td><b>Total</b></td>";
-echo "<td style='text-align:center;'><b>" . $total_bus . "</b></td>";
-echo "<td style='text-align:center;'><b>" . $total_resi . "</b></td>";
-echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
-echo "</tr>";
+if (array_sum($captive) > 0)
+{
+	if ($tt > 0)
+	{
+		echo "<tr>";
+		echo "<td><b>Total</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_line_issue . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_line_issue . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_line_issue . "</b></td>";
+		echo "</tr>";
+		echo "</tbody>";
+	}
+	else
+	{
+		echo "<tr>";
+		echo "<td style='text-align:center;' colspan='10'>No Sales For This Date Range</td>";
+		echo "</tr>";
+		echo "</tbody>";
+	}
+}
 ?>
-</tbody>
+<?php //outsourced
+$total_b_approved = 0;
+$total_r_approved = 0;
+$total_approved = 0;
+$total_b_declined = 0;
+$total_r_declined = 0;
+$total_declined = 0;
+$total_b_line_issue = 0;
+$total_r_line_issue = 0;
+$total_line_issue = 0;
+$tt = 0;
+for ($i = 0; $i < count($centres); $i++)
+{
+	$q0 = mysql_query("SELECT centre FROM vericon.centres WHERE centre = '$centres[$i]' AND type = 'Outsourced'") or die(mysql_error());
+	if (mysql_num_rows($q0) != 0)
+	{
+		$outsourced[$centres[$i]] = 1;
+	}
+}
+
+if (array_sum($outsourced) > 0)
+{
+	echo '<thead>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th rowspan="3">Centre</th>';
+	echo '<th colspan="9" style="text-align:center;">Outsourced</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th colspan="3" style="text-align:center;">Approved</th>';
+	echo '<th colspan="3" style="text-align:center;">Declined</th>';
+	echo '<th colspan="3" style="text-align:center;">Line Issue</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+}
+
+for ($i = 0; $i < count($centres); $i++)
+{
+	if ($outsourced[$centres[$i]] == 1)
+	{
+		$b_approved = 0;
+		$r_approved = 0;
+		$b_declined = 0;
+		$r_declined = 0;
+		$b_line_issue = 0;
+		$r_line_issue = 0;
+		
+		$q = mysql_query("SELECT status,type,COUNT(id) FROM vericon.sales_customers WHERE centre = '$centres[$i]' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2' GROUP BY status,type");
+		while ($data = mysql_fetch_row($q))
+		{
+			if ($data[0] == "Approved" && $data[1] == "Business") { $b_approved = $data[2];	}
+			elseif ($data[0] == "Approved" && $data[1] == "Residential") { $r_approved = $data[2];	}
+			elseif ($data[0] == "Declined" && $data[1] == "Business") { $b_declined = $data[2];	}
+			elseif ($data[0] == "Declined" && $data[1] == "Residential") { $r_declined = $data[2];	}
+			elseif ($data[0] == "Line Issue" && $data[1] == "Business") { $b_line_issue = $data[2];	}
+			elseif ($data[0] == "Line Issue" && $data[1] == "Residential") { $r_line_issue = $data[2];	}
+		}
+		
+		$total_b_approved += $b_approved;
+		$total_r_approved += $r_approved;
+		$approved = $b_approved + $r_approved;
+		$total_approved += $approved;
+		
+		$total_b_declined += $b_declined;
+		$total_r_declined += $r_declined;
+		$declined = $b_declined + $r_declined;
+		$total_declined += $declined;
+		
+		$total_b_line_issue += $b_line_issue;
+		$total_r_line_issue += $r_line_issue;
+		$line_issue = $b_line_issue + $r_line_issue;
+		$total_line_issue += $line_issue;
+		
+		$t = $approved + $declined + $line_issue;
+		$tt += $t;
+		
+		if ($t > 0)
+		{
+			echo "<tr>";
+			echo "<td>" . $centres[$i] . "</td>";
+			echo "<td style='text-align:center;'>" . $b_approved . "</td>";
+			echo "<td style='text-align:center;'>" . $r_approved . "</td>";
+			echo "<td style='text-align:center;'><b>" . $approved . "</b></td>";
+			echo "<td style='text-align:center;'>" . $b_declined . "</td>";
+			echo "<td style='text-align:center;'>" . $r_declined . "</td>";
+			echo "<td style='text-align:center;'><b>" . $declined . "</b></td>";
+			echo "<td style='text-align:center;'>" . $b_line_issue . "</td>";
+			echo "<td style='text-align:center;'>" . $r_line_issue . "</td>";
+			echo "<td style='text-align:center;'><b>" . $line_issue . "</b></td>";
+			echo "</tr>";
+		}
+	}
+}
+
+if (array_sum($outsourced) > 0)
+{
+	if ($tt > 0)
+	{
+		echo "<tr>";
+		echo "<td><b>Total</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_line_issue . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_line_issue . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_line_issue . "</b></td>";
+		echo "</tr>";
+		echo "</tbody>";
+	}
+	else
+	{
+		echo "<tr>";
+		echo "<td style='text-align:center;' colspan='10'>No Sales For This Date Range</td>";
+		echo "</tr>";
+		echo "</tbody>";
+	}
+}
+?>
+<?php //self
+$total_b_approved = 0;
+$total_r_approved = 0;
+$total_approved = 0;
+$total_b_declined = 0;
+$total_r_declined = 0;
+$total_declined = 0;
+$total_b_line_issue = 0;
+$total_r_line_issue = 0;
+$total_line_issue = 0;
+$tt = 0;
+for ($i = 0; $i < count($centres); $i++)
+{
+	$q0 = mysql_query("SELECT centre FROM vericon.centres WHERE centre = '$centres[$i]' AND type = 'Self'") or die(mysql_error());
+	if (mysql_num_rows($q0) != 0)
+	{
+		$self[$centres[$i]] = 1;
+	}
+}
+
+if (array_sum($self) > 0)
+{
+	echo '<thead>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th rowspan="3">Centre</th>';
+	echo '<th colspan="9" style="text-align:center;">Melbourne</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th colspan="3" style="text-align:center;">Approved</th>';
+	echo '<th colspan="3" style="text-align:center;">Declined</th>';
+	echo '<th colspan="3" style="text-align:center;">Line Issue</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th style="text-align:center;">Business</th>';
+	echo '<th style="text-align:center;">Residential</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+}
+
+for ($i = 0; $i < count($centres); $i++)
+{
+	if ($self[$centres[$i]] == 1)
+	{
+		$b_approved = 0;
+		$r_approved = 0;
+		$b_declined = 0;
+		$r_declined = 0;
+		$b_line_issue = 0;
+		$r_line_issue = 0;
+		
+		$q = mysql_query("SELECT status,type,COUNT(id) FROM vericon.sales_customers WHERE centre = '$centres[$i]' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2' GROUP BY status,type");
+		while ($data = mysql_fetch_row($q))
+		{
+			if ($data[0] == "Approved" && $data[1] == "Business") { $b_approved = $data[2];	}
+			elseif ($data[0] == "Approved" && $data[1] == "Residential") { $r_approved = $data[2];	}
+			elseif ($data[0] == "Declined" && $data[1] == "Business") { $b_declined = $data[2];	}
+			elseif ($data[0] == "Declined" && $data[1] == "Residential") { $r_declined = $data[2];	}
+			elseif ($data[0] == "Line Issue" && $data[1] == "Business") { $b_line_issue = $data[2];	}
+			elseif ($data[0] == "Line Issue" && $data[1] == "Residential") { $r_line_issue = $data[2];	}
+		}
+		
+		$total_b_approved += $b_approved;
+		$total_r_approved += $r_approved;
+		$approved = $b_approved + $r_approved;
+		$total_approved += $approved;
+		
+		$total_b_declined += $b_declined;
+		$total_r_declined += $r_declined;
+		$declined = $b_declined + $r_declined;
+		$total_declined += $declined;
+		
+		$total_b_line_issue += $b_line_issue;
+		$total_r_line_issue += $r_line_issue;
+		$line_issue = $b_line_issue + $r_line_issue;
+		$total_line_issue += $line_issue;
+		
+		$t = $approved + $declined + $line_issue;
+		$tt += $t;
+		
+		if ($t > 0)
+		{
+			echo "<tr>";
+			echo "<td>" . $centres[$i] . "</td>";
+			echo "<td style='text-align:center;'>" . $b_approved . "</td>";
+			echo "<td style='text-align:center;'>" . $r_approved . "</td>";
+			echo "<td style='text-align:center;'><b>" . $approved . "</b></td>";
+			echo "<td style='text-align:center;'>" . $b_declined . "</td>";
+			echo "<td style='text-align:center;'>" . $r_declined . "</td>";
+			echo "<td style='text-align:center;'><b>" . $declined . "</b></td>";
+			echo "<td style='text-align:center;'>" . $b_line_issue . "</td>";
+			echo "<td style='text-align:center;'>" . $r_line_issue . "</td>";
+			echo "<td style='text-align:center;'><b>" . $line_issue . "</b></td>";
+			echo "</tr>";
+		}
+	}
+}
+
+if (array_sum($self) > 0)
+{
+	if ($tt > 0)
+	{
+		echo "<tr>";
+		echo "<td><b>Total</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_approved . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_declined . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_b_line_issue . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_r_line_issue . "</b></td>";
+		echo "<td style='text-align:center;'><b>" . $total_line_issue . "</b></td>";
+		echo "</tr>";
+		echo "</tbody>";
+	}
+	else
+	{
+		echo "<tr>";
+		echo "<td style='text-align:center;' colspan='10'>No Sales For This Date Range</td>";
+		echo "</tr>";
+		echo "</tbody>";
+	}
+}
+?>
 </table>
-</div>
-</td>
-</tr>
-</table></center>
+</div></center>
