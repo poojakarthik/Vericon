@@ -215,7 +215,7 @@ function Reject()
 </table>
 </div>
 
-<input type="hidden" id="store_date" value="" />
+<input type="hidden" id="store_date" value="<?php echo date("Y-m-d"); ?>" />
 <input type="hidden" id="store_centre" value="" />
 <input type="hidden" id="store_type" value="" />
 
