@@ -14,7 +14,7 @@ if (!empty($_FILES)) {
 	$targetFile = rtrim($targetPath,'/') . '/' . $_FILES['Filedata']['name'];
 	
 	// Validate the file type
-	$fileTypes = array('gsm','mp3'); // File extensions
+	$fileTypes = array('csv'); // File extensions
 	$fileParts = pathinfo($_FILES['Filedata']['name']);
 	
 	if (in_array($fileParts['extension'],$fileTypes)) {

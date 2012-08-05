@@ -317,6 +317,37 @@ else
 </table>
 </div></center>
 
+<center><table width="98%" style="margin-bottom:10px;">
+<tr>
+<td width="50%">
+<table width="100%">
+<tr>
+<td style="padding-left:5px;"><img src="../images/billing_comments_header.png" width="130" height="15" /></td>
+</tr>
+<tr>
+<td><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+<tr>
+<td><textarea id="billing_comments" style="width:100%; height:100px; resize:none;"></textarea></td>
+</tr>
+</table>
+</td>
+<td width="50%">
+<table width="100%">
+<tr>
+<td style="padding-left:5px;"><img src="../images/other_comments_header.png" width="125" height="15" /></td>
+</tr>
+<tr>
+<td><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+<tr>
+<td><textarea id="other_comments" style="width:100%; height:100px; resize:none;"></textarea></td>
+</tr>
+</table>
+</td>
+</tr>
+</table></center>
+
 <input type="hidden" id="lead_check" value="<?php echo $l_check; ?>">
 <input type="hidden" id="recording_check" value="<?php echo $r_check; ?>">
 <input type="hidden" id="details_check" value="<?php echo $d_check; ?>">

@@ -140,7 +140,7 @@ if($page == 17)
 
 if($page == 18)
 {
-	if ($plan == "BC099" || $plan == "BC124" || $plan == "BC134" || $plan == "BC149")
+	if ($plan == "BC099" || $plan == "BC124" || $plan == "BC134" || $plan == "BC149" || $plan == "BC090" || $plan == "BC095" || $plan == "BC100" || $plan == "BC105" || $plan == "BC110" || $plan == "BC115" || $plan == "BC135" || $plan == "BC140")
 	{
 		echo $internet["18_ADSL_U"];
 	}

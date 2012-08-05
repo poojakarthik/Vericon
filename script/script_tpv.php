@@ -10,6 +10,9 @@ $da = mysql_fetch_row($q);
 $q1 = mysql_query("SELECT alias FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
 $da2 = mysql_fetch_row($q1);
 
+$q2 = mysql_query("SELECT `group` FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($da[0]) . "'") or die(mysql_error());
+$da3 = mysql_fetch_row($q2);
+
 $alias = $da2[0];
 $campaign = $da[0] . " " . $da[1];
 $campaign_check = "";
@@ -19,7 +22,15 @@ $plan = str_replace("_", " ", $_GET['plan']);
 $page = $_GET['page'];
 $date = date('jS \of F Y');
 
-include "source/convert.php";
+if ($da3[0] == "SBT")
+{
+	include "source/sbt_convert.php";
+}
+elseif ($da3[0] == "ZEN")
+{
+	include "source/zen_convert.php";
+}
+
 include "source/input.php";
 include "source/questions.php";
 ?>

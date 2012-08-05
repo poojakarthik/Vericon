@@ -27,7 +27,7 @@ if($page == 4)
 
 if($page == 5)
 {
-	if($plan == "TC049" || $plan == "TC059" || $plan == "TC099")
+	if($plan == "TC064" || $plan == "TC104")
 	{
 		echo $landline["4_2"];
 	}

@@ -187,8 +187,8 @@ elseif ($data["type"] == "Residential")
 <td width="85px">ID Type </td>
 <td><select id="id_type" style="width:192px;">
 <option <?php echo $drl; ?>>Driver's Licence (AUS)</option>
-<option <?php echo $mcc; ?>>Healthcare Card</option>
-<option <?php echo $hcc; ?>>Medicare Card</option>
+<option <?php echo $hcc; ?>>Healthcare Card</option>
+<option <?php echo $mcc; ?>>Medicare Card</option>
 <option <?php echo $ppt; ?>>Passport</option>
 <option <?php echo $pnc; ?>>Pension Card</option>
 </select></td>
@@ -329,24 +329,42 @@ switch ($data["dd_type"])
 <td colspan="2">
 <table border="0" width="100%" style="margin-bottom:10px;">
 <tr>
-<td colspan="6"><img src="../images/other_details_header.png" width="105" height="15" style="padding-left:3px;"/></td>
+<td colspan="2"><img src="../images/other_details_header.png" width="105" height="15" style="padding-left:3px;"/></td>
 </tr>
 <tr>
-<td colspan="6"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
 </tr>
 <tr>
-<td width="85px" style="padding-left:2px;">Credit Offered</td>
-<td><input type="text" id="credit" style="width:150px;" value="<?php echo $data["credit"]; ?>" /></td>
-<td width="85px" align="right">Payway ID</td>
+<td width="50%" height="100%" valign="top">
+<table width="100%">
+<tr>
+<td width="115px">Ongoing Credit ($) </td>
+<td><input type="text" id="ongoing_credit" style="width:50px;" value="<?php echo $data["ongoing_credit"]; ?>" /></td>
+</tr>
+<tr>
+<td>Once Off Credit ($) </td>
+<td><input type="text" id="onceoff_credit" style="width:50px;" value="<?php echo $data["onceoff_credit"]; ?>" /></td>
+</tr>
+</table>
+</td>
+<td width="50%" height="100%" valign="top">
+<table width="100%">
+<tr>
+<td width="85px">Payway ID </td>
 <td><input type="text" id="payway" style="width:150px;" value="<?php echo $data["payway"]; ?>" /></td>
-<td width="85px" align="right">DD Type</td>
-<td style="padding-right:2px;"><select id="dd_type" style="width:150px;">
+</tr>
+<tr>
+<td>DD Type </td>
+<td><select id="dd_type" style="width:150px;">
 <option></option>
 <option <?php echo $amex; ?>>AMEX</option>
 <option <?php echo $diners; ?>>DINERS</option>
 <option <?php echo $mastercard; ?>>MASTERCARD</option>
 <option <?php echo $visa; ?>>VISA</option>
 </select></td>
+</tr>
+</table>
+</td>
 </tr>
 </table>
 </td>

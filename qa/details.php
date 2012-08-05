@@ -319,7 +319,8 @@ function Done()
 		abn = $( "#abn" ),
 		abn_status = $( ".abn_status" ),
 		position = $( "#position" ),
-		credit = $( "#credit" ),
+		ongoing_credit = $( "#ongoing_credit" ),
+		onceoff_credit = $( "#onceoff_credit" ),
 		payway = $( "#payway" ),
 		dd_type = $( "#dd_type" );
 		
@@ -328,7 +329,7 @@ function Done()
 			postal = $( "#physical" );
 		}
 	
-	$.get("details_submit.php?method=submit", { id: id, title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val() },
+	$.get("details_submit.php?method=submit", { id: id, title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), ongoing_credit: ongoing_credit.val(), onceoff_credit: onceoff_credit.val(), payway: payway.val(), dd_type: dd_type.val() },
 	function(data) {
 		if (data == "submitted")
 		{

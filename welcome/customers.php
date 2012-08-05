@@ -84,20 +84,78 @@ $(function() {
 		'buttonClass' : 'btn',
 		'width'    : 102,
 		'onUploadSuccess' : function(file, data, response) {
-			$( "#rec_store" ).val(file["name"]);
-			if ($( "#processing_type" ).val() == "Upgrade")
-			{
-				$( "#dialog-form0" ).dialog( "close" );
-				setTimeout("Upgrade()", 500);
-			}
-			else if ($( "#processing_type" ).val() == "Complete")
-			{
-				$( "#dialog-form0" ).dialog( "close" );
-				setTimeout("Complete()", 500);
-			}
+			$( "#rec" ).attr("style", "display:none;");
+			$( "#rec2" ).html('<br><img src="../images/ajax-loader.gif"> Processing Voice File...');
+			$( "#rec2" ).removeAttr("style");
+			$.get("customers_submit.php", { method: "rename_rec", file: file, id: $( "#account_id" ).val() },
+			function(data2) {
+				if (data2 == 1)
+				{
+					$( "#rec2" ).html("<br>Voice File Successfully Uploaded");
+					setTimeout(function() {
+						$( "#rec2" ).attr("style", "display:none;");
+						$( "#dialog-form0" ).dialog( "close" );
+						if ($( "#processing_type" ).val() == "Upgrade")
+						{
+							Upgrade();
+							setTimeout("", 500);
+						}
+						else if ($( "#processing_type" ).val() == "Complete")
+						{
+							Complete();
+						}
+						$( "#rec" ).removeAttr("style");
+					}, 2000);
+				}
+				else
+				{
+					$( "#rec2" ).html("<br>Voice File Didn't Uploaded Successfully. Please try again");
+					setTimeout(function() {
+						$( "#rec" ).removeAttr("style");
+						$( "#rec2" ).attr("style", "display:none;");
+					}, 2000);
+				}
+			});
 		}
     });
 });
+</script>
+<script>
+function Check_Rec()
+{
+	$( "#rec" ).attr("style", "display:none;");
+	$( "#rec2" ).html('<br><img src="../images/ajax-loader.gif"> Processing Voice File...');
+	$( "#rec2" ).removeAttr("style");
+	$.get("customers_submit.php", { method: "check_rec", id: $( "#account_id" ).val() },
+	function(data) {
+		if (data == 1)
+		{
+			$( "#rec2" ).html("<br>Voice File Successfully Uploaded");
+			setTimeout(function() {
+				$( "#rec2" ).attr("style", "display:none;");
+				$( "#dialog-form0" ).dialog( "close" );
+				if ($( "#processing_type" ).val() == "Upgrade")
+				{
+					Upgrade();
+					setTimeout("", 500);
+				}
+				else if ($( "#processing_type" ).val() == "Complete")
+				{
+					Complete();
+				}
+				$( "#rec" ).removeAttr("style");
+			}, 2000);
+		}
+		else
+		{
+			$( "#rec2" ).html("<br>Voice File Didn't Uploaded Successfully. Please try again");
+			setTimeout(function() {
+				$( "#rec" ).removeAttr("style");
+				$( "#rec2" ).attr("style", "display:none;");
+			}, 2000);
+		}
+	});
+}
 </script>
 <script>
 $(function() {
@@ -208,7 +266,7 @@ $(function() {
 					if (data.substring(0,4) == "done")
 					{
 						$( "#dd_btn" ).attr("disabled", true);
-						$( "#done_dd" ).val("yes");
+						$( "#done_dd" ).val("1");
 						$( "#payway" ).val(data.substring(4));
 						$( "#dd_type" ).val(cardtype.val());
 						$( "#dialog-confirm_dd_cc" ).dialog( "close" );
@@ -263,7 +321,7 @@ $(function() {
 					if (data.substring(0,4) == "done")
 					{
 						$( "#dd_btn" ).attr("disabled", true);
-						$( "#done_dd" ).val("yes");
+						$( "#done_dd" ).val("1");
 						$( "#payway" ).val(data.substring(4));
 						$( "#dialog-confirm_dd_bank" ).dialog( "close" );
 					}
@@ -467,6 +525,23 @@ function NA_Switch()
 	$( "#dialog-confirm_na" ).dialog( "open" );
 }
 </script>
+<script> //call back datepicker
+$(function() {
+	$( "#cb_datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		altField: "#cb_datepicker2",
+		altFormat: "dd/mm/yy",
+		minDate: "0d",
+		maxDate: "3d"
+	});
+});
+</script>
 <script>
 $(function() {
 	$( "#dialog:ui-dialog_call_back" ).dialog( "destroy" );
@@ -487,13 +562,14 @@ $(function() {
 		resizable: false,
 		draggable: false,
 		width: 250,
-		height: 150,
+		height: 170,
 		modal: true,
 		show: "blind",
 		hide: "blind",
 		buttons: {
 			"Submit": function() {
 				var id = $( "#account_id" ),
+					date = $("#cb_datepicker" ),
 					time_h = $( "#cb_time_h" ),
 					time_m = $( "#cb_time_m" ),
 					time_p = $( "#cb_time_p" );
@@ -506,7 +582,7 @@ $(function() {
 				{
 					var time = time_h.val() + ":" + time_m.val() + ":00 " + time_p.val();
 					
-					$.get("customers_submit.php?method=call_back", { id: id.val(), time: time },
+					$.get("customers_submit.php?method=call_back", { id: id.val(), date: date.val(), time: time },
 					function(data) {
 						if (data == "done")
 						{
@@ -636,7 +712,8 @@ function Approve()
 		abn = $( "#abn" ),
 		abn_status = $( ".abn_status" ),
 		position = $( "#position" ),
-		credit = $( "#credit" ),
+		ongoing_credit = $( "#ongoing_credit" ),
+		onceoff_credit = $( "#onceoff_credit" ),
 		payway = $( "#payway" ),
 		dd_type = $( "#dd_type" ),
 		user = "<?php echo $ac["user"]; ?>",
@@ -648,7 +725,7 @@ function Approve()
 			postal = $( "#physical" );
 		}
 	
-	$.get("customers_submit.php?method=approve", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val(), dd: dd.val() },
+	$.get("customers_submit.php?method=approve", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), ongoing_credit: ongoing_credit.val(), onceoff_credit: onceoff_credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val(), dd: dd.val() },
 	function(data) {
 		if (data == "submitted")
 		{
@@ -715,7 +792,8 @@ $(function() {
 					abn = $( "#abn" ),
 					abn_status = $( ".abn_status" ),
 					position = $( "#position" ),
-					credit = $( "#credit" ),
+					ongoing_credit = $( "#ongoing_credit" ),
+					onceoff_credit = $( "#onceoff_credit" ),
 					payway = $( "#payway" ),
 					dd_type = $( "#dd_type" ),
 					user = "<?php echo $ac["user"]; ?>",
@@ -727,7 +805,7 @@ $(function() {
 						postal = $( "#physical" );
 					}
 				
-				$.get("customers_submit.php?method=upgrade", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), credit: credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val(), dd: dd.val() },
+				$.get("customers_submit.php?method=upgrade", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), ongoing_credit: ongoing_credit.val(), onceoff_credit: onceoff_credit.val(), payway: payway.val(), dd_type: dd_type.val(), user: user, rec: rec.val(), dd: dd.val() },
 				function(data) {
 					if (data == "submitted")
 					{
@@ -1894,7 +1972,16 @@ function Postal_Same()
 	background-image:url('../images/btn_hover.png');
 }
 </style>
-<input type="file" name="file_upload" id="file_upload" />
+<div id="rec">
+<table width="100%">
+<tr>
+<td align="left" valign="top"><input type="file" name="file_upload" id="file_upload" /></td>
+<td align="right" valign="top"><button onclick="Check_Rec()" class="btn">Uploaded</button></td>
+</tr>
+</table>
+</div>
+<div id="rec2">
+</div>
 </div>
 
 <div id="dialog-confirm_dd" title="Direct Debit Switch">
@@ -1973,6 +2060,10 @@ function Postal_Same()
 <div id="dialog-confirm_call_back" title="Call Back">
 <p class="validateTips5">All fields are required</p>
 <table>
+<tr>
+<td width="85px">Call Back Date </td>
+<td><input type="text" id="cb_datepicker2" readonly style="width:80px;" value="<?php echo date("d/m/Y"); ?>" /> <input type="hidden" id="cb_datepicker" value="<?php echo date("Y-m-d"); ?>" /></td>
+</tr>
 <tr>
 <td width="85px">Call Back Time </td>
 <td><select id="cb_time_h" style="width:40px;"><option></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option></select> : <select id="cb_time_m" style="width:40px;"><option></option><option>00</option><option>15</option><option>30</option><option>45</option></select> <select id="cb_time_p" style="width:40px;"><option></option><option>AM</option><option>PM</option></select></td>

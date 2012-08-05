@@ -6,7 +6,7 @@ $type = $_GET["type"];
 
 mysql_query("DELETE FROM vericon.welcome_lock WHERE user = '$user'") or die(mysql_error());
 
-$q0 = mysql_query("SELECT customers.id FROM vericon.customers,vericon.welcome_cb WHERE customers.status = 'Waiting Welcome Call' AND customers.type = '$type' AND welcome_cb.time <= NOW() AND welcome_cb.id = customers.id ORDER BY welcome_cb.time ASC") or die(mysql_error());
+$q0 = mysql_query("SELECT customers.id FROM vericon.customers,vericon.welcome_cb WHERE customers.status = 'Waiting Welcome Call' AND customers.sf_id != '' AND customers.type = '$type' AND welcome_cb.time <= NOW() AND welcome_cb.id = customers.id ORDER BY welcome_cb.time ASC") or die(mysql_error());
 while ($d = mysql_fetch_row($q0))
 {
 	$q = mysql_query("SELECT id FROM vericon.welcome_lock WHERE id = '$d[0]'") or die(mysql_error());
@@ -19,7 +19,7 @@ while ($d = mysql_fetch_row($q0))
 
 if ($id == "")
 {
-	$q0 = mysql_query("SELECT customers.id FROM vericon.customers LEFT JOIN vericon.welcome_cb ON customers.id = welcome_cb.id WHERE customers.status = 'Waiting Welcome Call' AND customers.type = '$type' AND welcome_cb.id IS NULL ORDER BY RAND()") or die(mysql_error());
+	$q0 = mysql_query("SELECT customers.id FROM vericon.customers LEFT JOIN vericon.welcome_cb ON customers.id = welcome_cb.id WHERE customers.status = 'Waiting Welcome Call' AND customers.sf_id != '' AND customers.type = '$type' AND welcome_cb.id IS NULL ORDER BY RAND()") or die(mysql_error());
 	while ($d = mysql_fetch_row($q0))
 	{
 		$q = mysql_query("SELECT id FROM vericon.welcome_lock WHERE id = '$d[0]'") or die(mysql_error());
@@ -345,19 +345,37 @@ switch ($data["title"])
 <td colspan="2">
 <table border="0" width="100%" style="margin-bottom:10px;">
 <tr>
-<td colspan="8"><img src="../images/other_details_header.png" width="105" height="15" style="padding-left:3px;"/></td>
+<td colspan="2"><img src="../images/other_details_header.png" width="105" height="15" style="padding-left:3px;"/></td>
 </tr>
 <tr>
-<td colspan="8"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
 </tr>
 <tr>
-<td width="100px" style="padding-left:2px;">Credit Offered ($)</td>
-<td width="50px"><input type="text" id="credit" style="width:30px;" value="<?php echo $data["credit"]; ?>" /></td>
-<td width="75px" align="right">Payway ID</td>
-<td width="150px"><input type="text" id="payway" readonly="readonly" style="width:148px;" value="<?php echo $data["payway"]; ?>" /></td>
-<td width="75px" align="right">DD Type</td>
-<td width="150px"><input type="text" id="dd_type" readonly="readonly" style="width:148px;" value="<?php echo $data["dd_type"]; ?>" /></td>
-<td colspan="2" align="right" style="padding-right:10px;"><?php if ($data["payway"] == "") { ?><button id="dd_btn" onclick="DD()" class="btn2">Direct Debit</button><?php } else { ?><button onclick="DD()" class="btn2" disabled="disabled">Direct Debit</button><?php } ?></td>
+<td width="50%" height="100%" valign="top">
+<table width="100%">
+<tr>
+<td width="115px">Ongoing Credit ($) </td>
+<td><input type="text" id="ongoing_credit" style="width:50px;" value="<?php echo $data["ongoing_credit"]; ?>" /></td>
+</tr>
+<tr>
+<td>Once Off Credit ($) </td>
+<td><input type="text" id="onceoff_credit" style="width:50px;" value="<?php echo $data["onceoff_credit"]; ?>" /></td>
+</tr>
+</table>
+</td>
+<td width="50%" height="100%" valign="top">
+<table width="100%">
+<tr>
+<td width="85px">Payway ID </td>
+<td><input type="text" id="payway" readonly="readonly" style="width:150px;" value="<?php echo $data["payway"]; ?>" /></td>
+<td rowspan="2" valign="middle"><?php if ($data["payway"] == "") { ?><button id="dd_btn" onclick="DD()" class="btn2">Direct Debit</button><?php } else { ?><button class="btn2" disabled="disabled">Direct Debit</button><?php } ?></td>
+</tr>
+<tr>
+<td>DD Type </td>
+<td><input type="text" id="dd_type" readonly="readonly" style="width:150px;" value="<?php echo $data["dd_type"]; ?>" /></td>
+</tr>
+</table>
+</td>
 </tr>
 </table>
 </td>

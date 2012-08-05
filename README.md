@@ -14,8 +14,9 @@
 ##Other
 ###Additional Libraries
 ```
-apt-get install libssh2-php
 apt-get install dos2unix
+apt-get install libssh2-php
+apt-get install zip
 ```
 ###Directories
 ```
