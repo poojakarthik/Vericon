@@ -275,8 +275,8 @@ elseif ($data["type"] == "Residential")
 <td width="85px">ID Type </td>
 <td><select id="id_type" disabled="disabled" style="width:192px;">
 <option <?php echo $drl; ?>>Driver's Licence (AUS)</option>
-<option <?php echo $mcc; ?>>Healthcare Card</option>
-<option <?php echo $hcc; ?>>Medicare Card</option>
+<option <?php echo $hcc; ?>>Healthcare Card</option>
+<option <?php echo $mcc; ?>>Medicare Card</option>
 <option <?php echo $ppt; ?>>Passport</option>
 <option <?php echo $pnc; ?>>Pension Card</option>
 </select></td>
