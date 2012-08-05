@@ -129,7 +129,14 @@ if($page == 15)
 if($page == 16)
 {
 	echo $landline[18];
-	echo $landline["No_Contract_ETF"];
+	if ($da3[0] == "SBT")
+	{
+		echo $landline["No_Contract_ETF"];
+	}
+	elseif ($da3[0] == "ZEN")
+	{
+		echo $landline["No_Contract_ETF2"];
+	}
 	$next_btn = $next_default;
 }
 

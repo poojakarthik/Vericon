@@ -111,6 +111,11 @@ $landline["No_Contract_ETF"] = "<p>If you receive a better deal from one of our 
 <p>Do you understand this?</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
 
+$landline["No_Contract_ETF2"] = "<p>If you receive a better deal from one of our competitors, please give us a call and we will try to match or better that deal for you.</p>
+<p>You are required to give <b>$campaign</b> 30 days notice if you wish to cancel your landline service otherwise you are required to pay an exit fee of $99 per line?</p>
+<p>Do you understand this?</p>
+<p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
+
 $landline["Contract_ETF"] = "<p>If the landline contract is cancelled or terminated within the contract term then an early termination fee is charged which is \$199 per line.</p>
 <p>If you agree to the termination fees and wish to proceed, please state a clear YES</p>
 <p><b>->CUSTOMER MUST SAY <span style=\"color:#FF0000;\">YES</span></b></p>";
