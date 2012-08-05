@@ -40,6 +40,19 @@ elseif ($method == "rename_rec")
 		echo 0;
 	}
 }
+elseif ($method == "check_rec")
+{
+	$id = $_GET["id"];
+	
+	if (file_exists("/var/vtmp/wc_" . $id . ".gsm"))
+	{
+		echo 1;
+	}
+	else
+	{
+		echo 0;
+	}
+}
 elseif ($method == "dd")
 {
 	$id = $_GET["id"];

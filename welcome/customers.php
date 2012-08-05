@@ -121,6 +121,43 @@ $(function() {
 });
 </script>
 <script>
+function Check_Rec()
+{
+	$( "#rec" ).attr("style", "display:none;");
+	$( "#rec2" ).html('<br><img src="../images/ajax-loader.gif"> Processing Voice File...');
+	$( "#rec2" ).removeAttr("style");
+	$.get("customers_submit.php", { method: "check_rec", id: $( "#account_id" ).val() },
+	function(data) {
+		if (data == 1)
+		{
+			$( "#rec2" ).html("<br>Voice File Successfully Uploaded");
+			setTimeout(function() {
+				$( "#rec2" ).attr("style", "display:none;");
+				$( "#dialog-form0" ).dialog( "close" );
+				if ($( "#processing_type" ).val() == "Upgrade")
+				{
+					Upgrade();
+					setTimeout("", 500);
+				}
+				else if ($( "#processing_type" ).val() == "Complete")
+				{
+					Complete();
+				}
+				$( "#rec" ).removeAttr("style");
+			}, 2000);
+		}
+		else
+		{
+			$( "#rec2" ).html("<br>Voice File Didn't Uploaded Successfully. Please try again");
+			setTimeout(function() {
+				$( "#rec" ).removeAttr("style");
+				$( "#rec2" ).attr("style", "display:none;");
+			}, 2000);
+		}
+	});
+}
+</script>
+<script>
 $(function() {
 	$( "#dialog:ui-dialog" ).dialog( "destroy" );
 	
@@ -1936,7 +1973,12 @@ function Postal_Same()
 }
 </style>
 <div id="rec">
-<input type="file" name="file_upload" id="file_upload" />
+<table width="100%">
+<tr>
+<td align="left" valign="top"><input type="file" name="file_upload" id="file_upload" /></td>
+<td align="right" valign="top"><button onclick="Check_Rec()" class="btn">Uploaded</button></td>
+</tr>
+</table>
 </div>
 <div id="rec2">
 </div>
