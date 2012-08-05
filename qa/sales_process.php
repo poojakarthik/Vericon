@@ -25,6 +25,8 @@ elseif ($method == "approve")
 	$lead = $_GET["lead"];
 	$recording = $_GET["recording"];
 	$details = $_GET["details"];
+	$billing_comments = $_GET["billing"];
+	$other_comments = $_GET["other"];
 	$timestamp = date("Y-m-d H:i:s");
 	
 	$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());

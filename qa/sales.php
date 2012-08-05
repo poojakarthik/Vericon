@@ -88,9 +88,11 @@ function Approve()
 		verifier = "<?php echo $ac["user"]; ?>",
 		lead = $( "#lead_check" ),
 		recording = $( "#recording_check" ),
-		details = $( "#details_check" );
+		details = $( "#details_check" ),
+		billing = $( "#billing_comments"),
+		other = $( "#other_comments" );
 	
-	$.get("sales_process.php?method=approve", { id: id.val(), verifier: verifier, lead: lead.val(), recording: recording.val(), details: details.val() }, function (data) {
+	$.get("sales_process.php?method=approve", { id: id.val(), verifier: verifier, lead: lead.val(), recording: recording.val(), details: details.val(), billing: billing.val(), other: other.val() }, function (data) {
 		if (data == 1)
 		{
 			var date = $( "#store_date" ),
