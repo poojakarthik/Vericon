@@ -112,7 +112,8 @@ elseif ($method == "submit")
 	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
 	$position = trim(strtoupper($_GET["position"]));
-	$credit = trim($_GET["credit"]);
+	$ongoing_credit = trim($_GET["ongoing_credit"]);
+	$onceoff_credit = trim($_GET["onceoff_credit"]);
 	$payway = trim($_GET["payway"]);
 	$dd_type = $_GET["dd_type"];
 	
@@ -240,9 +241,13 @@ elseif ($method == "submit")
 	{
 		echo "Please enter the customer's position in the business";
 	}
-	elseif ($credit != "" && !preg_match("/^[0-9]$/",$credit))
+	elseif ($ongoing_credit != "" && !preg_match('/^\d+$/',$ongoing_credit))
 	{
-		echo "Please enter a valid credit amount";
+		echo "Please enter a valid ongoing credit amount";
+	}
+	elseif ($onceoff_credit != "" && !preg_match('/^\d+$/',$onceoff_credit))
+	{
+		echo "Please enter a valid once off credit amount";
 	}
 	elseif ($payway != "" && !preg_match("/^SP0[2378][0-9]{8}$/",$payway))
 	{
@@ -256,7 +261,7 @@ elseif ($method == "submit")
 	{
 		if ($email == "N/A") { $billing = "post"; } else { $email = strtolower($email); $billing = "email"; }
 		
-		mysql_query("UPDATE vericon.sales_customers SET title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', credit = '" . mysql_real_escape_string($credit) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		mysql_query("UPDATE vericon.sales_customers SET title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', ongoing_credit = '" . mysql_real_escape_string($ongoing_credit) . "', onceoff_credit = '" . mysql_real_escape_string($onceoff_credit) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
 		echo "submitted";
 	}
