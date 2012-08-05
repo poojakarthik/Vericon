@@ -252,16 +252,16 @@ elseif ($method == "dd")
 			$body .= '"' . $cardexpiry_m . '",';
 			$body .= '"' . $cardexpiry_y . '"';
 			
-			$filename = "/var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			$filename = "/var/vtmp/DD_" . $id . ".csv";
 			$fh = fopen($filename, 'w+') or die("can't open file");
 			fwrite($fh, $header);
 			fwrite($fh, "\n");
 			fwrite($fh, $body);
 			fclose($fh);
 			
-			$command = "zip -P " . md5($id) . md5(date("Y-m-d_H-i-s")) . " /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".zip /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			$command = "zip -P " . md5($id) . " /var/vtmp/DD_" . $id . ".zip /var/vtmp/DD_" . $id . ".csv";
 			exec($command);
-			exec("rm /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv");
+			exec("rm /var/vtmp/DD_" . $id . ".csv");
 			
 			echo "doneSP" . $p_cli[1];
 		}
@@ -461,16 +461,16 @@ elseif ($method == "dd")
 			$body .= '"' . $bsb . '",';
 			$body .= '"' . $accountnumber . '"';
 			
-			$filename = "/var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			$filename = "/var/vtmp/DD_" . $id . ".csv";
 			$fh = fopen($filename, 'w+') or die("can't open file");
 			fwrite($fh, $header);
 			fwrite($fh, "\n");
 			fwrite($fh, $body);
 			fclose($fh);
 			
-			$command = "zip -P " . md5($id) . md5(date("Y-m-d_H-i-s")) . " /var/vtmp/DD_" . $id . ".zip /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv";
+			$command = "zip -P " . md5($id) . " /var/vtmp/DD_" . $id . ".zip /var/vtmp/DD_" . $id . ".csv";
 			exec($command);
-			exec("rm /var/vtmp/DD_" . $id . "_" . date("Y-m-d_H-i-s") . ".csv");
+			exec("rm /var/vtmp/DD_" . $id . ".csv");
 			
 			echo "doneSP" . $p_cli[1];
 		}
