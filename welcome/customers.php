@@ -229,7 +229,7 @@ $(function() {
 					if (data.substring(0,4) == "done")
 					{
 						$( "#dd_btn" ).attr("disabled", true);
-						$( "#done_dd" ).val("yes");
+						$( "#done_dd" ).val("1");
 						$( "#payway" ).val(data.substring(4));
 						$( "#dd_type" ).val(cardtype.val());
 						$( "#dialog-confirm_dd_cc" ).dialog( "close" );
@@ -284,7 +284,7 @@ $(function() {
 					if (data.substring(0,4) == "done")
 					{
 						$( "#dd_btn" ).attr("disabled", true);
-						$( "#done_dd" ).val("yes");
+						$( "#done_dd" ).val("1");
 						$( "#payway" ).val(data.substring(4));
 						$( "#dialog-confirm_dd_bank" ).dialog( "close" );
 					}
