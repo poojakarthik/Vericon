@@ -488,6 +488,23 @@ function NA_Switch()
 	$( "#dialog-confirm_na" ).dialog( "open" );
 }
 </script>
+<script> //call back datepicker
+$(function() {
+	$( "#cb_datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		altField: "#cb_datepicker2",
+		altFormat: "dd/mm/yy",
+		minDate: "0d",
+		maxDate: "3d"
+	});
+});
+</script>
 <script>
 $(function() {
 	$( "#dialog:ui-dialog_call_back" ).dialog( "destroy" );
@@ -508,13 +525,14 @@ $(function() {
 		resizable: false,
 		draggable: false,
 		width: 250,
-		height: 150,
+		height: 170,
 		modal: true,
 		show: "blind",
 		hide: "blind",
 		buttons: {
 			"Submit": function() {
 				var id = $( "#account_id" ),
+					date = $("#cb_datepicker" ),
 					time_h = $( "#cb_time_h" ),
 					time_m = $( "#cb_time_m" ),
 					time_p = $( "#cb_time_p" );
@@ -527,7 +545,7 @@ $(function() {
 				{
 					var time = time_h.val() + ":" + time_m.val() + ":00 " + time_p.val();
 					
-					$.get("customers_submit.php?method=call_back", { id: id.val(), time: time },
+					$.get("customers_submit.php?method=call_back", { id: id.val(), date: date.val(), time: time },
 					function(data) {
 						if (data == "done")
 						{
@@ -1998,6 +2016,10 @@ function Postal_Same()
 <div id="dialog-confirm_call_back" title="Call Back">
 <p class="validateTips5">All fields are required</p>
 <table>
+<tr>
+<td width="85px">Call Back Date </td>
+<td><input type="text" id="cb_datepicker2" readonly style="width:80px;" value="<?php echo date("d/m/Y"); ?>" /> <input type="hidden" id="cb_datepicker" value="<?php echo date("Y-m-d"); ?>" /></td>
+</tr>
 <tr>
 <td width="85px">Call Back Time </td>
 <td><select id="cb_time_h" style="width:40px;"><option></option><option>01</option><option>02</option><option>03</option><option>04</option><option>05</option><option>06</option><option>07</option><option>08</option><option>09</option><option>10</option><option>11</option><option>12</option></select> : <select id="cb_time_m" style="width:40px;"><option></option><option>00</option><option>15</option><option>30</option><option>45</option></select> <select id="cb_time_p" style="width:40px;"><option></option><option>AM</option><option>PM</option></select></td>

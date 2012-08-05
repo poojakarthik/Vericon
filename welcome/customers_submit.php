@@ -6,7 +6,8 @@ $method = $_GET["method"];
 if ($method == "call_back")
 {
 	$id = $_GET["id"];
-	$time = date("Y-m-d") . " " . date("H:i:s", strtotime($_GET["time"]));
+	$date = $_GET["date"];
+	$time = $date . " " . date("H:i:s", strtotime($_GET["time"]));
 	
 	mysql_query("INSERT INTO vericon.welcome_cb (id, time) VALUES ('$id', '$time') ON DUPLICATE KEY UPDATE time = '$time'") or die(mysql_error());
 	
