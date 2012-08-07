@@ -168,7 +168,14 @@ if($page == 20)
 
 if($page == 21)
 {
-	echo $internet[21];
+	if ($da3[0] == "SBT")
+	{
+		echo $internet[21];
+	}
+	elseif ($da3[0] == "ZEN")
+	{
+		echo $internet["21_nd"];
+	}
 	echo $landline["dd2"];
 	$next_btn = $next_default;
 }

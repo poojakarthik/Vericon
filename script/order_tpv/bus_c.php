@@ -23,11 +23,11 @@ if($page == 4)
 {
 	if($plan == "TC064" || $plan == "TC104")
 	{
-		echo $landline["4_2"];
+		echo $landline[4];
 	}
 	else
 	{
-		echo $landline[4];
+		echo $landline["4_2"];
 	}
 	$next_btn = $next_default;
 }
@@ -156,13 +156,20 @@ if($page == 18)
 
 if($page == 19)
 {
-	if ($data["billing"] == "post")
+	if ($da3[0] == "SBT")
 	{
-		echo $landline["19_post"];
+		if ($data["billing"] == "post")
+		{
+			echo $landline["19_post"];
+		}
+		elseif ($data["billing"] == "email")
+		{
+			echo $landline["19_email"];
+		}
 	}
-	elseif ($data["billing"] == "email")
+	elseif ($da3[0] == "ZEN")
 	{
-		echo $landline["19_email"];
+		echo $landline["19_nd"];
 	}
 	echo $landline["dd2"];
 	$next_btn = $next_default;

@@ -86,6 +86,8 @@ $landline["19_post"] = "<p>For a limited time, <b>$campaign</b> will offer a bon
 $landline["19_email"] = "<p>For a limited time, <b>$campaign</b> will offer a bonus discount of \$5.00 inc. GST off your monthly bill, if you choose direct debit, in conjunction with e-mail billing.</p>
 <p>Would you like me to set this up for you?</p>";
 
+$landline["19_nd"] = "<p>Would you like me to set up a direct debit arrangement for you?</p><br>";
+
 $landline["19_bus_nc"] = "<p>For a limited time, as an introductory offer, <b>$campaign</b> will credit your monthly invoice \$25 for the first 4 monthly invoices which equates to a saving of \$100.</p>
 <p>If you agree to having your monthly account direct debited, you will also receive a bonus discount of \$5.00 <i><span style=\"color:#FF0000;\">(\$3 if no E-Bill)</span></i> Inc. GST off your monthly bill, if you choose direct debit, in conjunction with e-mail billing.</p>
 <p>Would you like me to set this up for you?</p>";
@@ -240,6 +242,8 @@ $internet[20] = "<p><b>$campaign</b> offers a $2.00 discount if you opt for emai
 
 $internet[21] = "<p>For a limited time, <b>$campaign</b> will offer a bonus discount of $3.00 off your monthly bill, if you choose direct debit.</p>
 <p>Would you like me to set this up for you?</p><br>";
+
+$internet["21_nd"] = "<p>Would you like me to set up a direct debit arrangement for you?</p><br>";
 
 $internet[22] = "<p>It is your responsibility to check the terms and conditions of any pre-existing contracts you might be having with your current provider.</p>
 <p>Do you understand this?</p>
