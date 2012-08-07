@@ -1,299 +1,115 @@
 <?php
-include "../js/self-js.php";
-?>
-<html>
-<head>
-<link rel="stylesheet" href="../css/inner.css" type="text/css"/>
-<style>
-.addon
-{
-	background-image:url('../images/addon_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	margin-right:10px;
-}
+mysql_connect('localhost','vericon','18450be');
 
-.addon:hover
-{
-	background-image:url('../images/addon_btn_hover.png');
-	cursor:pointer;
-}
-.other_plans
-{
-	background-image:url('../images/other_plans_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-}
-
-.other_plans:hover
-{
-	background-image:url('../images/other_plans_btn_hover.png');
-	cursor:pointer;
-}
-.dd
-{
-	background-image:url('../images/dd_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	margin-top:10px;
-}
-
-.dd:hover
-{
-	background-image:url('../images/dd_btn_hover.png');
-	cursor:pointer;
-}
-
-html
-{
-	overflow-y: auto;
-}
-</style>
-</head>
-<body>
-<div style="display:none;">
-<img src="../images/back_hover_btn.png" /><img src="../images/next_hover_btn.png" /><img src="../images/addon_btn_hover.png" /><img src="../images/other_plans_btn_hover.png" /><img src="../images/dd_btn_hover.png" />
-</div>
-
-<?php
-//declare variables
-$t = $_GET["t"];
-$campaign = $_GET['campaign'];
-$campaign_check = "";
-$website = "";
-$number = "";
-$plan = $_GET['plan'];
-$page = $_GET['page'];
+$method = $_GET["method"];
+$id = $_GET['id'];
+$user = $_GET["user"];
+$plan = $_GET["plan"];
+$page = $_GET["page"];
+$in = $_GET["in"];
 $date = date('jS \of F Y');
 
-include "source/convert.php";
-include "source/questions.php";
+$q = mysql_query("SELECT campaign FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+$da = mysql_fetch_row($q);
 
+$q1 = mysql_query("SELECT alias FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
+$da1 = mysql_fetch_row($q1);
+
+$q2 = mysql_query("SELECT id,number,website FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($da[0]) . "'") or die(mysql_error());
+$da2 = mysql_fetch_row($q2);
+
+$campaign = $da[0];
+$campaign_id = $da2[0];
+$alias = $da1[0];
+$number = $da2[1];
+$website = $da2[2];
+$rates = "";
+
+$q3 = mysql_query("SELECT script_questions.question,script_order.back,script_order.next,script_questions.input FROM vericon.script_order,vericon.script_questions WHERE script_order.id = '$plan' AND script_order.campaign = '$campaign_id' AND script_order.type = '$method' AND script_order.page = '$page' AND script_order.question = script_questions.id") or die(mysql_error());
+$da3 = mysql_fetch_row($q3);
+
+$q4 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id' ORDER BY plan DESC") or die(mysql_error());
+while ($plan_rate = mysql_fetch_assoc($q4))
+{
+	$q5 = mysql_query("SELECT * FROM vericon.script_plans WHERE id = '$plan_rate[plan]' AND campaign = '$campaign_id'") or die(mysql_error());
+	$plan_script = mysql_fetch_assoc($q5);
+	if($pl[$plan_rate["plan"]] == 0)
+	{
+		$rates .= "<table width='100%'>";
+		$rates .= "<tr>";
+		$rates .= "<td style='padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;'>";
+		$rates .= $plan_script["script"];
+		$rates .= "</td>";
+		$rates .= "</tr>";
+		$rates .= "</table><br>";
+		$pl[$plan_rate["plan"]] = 1;
+	}
+}
+
+if ($da3[0] == "") {
+	$question = "Error! Script does not exist for this plan";
+} else {
+	$question = $da3[0];
+}
+
+if ($da3[1] == "Y") {
+	$back = '<td width="33.33%" align="left"><button onClick="Back()" id="Btn_Back" class="back"></button></td>';
+} else {
+	$back = '<td width="33.33%" align="left"></td>';
+}
+
+if ($in == 1)
+{
+	if ($da3[2] == "Y") {
+		$next = '<td width="33.33%" align="right"><button onClick="Next(\'' . $id . '\',\'' . $da3[3] . '\')" style="display:none;" id="Btn_Next" class="next"></button></td>';
+	} elseif ($da3[2] == "S") {
+		$next = '<td width="33.33%" align="right"><button onClick="Submit()" style="display:none;" id="Btn_Next" class="btn">SUBMIT</button></td>';
+	} else {
+		$next = '<td width="33.33%" align="left"></td>';
+	}
+}
+else
+{
+	if ($da3[2] == "Y") {
+		$next = '<td width="33.33%" align="right"><button onClick="Next()" style="display:none;" id="Btn_Next" class="next"></button></td>';
+	} else {
+		$next = '<td width="33.33%" align="left"></td>';
+	}
+
+}
+
+include("input.php");
+eval("\$question = \"$question\";");
 ?>
 
-<table width="100%" border="0" id="script_text2" style="border-collapse: collapse; margin: 0; padding: 0;">
+<script>
+if ($( "#Btn_Next") != null)
+{
+	setTimeout(function() {$( "#Btn_Next").removeAttr("style"); }, 1000);
+}
+</script>
+
+<table width="100%" border="0" id="script_text2" style="border-collapse: collapse; margin: 0; padding: 0; height:380px;">
 <tr height="98%" valign="top">
 <td colspan="2">
 <?php
-
-$end1 = '</td>
+echo $question;
+if ($da3[3] != "" && $in == 1)
+{
+	echo $input[$da3[3]];
+}
+?>
+</td>
 </tr>
 <tr height="2%" valign="bottom">
 <td valign="bottom">
 <table width="100%" style="margin-top:10px;">
-<tr>';
-
-$back = '<td align="left"><input type="button" onClick="Back()" style="display: none;" id="Btn_Back" class="back" /></td>';
-
-$next = '<td align="right"><input type="button" onClick="Next()" style="display: none;"  id="Btn_Next" class="next" /></a></td>';
-
-$end2 = '</tr>
+<tr valign="middle">
+<?php echo $back; ?>
+<td width="33.33%" align="center"><button id="Btn_Cancel" onClick="Cancel()" class="btn_red">Cancel</button></td>
+<?php echo $next; ?>
+</tr>
 </table>
 </td>
 </tr>
-</table>';
-
-//Fresh
-if ($t == "fresh")
-{
-	//Landline
-	if ($plan[0] == 'T')
-	{
-		//Business No Contract Script
-		if($campaign_check[3] == 'B' && $plan[1] == 'N')
-		{
-			include ("order/bus_nc.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 21)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-		
-		//Business 12 Month Contract Script
-		elseif($campaign_check[3] == 'B' && $plan[1] == 'C')
-		{
-			include ("order/bus_c.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 22)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-		
-		//Residential No Contract Script
-		elseif($campaign_check[3] == 'R' && $plan[1] == 'N')
-		{
-			include ("order/resi_nc.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 20)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-		
-		//Residential 12 Month Contract Script
-		elseif($campaign_check[3] == 'R' && $plan[1] == 'C')
-		{
-			include ("order/resi_c.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 22)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-	}
-	elseif ($plan[0] == 'A')
-	{
-		//Business ADSL Script
-		if($campaign_check[3] == 'B')
-		{
-			include ("order/bus_adsl.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 24)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-		
-		//Residential ADSL Script
-		elseif($campaign_check[3] == 'R')
-		{
-			include ("order/resi_adsl.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 24)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-	}
-	elseif ($plan[0] == 'W')
-	{
-		//Business Wireless Script
-		if($campaign_check[3] == 'B')
-		{
-			include ("order/bus_wireless.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 23)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-		
-		//Residential Wireless Script
-		elseif($campaign_check[3] == 'R')
-		{
-			include ("order/resi_wireless.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 23)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-	}
-	elseif ($plan[0] == 'B')
-	{
-		//Business Bundle Script
-		if($campaign_check[3] == 'B')
-		{
-			include ("order/bus_bundle.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 24)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-		
-		//Residential Bundle Script
-		elseif($campaign_check[3] == 'R')
-		{
-			include ("order/resi_bundle.php");
-			echo $end1;
-			if ($page > 1)
-			{
-				echo $back;
-			}
-			if ($page < 24)
-			{
-				echo $next;
-			}
-			echo $end2;
-		}
-	}
-	else
-	{
-		echo "Please select a Campaign and Plan then press Load Script";
-	}
-}
-//Upgrade
-elseif ($t == "upgrade")
-{
-	echo "upgrade script";
-}
-//Winback
-elseif ($t == "winback")
-{
-	echo "winback script";
-}
-else
-{
-	echo "Please select a Campaign and Plan then press Load Script";
-}
-
-?>
-</body>
-</html>
+</table>

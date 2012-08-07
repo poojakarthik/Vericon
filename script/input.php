@@ -1,9 +1,5 @@
 <?php
-
-mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
-
-$q = mysql_query("SELECT * FROM sales_customers WHERE id = '$id'") or die(mysql_error());
+$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
 
 //input variables
@@ -60,8 +56,8 @@ switch ($data["id_type"])
 	break;
 }
 
+if ($data["billing"] == "post") { $dd_discount = "\$3"; } elseif ($data["billing"] == "email") { $dd_discount = "\$5"; }
 ?>
-
 <script>
 $(function() {
 	$( "#datepicker" ).datepicker( {
@@ -81,7 +77,6 @@ $(function() {
 	});
 });
 </script>
-
 <script>
 function Email()
 {
@@ -195,7 +190,6 @@ if ( $( "#abn" ).val() != undefined )
 	});
 }
 </script>
-
 <script> //get ABN
 function getABN(){
 	$.getJSON("../source/abrGet.php", {abn: $("#abn").val() },
@@ -227,7 +221,6 @@ function getABN(){
 </script>
 
 <?php
-
 $line = "<img src='../../images/line.png' width='50%' height='9' style='margin-top:3px;' />";
 
 $input["bus_info"] = $line . "<br><br><table border='0' width='100%'>
@@ -308,7 +301,4 @@ $input["lines"] = $line . "<div id='users-contain' class='ui-widget'>
 </table>
 <button onclick='Add_Package()' class='btn'>Add Package</button>
 </div>";
-
-//$input["edit_details"] = "<input type='button' onclick='parent.Edit_Details(\"$id\")' class='edit_details' />";
-$input["edit_details"] = "";
 ?>
