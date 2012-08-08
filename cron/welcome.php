@@ -1,7 +1,7 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$date = date("Y-m-d", strtotime("-3 weekdays"));
+$date = date("Y-m-d", strtotime("-2 weekdays"));
 
 $q = mysql_query("SELECT * FROM vericon.customers WHERE status = 'Waiting Welcome Call' AND DATE(`timestamp`) < '$date'") or die(mysql_error());
 while ($data = mysql_fetch_assoc($q))
