@@ -821,6 +821,8 @@ CREATE TABLE IF NOT EXISTS `campaigns` (
   `id` varchar(16) NOT NULL,
   `group` varchar(64) NOT NULL,
   `campaign` varchar(128) NOT NULL,
+  `number` varchar(32) NOT NULL,
+  `website` varchar(64) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
@@ -1266,6 +1268,22 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
 ```
 ```sql
 --
+-- Table structure for table `script_order`
+--
+
+CREATE TABLE IF NOT EXISTS `script_order` (
+  `id` varchar(16) NOT NULL,
+  `campaign` varchar(16) NOT NULL,
+  `type` varchar(32) NOT NULL,
+  `page` int(11) NOT NULL,
+  `question` int(11) NOT NULL,
+  `back` varchar(1) NOT NULL,
+  `next` varchar(1) NOT NULL,
+  PRIMARY KEY (`id`,`campaign`,`type`,`page`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
 -- Table structure for table `script_plans`
 --
 
@@ -1275,6 +1293,19 @@ CREATE TABLE IF NOT EXISTS `script_plans` (
   `script` text NOT NULL,
   PRIMARY KEY (`id`,`campaign`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `script_questions`
+--
+
+CREATE TABLE IF NOT EXISTS `script_questions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `question` text NOT NULL,
+  `input` varchar(32) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -1412,7 +1443,7 @@ CREATE TABLE IF NOT EXISTS `verification_lock` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `user` (`user`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
