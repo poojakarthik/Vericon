@@ -10,8 +10,23 @@ if ($method == "rename_rec")
 	
 	if (file_exists("/var/vtmp/" . $file["name"]))
 	{
-		exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/ns_" . $lead_id . ".gsm");
-		echo 1;
+		if ($file["size"] > 102400)
+		{
+			exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/ns_" . $lead_id . ".gsm");
+			
+			if (file_exists("/var/vtmp/ns_" . $lead_id . ".gsm"))
+			{
+				echo 1;
+			}
+			else
+			{
+				echo 0;
+			}
+		}
+		else
+		{
+			echo 0;
+		}
 	}
 	else
 	{

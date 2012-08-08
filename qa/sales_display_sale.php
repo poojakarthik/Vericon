@@ -107,7 +107,6 @@ function Details_Check()
 <script>
 $(function() {
     $('#file_upload').uploadify({
-		'checkExisting' : 'upload/check-exists.php',
 		'fileSizeLimit' : '20MB',
 		'fileTypeDesc' : 'GSM',
         'fileTypeExts' : '*.gsm',
