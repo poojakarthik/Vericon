@@ -38,6 +38,8 @@ if ($id == "")
 }
 else
 {
+	mysql_query("DELETE FROM vericon.welcome_cb WHERE id = '$id'") or die(mysql_error());
+	
 	mysql_query("INSERT INTO vericon.welcome_lock (id, user) VALUES ('$id', '$user') ON DUPLICATE KEY UPDATE id = '$id'") or die(mysql_error());
 	$q = mysql_query("SELECT * FROM vericon.customers WHERE id = '$id'") or die(mysql_error());
 	$data = mysql_fetch_assoc($q);

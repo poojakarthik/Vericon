@@ -71,7 +71,6 @@ function Rec(type)
 <script>
 $(function() {
     $('#file_upload').uploadify({
-		'checkExisting' : 'upload/check-exists.php',
 		'fileSizeLimit' : '5MB',
 		'fileTypeDesc' : 'GSM,MP3',
         'fileTypeExts' : '*.gsm;*.mp3',

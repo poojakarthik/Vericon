@@ -78,24 +78,6 @@ elseif ($p_i >= 1)
 	$package = explode(",", $p_packages[0]);
 	$plan = $package[1];
 }
-
-$q2 = mysql_query("SELECT name FROM vericon.plan_matrix WHERE id = '$plan' AND campaign = '" . mysql_real_escape_string($campaign_id) . "'") or die(mysql_error());
-$plan_name = mysql_fetch_row($q2);
-
-if ($plan_name[0] == "ADSL $54.95 24 Month Contract" || $plan_name[0] == "ADSL $64.95 24 Month Contract" || $plan_name[0] == "ADSL $50 24 Month Contract" || $plan_name[0] == "ADSL $50.95 24 Month Contract" || $plan_name[0] == "ADSL $51 24 Month Contract")
-{
-	$plan_name[0] = "ADSL 15GB 24 Month Contract";
-}
-elseif ($plan_name[0] == "ADSL $67.95 24 Month Contract" || $plan_name[0] == "ADSL $77.95 24 Month Contract")
-{
-	$plan_name[0] = "ADSL 500GB 24 Month Contract";
-}
-elseif ($plan_name[0] == "ADSL $69.95 24 Month Contract" || $plan_name[0] == "ADSL $79.95 24 Month Contract" || $plan_name[0] == "ADSL $60 24 Month Contract" || $plan_name[0] == "ADSL $60.95 24 Month Contract" || $plan_name[0] == "ADSL $61 24 Month Contract")
-{
-	$plan_name[0] = "ADSL Unlimited 24 Month Contract";
-}
-
-$plan = str_replace(" ", "_", $plan_name[0]);
 ?>
 
 <script>
@@ -206,7 +188,7 @@ var id = $( "#id" ),
 	user = "<?php echo $user; ?>",
 	page = $( "#page" );
 
-$( "#script_text" ).load("../script/script_tpv.php?id=" + id.val() + "&plan=" + plan.val() + "&user=" + user + "&page=" + page.val());
+$( "#script_text" ).load("../script/script.php?method=New&in=1&id=" + id.val() + "&user=" + user + "&plan=" + plan.val() + "&page=" + page.val());
 </script>
 </div></center>
 </td>

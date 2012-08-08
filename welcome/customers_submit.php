@@ -20,15 +20,38 @@ elseif ($method == "rename_rec")
 	
 	if (file_exists("/var/vtmp/" . $file["name"]))
 	{
-		if (substr($file["name"],-3) == "gsm")
+		if ($file["size"] > 102400)
 		{
-			exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/wc_" . $id . ".gsm");
-			echo 1;
-		}
-		elseif (substr($file["name"],-3) == "mp3")
-		{
-			exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/wc_" . $id . ".mp3");
-			echo 1;
+			if (substr($file["name"],-3) == "gsm")
+			{
+				exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/wc_" . $id . ".gsm");
+				
+				if (file_exists("/var/vtmp/wc_" . $id . ".gsm"))
+				{
+					echo 1;
+				}
+				else
+				{
+					echo 0;
+				}
+			}
+			elseif (substr($file["name"],-3) == "mp3")
+			{
+				exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/wc_" . $id . ".mp3");
+				
+				if (file_exists("/var/vtmp/wc_" . $id . ".mp3"))
+				{
+					echo 1;
+				}
+				else
+				{
+					echo 0;
+				}
+			}
+			else
+			{
+				echo 0;
+			}
 		}
 		else
 		{

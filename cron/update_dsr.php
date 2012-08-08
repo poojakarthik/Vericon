@@ -8,7 +8,7 @@ $header = "Account ID,Account Status,ADSL Status,Wireless Status,Title,First Nam
 
 $body = "";
 
-$q = mysql_query("SELECT id FROM ( (SELECT id, 0 as x FROM vericon.customers WHERE DATE(last_edit_timestamp) = '$date' AND type = '$type') UNION (SELECT id, 1 as x FROM vericon.customers_log WHERE type = '$type' GROUP BY id HAVING COUNT(id) > 1) ) as A GROUP BY id HAVING sum(x) = 0");
+$q = mysql_query("SELECT id FROM ( (SELECT id, 0 as x FROM vericon.customers WHERE DATE(last_edit_timestamp) = '$date' AND type = '$type') UNION (SELECT id, 1 as x FROM vericon.customers_log WHERE type = '$type' GROUP BY id HAVING COUNT(id) <= 1) ) as A GROUP BY id HAVING SUM(x) = 0");
 while ($up = mysql_fetch_row($q))
 {
 	$q1 = mysql_query("SELECT * FROM vericon.customers WHERE id = '$up[0]'") or die(mysql_error());

@@ -241,7 +241,7 @@ function Back()
 	
 	$( "#Btn_Back").attr("style", "display:none;");
 	$("#page" ).val(page);
-	$( "#script_text" ).load("../script/script_tpv.php?id=" + id.val() + "&plan=" + plan.val() + "&user=" + user + "&page=" + page);
+	$( "#script_text" ).load("../script/script.php?method=New&in=1&id=" + id.val() + "&user=" + user + "&plan=" + plan.val() + "&page=" + page);
 }
 
 function N()
@@ -253,7 +253,7 @@ function N()
 	
 	$( "#Btn_Next").attr("style", "display:none;");
 	$("#page" ).val(page);
-	$( "#script_text" ).load("../script/script_tpv.php?id=" + id.val() + "&plan=" + plan.val() + "&user=" + user + "&page=" + page);
+	$( "#script_text" ).load("../script/script.php?method=New&in=1&id=" + id.val() + "&user=" + user + "&plan=" + plan.val() + "&page=" + page);
 }
 
 function Next(id,action)
@@ -264,7 +264,7 @@ function Next(id,action)
 			abn_status = $( ".abn_status" ),
 			position = $( "#position" );
 			
-		$.get("../script/source/submit.php", { id: id, action: action, abn: abn.val(), abn_status: abn_status.html(), position: position.val() },
+		$.get("../script/submit.php", { id: id, action: action, abn: abn.val(), abn_status: abn_status.html(), position: position.val() },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -283,7 +283,7 @@ function Next(id,action)
 			middle = $( "#middle" ),
 			last = $( "#last" );
 			
-		$.get("../script/source/submit.php", { id: id, action: action, title: title.val(), first: first.val(), middle: middle.val(), last: last.val() },
+		$.get("../script/submit.php", { id: id, action: action, title: title.val(), first: first.val(), middle: middle.val(), last: last.val() },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -299,7 +299,7 @@ function Next(id,action)
 	{
 		var dob = $( "#datepicker" );
 			
-		$.get("../script/source/submit.php", { id: id, action: action, dob: dob.val() },
+		$.get("../script/submit.php", { id: id, action: action, dob: dob.val() },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -316,7 +316,7 @@ function Next(id,action)
 		var id_type = $( "#id_type" ),
 			id_num = $( "#id_num" );
 			
-		$.get("../script/source/submit.php", { id: id, action: action, id_type: id_type.val(), id_num: id_num.val() },
+		$.get("../script/submit.php", { id: id, action: action, id_type: id_type.val(), id_num: id_num.val() },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -332,7 +332,7 @@ function Next(id,action)
 	{
 		var physical = $( "#physical" );
 			
-		$.get("../script/source/submit.php", { id: id, action: action, physical: physical.val() },
+		$.get("../script/submit.php", { id: id, action: action, physical: physical.val() },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -353,7 +353,7 @@ function Next(id,action)
 			postal = "same";
 		}
 		
-		$.get("../script/source/submit.php", { id: id, action: action, postal: postal },
+		$.get("../script/submit.php", { id: id, action: action, postal: postal },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -369,7 +369,7 @@ function Next(id,action)
 	{
 		var mobile = $( "#mobile" );
 			
-		$.get("../script/source/submit.php", { id: id, action: action, mobile: mobile.val() },
+		$.get("../script/submit.php", { id: id, action: action, mobile: mobile.val() },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -386,7 +386,7 @@ function Next(id,action)
 		var email = $( "#email" ),
 			promotions = $('input[name=promotions]:checked');
 			
-		$.get("../script/source/submit.php", { id: id, action: action, email: email.val(), promotions: promotions.val() },
+		$.get("../script/submit.php", { id: id, action: action, email: email.val(), promotions: promotions.val() },
 			function(data) {
 				if (data == "submitted")
 				{
@@ -403,7 +403,7 @@ function Next(id,action)
 		var email = $( "#email2" ),
 			promotions = $('input[name=promotions]:checked');
 			
-		$.get("../script/source/submit.php", { id: id, action: "email2", email: email.val(), promotions: promotions.val() },
+		$.get("../script/submit.php", { id: id, action: "email2", email: email.val(), promotions: promotions.val() },
 			function(data) {
 				if (data == "submitted")
 				{
