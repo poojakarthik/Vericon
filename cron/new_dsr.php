@@ -174,7 +174,10 @@ while ($qa = mysql_fetch_assoc($q))
 		
 		if ($data2["flat_number"] != 0)
 		{
-			$building_type = $data2["flat_type_code"];
+			$q6 = mysql_query("SELECT `name` FROM gnaf.FLAT_TYPE_AUT WHERE code = '" . mysql_real_escape_string($data2["flat_type_code"]) . "'") or die(mysql_error());
+			$ft = mysql_fetch_row($q6);
+			
+			$building_type = $ft[0];
 			$building_number = $data2["flat_number"];
 			$building_number_suffix = $data2["flat_number_suffix"];
 		}
@@ -242,7 +245,10 @@ while ($qa = mysql_fetch_assoc($q))
 			}		
 			elseif ($data2["flat_number"] != 0)
 			{
-				$mail_street_number = $data2["flat_type_code"] . " " . $data2["flat_number"] . $data2["flat_number_suffix"] . "/";
+				$q6 = mysql_query("SELECT `name` FROM gnaf.FLAT_TYPE_AUT WHERE code = '" . mysql_real_escape_string($data2["flat_type_code"]) . "'") or die(mysql_error());
+				$ft = mysql_fetch_row($q6);
+			
+				$mail_street_number = $ft[0] . " " . $data2["flat_number"] . $data2["flat_number_suffix"] . "/";
 			}
 			elseif ($data2["level_number"] != 0)
 			{

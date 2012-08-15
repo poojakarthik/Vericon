@@ -93,14 +93,11 @@ elseif ($type == "street_name")
 }
 elseif ($type == "street_type")
 {
-	$l_pid = $_GET["l_pid"];
-	$street_name = trim($_GET["street_name"]);
-	
-	$q = mysql_query("SELECT `street_type_code`, `street_suffix_code` FROM gnaf.STREET_LOCALITY WHERE `locality_pid` = '$l_pid' AND street_name = '" . mysql_real_escape_string($street_name) . "' AND street_type_code LIKE '%" . mysql_real_escape_string($query) . "%'") or die(mysql_error());
+	$q = mysql_query("SELECT `code` FROM gnaf.STREET_TYPE_AUT WHERE code LIKE '" . mysql_real_escape_string($query) . "%'") or die(mysql_error());
 	echo '[';
 	while ($data = mysql_fetch_row($q))
 	{
-		if ($data[1] == "") { $d[] = "\"" . $data[0] . "\""; } else { $d[] = "\"" . $data[0] . " " . $data[1] . "\""; }
+		$d[] = "\"" . $data[0] . "\"";
 	}
 	echo implode(",",$d);
 	echo ']';
@@ -116,6 +113,8 @@ elseif ($type == "check")
 	$street_name = trim($_GET["street_name"]);
 	$st = explode(" ",trim($_GET["street_type"]));
 	$street_type = $st[0];
+	
+	$q = mysql_query("SELECT `code` FROM gnaf.STREET_TYPE_AUT WHERE code = '" . mysql_real_escape_string($street_type) . "'") or die(mysql_error());
 	
 	if ($l_pid == "")
 	{
@@ -141,9 +140,9 @@ elseif ($type == "check")
 	{
 		echo "Enter a valid address";
 	}
-	elseif ($address_type == "OTH" && $building_type == "" && $building_number == "" && $building_name == "" && $street_number && $street_name == "" && $street_type == "")
+	elseif ($street_type != "" && mysql_num_rows($q) == 0)
 	{
-		echo "Enter a valid address";
+		echo "Enter a valid street type";
 	}
 	else
 	{
@@ -189,6 +188,8 @@ elseif ($type == "search")
 	$street_type = $st[0];
 	$results_count = 0;
 	
+	if ($building_type == "null") { $building_type = ""; }
+	
 	$q = mysql_query("SELECT street_locality_pid FROM gnaf.STREET_LOCALITY WHERE `locality_pid` = '$l_pid' AND street_name = '" . mysql_real_escape_string($street_name) . "'") or die(mysql_error());
 	while ($s_pid = mysql_fetch_row($q))
 	{
@@ -207,17 +208,6 @@ elseif ($type == "search")
 		elseif ($address_type == "LOT")
 		{
 			$q1 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE `locality_pid` = '$l_pid' AND street_locality_pid = '$s_pid[0]' AND lot_number = '" . mysql_real_escape_string($building_number) . "'") or die(mysql_error());
-		}
-		elseif ($address_type == "OTH")
-		{
-			if ($building_type == "LOT")
-			{
-				$q1 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE `locality_pid` = '$l_pid' AND street_locality_pid = '$s_pid[0]' AND lot_number = '" . mysql_real_escape_string($building_number) . "'") or die(mysql_error());
-			}
-			else
-			{
-				$q1 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE `locality_pid` = '$l_pid' AND street_locality_pid = '$s_pid[0]'") or die(mysql_error());
-			}
 		}
 		
 		if (mysql_num_rows($q1) != 0)
@@ -289,7 +279,15 @@ elseif ($type == "search")
 			}
 		}
 	}
-	if ($results_count == 0) { echo 'No Results Found'; }
+	if ($results_count == 0)
+	{
+		mysql_query("INSERT INTO vericon.log_gnaf (timestamp, result) VALUES (NOW(), '0')") or die(mysql_error());
+		echo 'No Results Found';
+	}
+	else
+	{
+		mysql_query("INSERT INTO vericon.log_gnaf (timestamp, result) VALUES (NOW(), '1')") or die(mysql_error());
+	}
 }
 elseif ($type == "format")
 {
@@ -309,7 +307,7 @@ elseif ($type == "format")
 	
 	if ($building_type == "null") { $building_type = ""; }
 	
-	echo $building_type . " " . $building_number . " " . $street_number . " " . $street_name . " " . $street_type . ", " . $suburb . " " . $state . " " . $postcode;
+	echo trim($building_type . " " . $building_number . " " . $street_number . " " . $street_name . " " . $street_type . ", " . $suburb . " " . $state . " " . $postcode);
 }
 elseif ($type == "search2")
 {
@@ -323,6 +321,10 @@ elseif ($type == "search2")
 	$st = explode(" ",trim($_GET["street_type"]));
 	$street_type = $st[0];
 	$results_count = 0;
+	
+	if ($a_pid == "null") { echo 'No Results Found'; exit; }
+	
+	if ($building_type == "null") { $building_type = ""; }
 	
 	$q = mysql_query("SELECT locality_pid, street_locality_pid FROM gnaf.ADDRESS_DETAIL WHERE address_detail_pid = '$a_pid'") or die(mysql_error());
 	$da = mysql_fetch_row($q);
@@ -344,17 +346,6 @@ elseif ($type == "search2")
 	elseif ($address_type == "LOT")
 	{
 		$q1 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE `locality_pid` = '$l_pid' AND street_locality_pid = '$s_pid' AND lot_number = '" . mysql_real_escape_string($building_number) . "'") or die(mysql_error());
-	}
-	elseif ($address_type == "OTH")
-	{
-		if ($building_type == "LOT")
-		{
-			$q1 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE `locality_pid` = '$l_pid' AND street_locality_pid = '$s_pid' AND lot_number = '" . mysql_real_escape_string($building_number) . "'") or die(mysql_error());
-		}
-		else
-		{
-			$q1 = mysql_query("SELECT * FROM gnaf.ADDRESS_DETAIL WHERE `locality_pid` = '$l_pid' AND street_locality_pid = '$s_pid'") or die(mysql_error());
-		}
 	}
 	
 	if (mysql_num_rows($q1) != 0)
@@ -440,6 +431,8 @@ elseif ($type == "manual")
 	$street_name = strtoupper(trim($_GET["street_name"]));
 	$street_type = strtoupper(trim($_GET["street_type"]));
 	
+	if ($building_type == "null") { $building_type = ""; }
+	
 	$q = mysql_query("SELECT locality_name, state_pid, primary_postcode FROM gnaf.LOCALITY WHERE locality_pid = '$l_pid'") or die(mysql_error());
 	$data = mysql_fetch_row($q);
 	switch ($data[1])
@@ -514,7 +507,10 @@ elseif ($type == "display")
 		}		
 		elseif ($data["flat_number"] != 0)
 		{
-			$street_number = $data["flat_type_code"] . " " . $data["flat_number"] . $data["flat_number_suffix"] . "/";
+			$q1 = mysql_query("SELECT `name` FROM gnaf.FLAT_TYPE_AUT WHERE code = '" . mysql_real_escape_string($data["flat_type_code"]) . "'") or die(mysql_error());
+			$ft = mysql_fetch_row($q1);
+			
+			$street_number = $ft[0] . " " . $data["flat_number"] . $data["flat_number_suffix"] . "/";
 		}
 		elseif ($data["level_number"] != 0)
 		{

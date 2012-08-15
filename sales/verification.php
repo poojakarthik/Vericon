@@ -8,8 +8,10 @@ include "../source/header.php";
 div#users-contain table { margin: 1em 0; border-collapse: collapse; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 .ui-dialog_physical { padding: .3em; }
+.ui-dialog_physical_manual { padding: .3em; }
 .ui-dialog_physical_confirm { padding: .3em; }
 .ui-dialog_postal { padding: .3em; }
+.ui-dialog_postal_manual { padding: .3em; }
 .ui-dialog_postal_mailbox { padding: .3em; }
 .ui-dialog_postal_confirm { padding: .3em; }
 .ui-dialog_postal_confirm_switch { padding: .3em; }
@@ -24,7 +26,9 @@ div#users-contain table td, div#users-contain table th { border: 1px solid #eee;
 .validateTips3 { border: 1px solid transparent; padding: 0.3em; }
 .validateTips4 { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPhysical { border: 1px solid transparent; padding: 0.3em; }
+.validateTipsPhysicalManual { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPostal { border: 1px solid transparent; padding: 0.3em; }
+.validateTipsPostalManual { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsMB { border: 1px solid transparent; padding: 0.3em; }
 .ui-autocomplete { max-height: 300px; overflow-y: auto; overflow-x: hidden; padding-right: 20px; }
 .ui-autocomplete-loading { background: white url('../images/ajax-loader.gif') right center no-repeat; }
@@ -719,7 +723,7 @@ $(function() {
 									
 									$.get("../source/gnafGet.php?type=format", { l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data0) {
 										/// CLOUD GEOCODER API GET
-										$.get("../source/gnafGet.php?type=test", { input: data0 }, function(data2) {
+										$.get("../source/gnafXML.php", { input: data0 }, function(data2) {
 											$.get("../source/gnafGet.php?type=search2", { address_type: address_type.val(), a_pid: data2, building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data3) {
 												$( "#physical_address_code" ).html(data3);
 												$( "#physical_search_div" ).attr("style","display:none;");
@@ -839,6 +843,7 @@ $(function() {
 function FS_Physical()
 {
 	$( "#physical_building_type option" ).remove();
+	$( "#physical_building_type" ).append(new Option('', '', true, true));
 	$( "#physical_street_number_tr" ).removeAttr("style");
 	$( "#physical_street_tr" ).removeAttr("style");
 	$( "#physical_suburb_tr" ).removeAttr("style");
@@ -927,57 +932,6 @@ function LOT_Physical()
 	$( "#physical_building_name_tr" ).attr("style","display:none;");
 }
 
-function OTH_Physical()
-{
-	var newOptions = {
-		'' : '',
-		'APARTMENT' : 'APARTMENT',
-		'BLOCK' : 'BLOCK',
-		'BUILDING' : 'BUILDING',
-		'DUPLEX' : 'DUPLEX',
-		'FACTORY' : 'FACTORY',
-		'FLAT' : 'FLAT',
-		'HALL' : 'HALL',
-		'LOT' : 'LOT',
-		'OFFICE' : 'OFFICE',
-		'PENTHOUSE' : 'PENTHOUSE',
-		'ROOM' : 'ROOM',
-		'SECTION' : 'SECTION',
-		'SHOP' : 'SHOP',
-		'SITE' : 'SITE',
-		'STORE' : 'STORE',
-		'STUDIO' : 'STUDIO',
-		'SUITE' : 'SUITE',
-		'TOWNHOUSE' : 'TOWNHOUSE',
-		'UNIT' : 'UNIT',
-		'VILLA' : 'VILLA'
-	};
-	var selectedOption = '';
-	
-	var select = $('#physical_building_type');
-	if(select.prop) {
-	  var options = select.prop('options');
-	}
-	else {
-	  var options = select.attr('options');
-	}
-	$( "#physical_building_type option" ).remove();
-	
-	$.each(newOptions, function(val, text) {
-		options[options.length] = new Option(text, val);
-	});
-	select.val(selectedOption);
-	$( "#physical_building_name_tr" ).removeAttr("style");
-	$( "#physical_building_type_tr" ).removeAttr("style");
-	$( "#physical_building_number_span" ).html("Building Number ");
-	$( "#physical_building_number_tr" ).removeAttr("style");
-	$( "#physical_street_number_tr" ).removeAttr("style");
-	$( "#physical_street_tr" ).removeAttr("style");
-	$( "#physical_suburb_tr" ).removeAttr("style");
-	$( "#physical_state_tr" ).removeAttr("style");
-	$( "#physical_postcode_tr" ).removeAttr("style");
-}
-
 $(function() {
 	$( "#physical_street_name" ).autocomplete({
 		source: function(request, response) {
@@ -1006,8 +960,112 @@ $(function() {
                dataType: "json",
           data: {
 			  type : "street_type",
+  			  term : request.term
+          },
+          success: function(data) {
+            response(data);
+          }
+        });
+      },
+		minLength: 1
+	});
+});
+
+function Physical()
+{
+	$( "#dialog-confirm_physical" ).dialog( "open" );
+}
+</script>
+<script>
+$(function() {
+	$( "#dialog:.ui-dialog_physical_manual" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTipsPhysicalManual" );
+	
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-confirm_physical_manual" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 400,
+		height:300,
+		modal: true,
+		buttons: {
+			"Submit": function() {
+				var building_type = $( "#physical_manual_building_type" ),
+					building_number = $( "#physical_manual_building_number" ),
+					building_name = $( "#physical_manual_building_name" ),
+					street_number = $( "#physical_manual_street_number" ),
+					street_name = $( "#physical_manual_street_name" ),
+					street_type = $( "#physical_manual_street_type" ),
+					l_pid = $('#physical_locality_pid');
+					
+				$.get("../source/gnafGet.php?type=check", { address_type: "MA", l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data0) {
+					if (data0 == "valid")
+					{
+						$.get("../source/gnafGet.php?type=manual", { l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data) {
+							$( "#physical" ).val(data);
+							$.get("../source/gnafGet.php?type=display", { id: data }, function(data2) {
+								var n = data2.split("}");
+								$( "#display_physical1" ).val(n[0]);
+								$( "#display_physical2" ).val(n[1]);
+								$( "#display_physical3" ).val(n[2]);
+								$( "#display_physical4" ).val(n[3]);
+								$( "#dialog-confirm_physical_manual" ).dialog( "close" );
+								$( "#dialog-confirm_physical2" ).dialog( "close" );
+								$( "#dialog-confirm_physical" ).dialog( "close" );
+							});
+						});
+					}
+					else
+					{
+						updateTips(data0);
+					}
+				});
+			},
+			"Cancel": function() {
+				$( "#dialog-confirm_physical_manual" ).dialog( "close" );
+			}
+		}
+	});
+});
+
+$(function() {
+	$( "#physical_manual_street_name" ).autocomplete({
+		source: function(request, response) {
+        $.ajax({
+          url: "../source/gnafGet.php",
+               dataType: "json",
+          data: {
+			  type : "street_name",
 			  l_pid : $('#physical_locality_pid').val(),
-			  street_name : $( "#physical_street_name" ).val(),
+  			  term : request.term
+          },
+          success: function(data) {
+            response(data);
+          }
+        });
+      },
+		minLength: 1
+	});
+});
+
+$(function() {
+	$( "#physical_manual_street_type" ).autocomplete({
+		source: function(request, response) {
+        $.ajax({
+          url: "../source/gnafGet.php",
+               dataType: "json",
+          data: {
+			  type : "street_type",
   			  term : request.term
           },
           success: function(data) {
@@ -1021,37 +1079,55 @@ $(function() {
 
 function Manual_Physical()
 {
-	var building_type = $( "#physical_building_type" ),
-		building_number = $( "#physical_building_number" ),
-		building_name = $( "#physical_building_name" ),
-		street_number = $( "#physical_street_number" ),
-		street_name = $( "#physical_street_name" ),
-		street_type = $( "#physical_street_type" ),
-		l_pid = $('#physical_locality_pid');
+	var newOptions = {
+		'' : '',
+		'APARTMENT' : 'APARTMENT',
+		'BLOCK' : 'BLOCK',
+		'BUILDING' : 'BUILDING',
+		'DUPLEX' : 'DUPLEX',
+		'FACTORY' : 'FACTORY',
+		'FLAT' : 'FLAT',
+		'HALL' : 'HALL',
+		'LEVEL' : 'LEVEL',
+		'LOT' : 'LOT',
+		'OFFICE' : 'OFFICE',
+		'PENTHOUSE' : 'PENTHOUSE',
+		'ROOM' : 'ROOM',
+		'SECTION' : 'SECTION',
+		'SHOP' : 'SHOP',
+		'SITE' : 'SITE',
+		'STORE' : 'STORE',
+		'STUDIO' : 'STUDIO',
+		'SUITE' : 'SUITE',
+		'TOWNHOUSE' : 'TOWNHOUSE',
+		'UNIT' : 'UNIT',
+		'VILLA' : 'VILLA'
+	};
+	var selectedOption = $( "#physical_building_type" ).val();
 	
-	$( "#physical_address_code" ).attr("style","display:none;");
-	$( "#physical_manual_store" ).attr('style','display:none;');
-	$( "#physical_search_div" ).html("<center><br><br><br><br><p><img src='../images/ajax-loader.gif'>&nbsp;&nbsp;&nbsp;&nbsp;Please wait. Saving your address...</p></center>");
-	$( "#physical_search_div" ).removeAttr('style');
-		
+	var select = $('#physical_manual_building_type');
+	if(select.prop) {
+	  var options = select.prop('options');
+	}
+	else {
+	  var options = select.attr('options');
+	}
 
-	$.get("../source/gnafGet.php?type=manual", { l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data) {
-		$( "#physical" ).val(data);
-		$.get("../source/gnafGet.php?type=display", { id: data }, function(data2) {
-			var n = data2.split("}");
-			$( "#display_physical1" ).val(n[0]);
-			$( "#display_physical2" ).val(n[1]);
-			$( "#display_physical3" ).val(n[2]);
-			$( "#display_physical4" ).val(n[3]);
-			$( "#dialog-confirm_physical2" ).dialog( "close" );
-			$( "#dialog-confirm_physical" ).dialog( "close" );
-		});
+	$( "#physical_manual_building_type option" ).remove();
+
+	$.each(newOptions, function(val, text) {
+		options[options.length] = new Option(text, val);
 	});
-}
-
-function Physical()
-{
-	$( "#dialog-confirm_physical" ).dialog( "open" );
+	select.val(selectedOption);
+	$( "#physical_manual_building_number" ).val($( "#physical_building_number" ).val());
+	$( "#physical_manual_building_name" ).val("");
+	$( "#physical_manual_street_number" ).val($( "#physical_street_number" ).val());
+	$( "#physical_manual_street_name" ).val($( "#physical_street_name" ).val());
+	$( "#physical_manual_street_type" ).val($( "#physical_street_type" ).val());
+	$( "#physical_manual_suburb" ).val($( "#physical_suburb" ).val());
+	$( "#physical_manual_state" ).val($( "#physical_state" ).val());
+	$( "#physical_manual_postcode" ).val($( "#physical_postcode" ).val());
+	$( "#dialog-confirm_physical_manual" ).dialog( "open" );
 }
 </script>
 <!--#########################################################-->
@@ -1320,7 +1396,7 @@ $(function() {
 									
 									$.get("../source/gnafGet.php?type=format", { l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data0) {
 										/// CLOUD GEOCODER API GET
-										$.get("../source/gnafGet.php?type=test", { input: data0 }, function(data2) {
+										$.get("../source/gnafXML.php", { input: data0 }, function(data2) {
 											$.get("../source/gnafGet.php?type=search2", { address_type: address_type.val(), a_pid: data2, building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data3) {
 												$( "#postal_address_code" ).html(data3);
 												$( "#postal_search_div" ).attr("style","display:none;");
@@ -1440,6 +1516,7 @@ $(function() {
 function FS_Postal()
 {
 	$( "#postal_building_type option" ).remove();
+	$( "#postal_building_type" ).append(new Option('', '', true, true));
 	$( "#postal_street_number_tr" ).removeAttr("style");
 	$( "#postal_street_tr" ).removeAttr("style");
 	$( "#postal_suburb_tr" ).removeAttr("style");
@@ -1528,57 +1605,6 @@ function LOT_Postal()
 	$( "#postal_building_name_tr" ).attr("style","display:none;");
 }
 
-function OTH_Postal()
-{
-	var newOptions = {
-		'' : '',
-		'APARTMENT' : 'APARTMENT',
-		'BLOCK' : 'BLOCK',
-		'BUILDING' : 'BUILDING',
-		'DUPLEX' : 'DUPLEX',
-		'FACTORY' : 'FACTORY',
-		'FLAT' : 'FLAT',
-		'HALL' : 'HALL',
-		'LOT' : 'LOT',
-		'OFFICE' : 'OFFICE',
-		'PENTHOUSE' : 'PENTHOUSE',
-		'ROOM' : 'ROOM',
-		'SECTION' : 'SECTION',
-		'SHOP' : 'SHOP',
-		'SITE' : 'SITE',
-		'STORE' : 'STORE',
-		'STUDIO' : 'STUDIO',
-		'SUITE' : 'SUITE',
-		'TOWNHOUSE' : 'TOWNHOUSE',
-		'UNIT' : 'UNIT',
-		'VILLA' : 'VILLA'
-	};
-	var selectedOption = '';
-	
-	var select = $('#postal_building_type');
-	if(select.prop) {
-	  var options = select.prop('options');
-	}
-	else {
-	  var options = select.attr('options');
-	}
-	$( "#postal_building_type option" ).remove();
-	
-	$.each(newOptions, function(val, text) {
-		options[options.length] = new Option(text, val);
-	});
-	select.val(selectedOption);
-	$( "#postal_building_name_tr" ).removeAttr("style");
-	$( "#postal_building_type_tr" ).removeAttr("style");
-	$( "#postal_building_number_span" ).html("Building Number ");
-	$( "#postal_building_number_tr" ).removeAttr("style");
-	$( "#postal_street_number_tr" ).removeAttr("style");
-	$( "#postal_street_tr" ).removeAttr("style");
-	$( "#postal_suburb_tr" ).removeAttr("style");
-	$( "#postal_state_tr" ).removeAttr("style");
-	$( "#postal_postcode_tr" ).removeAttr("style");
-}
-
 $(function() {
 	$( "#postal_street_name" ).autocomplete({
 		source: function(request, response) {
@@ -1607,8 +1633,108 @@ $(function() {
                dataType: "json",
           data: {
 			  type : "street_type",
+  			  term : request.term
+          },
+          success: function(data) {
+            response(data);
+          }
+        });
+      },
+		minLength: 1
+	});
+});
+</script>
+<script>
+$(function() {
+	$( "#dialog:.ui-dialog_postal_manual" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTipsPostalManual" );
+	
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-confirm_postal_manual" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width: 400,
+		height:300,
+		modal: true,
+		buttons: {
+			"Submit": function() {
+				var building_type = $( "#postal_manual_building_type" ),
+					building_number = $( "#postal_manual_building_number" ),
+					building_name = $( "#postal_manual_building_name" ),
+					street_number = $( "#postal_manual_street_number" ),
+					street_name = $( "#postal_manual_street_name" ),
+					street_type = $( "#postal_manual_street_type" ),
+					l_pid = $('#postal_locality_pid');
+					
+				$.get("../source/gnafGet.php?type=check", { address_type: "MA", l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data0) {
+					if (data0 == "valid")
+					{
+						$.get("../source/gnafGet.php?type=manual", { l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data) {
+							$( "#postal" ).val(data);
+							$.get("../source/gnafGet.php?type=display", { id: data }, function(data2) {
+								var n = data2.split("}");
+								$( "#display_postal1" ).val(n[0]);
+								$( "#display_postal2" ).val(n[1]);
+								$( "#display_postal3" ).val(n[2]);
+								$( "#display_postal4" ).val(n[3]);
+								$( "#dialog-confirm_postal_manual" ).dialog( "close" );
+								$( "#dialog-confirm_postal3" ).dialog( "close" );
+								$( "#dialog-confirm_postal2" ).dialog( "close" );
+								$( "#dialog-confirm_postal" ).dialog( "close" );
+							});
+						});
+					}
+					else
+					{
+						updateTips(data0);
+					}
+				});
+			},
+			"Cancel": function() {
+				$( "#dialog-confirm_postal_manual" ).dialog( "close" );
+			}
+		}
+	});
+});
+
+$(function() {
+	$( "#postal_manual_street_name" ).autocomplete({
+		source: function(request, response) {
+        $.ajax({
+          url: "../source/gnafGet.php",
+               dataType: "json",
+          data: {
+			  type : "street_name",
 			  l_pid : $('#postal_locality_pid').val(),
-			  street_name : $( "#postal_street_name" ).val(),
+  			  term : request.term
+          },
+          success: function(data) {
+            response(data);
+          }
+        });
+      },
+		minLength: 1
+	});
+});
+
+$(function() {
+	$( "#postal_manual_street_type" ).autocomplete({
+		source: function(request, response) {
+        $.ajax({
+          url: "../source/gnafGet.php",
+               dataType: "json",
+          data: {
+			  type : "street_type",
   			  term : request.term
           },
           success: function(data) {
@@ -1622,32 +1748,55 @@ $(function() {
 
 function Manual_Postal()
 {
-	var building_type = $( "#postal_building_type" ),
-		building_number = $( "#postal_building_number" ),
-		building_name = $( "#postal_building_name" ),
-		street_number = $( "#postal_street_number" ),
-		street_name = $( "#postal_street_name" ),
-		street_type = $( "#postal_street_type" ),
-		l_pid = $('#postal_locality_pid');
+	var newOptions = {
+		'' : '',
+		'APARTMENT' : 'APARTMENT',
+		'BLOCK' : 'BLOCK',
+		'BUILDING' : 'BUILDING',
+		'DUPLEX' : 'DUPLEX',
+		'FACTORY' : 'FACTORY',
+		'FLAT' : 'FLAT',
+		'HALL' : 'HALL',
+		'LEVEL' : 'LEVEL',
+		'LOT' : 'LOT',
+		'OFFICE' : 'OFFICE',
+		'PENTHOUSE' : 'PENTHOUSE',
+		'ROOM' : 'ROOM',
+		'SECTION' : 'SECTION',
+		'SHOP' : 'SHOP',
+		'SITE' : 'SITE',
+		'STORE' : 'STORE',
+		'STUDIO' : 'STUDIO',
+		'SUITE' : 'SUITE',
+		'TOWNHOUSE' : 'TOWNHOUSE',
+		'UNIT' : 'UNIT',
+		'VILLA' : 'VILLA'
+	};
+	var selectedOption = $( "#postal_building_type" ).val();
 	
-	$( "#postal_address_code" ).attr("style","display:none;");
-	$( "#postal_manual_store" ).attr('style','display:none;');
-	$( "#postal_search_div" ).html("<center><br><br><br><br><p><img src='../images/ajax-loader.gif'>&nbsp;&nbsp;&nbsp;&nbsp;Please wait. Saving your address...</p></center>");
-	$( "#postal_search_div" ).removeAttr('style');
-		
+	var select = $('#postal_manual_building_type');
+	if(select.prop) {
+	  var options = select.prop('options');
+	}
+	else {
+	  var options = select.attr('options');
+	}
+	$( "#postal_manual_building_type option" ).remove();
 
-	$.get("../source/gnafGet.php?type=manual", { l_pid: l_pid.val(), building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val() }, function(data) {
-		$( "#postal" ).val(data);
-		$.get("../source/gnafGet.php?type=display", { id: data }, function(data2) {
-			var n = data2.split("}");
-			$( "#display_postal1" ).val(n[0]);
-			$( "#display_postal2" ).val(n[1]);
-			$( "#display_postal3" ).val(n[2]);
-			$( "#display_postal4" ).val(n[3]);
-			$( "#dialog-confirm_postal3" ).dialog( "close" );
-			$( "#dialog-confirm_postal" ).dialog( "close" );
-		});
+	
+	$.each(newOptions, function(val, text) {
+		options[options.length] = new Option(text, val);
 	});
+	select.val(selectedOption);
+	$( "#postal_manual_building_number" ).val($( "#postal_building_number" ).val());
+	$( "#postal_manual_building_name" ).val("");
+	$( "#postal_manual_street_number" ).val($( "#postal_street_number" ).val());
+	$( "#postal_manual_street_name" ).val($( "#postal_street_name" ).val());
+	$( "#postal_manual_street_type" ).val($( "#postal_street_type" ).val());
+	$( "#postal_manual_suburb" ).val($( "#postal_suburb" ).val());
+	$( "#postal_manual_state" ).val($( "#postal_state" ).val());
+	$( "#postal_manual_postcode" ).val($( "#postal_postcode" ).val());
+	$( "#dialog-confirm_postal_manual" ).dialog( "open" );
 }
 </script>
 <script>
@@ -1851,13 +2000,12 @@ for ($i = 0; $i < count($campaign); $i++)
 <td width="200px" align="center">Postcode<br /><input type="text" id="physical_input2" value="" style="width:190px; height:auto; padding-left:3px;" /></td>
 </tr>
 </table>
-<center><table>
+<center><table width="95%">
 <tr id="physical_type_tr" style="display:none;">
 <td><input type="radio" name="physical_type" value="FS" onclick="FS_Physical()" style="height:auto; margin:0 3px;" />Freestanding Premises</td>
 <td><input type="radio" name="physical_type" value="OB" onclick="OB_Physical()" style="height:auto; margin:0 3px;" />Office Building</td>
 <td><input type="radio" name="physical_type" value="BU" onclick="BU_Physical()" style="height:auto; margin:0 3px;" />Flat, Unit or Apartment</td>
 <td><input type="radio" name="physical_type" value="LOT" onclick="LOT_Physical()" style="height:auto; margin:0 3px;" />Lot</td>
-<td><input type="radio" name="physical_type" value="OTH" onclick="OTH_Physical()" style="height:auto; margin:0 3px;" />Other</td>
 </tr>
 </table></center>
 <table width="100%" style="margin-top:10px;">
@@ -1892,6 +2040,44 @@ for ($i = 0; $i < count($campaign); $i++)
 <tr id="physical_postcode_tr" style="display:none;">
 <td width="80px">Postcode </td>
 <td><input type="text" id="physical_postcode" disabled="disabled" value="" style="width:30px; height:auto; padding-left:3px;" /></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm_physical_manual" title="Physical Address Manual">
+<p class="validateTipsPhysicalManual">Enter the customer's address in the appropriate fields.</p><br />
+<table width="100%" style="margin-top:10px;">
+<tr>
+<td width="80px">Building Type </td>
+<td><select id="physical_manual_building_type" style="width:95px; height:auto; padding:0px; margin:0px;"></select></td>
+</tr>
+<tr>
+<td width="80px">Building Number </td>
+<td><input type="text" id="physical_manual_building_number" value="" style="width:50px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Building Name </td>
+<td><input type="text" id="physical_manual_building_name" value="" style="width:190px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Street Number </td>
+<td><input type="text" id="physical_manual_street_number" value="" style="width:50px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Street</td>
+<td><input type="text" id="physical_manual_street_name" value="" style="width:107px; height:auto; padding-left:3px;" /> <input type="text" id="physical_manual_street_type" value="" style="width:75px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Suburb </td>
+<td><input type="text" id="physical_manual_suburb" disabled="disabled" value="" style="width:190px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">State </td>
+<td><input type="text" id="physical_manual_state" disabled="disabled" value="" style="width:30px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Postcode </td>
+<td><input type="text" id="physical_manual_postcode" disabled="disabled" value="" style="width:30px; height:auto; padding-left:3px;" /></td>
 </tr>
 </table>
 </div>
@@ -1975,13 +2161,12 @@ for ($i = 0; $i < count($campaign); $i++)
 <td width="200px" align="center">Postcode<br /><input type="text" id="postal_input2" value="" style="width:190px; height:auto; padding-left:3px;" /></td>
 </tr>
 </table>
-<center><table>
+<center><table width="95%">
 <tr id="postal_type_tr" style="display:none;">
 <td><input type="radio" name="postal_type" value="FS" onclick="FS_Postal()" style="height:auto; margin:0 3px;" />Freestanding Premises</td>
 <td><input type="radio" name="postal_type" value="OB" onclick="OB_Postal()" style="height:auto; margin:0 3px;" />Office Building</td>
 <td><input type="radio" name="postal_type" value="BU" onclick="BU_Postal()" style="height:auto; margin:0 3px;" />Flat, Unit or Apartment</td>
 <td><input type="radio" name="postal_type" value="LOT" onclick="LOT_Postal()" style="height:auto; margin:0 3px;" />Lot</td>
-<td><input type="radio" name="postal_type" value="OTH" onclick="OTH_Postal()" style="height:auto; margin:0 3px;" />Other</td>
 </tr>
 </table></center>
 <table width="100%" style="margin-top:10px;">
@@ -2016,6 +2201,45 @@ for ($i = 0; $i < count($campaign); $i++)
 <tr id="postal_postcode_tr" style="display:none;">
 <td width="80px">Postcode </td>
 <td><input type="text" id="postal_postcode" disabled="disabled" value="" style="width:30px; height:auto; padding-left:3px;" /></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm_postal_manual" title="Postal Address Manual">
+<p class="validateTipsPhysicalManual">Enter the customer's address in the appropriate fields.</p><br />
+<table width="100%" style="margin-top:10px;">
+<tr>
+<td width="80px">Building Type </td>
+<td><select id="postal_manual_building_type" style="width:95px; height:auto; padding:0px; margin:0px;"></select></td>
+</tr>
+<tr>
+<td width="80px">Building Number </td>
+<td><input type="text" id="postal_manual_building_number" value="" style="width:50px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Building Name </td>
+<td><input type="text" id="postal_manual_building_name" value="" style="width:190px; height:auto; padding-left:3px;" /></td>
+
+</tr>
+<tr>
+<td width="80px">Street Number </td>
+<td><input type="text" id="postal_manual_street_number" value="" style="width:50px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Street</td>
+<td><input type="text" id="postal_manual_street_name" value="" style="width:107px; height:auto; padding-left:3px;" /> <input type="text" id="postal_manual_street_type" value="" style="width:75px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Suburb </td>
+<td><input type="text" id="postal_manual_suburb" disabled="disabled" value="" style="width:190px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">State </td>
+<td><input type="text" id="postal_manual_state" disabled="disabled" value="" style="width:30px; height:auto; padding-left:3px;" /></td>
+</tr>
+<tr>
+<td width="80px">Postcode </td>
+<td><input type="text" id="postal_manual_postcode" disabled="disabled" value="" style="width:30px; height:auto; padding-left:3px;" /></td>
 </tr>
 </table>
 </div>
