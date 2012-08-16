@@ -55,6 +55,30 @@ function Get_Sale()
 	});
 }
 </script>
+<script> //change type
+function Change_Type(type)
+{
+	var id = $( "#id" ),
+		verifier = "<?php echo $ac["user"]; ?>";
+	
+	$.get("verification_submit.php?method=change_type", { id: id.val(), verifier: verifier, type: type }, function(data) {
+		if (data == "done")
+		{
+			$( "#display" ).hide('blind', '' , 'slow', function() {
+				$( "#display" ).load('verification_dash.php?id=' + id.val(), function() {
+					$( "#packages" ).load('packages.php?id=' + id.val(), function() {
+						$( "#display" ).show('blind', '' , 'slow');
+					});
+				});
+			});
+		}
+		else
+		{
+			Submit_Error(data);
+		}
+	});
+}
+</script>
 <script> //add packages
 $(function() {
 	$( "#dialog:ui-dialog2" ).dialog( "destroy" );

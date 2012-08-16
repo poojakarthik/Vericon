@@ -38,6 +38,44 @@ if ($method == "get") //get sale
 		echo "valid";
 	}
 }
+elseif ($method == "change_type") //change type
+{
+	$id = $_GET["id"];
+	$verifier = $_GET["verifier"];
+	$type = $_GET["type"];
+	$now = date("Y-m-d H:i:s");
+	
+	$q = mysql_query("SELECT centre,lead_id FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	if ($id == "" || $verifier == "" || $type == "")
+	{
+		echo "Error! Please contact your administrator";
+	}
+	else
+	{
+		mysql_query("INSERT INTO vericon.tpv_notes (id, status, lead_id, centre, verifier, note) VALUES ('$id', 'Declined', '$data[1]', '$data[0]', '$verifier', 'Changed sale to " . $type . "')") or die(mysql_error());
+		
+		mysql_query("UPDATE vericon.sales_customers SET status = 'Declined', approved_timestamp = '$now', type = '$type' WHERE id = '$id'") or die(mysql_error());
+		
+		$q1 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
+		while ($pack = mysql_fetch_assoc($q1))
+		{
+			if ($type == "Business")
+			{
+				$new_plan = substr($pack["plan"],0,3) . "B" . substr($pack["plan"],4);
+			}
+			elseif ($type == "Residential")
+			{
+				$new_plan = substr($pack["plan"],0,3) . "R" . substr($pack["plan"],4);
+			}
+			
+			mysql_query("UPDATE vericon.sales_packages SET plan = '$new_plan' WHERE sid = '$id' AND cli = '$pack[cli]'") or die(mysql_error());
+		}
+		
+		echo "done";
+	}
+}
 elseif ($method == "add") //add package
 {
 	$sid = $_GET["id"];

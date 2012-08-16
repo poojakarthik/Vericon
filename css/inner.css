@@ -287,6 +287,26 @@ input{
 	cursor:pointer;
 }
 
+.icon_business {
+	background-image:url('../images/business_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
+.icon_residential {
+	background-image:url('../images/residential_icon.png');
+	background-repeat:no-repeat;
+	height:16px;
+	width:16px;
+	border:none;
+	background-color:transparent;
+	cursor:pointer;
+}
+
 .icon_save {
 	background-image:url('../images/save_icon.png');
 	background-repeat:no-repeat;
