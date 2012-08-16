@@ -1,155 +1,70 @@
 <?php
-//declare variables
-$campaign = str_replace("_", " ", $_GET['campaign']);
-$campaign_check = "";
-$website = "";
-$number = "";
-$plan = str_replace("_", " ", $_GET['plan']);
-$plan_name = str_replace("_", " ", $_GET['plan']);
+mysql_connect('localhost','vericon','18450be');
+
+$method = $_GET["method"];
+$id = $_GET['id'];
+$plan = $_GET["plan"];
+$in = $_GET["in"];
 $date = "<span style=\"color:#FF0000;\">_______</span>";
 
-include "../script/source/convert.php";
-include "../script/source/questions.php";
+$q = mysql_query("SELECT campaign FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+$da = mysql_fetch_row($q);
+
+$q2 = mysql_query("SELECT id,number,website FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($da[0]) . "'") or die(mysql_error());
+$da2 = mysql_fetch_row($q2);
+
+$campaign = $da[0];
+$campaign_id = $da2[0];
+$alias = "<span style=\"color:#FF0000;\">_______</span>";
+$number = $da2[1];
+$website = $da2[2];
+$rates = "";
+
+$q0 = mysql_query("SELECT COUNT(id) FROM vericon.script_order WHERE script_order.id = '$plan' AND script_order.campaign = '$campaign_id' AND script_order.type = '$method'") or die(mysql_error());
+$p = mysql_fetch_row($q0);
 ?>
-
-<style type="text/css">
-.line{
-	width:100%;
-}
-</style>
-</head>
-
-<body>
+<table width="100%" border="0" style="margin: 0; padding: 0;">
 <?php
-
-//Landline
-if ($plan[0] == 'T')
+for ($page = 1; $page <= $p[0]; $page++)
 {
-	//Business No Contract Script
-	if($campaign_check[3] == 'B' && $plan[1] == 'N')
+	$q3 = mysql_query("SELECT script_questions.question,script_order.back,script_order.next,script_questions.input FROM vericon.script_order,vericon.script_questions WHERE script_order.id = '$plan' AND script_order.campaign = '$campaign_id' AND script_order.type = '$method' AND script_order.page = '$page' AND script_order.question = script_questions.id") or die(mysql_error());
+	$da3 = mysql_fetch_row($q3);
+	
+	$q4 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id' ORDER BY plan DESC") or die(mysql_error());
+	while ($plan_rate = mysql_fetch_assoc($q4))
 	{
-		for($page=1;$page<=21;$page++)
+		$q5 = mysql_query("SELECT * FROM vericon.script_plans WHERE id = '$plan_rate[plan]' AND campaign = '$campaign_id'") or die(mysql_error());
+		$plan_script = mysql_fetch_assoc($q5);
+		if($pl[$plan_rate["plan"]] == 0)
 		{
-			include "../script/order/bus_nc.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
+			$rates .= "<table width='100%'>";
+			$rates .= "<tr>";
+			$rates .= "<td style='padding:4.9pt;border-top:1pt solid black;border-right:1pt solid black;border-bottom:1pt solid black;border-left:1pt solid black;'>";
+			$rates .= $plan_script["script"];
+			$rates .= "</td>";
+			$rates .= "</tr>";
+			$rates .= "</table><br>";
+			$pl[$plan_rate["plan"]] = 1;
 		}
 	}
 	
-	//Business 12 Month Contract Script
-	elseif($campaign_check[3] == 'B' && $plan[1] == 'C')
-	{
-		for($page=1;$page<=22;$page++)
-		{
-			include "../script/order/bus_c.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
+	if ($da3[0] == "") {
+		$question = "Error! Script does not exist for this plan";
+	} else {
+		$question = $da3[0];
 	}
 	
-	//Residential No Contract Script
-	elseif($campaign_check[3] == 'R' && $plan[1] == 'N')
-	{
-		for($page=1;$page<=20;$page++)
-		{
-			include "../script/order/resi_nc.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-	
-	//Business 12 Month Contract Script
-	elseif($campaign_check[3] == 'R' && $plan[1] == 'C')
-	{
-		for($page=1;$page<=22;$page++)
-		{
-			include "../script/order/resi_c.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-}
-elseif ($plan[0] == 'A')
-{
-	//Business ADSL Script
-	if($campaign_check[3] == 'B')
-	{
-		for($page=1;$page<=24;$page++)
-		{
-			include "../script/order/bus_adsl.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-	
-	//Residential ADSL Script
-	elseif($campaign_check[3] == 'R')
-	{
-		for($page=1;$page<=24;$page++)
-		{
-			include "../script/order/resi_adsl.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-}
-elseif ($plan[0] == 'W')
-{
-	//Business ADSL Script
-	if($campaign_check[3] == 'B')
-	{
-		for($page=1;$page<=23;$page++)
-		{
-			include "../script/order/bus_wireless.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-	
-	//Residential ADSL Script
-	elseif($campaign_check[3] == 'R')
-	{
-		for($page=1;$page<=23;$page++)
-		{
-			include "../script/order/resi_wireless.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-}
-elseif ($plan[0] == 'B')
-{
-	//Business 12 Month Contract Multiple Product Script
-	if($campaign_check[3] == 'B' && $plan[1] == 'C')
-	{
-		for($page=1;$page<=24;$page++)
-		{
-			include "../script/order/bus_bundle.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-	
-	//Business 12 Month Contract Multiple Product Script
-	elseif($campaign_check[3] == 'R' && $plan[1] == 'C')
-	{
-		for($page=1;$page<=24;$page++)
-		{
-			include "../script/order/resi_bundle.php";
-			echo "<br>";
-			echo "<div class='line'><hr></hr></div>";
-			echo "<br>";
-		}
-	}
-}
-
+	eval("\$question = \"$question\";");
 ?>
+<tr>
+<td>
+<?php
+echo $question;
+?>
+<br>
+</td>
+</tr>
+<?php
+}
+?>
+</table>
