@@ -1,131 +1,47 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$method = $_GET["method"];
-$user = $_GET["user"];
 $id = $_GET["id"];
 
-$q = mysql_query("SELECT * FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
-$ac = mysql_fetch_assoc($q);
+$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+$data = mysql_fetch_assoc($q);
 
-$q1 = mysql_query("SELECT type FROM vericon.centres WHERE centre = '$ac[centre]'") or die(mysql_error());
-$centre_type = mysql_fetch_row($q1);
+$q2 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$data[agent]'") or die(mysql_error());
+$data2 = mysql_fetch_assoc($q2);
 
-if ($method == "init")
+$q3 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+$c = mysql_fetch_row($q3);
+$c_id = $c[0];
+
+if ($data["status"] == "Line Issue")
 {
-	if ($centre_type[0] == "Self")
-	{
-?>
-<div id="get_sale_table" style="margin-top:15px; margin-bottom:15px;">
-<form onsubmit="event.preventDefault()">
-    <table>
-        <tr>
-            <td><p>Enter the Customer's Sale ID</p></td>
-            <td><input type="text" id="id" size="25" autocomplete="off"/></td>
-            <td><input type="submit" class="get_sale_btn" onclick="Get_Sale()" value=""/></td>
-        </tr>
-    </table>
-</form>
-    <center><p class="error" style="color:#C00;"></p></center>
-</div>
-<?php
-	}
-?>
-
-<p><img src="../images/submitted_sales_header.png" width="165" height="25" style="margin-left:3px;" /></p>
-<p><img src="../images/line.png" width="715" height="9" /></p>
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:95.5%; margin-left:3px; margin-top:0px;">
-<thead>
-<tr class="ui-widget-header ">
-<th>Sale ID</th>
-<th>Status</th>
-<th>Lead ID</th>
-<th>Date Submitted</th>
-<th>Agent</th>
-<th>Campaign</th>
-<th>Type</th>
-<th style="text-align:center;">Notes</th>
-</tr>
-</thead>
-<tbody>
-<?php
-$weekago = date("Y-m-d", strtotime("-1 week"));
-$sq = mysql_query("SELECT * FROM vericon.sales_customers WHERE centre = '$ac[centre]' AND DATE(timestamp) >= '$weekago' ORDER BY timestamp DESC") or die(mysql_error());
-if (mysql_num_rows($sq) == 0)
-{
-	echo "<tr>";
-	echo "<td colspan='8'><center>No Sales Submitted Within the Week!</center></td>";
-	echo "</tr>";
+	$status_text = "line_issue";
 }
 else
 {
-	while ($sales_data = mysql_fetch_assoc($sq))
-	{
-		$aq = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$sales_data[agent]'") or die(mysql_error());
-		$agent = mysql_fetch_assoc($aq);
-		echo "<tr>";
-		echo "<td>" . $sales_data["id"] . "</td>";
-		echo "<td>" . $sales_data["status"] . "</td>";
-		echo "<td>" . $sales_data["lead_id"] . "</td>";
-		echo "<td>" . date("d/m/Y", strtotime($sales_data["timestamp"])) . "</td>";
-		echo "<td>" . $agent["first"] . " " . $agent["last"] . "</td>";
-		echo "<td>" . $sales_data["campaign"] . "</td>";
-		echo "<td>" . $sales_data["type"] . "</td>";
-		echo "<td style='text-align:center;'><button onclick='Notes_View(\"$sales_data[id]\")' class='icon_notes' title='Notes'></button></td>";
-		echo "</tr>";
-	}
+	$status_text = strtolower($data["status"]);
 }
 ?>
-</tbody>
-</table>
-</div>
-<?php
-}
-elseif ($method == "details")
-{
-	$id = $_GET["id"];
-	
-	$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
-	$data = mysql_fetch_assoc($q);
-	
-	$q2 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$data[agent]'") or die(mysql_error());
-	$data2 = mysql_fetch_assoc($q2);
-	
-	$q3 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
-	$c = mysql_fetch_row($q3);
-	$c_id = $c[0];
-	
-	if ($data["status"] == "Line Issue")
-	{
-		$status_text = "line_issue";
-	}
-	else
-	{
-		$status_text = strtolower($data["status"]);
-	}
-?>
-
-<script> //dob datepicker
+<script> //notes button
 $(function() {
-	$( "#datepicker" ).datepicker( {
-		showOn: "button",
-		buttonImage: "../images/calendar.png",
-		buttonImageOnly: true,
-		dateFormat: "yy-mm-dd",
-		firstDay: 1,
-		showOtherMonths: true,
-		selectOtherMonths: true,
-		altField: "#datepicker2",
-		altFormat: "dd/mm/yy",
-		changeMonth: true,
-		changeYear: true,
-		maxDate: "-216M",
-		yearRange: "-100Y:-18Y"
+	$( "#dialog:ui-dialog_notes" ).dialog( "destroy" );
+	
+	$( "#dialog-form_notes" ).dialog({
+		autoOpen: false,
+		height: 200,
+		width: 425,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind"
 	});
 });
 
-$( "#datepicker" ).datepicker("disable");
+function Notes()
+{
+	$( "#dialog-form_notes" ).dialog( "open" );
+}
 </script>
 <script>
 if ( $( "#mobile" ).val() == "N/A" )
@@ -162,6 +78,24 @@ else
 	});
 }
 </script>
+
+<div id="dialog-form_notes" title="Notes">
+<textarea disabled="disabled" style="width:400px; height:150px; resize:none;">
+<?php
+$q6 = mysql_query("SELECT * FROM vericon.tpv_notes WHERE id = '$id' ORDER BY timestamp DESC") or die (mysql_error());
+
+while ($tpv_notes = mysql_fetch_assoc($q6))
+{
+	$q7 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$tpv_notes[verifier]'") or die(mysql_error());
+	$vname = mysql_fetch_assoc($q7);
+	
+	echo "----- " . date("d/m/Y H:i:s", strtotime($tpv_notes["timestamp"])) . " - " . $vname["first"] . " " . $vname["last"] . " -----" . " (" . $tpv_notes["status"] . ")\n";
+	echo $tpv_notes["note"] . "\n";
+}
+?>
+</textarea>
+</div>
+
 <table border="0" width="100%">
 <tr>
 <td width="50%" valign="top">
@@ -183,6 +117,10 @@ else
 <tr>
 <td>Agent </td>
 <td><b><?php echo $data2["first"] . " " . $data2["last"] . " (" . $data2["user"] . ")"; ?></b></td>
+</tr>
+<tr>
+<td>Centre </td>
+<td><b><?php echo $data["centre"]; ?></b></td>
 </tr>
 <tr>
 <td>Campaign </td>
@@ -367,7 +305,7 @@ switch ($data["title"])
 <td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
 </tr>
 <tr>
-<td width="85px"><a id="physical_link">Physical</a> </td>
+<td width="85px">Physical </td>
 <td><input type="text" id="display_physical1" style="width:225px;" disabled="disabled" /></td>
 </tr>
 <tr>
@@ -379,7 +317,7 @@ switch ($data["title"])
 <td><input type="text" id="display_physical3" style="width:45px;" disabled="disabled" /> <input type="text" id="display_physical4" style="width:55px;" disabled="disabled" /></td>
 </tr>
 <tr>
-<td width="85px"><a id="postal_link">Postal</a> </td>
+<td width="85px">Postal </td>
 <td><input type="text" id="display_postal1" readonly style="width:225px;" disabled="disabled" /></td>
 </tr>
 <tr>
@@ -460,13 +398,9 @@ else
 </tr>
 <tr valign="bottom">
 <td align="left" style="padding-left:5px;"><button onclick="Notes()" class="btn">Notes</button></td>
-<td align="right" style="padding-right:5px;"><button onclick="Cancel()" class="btn">Cancel</button></td>
+<td align="right" style="padding-right:5px;"><button onclick="Cancel_Search()" class="btn">Cancel</button></td>
 </tr>
 </table>
 </td>
 </tr>
 </table>
-
-<?php
-}
-?>
