@@ -85,7 +85,7 @@ else
 </script>
 
 <div id="dialog-form_notes" title="Notes">
-<textarea disabled="disabled" id="display_notes" style="width:400px; height:150px; resize:none;">
+<textarea disabled="disabled" id="notes_display" style="width:400px; height:150px; resize:none;">
 </textarea>
 </div>
 
