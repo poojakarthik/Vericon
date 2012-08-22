@@ -1,129 +1,257 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$method = $_GET["method"];
-
-if ($method == "sales")
-{
-	$centre = $_GET["centre"];
-	$date = $_GET["date"];
+$centres = explode(",", $_GET["centres"]);
+$date = $_GET["date"];
 ?>
-<table width="100%" style="margin-top:10px;">
-<tr>
-<td align="left" style="padding-left:5px;"><img src="../images/sale_details_header2.png" width="125" height="25"></td>
-<td align="right" style="padding-right:10px;"><b><?php echo $centre; ?></b></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
-</tr>
-</table>
 
-<table width="100%">
+<center><table width="99%">
 <tr>
-<td valign="top" width="50%">
+<td valign="top">
 <center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="98%" style="margin-top:0px;">
-<thead>
-<tr class="ui-widget-header ">
-<th style="text-align:center;" colspan="4">Business</th>
-</tr>
-<tr class="ui-widget-header ">
-<th style="text-align:center;">Sale ID</th>
-<th style="text-align:center;">Status</th>
-<th style="text-align:center;">Agent</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<?php	
-$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE status != 'Queue' AND type = 'Business' AND centre = '$centre' AND DATE(approved_timestamp) = '$date' ORDER BY approved_timestamp ASC") or die(mysql_error());
-
-if (mysql_num_rows($q) == 0)
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; margin-top:0px;">
+<?php //captive
+$total_approved = 0;
+$total_declined = 0;
+$total_line_issue = 0;
+$total_total = 0;
+for ($i = 0; $i < count($centres); $i++)
 {
-	echo "<tr>";
-	echo "<td style='text-align:center;' colspan='4'>No Business Sales Made by $centre</td>";
-	echo "</tr>";
-}
-else
-{
-	while ($data = mysql_fetch_assoc($q))
+	$q0 = mysql_query("SELECT centre FROM vericon.centres WHERE centre = '$centres[$i]' AND type = 'Captive'") or die(mysql_error());
+	if (mysql_num_rows($q0) != 0)
 	{
-		$q1 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[agent]'") or die(mysql_error());
-		$agent = mysql_fetch_row($q1);
+		$captive[$centres[$i]] = 1;
+	}
+}
+
+if (array_sum($captive) > 0)
+{
+	echo '<thead>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th colspan="6" style="text-align:center;">Captive</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th>Centre</th>';
+	echo '<th style="text-align:center;">Approved</th>';
+	echo '<th style="text-align:center;">Declined</th>';
+	echo '<th style="text-align:center;">Line</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th></th>';
+	echo '</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+}
+
+for ($i = 0; $i < count($centres); $i++)
+{
+	if ($captive[$centres[$i]] == 1)
+	{
+		$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$approved = mysql_num_rows($q1);
+		$total_approved += mysql_num_rows($q1);
+		
+		$q2 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Declined' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$declined = mysql_num_rows($q2);
+		$total_declined += mysql_num_rows($q2);
+		
+		$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Line Issue' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$line_issue = mysql_num_rows($q3);
+		$total_line_issue += mysql_num_rows($q3);
+		
+		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td style='text-align:center;'>" . $data["id"] . "</td>";
-		echo "<td style='text-align:center;'>" . $data["status"] . "</td>";
-		echo "<td style='text-align:center;'>" . $agent[0] . " " . $agent[1] . "</td>";
-		echo "<td style='text-align:center;'><button onclick='Notes(\"$data[id]\")' class='icon_notes' title='Notes'></button></td>";
+		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td style='text-align:center;'>" . $approved . "</td>";
+		echo "<td style='text-align:center;'>" . $declined . "</td>";
+		echo "<td style='text-align:center;'>" . $line_issue . "</td>";
+		echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
+		echo "<td style='text-align:center;'><button onclick='View(\"$centres[$i]\")' class='icon_view'></button></td>";
 		echo "</tr>";
 	}
 }
+
+if (array_sum($captive) > 0)
+{
+	$total_total = $total_approved + $total_declined + $total_line_issue;
+	echo "<tr>";
+	echo "<td><b>Total</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_approved . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_declined . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_line_issue . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_total . "</b></td>";
+	echo "<td></td>";
+	echo "</tr>";
+	echo "</tbody>";
+}
 ?>
-</tbody>
 </table>
 </div></center>
 </td>
-<td valign="top" width="50%">
+<td valign="top">
 <center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="98%" style="margin-top:0px;">
-<thead>
-<tr class="ui-widget-header ">
-<th style="text-align:center;" colspan="4">Residential</th>
-</tr>
-<tr class="ui-widget-header ">
-<th style="text-align:center;">Sale ID</th>
-<th style="text-align:center;">Status</th>
-<th style="text-align:center;">Agent</th>
-<th></th>
-</tr>
-</thead>
-<tbody>
-<?php	
-$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE status != 'Queue' AND type = 'Residential' AND centre = '$centre' AND DATE(approved_timestamp) = '$date' ORDER BY approved_timestamp ASC") or die(mysql_error());
-
-if (mysql_num_rows($q) == 0)
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; margin-top:0px;">
+<?php //self
+$total_approved = 0;
+$total_declined = 0;
+$total_line_issue = 0;
+$total_total = 0;
+for ($i = 0; $i < count($centres); $i++)
 {
-	echo "<tr>";
-	echo "<td style='text-align:center;' colspan='4'>No Residential Sales Made by $centre</td>";
-	echo "</tr>";
-}
-else
-{
-	while ($data = mysql_fetch_assoc($q))
+	$q0 = mysql_query("SELECT centre FROM vericon.centres WHERE centre = '$centres[$i]' AND type = 'Self'") or die(mysql_error());
+	if (mysql_num_rows($q0) != 0)
 	{
-		$q1 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[agent]'") or die(mysql_error());
-		$agent = mysql_fetch_row($q1);
+		$self[$centres[$i]] = 1;
+	}
+}
+
+if (array_sum($self) > 0)
+{
+	echo '<thead>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th colspan="6" style="text-align:center;">Melbourne</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th>Centre</th>';
+	echo '<th style="text-align:center;">Approved</th>';
+	echo '<th style="text-align:center;">Declined</th>';
+	echo '<th style="text-align:center;">Line</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th></th>';
+	echo '</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+}
+
+for ($i = 0; $i < count($centres); $i++)
+{
+	if ($self[$centres[$i]] == 1)
+	{
+		$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$approved = mysql_num_rows($q1);
+		$total_approved += mysql_num_rows($q1);
+		
+		$q2 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Declined' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$declined = mysql_num_rows($q2);
+		$total_declined += mysql_num_rows($q2);
+		
+		$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Line Issue' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$line_issue = mysql_num_rows($q3);
+		$total_line_issue += mysql_num_rows($q3);
+		
+		$total = $approved + $declined + $line_issue;
 		
 		echo "<tr>";
-		echo "<td style='text-align:center;'>" . $data["id"] . "</td>";
-		echo "<td style='text-align:center;'>" . $data["status"] . "</td>";
-		echo "<td style='text-align:center;'>" . $agent[0] . " " . $agent[1] . "</td>";
-		echo "<td style='text-align:center;'><button onclick='Notes(\"$data[id]\")' class='icon_notes' title='Notes'></button></td>";
+		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td style='text-align:center;'>" . $approved . "</td>";
+		echo "<td style='text-align:center;'>" . $declined . "</td>";
+		echo "<td style='text-align:center;'>" . $line_issue . "</td>";
+		echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
+		echo "<td style='text-align:center;'><button onclick='View(\"$centres[$i]\")' class='icon_view'></button></td>";
 		echo "</tr>";
 	}
 }
+
+if (array_sum($self) > 0)
+{
+	$total_total = $total_approved + $total_declined + $total_line_issue;
+	echo "<tr>";
+	echo "<td><b>Total</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_approved . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_declined . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_line_issue . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_total . "</b></td>";
+	echo "<td></td>";
+	echo "</tr>";
+	echo "</tbody>";
+}
 ?>
-</tbody>
+</table>
+</div></center>
+</td>
+</tr>
+<tr>
+<td colspan="2">
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; margin-top:0px;">
+<?php //outsourced
+$total_approved = 0;
+$total_declined = 0;
+$total_line_issue = 0;
+$total_total = 0;
+for ($i = 0; $i < count($centres); $i++)
+{
+	$q0 = mysql_query("SELECT centre FROM vericon.centres WHERE centre = '$centres[$i]' AND type = 'Outsourced'") or die(mysql_error());
+	if (mysql_num_rows($q0) != 0)
+	{
+		$outsourced[$centres[$i]] = 1;
+	}
+}
+
+if (array_sum($outsourced) > 0)
+{
+	echo '<thead>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th colspan="6" style="text-align:center;">Outsourced</th>';
+	echo '</tr>';
+	echo '<tr class="ui-widget-header ">';
+	echo '<th>Centre</th>';
+	echo '<th style="text-align:center;">Approved</th>';
+	echo '<th style="text-align:center;">Declined</th>';
+	echo '<th style="text-align:center;">Line</th>';
+	echo '<th style="text-align:center;">Total</th>';
+	echo '<th></th>';
+	echo '</tr>';
+	echo '</thead>';
+	echo '<tbody>';
+}
+
+for ($i = 0; $i < count($centres); $i++)
+{
+	if ($outsourced[$centres[$i]] == 1)
+	{
+		$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$approved = mysql_num_rows($q1);
+		$total_approved += mysql_num_rows($q1);
+		
+		$q2 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Declined' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$declined = mysql_num_rows($q2);
+		$total_declined += mysql_num_rows($q2);
+		
+		$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Line Issue' AND centre = '$centres[$i]' AND DATE(approved_timestamp) = '$date'") or die(mysql_error());
+		$line_issue = mysql_num_rows($q3);
+		$total_line_issue += mysql_num_rows($q3);
+		
+		$total = $approved + $declined + $line_issue;
+		
+		echo "<tr>";
+		echo "<td>" . $centres[$i] . "</td>";
+		echo "<td style='text-align:center;'>" . $approved . "</td>";
+		echo "<td style='text-align:center;'>" . $declined . "</td>";
+		echo "<td style='text-align:center;'>" . $line_issue . "</td>";
+		echo "<td style='text-align:center;'><b>" . $total . "</b></td>";
+		echo "<td style='text-align:center;'><button onclick='View(\"$centres[$i]\")' class='icon_view'></button></td>";
+		echo "</tr>";
+	}
+}
+
+if (array_sum($outsourced) > 0)
+{
+	$total_total = $total_approved + $total_declined + $total_line_issue;
+	echo "<tr>";
+	echo "<td><b>Total</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_approved . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_declined . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_line_issue . "</b></td>";
+	echo "<td style='text-align:center;'><b>" . $total_total . "</b></td>";
+	echo "<td></td>";
+	echo "</tr>";
+	echo "</tbody>";
+}
+?>
 </table>
 </div></center>
 </td>
 </tr>
 </table>
-<?php
-}
-elseif ($method == "notes")
-{
-	$id = $_GET["id"];
-	
-	$q = mysql_query("SELECT * FROM vericon.tpv_notes WHERE id = '$id' ORDER BY timestamp DESC") or die (mysql_error());
-	while ($tpv_notes = mysql_fetch_assoc($q))
-	{
-		$q1 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$tpv_notes[verifier]'") or die(mysql_error());
-		$vname = mysql_fetch_row($q1);
-		
-		echo "----- " . date("d/m/Y H:i:s", strtotime($tpv_notes["timestamp"])) . " - " . $vname[0] . " " . $vname[1] . " -----" . " (" . $tpv_notes["status"] . ")\n";
-		echo $tpv_notes["note"] . "\n";
-	}
-}
-?>
+</center>
