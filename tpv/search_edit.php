@@ -70,6 +70,11 @@ $(function() {
 
 function Notes()
 {
+	var id = "<?php echo $id; ?>";
+	
+	$.get("search_submit.php", { method: "notes", id: id }, function(data) {
+		$( "#notes_display" ).val(data);
+	});
 	$( "#dialog-form_notes" ).dialog( "open" );
 }
 </script>
@@ -1584,19 +1589,7 @@ function Postal_Same()
 </script>
 
 <div id="dialog-form_notes" title="Notes">
-<textarea disabled="disabled" style="width:400px; height:150px; resize:none;">
-<?php
-$q6 = mysql_query("SELECT * FROM vericon.tpv_notes WHERE id = '$id' ORDER BY timestamp DESC") or die (mysql_error());
-
-while ($tpv_notes = mysql_fetch_assoc($q6))
-{
-	$q7 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$tpv_notes[verifier]'") or die(mysql_error());
-	$vname = mysql_fetch_assoc($q7);
-	
-	echo "----- " . date("d/m/Y H:i:s", strtotime($tpv_notes["timestamp"])) . " - " . $vname["first"] . " " . $vname["last"] . " -----" . " (" . $tpv_notes["status"] . ")\n";
-	echo $tpv_notes["note"] . "\n";
-}
-?>
+<textarea disabled="disabled" id="notes_display" style="width:400px; height:150px; resize:none;">
 </textarea>
 </div>
 

@@ -225,6 +225,7 @@ function Edit_Status()
 	var id = $( "#id_store" );
 	
 	$.get("search_submit.php", { method: "get_status", id: id.val() }, function(data) { $( "#edit_status" ).val(data); });
+	$( "#edit_status_note" ).val("");
 	$( "#dialog-form_edit_switch" ).dialog( "close" );
 	$( ".validateTipsStatus" ).text("All fields are required");
 	$( "#dialog-form_edit_status" ).dialog( "open" );
