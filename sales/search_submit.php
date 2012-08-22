@@ -44,6 +44,9 @@ elseif ($method == "edit_status")
 	$note = $_GET["note"];
 	$now = date("Y-m-d H:i:s");
 	
+	$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+	$data = mysql_fetch_assoc($q);
+	
 	if ($id == "" || $user == "")
 	{
 		echo "Error! Please contact your administrator";
@@ -52,15 +55,16 @@ elseif ($method == "edit_status")
 	{
 		echo "Please select a status";
 	}
+	elseif ($status == $data["status"])
+	{
+		echo "Sale already is " . $status;
+	}
 	elseif ($note == "")
 	{
 		echo "Please enter a note";
 	}
 	else
 	{
-		$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
-		$data = mysql_fetch_assoc($q);
-		
 		$q1 = mysql_query("SELECT * FROM vericon.tpv_notes WHERE id = '$id' ORDER BY timestamp DESC") or die(mysql_error());
 		$data2 = mysql_fetch_assoc($q1);
 		
@@ -80,6 +84,21 @@ elseif ($method == "edit_status")
 		mysql_query("UPDATE vericon.sales_customers SET status = '$status', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
 		
 		echo "done";
+	}
+}
+elseif ($method == "notes")
+{
+	$id = $_GET["id"];
+	
+	$q = mysql_query("SELECT * FROM vericon.tpv_notes WHERE id = '$id' ORDER BY timestamp DESC") or die (mysql_error());
+	
+	while ($tpv_notes = mysql_fetch_assoc($q))
+	{
+		$q1 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$tpv_notes[verifier]'") or die(mysql_error());
+		$vname = mysql_fetch_assoc($q1);
+		
+		echo "----- " . date("d/m/Y H:i:s", strtotime($tpv_notes["timestamp"])) . " - " . $vname["first"] . " " . $vname["last"] . " -----" . " (" . $tpv_notes["status"] . ")\n";
+		echo $tpv_notes["note"] . "\n";
 	}
 }
 elseif ($method == "add") //add package
