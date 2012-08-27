@@ -1,6 +1,5 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
 $centre = $_GET["centre"];
 $date1 = $_GET["date1"];
@@ -73,10 +72,10 @@ $styleMediumThinBorderFill = array(
 );
 
 $row = 4;
-$centres = explode("_",$centre);
+$centres = explode(",",$centre);
 for ($i = 0; $i < count($centres); $i++)
 {
-	$q = mysql_query("SELECT centre FROM centres WHERE centre = '$centres[$i]' AND type = 'Self'") or die(mysql_error());
+	$q = mysql_query("SELECT centre FROM vericon.centres WHERE centre = '$centres[$i]' AND type = 'Self'") or die(mysql_error());
 	if (mysql_num_rows($q) != 0)
 	{
 		$self[$centres[$i]] = 1;
@@ -89,12 +88,16 @@ if (array_sum($self) > 0)
     {
 		if ($self[$centres[$i]] == 1)
         {
-			$q = mysql_query("SELECT SUM(hours),date FROM timesheet WHERE centre = '$centres[$i]' AND WEEK(date) BETWEEN '$week1' AND '$week2' GROUP BY WEEK(date) ORDER BY date ASC") or die(mysql_error());
+			$q0 = mysql_query("SELECT auth.first, auth.last FROM vericon.timesheet_designation,vericon.auth WHERE timesheet_designation.designation = 'Team Leader' AND auth.centre = '$centres[$i]' AND auth.status = 'Enabled' AND auth.user = timesheet_designation.user") or die(mysql_error());
+			$t = mysql_fetch_row($q0);
+			$tl = $t[0] . " " . $t[1];
+			
+			$q = mysql_query("SELECT SUM(hours),date FROM vericon.timesheet WHERE centre = '$centres[$i]' AND WEEK(date) BETWEEN '$week1' AND '$week2' GROUP BY WEEK(date) ORDER BY date ASC") or die(mysql_error());
 			
 			if (mysql_num_rows($q) != 0)
 			{
 				$objPHPExcel->setActiveSheetIndex(0)
-						->setCellValue('B' . $row, $centres[$i]);
+						->setCellValue('B' . $row, $centres[$i] . " - " . $tl);
 				// Merge cells
 				$objPHPExcel->getActiveSheet()->mergeCells('B' . $row . ':G' . $row);
 				// Set fonts
@@ -111,8 +114,8 @@ if (array_sum($self) > 0)
 							->setCellValue('C' . $row, "Hours")
 							->setCellValue('D' . $row, "Sales")
 							->setCellValue('E' . $row, "SPH")
-							->setCellValue('F' . $row, "SPA")
-							->setCellValue('G' . $row, "Estimated CPS");
+							->setCellValue('F' . $row, "Estimated CPS")
+							->setCellValue('G' . $row, "Actual CPS");
 				// Set fonts
 				$objPHPExcel->getActiveSheet()->getStyle('B' . $row . ':G' . $row)->getFont()->setSize(10);
 				$objPHPExcel->getActiveSheet()->getStyle('B' . $row . ':G' . $row)->getFont()->setBold(true);
@@ -129,16 +132,44 @@ if (array_sum($self) > 0)
 				{
 					$hours = $data["SUM(hours)"];
 					$total_hours += $hours;
+					$gross = 0;
+					$cancellations = 0;
 					
-					$q1 = mysql_query("SELECT * FROM timesheet WHERE centre = '$centres[$i]' AND WEEK(date) = '" . date("W",strtotime($data["date"])) . "' GROUP BY user") or die(mysql_error());
-					$agents = mysql_num_rows($q1);
+					$q1 = mysql_query("SELECT * FROM vericon.timesheet WHERE centre = '$centres[$i]' AND WEEK(date) = '" . date("W",strtotime($data["date"])) . "' GROUP BY user ORDER BY user ASC") or die(mysql_error());
+					while ($data2 = mysql_fetch_assoc($q1))
+					{
+						$q2 = mysql_query("SELECT SUM(op_hours), SUM(op_bonus), AVG(rate), SUM(payg), SUM(annual), SUM(sick), SUM(cancellations) FROM vericon.timesheet_other WHERE user = '$data2[user]' AND week = '" . date("W",strtotime($data["date"])) . "'") or die(mysql_error());
+						$da = mysql_fetch_row($q2);
+						
+						$q3 = mysql_query("SELECT rate FROM vericon.timesheet_rate WHERE user = '$data2[user]'") or die(mysql_error());
+						$r = mysql_fetch_row($q3);
+						
+						if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
+						$gross += (($rate * ($da[0] + $da[4] + $da[5])) + $da[1]) * 1.09;
+						$cancellations += $da[6];
+					}
 					
-					$q2 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND centre = '$centres[$i]' AND WEEK(approved_timestamp) = '" . date("W",strtotime($data["date"])) . "'") or die(mysql_error());
+					$q2 = mysql_query("SELECT * FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centres[$i]' AND WEEK(approved_timestamp) = '" . date("W",strtotime($data["date"])) . "'") or die(mysql_error());
 					$sales = mysql_num_rows($q2);
 					$total_sales += $sales;
 					
+					$q3 = mysql_query("SELECT m_cost FROM vericon.timesheet_mcost WHERE centre = '$centres[$i]' AND week = '" . date("W",strtotime($data["date"])) . "'") or die(mysql_error());
+					$da2 = mysql_fetch_row($q3);
+					
+					if ($da2[0] > 0)
+					{
+						$gross += $da2[0];
+						$total_gross += $gross;
+						$net_sales = $sales - $cancellations;
+						$total_net_sales += $net_sales;
+						if ($net_sales > 0) { $a_cps = number_format($gross/$net_sales,2); } else { $a_cps = number_format($gross,2); }
+					}
+					else
+					{
+						$a_cps = "-";
+					}
+					
 					$sph = $sales / $hours;
-					$spa = $sales / $agents;
 					$cps = ($hours*27) / ($sales*0.62);
 					$we = date("Y-m-d", strtotime(date("Y",strtotime($data["date"]))."W".date("W",strtotime($data["date"]))."7"));
 					
@@ -147,8 +178,8 @@ if (array_sum($self) > 0)
 								->setCellValue('C' . $row, number_format($hours,2))
 								->setCellValue('D' . $row, $sales)
 								->setCellValue('E' . $row, number_format($sph,2))
-								->setCellValue('F' . $row, number_format($spa,2))
-								->setCellValue('G' . $row, number_format($cps,2));
+								->setCellValue('F' . $row, number_format($cps,2))
+								->setCellValue('G' . $row, $a_cps);
 					$row++;
 				}
 				// Set fonts
@@ -159,20 +190,18 @@ if (array_sum($self) > 0)
 				$objPHPExcel->getActiveSheet()->getStyle('B' . $init_row . ':G' . $row)->applyFromArray($styleMediumThinBorderFill);
 				
 				// Totals
-				$q1 = mysql_query("SELECT * FROM timesheet WHERE centre = '$centres[$i]' AND WEEK(date) BETWEEN '$week1' AND '$week2' GROUP BY user") or die(mysql_error());
-				$total_agents = mysql_num_rows($q1);
-				
 				$total_sph = $total_sales / $total_hours;
-				$total_spa = $total_sales / $total_agents;
 				$total_cps = ($total_hours*27) / ($total_sales*0.62);
+				
+				if ($total_net_sales > 0) { $total_a_cps = $total_gross/$total_net_sales; } else { $total_a_cps = $total_gross; }
 				
 				$objPHPExcel->setActiveSheetIndex(0)
 							->setCellValue('B' . $row, "Total")
 							->setCellValue('C' . $row, $total_hours)
 							->setCellValue('D' . $row, $total_sales)
 							->setCellValue('E' . $row, number_format($total_sph,2))
-							->setCellValue('F' . $row, number_format($total_spa,2))
-							->setCellValue('G' . $row, $total_cps);
+							->setCellValue('F' . $row, number_format($total_cps,2))
+							->setCellValue('G' . $row, number_format($total_a_cps,2));
 				// Set fonts
 				$objPHPExcel->getActiveSheet()->getStyle('B' . $row . ':G' . $row)->getFont()->setSize(10);
 				$objPHPExcel->getActiveSheet()->getStyle('B' . $row . ':G' . $row)->getFont()->setBold(true);
@@ -187,14 +216,14 @@ if (array_sum($self) > 0)
 	}
 }
 // Set cell number formats
-$objPHPExcel->getActiveSheet()->getStyle('G6:G' . $row)->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
+$objPHPExcel->getActiveSheet()->getStyle('F6:G' . $row)->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
 
 // Set column widths
 $objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(10.57);
 $objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(14.57);
 $objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(8);
 $objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(8);
-$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(8);
+$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(13);
 $objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(13);
 $objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(10.57);
 
@@ -205,7 +234,7 @@ $objPHPExcel->getActiveSheet()->setTitle('Sheet1');
 $objPHPExcel->setActiveSheetIndex(0);
 
 // Redirect output to a client’s web browser (Excel2007)
-$filename = "Centre_Timesheet_Report.xlsx";
+$filename = "Centre_Report_" . $date1 . "_to_" . $date2 . ".xlsx";
 
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 header('Content-Disposition: attachment;filename=' . $filename);
