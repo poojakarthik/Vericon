@@ -8,19 +8,21 @@ $header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account S
 
 $body = "";
 
-$dsr_num = date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
+$campaign_query = "campaign = 'Speed Telecom' OR campaign = 'Magnum Telecom' OR campaign = 'Precise Telecom' OR campaign = 'Oasis Telecom' OR campaign = 'Spiral Communications' OR campaign = 'Telcoshare'";
+
+$dsr_num = "1" . date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
 if ($type == "Business")
 {
-	$sale_id = date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT) . "001";
+	$sale_id = $dsr_num . "001";
 }
 else
 {
-	$q = mysql_query("SELECT COUNT(id) FROM vericon.qa_customers WHERE status = 'Approved' AND type = 'Business' AND DATE(timestamp) = '$date'") or die(mysql_error());
+	$q = mysql_query("SELECT COUNT(id) FROM vericon.qa_customers WHERE status = 'Approved' AND type = 'Business' AND DATE(timestamp) = '$date' AND (" . $campaign_query . ")") or die(mysql_error());
 	$b_num = mysql_fetch_row($q);
-	$sale_id = date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT) . str_pad(($b_num[0]+1),3,"0",STR_PAD_LEFT);
+	$sale_id = $dsr_num . str_pad(($b_num[0]+1),3,"0",STR_PAD_LEFT);
 }
 
-$q = mysql_query("SELECT * FROM vericon.qa_customers WHERE status = 'Approved' AND type = '$type' AND DATE(timestamp) = '$date' ORDER BY sale_timestamp ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM vericon.qa_customers WHERE status = 'Approved' AND type = '$type' AND DATE(timestamp) = '$date' AND (" . $campaign_query . ") ORDER BY sale_timestamp ASC") or die(mysql_error());
 while ($qa = mysql_fetch_assoc($q))
 {
 	$q1 = mysql_query("SELECT * FROM vericon.customers WHERE sale_id = '$qa[id]'") or die(mysql_error());
@@ -477,7 +479,7 @@ while ($qa = mysql_fetch_assoc($q))
 $year_path = "/var/dsr/" . date("Y", strtotime($date));
 $month_path = $year_path . "/" . date("F", strtotime($date));
 $day_path = $month_path . "/" . date("d.m.Y", strtotime($date));
-$new_path = $day_path . "/New";
+$new_path = $day_path . "/SBT";
 $filename = $new_path . "/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv";
 
 if (!file_exists($year_path))
