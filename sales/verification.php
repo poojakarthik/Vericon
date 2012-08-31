@@ -500,6 +500,22 @@ function Next(id,action)
 				}
 			});
 	}
+	else if (action == "best_buddy")
+	{
+		var best_buddy = $( "#best_buddy" );
+			
+		$.get("../script/submit.php", { id: id, action: action, best_buddy: best_buddy.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
 	else
 	{
 		N();
