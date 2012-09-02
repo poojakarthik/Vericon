@@ -257,4 +257,22 @@ elseif ($action == "email2")
 		echo "submitted";
 	}
 }
+elseif ($action == "best_buddy")
+{
+	$best_buddy = $_GET["best_buddy"];
+	
+	if ($best_buddy == "")
+	{
+		echo "Please enter the customer's nominated best buddy";
+	}
+	elseif ($best_buddy != "N/A" && !preg_match("/^04[0-9]{8}$/",$best_buddy))
+	{
+		echo "Please enter a valid mobile number";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET best_buddy = '" . mysql_real_escape_string($best_buddy) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+}
 ?>

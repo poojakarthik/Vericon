@@ -861,7 +861,7 @@ CREATE TABLE IF NOT EXISTS `currentuser` (
 
 CREATE TABLE IF NOT EXISTS `customers` (
   `id` varchar(15) NOT NULL,
-  `sf_id` varchar(64) NOT NULL,
+  `sf_id` varchar(64) CHARACTER SET latin1 COLLATE latin1_general_cs NOT NULL,
   `tb_id` varchar(32) NOT NULL,
   `status` varchar(64) NOT NULL,
   `last_edit_timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -890,6 +890,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
   `position` varchar(300) NOT NULL,
+  `best_buddy` varchar(16) NOT NULL,
   `credit` int(11) NOT NULL,
   `ongoing_credit` int(11) NOT NULL,
   `onceoff_credit` int(11) NOT NULL,
@@ -936,6 +937,7 @@ CREATE TABLE IF NOT EXISTS `customers_log` (
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
   `position` varchar(300) NOT NULL,
+  `best_buddy` varchar(16) NOT NULL,
   `credit` int(11) NOT NULL,
   `ongoing_credit` int(11) NOT NULL,
   `onceoff_credit` int(11) NOT NULL,
@@ -992,6 +994,17 @@ CREATE TABLE IF NOT EXISTS `log_access` (
   `page` varchar(300) NOT NULL,
   KEY `user` (`user`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `log_gnaf`
+--
+
+CREATE TABLE IF NOT EXISTS `log_gnaf` (
+  `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `result` int(1) NOT NULL,
+  KEY `timestamp` (`timestamp`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -1218,11 +1231,13 @@ CREATE TABLE IF NOT EXISTS `sales_customers` (
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
   `position` varchar(300) NOT NULL,
+  `best_buddy` varchar(16) NOT NULL,
   `ongoing_credit` int(11) NOT NULL,
   `onceoff_credit` int(11) NOT NULL,
   `payway` varchar(16) NOT NULL,
   `dd_type` varchar(16) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `centre` (`centre`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql

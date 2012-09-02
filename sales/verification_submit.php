@@ -7,10 +7,13 @@ if ($method == "get") //get sale
 {
 	$id = $_GET["id"];
 	$user = $_GET["user"];
-	$centre = $_GET["centre"];
 	$date1 = date("Y-m-d");
 	$date2 = date("Y-m-d", strtotime("-1 week"));
 	$lead_id = substr($id,1,9);
+	
+	$q0 = mysql_query("SELECT centre FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
+	$c = mysql_fetch_row($q0);
+	$centre = $c[0];
 	
 	$lq = mysql_query("SELECT leads FROM vericon.centres WHERE centre = '$centre'") or die(mysql_error());
 	$lead_val = mysql_fetch_row($lq);
@@ -38,6 +41,23 @@ if ($method == "get") //get sale
 			$check5 = mysql_fetch_assoc($qlg);
 			
 			if ($check4["group"] != $check5["group"] && strtoupper($check["centre"]) != "ROHAN")
+			{
+				$valid_lead = "false";
+			}
+			else
+			{
+				$valid_lead = "true";
+			}
+		}
+		elseif ($check3["type"] == "Self")
+		{
+			$qcg = mysql_query("SELECT * FROM leads.groups WHERE centres LIKE '%$centre%'") or die(mysql_error());
+			$check4 = mysql_fetch_assoc($qcg);
+			
+			$qlg = mysql_query("SELECT * FROM leads.groups WHERE centres LIKE '%$check[centre]%'") or die(mysql_error());
+			$check5 = mysql_fetch_assoc($qlg);
+			
+			if ($check4["group"] != $check5["group"] && strtoupper($check["centre"]) != "KAMAL")
 			{
 				$valid_lead = "false";
 			}

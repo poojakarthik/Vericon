@@ -4,31 +4,37 @@ mysql_connect('localhost','vericon','18450be');
 $date = date("Y-m-d", strtotime("-1 day"));
 $type = $argv[1];
 
-$header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account Status,ADSL Status,Wireless Status,Agent,Centre,Date of Sale,Whoisit,Telco Name,Rating,Industry,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,ABN,CLI 1,Plan 1,CLI 2,Plan 2,CLI 3,Plan 3,CLI 4,Plan 4,CLI 5,Plan 5,CLI 6,Plan 6,CLI 7,Plan 7,CLI 8,Plan 8,CLI 9,Plan 9,CLI 10,Plan 10,MSN 1,Mplan 1,MSN 2,Mplan 2,MSN 3,Mplan 3,WMSN 1,Wplan 1,WMSN 2,Wplan 2,ACLI,APLAN,Bundle,Building Type,Building Number,Building Number Suffix,Building Name,Street Number Start,Street Number End,Street Name,Street Type,Suburb,State,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail State,Mail Post Code,Contract Months,Credit Offered,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Sale Type,Mobile Contact,Home Number,Current Provider,Email Address ,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment";
+$header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account Status,ADSL Status,Wireless Status,Agent,Centre,Date of Sale,Group,Whoisit,Telco Name,Rating,Industry,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,ABN,CLI 1,Plan 1,CLI 2,Plan 2,CLI 3,Plan 3,CLI 4,Plan 4,CLI 5,Plan 5,CLI 6,Plan 6,CLI 7,Plan 7,CLI 8,Plan 8,CLI 9,Plan 9,CLI 10,Plan 10,MSN 1,Mplan 1,MSN 2,Mplan 2,MSN 3,Mplan 3,WMSN 1,Wplan 1,WMSN 2,Wplan 2,ACLI,APLAN,Bundle,Building Type,Building Number,Building Number Suffix,Building Name,Street Number Start,Street Number End,Street Name,Street Type,Suburb,State,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail State,Mail Post Code,Contract Months,Credit Offered,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Sale Type,Mobile Contact,Home Number,Current Provider,Email Address ,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment";
 
 $body = "";
 
-$dsr_num = date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
+$campaign_query = "campaign = 'Speed Telecom' OR campaign = 'Magnum Telecom' OR campaign = 'Precise Telecom' OR campaign = 'Oasis Telecom' OR campaign = 'Spiral Communications' OR campaign = 'Telcoshare'";
+
+$dsr_num = "1" . date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
 if ($type == "Business")
 {
-	$sale_id = date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT) . "001";
+	$sale_id = $dsr_num . "001";
 }
 else
 {
-	$q = mysql_query("SELECT COUNT(id) FROM vericon.qa_customers WHERE status = 'Approved' AND type = 'Business' AND DATE(timestamp) = '$date'") or die(mysql_error());
+	$q = mysql_query("SELECT COUNT(id) FROM vericon.qa_customers WHERE status = 'Approved' AND type = 'Business' AND DATE(timestamp) = '$date' AND (" . $campaign_query . ")") or die(mysql_error());
 	$b_num = mysql_fetch_row($q);
-	$sale_id = date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT) . str_pad(($b_num[0]+1),3,"0",STR_PAD_LEFT);
+	$sale_id = $dsr_num . str_pad(($b_num[0]+1),3,"0",STR_PAD_LEFT);
 }
 
-$q = mysql_query("SELECT * FROM vericon.qa_customers WHERE status = 'Approved' AND type = '$type' AND DATE(timestamp) = '$date' ORDER BY sale_timestamp ASC") or die(mysql_error());
+$q = mysql_query("SELECT * FROM vericon.qa_customers WHERE status = 'Approved' AND type = '$type' AND DATE(timestamp) = '$date' AND (" . $campaign_query . ") ORDER BY sale_timestamp ASC") or die(mysql_error());
 while ($qa = mysql_fetch_assoc($q))
 {
 	$q1 = mysql_query("SELECT * FROM vericon.customers WHERE sale_id = '$qa[id]'") or die(mysql_error());
 	$data = mysql_fetch_assoc($q1);
 	
-	$q2 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+	$q2 = mysql_query("SELECT id,`group` FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
 	$c = mysql_fetch_row($q2);
 	$campaign_id = $c[0];
+	
+	$q7 = mysql_query("SELECT name FROM vericon.groups WHERE id = '$c[1]'") or die(mysql_error());
+	$g = mysql_fetch_row($q7);
+	$group = $g[0];
 	
 	$contract_months = 0;
 	$p_i = 0;
@@ -174,7 +180,10 @@ while ($qa = mysql_fetch_assoc($q))
 		
 		if ($data2["flat_number"] != 0)
 		{
-			$building_type = $data2["flat_type_code"];
+			$q6 = mysql_query("SELECT `name` FROM gnaf.FLAT_TYPE_AUT WHERE code = '" . mysql_real_escape_string($data2["flat_type_code"]) . "'") or die(mysql_error());
+			$ft = mysql_fetch_row($q6);
+			
+			$building_type = $ft[0];
 			$building_number = $data2["flat_number"];
 			$building_number_suffix = $data2["flat_number_suffix"];
 		}
@@ -242,7 +251,10 @@ while ($qa = mysql_fetch_assoc($q))
 			}		
 			elseif ($data2["flat_number"] != 0)
 			{
-				$mail_street_number = $data2["flat_type_code"] . " " . $data2["flat_number"] . $data2["flat_number_suffix"] . "/";
+				$q6 = mysql_query("SELECT `name` FROM gnaf.FLAT_TYPE_AUT WHERE code = '" . mysql_real_escape_string($data2["flat_type_code"]) . "'") or die(mysql_error());
+				$ft = mysql_fetch_row($q6);
+			
+				$mail_street_number = $ft[0] . " " . $data2["flat_number"] . $data2["flat_number_suffix"] . "/";
 			}
 			elseif ($data2["level_number"] != 0)
 			{
@@ -388,6 +400,7 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . $agent . '",';
 	$body .= '"' . $data["centre"] . '",';
 	$body .= '"' . date("d/m/Y", strtotime($qa["sale_timestamp"])) . '",';
+	$body .= '"' . $group . '",';
 	$body .= '"' . $campaign_id . '",';
 	$body .= '"' . $data["campaign"] . '",';
 	$body .= '"' . $data["campaign"] . " " . $data["type"] . '",';
@@ -466,7 +479,7 @@ while ($qa = mysql_fetch_assoc($q))
 $year_path = "/var/dsr/" . date("Y", strtotime($date));
 $month_path = $year_path . "/" . date("F", strtotime($date));
 $day_path = $month_path . "/" . date("d.m.Y", strtotime($date));
-$new_path = $day_path . "/New";
+$new_path = $day_path . "/SBT";
 $filename = $new_path . "/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv";
 
 if (!file_exists($year_path))

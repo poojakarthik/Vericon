@@ -46,7 +46,18 @@ $state = mysql_fetch_row($q2);
 </tr>
 <tr>
 <td style="padding-left:5px;">Type </td>
-<td><b><?php echo $data["type"]; ?></b></td>
+<td><b><?php echo $data["type"]; ?></b>
+<?php
+if ($data["type"] == "Residential")
+{
+	echo "<button onclick='Change_Type(\"Business\")' class='icon_business' style='float:right; margin-right:10px;' title='Business'></button>";
+}
+elseif ($data["type"] == "Business")
+{
+	echo "<button onclick='Change_Type(\"Residential\")' class='icon_residential' style='float:right; margin-right:10px;' title='Residential'></button>";
+}
+?>
+</td>
 </tr>
 </table>
 </td>

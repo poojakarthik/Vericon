@@ -69,7 +69,14 @@ elseif ($method == "check_rec")
 	
 	if (file_exists("/var/vtmp/wc_" . $id . ".gsm"))
 	{
-		echo 1;
+		if (filesize("/var/vtmp/wc_" . $id . ".gsm") > 102400)
+		{
+			echo 1;
+		}
+		else
+		{
+			echo 0;
+		}
 	}
 	else
 	{

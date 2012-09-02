@@ -4,19 +4,16 @@
 ```
 * * * * * php /var/vericon/cron/lock_clear.php &> /dev/null
 0 0 * * * php /var/vericon/cron/nightly_clear.php &> /dev/null
-5 0 * * * php /var/vericon/cron/new_dsr.php Business &> /dev/null
-5 0 * * * php /var/vericon/cron/new_dsr.php Residential &> /dev/null
-5 0 * * * php /var/vericon/cron/update_dsr.php Business &> /dev/null
-5 0 * * * php /var/vericon/cron/update_dsr.php Residential &> /dev/null
+5 0 * * * php /var/vericon/cron/sbt_dsr.php Business &> /dev/null
+5 0 * * * php /var/vericon/cron/sbt_dsr.php Residential &> /dev/null
+5 0 * * * php /var/vericon/cron/zen_dsr.php Business &> /dev/null
+5 0 * * * php /var/vericon/cron/zen_dsr.php Residential &> /dev/null
 0 1 * * * /var/vericon/cron/db_backup.sh
-0 23 * * * php /var/vericon/cron/welcome.php &> /dev/null
 ```
 ##Other
 ###Additional Libraries
 ```
 apt-get install dos2unix
-apt-get install libssh2-php
-apt-get install zip
 ```
 ###Directories
 ```

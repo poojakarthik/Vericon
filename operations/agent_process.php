@@ -8,7 +8,7 @@ if ($method == "search")
 {
 	$cen = $_GET["centres"];
 	$term = explode(" ",$_GET["term"]);
-	$centres = explode("_",$cen);
+	$centres = explode(",",$cen);
 	
 	foreach($centres as $row)
 	{

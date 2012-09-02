@@ -39,47 +39,119 @@ function View(centre)
 {
 	var date = $( "#datepicker" );
 	
-	$( "#display2" ).hide('blind', '' , 'slow', function() {
-		$( "#display2" ).load('sales_display2.php?method=sales&centre=' + centre + '&date=' + date.val(), function() {
-			$( "#display2" ).show('blind', '' , 'slow');
+	$( "#display3" ).hide('blind', '' , 'slow', function() {
+		$( "#display3" ).load('sales_display3.php?method=sales&centre=' + centre + '&date=' + date.val(), function() {
+			$( "#display3" ).show('blind', '' , 'slow');
 		});
 	});
 }
 </script>
-<script> //notes button
+<script>
 $(function() {
-	$( "#dialog:ui-dialog_notes" ).dialog( "destroy" );
-	
-	$( "#dialog-form_notes" ).dialog({
+	$( "#dialog:ui-dialog_search" ).dialog( "destroy" );
+
+	$( "#dialog-form_search" ).dialog({
 		autoOpen: false,
-		height: 200,
-		width: 425,
+		height: 160,
+		width: 225,
 		modal: true,
 		resizable: false,
 		draggable: false,
-		show: "blind",
-		hide: "blind"
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Search": function() {
+				var method = $( "#method" ),
+					query = $( "#query" ),
+					centre = "<?php echo $centres_link; ?>";
+					
+				$( "#results" ).html("<center><br><br><img src='../images/ajax-loader.gif'> Searching...");
+				$( "#results" ).load("sales_results.php?method=" +  method.val() + "&query=" + query.val() + "&centre=" + centre);
+				$( "#dialog-form_search" ).dialog( "close" );
+			},
+			"Cancel": function() {
+				$( this ).dialog( "close" );
+			}
+		},
+		close: function() {
+		}
 	});
 });
 
-function Notes(id)
+function Search()
 {
-	$.get("sales_display2.php" , { method: "notes", id: id }, function(data) {
-		$( "#notes" ).val(data);
+	$( "#query" ).val("");
+	$( "#dialog-form_search" ).dialog( "open" );
+}
+</script>
+<script>
+function View_Search(id)
+{
+	$( "#display" ).hide('blind', '', 'slow', function() {
+		$( "#display" ).load('sales_view.php?id=' + id, function() {
+			$( "#display" ).show('blind', '', 'slow');
+		});
 	});
-	$( "#dialog-form_notes" ).dialog( "open" );
+}
+
+function Cancel_Search()
+{
+	var method = $( "#method" ),
+		query = $( "#query" ),
+		centre = "<?php echo $centres_link; ?>",
+		date = $( "#date_store" );
+	
+	
+	$( "#display" ).hide('blind', '', 'slow', function() {
+		$( "#display_loading" ).show();
+		$( "#display" ).load('sales_display.php?centres=' + centre + '&date=' + date.val(), function() {
+			$( "#display2" ).load('sales_display2.php?centres=' + centre + '&date=' + date.val(), function() {
+				$( "#results" ).load("sales_results.php?method=" +  method.val() + "&query=" + query.val() + "&centre=" + centre, function() {
+					$( "#display_loading2" ).hide();
+					$( "#display_loading" ).hide();
+					$( "#display" ).show('blind', '', 'slow');
+				});
+			});
+		});
+	});
+	
 }
 </script>
 
-<div id="dialog-form_notes" title="Notes">
-<textarea id="notes" disabled="disabled" style="width:400px; height:150px; resize:none;"></textarea>
+<div id="dialog-form_search" title="Search">
+<br><table>
+<tr>
+<td width="50px">Method </td>
+<td><select id="method" style="width:126px;">
+<option value="line">Phone Number</option>
+<option value="id">Sale ID</option>
+<option value="lead">Lead ID</option>
+</select></td>
+</tr>
+<tr>
+<td>Query </td>
+<td><input type="text" id="query" value="" style="width:125px;" /></td>
+</tr>
+</table>
+</div>
+
+<input type="hidden" id="date_store" value="<?php echo date("Y-m-d"); ?>" />
+
+<div id="display_loading">
+<center><img src="../images/ajax-loader.gif" /><br /><br />
+<p>Loading Sales. Please Wait...</p></center>
 </div>
 
 <div id="display">
 <script>
+$( "#display" ).hide();
 $( "#display" ).load('sales_display.php?centres=<?php echo $centres_link; ?>&date=<?php echo date("Y-m-d"); ?>',
 function() {
-	$( "#display" ).show('blind', '' , 'slow');
+	$( "#display_loading2" ).hide();
+	$( "#display2" ).load('sales_display2.php?centres=<?php echo $centres_link; ?>&date=<?php echo date("Y-m-d"); ?>', function() {
+		$( "#display_loading" ).hide();
+		$( "#display" ).show('blind', '' , 'slow');
+	});
 });
 </script>
 </div>

@@ -68,23 +68,36 @@ $(function() {
 
 function Load_Script()
 {
-	if($( "#plan" ).val() == "--- Select Script ---")
-	{
-		$( ".validateTips" ).html('Select a Script!');
-		$( "#dialog-form" ).dialog( "open" );
-	}
-	else
-	{
-		var campaign = "<?php echo $data["campaign"] . " " . $data["type"]; ?>",
-			plan = $( "#plan" ).val(),
-			l = "script.php?campaign=" + campaign + "&plan=" + plan;
-		
-		$( ".script_name" ).html(campaign + " " + plan);
-		l = l.replace(/ /g,"_");
-		$( "#script" ).load(l, function() {
-			$( "#dialog-form_script" ).dialog( "open" );
-		});
-	}
+	var campaign = "<?php echo $data["campaign"] . " " . $data["type"]; ?>",
+		plan = $( "#plan" ),
+		id = "<?php echo $data["id"]; ?>";
+	
+	$( ".script_name" ).html("Script");
+	$( "#script" ).load("script.php?method=New&in=0&id=" + id + "&plan=" + plan.val(), function() {
+		$( "#dialog-form_script" ).dialog( "open" );
+	});
+}
+</script>
+<script> //direct debit
+$(function() {
+	$( "#dialog:ui-dialog_dd" ).dialog( "destroy" );
+
+	$( "#dialog-form_dd" ).dialog({
+		autoOpen: false,
+		height: 465,
+		width: 575,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind'
+	});
+});
+
+function DD(campaign)
+{
+	$( ".dd_campaign" ).html(campaign);
+	$( "#dialog-form_dd" ).dialog( "open" );
 }
 </script>
 <script>
@@ -152,6 +165,51 @@ $(function() {
 <div id="script"></div>
 </div>
 
+<div id="dialog-form_dd" title="Direct Debit">
+<p>Do you agree to have either your credit card, or your bank account direct debited each month for any usage on your <b><span class="dd_campaign"></span></b> account?</p>
+<p><b>->CUSTOMER MUST SAY <span style="color:#FF0000;">YES</span></b></p><br>
+<p>Which account do you prefer, Credit Card or Bank Account?</p><br>
+<table style="width:360pt;table-layout:fixed;border-collapse:collapse; margin-left:auto; margin-right:auto;">
+<tr align="left" valign="top">
+<td style="width:180pt;padding:4.9pt;border:1pt solid black;">
+<p><b><span style="color:#000080;">Credit Card</span></b></p>
+</td>
+<td style="width:180pt;padding:4.9pt;border:1pt solid black;">
+<p><b><span style="color:#000080;">Bank Account</span></b></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style="width:124.2pt;padding:4.9pt;border:1pt solid black;">
+<span style="color:#000080;"><p>Please state the Card type<br>
+<b>VISA, MASTERCARD, DINERS or AMEX</b></p></span>
+<span style="color:#FF0000;"><b>Repeat the card type back</b></span><br>
+<span style="color:#000080;"><p>Please state the number as it appears on the Card</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the name as it appears on the card</p></span>
+<span style="color:#FF0000;"><b>Repeat, even spell the name back</b></span><br>
+<span style="color:#000080;"><p>Please state the expiry date on the card</p></span>
+<span style="color:#FF0000;"><b>Repeat the expiry date back</b></span><br>
+<span style="color:#000080;"><p>Please state the CVV number (last 3 digits on the back of the card for VISA or MASTERCARD, last 4 digits for AMEX or DINERS)</p></span>
+<span style="color:#FF0000;"><b>Repeat the CVV back</b></span>
+</td>
+<td style="width:124.2pt;padding:4.9pt;border:1pt solid black;">
+<span style="color:#000080;"><p>Please name the Financial Institution</p></span>
+<span style="color:#FF0000;"><b>Repeat the Institution back</b></span><br>
+<span style="color:#000080;"><p>Please state the type of Bank Account<br>
+(Savings, Credit, Cheque)</p></span>
+<span style="color:#FF0000;"><b>Repeat the Account type back</b></span><br>
+<span style="color:#000080;"><p>Please state the BSB number</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the Account number</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the name on the account as it appears on your bank statement</p></span>
+<span style="color:#FF0000;"><b>Repeat the name back</b></span>
+</td>
+</tr>
+</table><br>
+<p>To check the authenticity of your banking details <b><span class="dd_campaign"></span></b> will debit a dollar from your account which will be credited back to your account within 7 working days. <b><span class="dd_campaign"></span>'s</b> terms and conditions for providing this telecommunications service and Direct Debit set-up to you are available for viewing or downloading at our website.</p>
+</div>
+
 <input type="hidden" id="sale_id" value="<?php echo $_GET["id"]; ?>" />
 
 <table width="100%">
@@ -204,8 +262,8 @@ else
 </span>
 </td>
 <td width="175px">Is Lead Valid?</td>
-<td><b><?php echo $data["lead_id"]; ?></b></td>
-<td align="center"><?php if ($l_check == 0) { echo '<button id="lead_btn" onclick="Validate_Lead()" class="btn2" style="font-size:9px;">Validate</button>'; } ?></td>
+<td style="text-align:center;"><b><?php echo $data["lead_id"]; ?></b></td>
+<td style="text-align:center;"><?php if ($l_check == 0) { echo '<button id="lead_btn" onclick="Validate_Lead()" class="btn2" style="font-size:9px;">Validate</button>'; } ?></td>
 </tr>
 <tr>
 <td style="padding: .6em 10px; text-align:center;">
@@ -227,38 +285,79 @@ else
 </span>
 </td>
 <td width="175px">Listened to Recording?</td>
-<td>
-<select id="plan" style="width:210px;">
-<option>--- Select Script ---</option>
+<td width="210px">
 <?php
 $q0 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
 $c_id = mysql_fetch_row($q0);
 
-$qp = mysql_query("SELECT plan FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
-while ($plan = mysql_fetch_row($qp))
+$contract_months = 0;
+$p_i = 0;
+$a_i = 0;
+$b_i = 0;
+$p = 1;
+$a = 1;
+$p_packages = array();
+$a_packages = array();
+$b_packages = array();
+$p_plan = array();
+$a_plan = array();
+
+$q1 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$data[id]' ORDER BY plan DESC") or die(mysql_error());
+while ($pack = mysql_fetch_assoc($q1))
 {
-	$q1 = mysql_query("SELECT name FROM vericon.plan_matrix WHERE id = '$plan[0]' AND campaign = '" . mysql_real_escape_string($c_id[0]) . "'") or die(mysql_error());
-	$package_name = mysql_fetch_row($q1);
+	$q2 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$pack[plan]' AND campaign = '" . mysql_real_escape_string($c_id[0]) . "'") or die(mysql_error());
+	$da = mysql_fetch_assoc($q2);
 	
-	if ($package_name[0] == "ADSL $54.95 24 Month Contract" || $package_name[0] == "ADSL $64.95 24 Month Contract")
+	if (preg_match("/24 Month Contract/", $da["name"]))
 	{
-		$package_name[0] = "ADSL 15GB 24 Month Contract";
+		$contract = 24;
 	}
-	elseif ($package_name[0] == "ADSL $67.95 24 Month Contract" || $package_name[0] == "ADSL $77.95 24 Month Contract")
+	elseif (preg_match("/12 Month Contract/", $da["name"]))
 	{
-		$package_name[0] = "ADSL 500GB 24 Month Contract";
+		$contract = 12;
 	}
-	elseif ($package_name[0] == "ADSL $69.95 24 Month Contract" || $package_name[0] == "ADSL $79.95 24 Month Contract")
+	else
 	{
-		$package_name[0] = "ADSL Unlimited 24 Month Contract";
+		$contract = 0;
 	}
 	
-	echo "<option>" . $package_name[0] . "</option>";
+	if ($da["type"] == "PSTN")
+	{
+		$p_packages[$p_i] = $contract . "," . $da["id"];
+		$p_i++;
+	}
+	elseif ($da["type"] == "ADSL Metro" || $da["type"] == "ADSL Regional")
+	{
+		$a_packages[$a_i] = $contract . "," . $da["id"];
+		$a_i++;
+	}
+	elseif ($da["type"] == "Bundle")
+	{
+		$b_packages[$b_i] = $contract . "," . $da["id"];
+		$b_i++;
+	}
+}
+
+if ($b_i >= 1)
+{
+	$package = explode(",", $b_packages[0]);
+	$plan = $package[1];
+}
+elseif ($a_i >= 1)
+{
+	$package = explode(",", $a_packages[0]);
+	$plan = $package[1];
+}
+elseif ($p_i >= 1)
+{
+	rsort($p_packages);
+	$package = explode(",", $p_packages[0]);
+	$plan = $package[1];
 }
 ?>
-</select>
+<input type="hidden" id="plan" value="<?php echo $plan; ?>">
 </td>
-<td align="center"><button onclick="Load_Script()" class="btn2" style="font-size:9px;">Load Script</button></td>
+<td style="text-align:center;"><button onclick="Load_Script()" class="btn2" style="font-size:9px;">Load Script</button></td>
 </tr>
 <tr>
 <td style="padding: .6em 10px; text-align:center;">
@@ -281,7 +380,7 @@ else
 </td>
 <td width="175px">Validated Customer Details?</td>
 <td></td>
-<td align="center"><button onclick="Details()" class="btn2" style="font-size:9px;">Details</button></td>
+<td style="text-align:center;"><button onclick="Details()" class="btn2" style="font-size:9px;">Details</button></td>
 </tr>
 <tr>
 <td style="padding: .6em 10px; text-align:center;">

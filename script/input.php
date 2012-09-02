@@ -17,6 +17,7 @@ $physical = $data["physical"];
 $postal = $data["postal"];
 $mobile = $data["mobile"];
 $email = $data["email"];
+$best_buddy = $data["best_buddy"];
 
 switch ($title)
 {
@@ -118,13 +119,13 @@ if ( $( "#email" ) != null && $( "#email" ).val() == "N/A" )
 	$( "#email" ).attr("disabled", true);
 }
 
-if ( "<?php echo $data["welcome"]; ?>" == "post" )
+if ( "<?php echo $data["promotions"]; ?>" == "N" )
 {
-	$( "#welcome_p" ).prop("checked", true);
+	$( "#promotions_n" ).prop("checked", true);
 }
-else if ( "<?php echo $data["welcome"]; ?>" == "email" )
+else if ( "<?php echo $data["promotions"]; ?>" == "Y" )
 {
-	$( "#welcome_e" ).prop("checked", true);
+	$( "#promotions_y" ).prop("checked", true);
 }
 
 if ( $( '#physical' ).val() != undefined )
@@ -279,12 +280,12 @@ $input["mobile"] = $line . "<br><br><table border='0' width='100%'>
 
 $input["email"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='105px'>E-Mail<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='email' value='$email' /> <input type='checkbox' id='no_email' onclick='Email()' style='height:auto;' /> <span>N/A</span></td></tr>
-<tr><td width='105px'>Promotions<span style='color:#ff0000;'>*</span> </td><td><input type='radio' name='promotions' value='Y' style='height:auto;' /> Yes &nbsp; <input type='radio' name='promotions' value='N' style='height:auto;' /> No</td></tr>
+<tr><td width='105px'>Promotions<span style='color:#ff0000;'>*</span> </td><td><input type='radio' id='promotions_y' name='promotions' value='Y' style='height:auto;' /> Yes &nbsp; <input type='radio' id='promotions_n' name='promotions' value='N' style='height:auto;' /> No</td></tr>
 </table>";
 
 $input["email2"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>E-Mail<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='email2' value='$email' /></td></tr>
-<tr><td width='105px'>Promotions<span style='color:#ff0000;'>*</span> </td><td><input type='radio' name='promotions' value='Y' style='height:auto;' /> Yes &nbsp; <input type='radio' name='promotions' value='N' style='height:auto;' /> No</td></tr>
+<tr><td width='105px'>Promotions<span style='color:#ff0000;'>*</span> </td><td><input type='radio' id='promotions_y' name='promotions' value='Y' style='height:auto;' /> Yes &nbsp; <input type='radio' id='promotions_n' name='promotions' value='N' style='height:auto;' /> No</td></tr>
 </table>";
 
 $input["lines"] = $line . "<div id='users-contain' class='ui-widget'>
@@ -301,4 +302,8 @@ $input["lines"] = $line . "<div id='users-contain' class='ui-widget'>
 </table>
 <button onclick='Add_Package()' class='btn'>Add Package</button>
 </div>";
+
+$input["best_buddy"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='95px'>Best Buddy<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='best_buddy' value='$best_buddy' /></td></tr>
+</table>";
 ?>
