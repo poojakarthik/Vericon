@@ -890,6 +890,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
   `position` varchar(300) NOT NULL,
+  `best_buddy` varchar(16) NOT NULL,
   `credit` int(11) NOT NULL,
   `ongoing_credit` int(11) NOT NULL,
   `onceoff_credit` int(11) NOT NULL,
@@ -936,6 +937,7 @@ CREATE TABLE IF NOT EXISTS `customers_log` (
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
   `position` varchar(300) NOT NULL,
+  `best_buddy` varchar(16) NOT NULL,
   `credit` int(11) NOT NULL,
   `ongoing_credit` int(11) NOT NULL,
   `onceoff_credit` int(11) NOT NULL,
@@ -1229,11 +1231,13 @@ CREATE TABLE IF NOT EXISTS `sales_customers` (
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
   `position` varchar(300) NOT NULL,
+  `best_buddy` varchar(16) NOT NULL,
   `ongoing_credit` int(11) NOT NULL,
   `onceoff_credit` int(11) NOT NULL,
   `payway` varchar(16) NOT NULL,
   `dd_type` varchar(16) NOT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `centre` (`centre`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql
