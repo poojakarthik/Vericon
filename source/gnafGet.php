@@ -279,14 +279,30 @@ elseif ($type == "search")
 			}
 		}
 	}
+	
+	$q3 = mysql_query("SELECT LOCALITY.locality_name, STATE.state_abbreviation, LOCALITY.primary_postcode FROM gnaf.LOCALITY, gnaf.STATE WHERE locality_pid = '$l_pid' AND STATE.state_pid = LOCALITY.state_pid") or die(mysql_error());
+	$data2 = mysql_fetch_row($q3);
+	$suburb = $data2[0];
+	$state = $data2[1];
+	$postcode = $data2[2];
+	
+	if ($building_type == "null") { $building_type = ""; }
+	
+	$street_number = trim($_GET["street_number"]);
+	
+	$free_format =  preg_replace('!\s+!', ' ', trim($building_type . " " . $building_number . " " . $street_number . " " . $street_name . " " . $street_type . ", " . $suburb . " " . $state . " " . $postcode));
+	
+	$q4 = mysql_query("SELECT auth.user FROM vericon.auth, vericon.currentuser WHERE currentuser.hash = '" . mysql_real_escape_string($_COOKIE["hash"]) . "' AND auth.user = currentuser.user");
+	$user = mysql_fetch_row($q4);
+
 	if ($results_count == 0)
 	{
-		mysql_query("INSERT INTO vericon.log_gnaf (timestamp, result) VALUES (NOW(), '0')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.log_gnaf (timestamp, user, input, result) VALUES (NOW(), '$user[0]', '" . mysql_real_escape_string($free_format) . "', '0')") or die(mysql_error());
 		echo 'No Results Found';
 	}
 	else
 	{
-		mysql_query("INSERT INTO vericon.log_gnaf (timestamp, result) VALUES (NOW(), '1')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.log_gnaf (timestamp, user, input, result) VALUES (NOW(), '$user[0]', '" . mysql_real_escape_string($free_format) . "', '1')") or die(mysql_error());
 	}
 }
 elseif ($type == "format")
