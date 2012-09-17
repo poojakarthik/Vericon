@@ -9,23 +9,19 @@ div#users-contain table td { border: 1px solid #eee; padding: .3em 5px; text-ali
 </style>
 
 <script>
-function Business()
+function Export(folder,file)
 {
-	window.location = "new_export.php?method=Business&date=" + $( "#datepicker" ).val();
-}
-</script>
-<script>
-function Residential()
-{
-	window.location = "new_export.php?method=Residential&date=" + $( "#datepicker" ).val();
+	var date = $( "#datepicker" );
+	window.location = "new_export.php?date=" + date.val() + "&folder=" + folder + "&file=" + file;
 }
 </script>
 
 <div id="display">
 <script>
-$( "#display" ).load('new_display.php?date=<?php echo date("Y-m-d", strtotime("-1day")); ?>',
-function() {
-	$( "#display" ).show('blind', '', 'slow');
+$( "#display" ).load('new_display.php?date=<?php echo date("Y-m-d", strtotime("-1day")); ?>', function() {
+	$( "#display2" ).load('new_display2.php?date=<?php echo date("Y-m-d", strtotime("-1day")); ?>', function() {
+		$( "#display" ).show('blind', '', 'slow');
+	});
 });
 </script>
 </div>

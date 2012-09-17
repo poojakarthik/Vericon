@@ -1,11 +1,11 @@
 <?php
-$method = $_GET["method"];
 $date = date("d.m.Y", strtotime($_GET["date"]));
+$folder = $_GET["folder"];
+$file = $_GET["file"];
 
-$filename = "DSR_" . $date . "_" . $method . ".csv";
 header("Content-type: application/x-msdownload");
-header("Content-Disposition: attachment; filename=$filename");
+header("Content-Disposition: attachment; filename=$file");
 header("Pragma: no-cache");
 header("Expires: 0");
-readfile("/var/dsr/" . date("Y/F", strtotime($_GET["date"])) . "/" . $date . "/New/" . $filename);
+readfile("/var/dsr/" . date("Y/F", strtotime($_GET["date"])) . "/" . $date . "/" . $folder . "/" . $file);
 ?>
