@@ -490,22 +490,22 @@ $filename = $new_path . "/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type 
 
 if (!file_exists($year_path))
 {
-	mkdir($year_path,0755);
+	mkdir($year_path,0777);
 }
 
 if (!file_exists($month_path))
 {
-	mkdir($month_path,0755);
+	mkdir($month_path,0777);
 }
 
 if (!file_exists($day_path))
 {
-	mkdir($day_path,0755);
+	mkdir($day_path,0777);
 }
 
 if (!file_exists($new_path))
 {
-	mkdir($new_path,0755);
+	mkdir($new_path,0777);
 }
 
 if (!file_exists($filename))
