@@ -1,21 +1,21 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$date = date("Y-m-d", strtotime("-1 day"));
+$date = date("Y-m-d");
 $type = $argv[1];
 
-if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/SBT/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
+if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/ZEN/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
 {
 	exit;
 }
 
-$header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account Status,ADSL Status,Wireless Status,Agent,Centre,Date of Sale,Group,Whoisit,Telco Name,Rating,Industry,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,ABN,CLI 1,Plan 1,CLI 2,Plan 2,CLI 3,Plan 3,CLI 4,Plan 4,CLI 5,Plan 5,CLI 6,Plan 6,CLI 7,Plan 7,CLI 8,Plan 8,CLI 9,Plan 9,CLI 10,Plan 10,MSN 1,Mplan 1,MSN 2,Mplan 2,MSN 3,Mplan 3,WMSN 1,Wplan 1,WMSN 2,Wplan 2,ACLI,APLAN,Bundle,Building Type,Building Number,Building Number Suffix,Building Name,Street Number Start,Street Number End,Street Name,Street Type,Suburb,State,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail State,Mail Post Code,Contract Months,Credit Offered,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Sale Type,Mobile Contact,Home Number,Current Provider,Email Address ,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment";
+$header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account Status,ADSL Status,Wireless Status,Agent,Centre,Date of Sale,Group,Whoisit,Telco Name,Rating,Industry,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,ABN,CLI 1,Plan 1,Best Buddy 1,CLI 2,Plan 2,Best Buddy 2,CLI 3,Plan 3,Best Buddy 3,CLI 4,Plan 4,Best Buddy 4,CLI 5,Plan 5,Best Buddy 5,CLI 6,Plan 6,Best Buddy 6,CLI 7,Plan 7,Best Buddy 7,CLI 8,Plan 8,Best Buddy 8,CLI 9,Plan 9,Best Buddy 9,CLI 10,Plan 10,Best Buddy 10,MSN 1,Mplan 1,MSN 2,Mplan 2,MSN 3,Mplan 3,WMSN 1,Wplan 1,WMSN 2,Wplan 2,ACLI,APLAN,Bundle,Building Type,Building Number,Building Number Suffix,Building Name,Street Number Start,Street Number End,Street Name,Street Type,Suburb,State,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail State,Mail Post Code,Contract Months,Credit Offered,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Sale Type,Mobile Contact,Home Number,Current Provider,Email Address ,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment";
 
 $body = "";
 
-$campaign_query = "campaign = 'Speed Telecom' OR campaign = 'Magnum Telecom' OR campaign = 'Precise Telecom' OR campaign = 'Oasis Telecom' OR campaign = 'Spiral Communications' OR campaign = 'Telcoshare'";
+$campaign_query = "campaign = 'Action Telecom' OR campaign = 'Alpha Talk' OR campaign = 'Telkokey' OR campaign = 'Venus Telecom' OR campaign = 'XLN Telecom'";
 
-$dsr_num = "1" . date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
+$dsr_num = "2" . date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
 if ($type == "Business")
 {
 	$sale_id = $dsr_num . "001";
@@ -422,6 +422,7 @@ while ($qa = mysql_fetch_assoc($q))
 	{
 		$body .= '="' . $p_cli[$i] . '",';
 		$body .= '"' . $p_plan[$i] . '",';
+		if ($p_cli[$i] != "") { $body .= '="' . $data["best_buddy"] . '",'; } else { $body .= '"' . '",'; }
 	}
 	for ($i = 1; $i <= 3; $i++)
 	{
@@ -484,7 +485,7 @@ while ($qa = mysql_fetch_assoc($q))
 $year_path = "/var/dsr/" . date("Y", strtotime($date));
 $month_path = $year_path . "/" . date("F", strtotime($date));
 $day_path = $month_path . "/" . date("d.m.Y", strtotime($date));
-$new_path = $day_path . "/SBT";
+$new_path = $day_path . "/ZEN";
 $filename = $new_path . "/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv";
 
 if (!file_exists($year_path))
@@ -515,4 +516,6 @@ if (!file_exists($filename))
 	fwrite($fh, $body);
 	fclose($fh);
 }
+
+exec("rm /var/vtmp/dsr_loading.txt");
 ?>

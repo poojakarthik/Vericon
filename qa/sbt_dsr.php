@@ -1,7 +1,7 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$date = date("Y-m-d", strtotime("-1 day"));
+$date = date("Y-m-d");
 $type = $argv[1];
 
 if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/SBT/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
@@ -515,4 +515,6 @@ if (!file_exists($filename))
 	fwrite($fh, $body);
 	fclose($fh);
 }
+
+exec("rm /var/vtmp/dsr_loading.txt");
 ?>

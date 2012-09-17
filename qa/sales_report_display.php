@@ -164,3 +164,60 @@ else
 <?php
 }
 ?>
+<table width="100%">
+<tr>
+<td style="padding-left:5px;"><img src="../images/dsr_download_header.png" width="155" height="25" /></td>
+</tr>
+<tr>
+<td><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+</table>
+
+<div id="display2" style="padding-left:10px;">
+<?php
+$date_path = date("Y/F/d.m.Y", strtotime($date));
+$dir = "/var/dsr/" . $date_path . "/";
+$dh = opendir($dir);
+$count = 0;
+
+while ($file = readdir($dh))
+{
+	if ($file != "." && $file != ".."  && $file != "Update")
+	{
+		$count++;
+		if (filetype($dir . $file) == "dir")
+		{
+			echo "<b>" . $file . "</b><br>";
+			
+			$dh2 = opendir($dir . $file . "/");
+			while ($file2 = readdir($dh2))
+			{
+				if ($file2 != "." && $file2 != "..")
+				{
+					echo "-- <a onClick='Export(\"$file\",\"$file2\")' style='text-decoration:underline; cursor: pointer;'>" . $file2 . "</a><br>";
+				}
+			}
+			closedir($dh2);
+		}
+	}
+}
+
+closedir($dh);
+
+if ($count < 1)
+{
+	if ($date != date("Y-m-d"))
+	{
+		echo "No DSR Found";
+	}
+	elseif (!file_exists("/var/vtmp/dsr_loading.txt"))
+	{
+		echo "<button onclick='Generate()' class='btn'>Generate</button>";
+	}
+	else
+	{
+		echo "The DSR is still being generated. Please check back soon.";
+	}
+}
+?>
+</div>
