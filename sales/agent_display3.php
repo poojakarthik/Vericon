@@ -23,22 +23,13 @@ $week2 = date("W", strtotime($date2));
 <table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;" width="98%">
 <thead>
 <tr class="ui-widget-header ">
-<th rowspan="2">Week Ending</th>
-<th colspan="4" style="text-align:center;">Original</th>
-<th colspan="4" style="text-align:center;">Adjusted</th>
-<th rowspan="2" style="text-align:center;">Est. CPS</th>
-<th rowspan="2" style="text-align:center;">Actl. CPS</th>
-<th rowspan="2" style="text-align:center;"></th>
-</tr>
-<tr class="ui-widget-header ">
+<th>Week Ending</th>
 <th style="text-align:center;">Hours</th>
 <th style="text-align:center;">Bonus</th>
-<th style="text-align:center;">Sales</th>
+<th style="text-align:center;">Net Sales</th>
 <th style="text-align:center;">SPH</th>
-<th style="text-align:center;">Hours</th>
-<th style="text-align:center;">Bonus</th>
-<th style="text-align:center;">Sales</th>
-<th style="text-align:center;">SPH</th>
+<th style="text-align:center;">CPS</th>
+<th style="text-align:center;"></th>
 </tr>
 </thead>
 <tbody>
@@ -51,17 +42,9 @@ while ($data = mysql_fetch_assoc($q))
 	$year = date("Y", strtotime($data["date"]));
 	$we = date("Y-m-d", strtotime($year . "W" . $week . "7"));
 	
-	$o_hours = $data["SUM(hours)"];
-	$o_total_hours += $o_hours;
-	
-	$o_bonus = $data["SUM(bonus)"];
-	$o_total_bonus += $o_bonus;
-	
 	$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$user' AND WEEK(approved_timestamp) = '$week' AND status = 'Approved'") or die(mysql_error());
 	$o_sales = mysql_num_rows($q1);
 	$o_total_sales += $o_sales;
-	
-	$o_sph = $o_sales / $o_hours;
 	
 	$q2 = mysql_query("SELECT op_hours,op_bonus,cancellations,rate FROM vericon.timesheet_other WHERE user = '$user' AND week = '$week'") or die(mysql_error());
 	$da = mysql_fetch_row($q2);
@@ -106,20 +89,12 @@ while ($data = mysql_fetch_assoc($q))
 		}
 	}
 	
-	$o_gross = (($rate * $o_hours) + $o_bonus) * 1.09;
-	if ($o_sales > 0) { $cps = $o_gross / $o_sales; } else { $cps = $o_gross; }
-	
 	echo "<tr>";
 	echo "<td>W.E. " . date("d/m/Y", strtotime($we)) . "</td>";
-	echo "<td style='text-align:center;'>" . number_format($o_hours,2)  . "</td>";
-	echo "<td style='text-align:center;'>\$" . number_format($o_bonus,2)  . "</td>";
-	echo "<td style='text-align:center;'>" . number_format($o_sales) . "</td>";
-	echo "<td style='text-align:center;'>" . number_format($o_sph,2) . "</td>";
 	echo "<td style='text-align:center;'>" . $a_hours_d  . "</td>";
 	echo "<td style='text-align:center;'>" . $a_bonus_d  . "</td>";
 	echo "<td style='text-align:center;'>" . $a_sales_d . "</td>";
 	echo "<td style='text-align:center;'>" . $a_sph_d . "</td>";
-	echo "<td style='text-align:center;'>\$" . number_format($cps,2) . "</td>";
 	echo "<td style='text-align:center;'>" . $a_cps_d . "</td>";
 	echo "<td style='text-align:center;'><button onclick='View(\"$we\")' class='icon_view' title='View'></button></td>";
 	echo "</tr>";
@@ -135,10 +110,6 @@ else
 	$da = mysql_fetch_row($q1);
 	$rate = $da[0];
 }
-
-$o_total_sph = $o_total_sales / $o_total_hours;
-$o_total_gross = (($rate * $o_total_hours) + $o_total_bonus) * 1.09;
-if ($o_total_sales > 0) { $total_cps = $o_total_gross / $o_total_sales; } else { $cps = $o_total_gross; }
 
 if ($a_total_hours > 0)
 {
@@ -163,15 +134,10 @@ else
 
 echo "<tr>";
 echo "<td><b>Total</b></td>";
-echo "<td style='text-align:center;'><b>" . number_format($o_total_hours,2)  . "</b></td>";
-echo "<td style='text-align:center;'><b>\$" . number_format($o_total_bonus,2)  . "</b></td>";
-echo "<td style='text-align:center;'><b>" . $o_total_sales . "</b></td>";
-echo "<td style='text-align:center;'><b>" . number_format($o_total_sph,2) . "</b></td>";
 echo "<td style='text-align:center;'><b>" . $a_total_hours_d  . "</b></td>";
 echo "<td style='text-align:center;'><b>" . $a_total_bonus_d  . "</b></td>";
 echo "<td style='text-align:center;'><b>" . $a_total_sales_d . "</b></td>";
 echo "<td style='text-align:center;'><b>" . $a_total_sph_d . "</b></td>";
-echo "<td style='text-align:center;'><b>\$" . number_format($total_cps,2) . "</b></td>";
 echo "<td style='text-align:center;'><b>" . $a_total_cps_d . "</b></td>";
 echo "<td></td>";
 echo "</tr>";
