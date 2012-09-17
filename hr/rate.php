@@ -6,6 +6,7 @@ include "../source/header.php";
 div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
 div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
 .ui-dialog .ui-dialog2 .ui-state-highlight { padding: .3em; }
+.ui-dialog3 { padding: .3em; }
 .validateTips { border: 1px solid transparent; padding: 0.3em; }
 .validateTips2  { border: 1px solid transparent; padding: 0.3em; }
 .ui-autocomplete-loading { background: white url('../images/ajax-loader.gif') right center no-repeat; }
@@ -67,12 +68,34 @@ $(function() {
 	});
 });
 
+$(function() {
+	$( "#dialog:ui-dialog3" ).dialog( "destroy" );
+	
+	$( "#dialog-form3" ).dialog({
+		autoOpen: false,
+		height: 110,
+		width: 275,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind'
+	});
+});
+
 function Edit(user,rate)
 {
-	$( "#user" ).val(user);
-	$.get("rate_submit.php?method=name", { user: user }, function(data) { $( "#name" ).val(data) });
-	$( "#rate" ).val(rate);
-	$( "#dialog-form" ).dialog( "open" );
+	if (rate == "")
+	{
+		$( "#dialog-form3" ).dialog( "open" );
+	}
+	else
+	{
+		$( "#user" ).val(user);
+		$.get("rate_submit.php?method=name", { user: user }, function(data) { $( "#name" ).val(data) });
+		$( "#rate" ).val(rate);
+		$( "#dialog-form" ).dialog( "open" );
+	}
 }
 </script>
 <?php
@@ -184,6 +207,10 @@ function Search()
 <p class="validateTips2">Please Type the Agent's Name Below</p><br />
 Agent: <input type="text" id="search_box" size="25" />
 <input type="hidden" id="search_agent" value="" />
+</div>
+
+<div id="dialog-form3" title="Error">
+<br /><p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Only accounts can add the pay rate of new users</p>
 </div>
 
 <div id="display">
