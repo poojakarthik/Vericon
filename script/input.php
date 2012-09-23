@@ -18,6 +18,8 @@ $postal = $data["postal"];
 $mobile = $data["mobile"];
 $email = $data["email"];
 $best_buddy = $data["best_buddy"];
+$provider = $data["provider"];
+$c_ac_number = $data["c_ac_number"];
 
 switch ($title)
 {
@@ -224,12 +226,31 @@ function getABN(){
 <?php
 $line = "<img src='../../images/line.png' width='50%' height='9' style='margin-top:3px;' />";
 
+$input["current_provider"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='105px'>Provider<span style='color:#ff0000;'>*</span> </td><td><select id='provider' style='width:151px;'>
+<option></option>";
+
+$q1 = mysql_query("SELECT * FROM vericon.providers") or die(mysql_error());
+while ($data1 = mysql_fetch_assoc($q1))
+{
+	$input["current_provider"] .= "<option value='" . $data1["value"] . "'>" . $data1["name"] . "</option>";
+}
+
+$input["current_provider"] .= "</select></td></tr>
+<tr><td width='105px'>Account Number<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='c_ac_number' style='width:150px;' value='$c_ac_number'></td></tr>
+</table>";
+
 $input["bus_info"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>ABN<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='abn' onchange='getABN()' value='$abn'></td></tr>
 <tr><td width='95px'>Position<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='position' value='$position'></td></tr>
 <tr><td width='95px'>Business Name</td><td><b class='bus_name' style='font-size:9px;'></b></td></tr>
 <tr><td width='95px'>ABN Status</td><td><b class='abn_status' style='font-size:9px;'></b></td></tr>
 <tr><td width='95px'>Business Type</td><td><b class='bus_type' style='font-size:9px;'></b></td></tr>
+</table>";
+
+$input["bus_info2"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='95px'>Business Name<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='bus_name' size='25' value='$bus_name'></td></tr>
+<tr><td width='95px'>Position<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='position' value='$position'></td></tr>
 </table>";
 
 $input["name"] = $line . "<br><br><table border='0' width='100%'>
@@ -267,6 +288,13 @@ $input["physical"] = $line . "<input type='hidden' id='physical' value='$physica
 <tr><td><input type='text' id='display_physical3' readonly style='width:45px;' /> <input type='text' id='display_physical4' readonly style='width:55px;' /></td></tr>
 </table><br><button onclick='Physical()' class='btn'>Search</button>";
 
+$input["physical2"] = $line . "<input type='hidden' id='physical' value='$physical'><br><br>
+<table width='100%'>
+<tr><td><input type='text' id='display_physical1' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_physical2' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_physical3' readonly style='width:164px;' /> <input type='text' id='display_physical4' readonly style='width:55px;' /></td></tr>
+</table><br><button onclick='Physical2()' class='btn'>Search</button>";
+
 $input["postal"] = $line . "<input type='hidden' id='postal' value='$postal'><br><br>
 <table width='100%'>
 <tr><td><input type='text' id='display_postal1' readonly style='width:225px;' /></td></tr>
@@ -274,7 +302,18 @@ $input["postal"] = $line . "<input type='hidden' id='postal' value='$postal'><br
 <tr><td><input type='text' id='display_postal3' readonly style='width:45px;' /> <input type='text' id='display_postal4' readonly style='width:55px;' /> <input type='checkbox' id='postal_same' onclick='Postal_Same()' style='height:auto;' /> Same as Physical</td></tr>
 </table><br><button onclick='Postal()' id='postal_link' class='btn'>Search</button>";
 
+$input["postal2"] = $line . "<input type='hidden' id='postal' value='$postal'><br><br>
+<table width='100%'>
+<tr><td><input type='text' id='display_postal1' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_postal2' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_postal3' readonly style='width:164px;' /> <input type='text' id='display_postal4' readonly style='width:55px;' /></td></tr>
+</table><br><button onclick='Postal2()' id='postal_link' class='btn'>Search</button> <input type='checkbox' id='postal_same' onclick='Postal_Same()' style='height:auto;' /> Same as Physical";
+
 $input["mobile"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='95px'>Mobile<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='mobile' value='$mobile' /> <input type='checkbox' id='no_mobile' onclick='Mobile()' style='height:auto;' /> <span>N/A</span></td></tr>
+</table>";
+
+$input["mobile2"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>Mobile<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='mobile' value='$mobile' /> <input type='checkbox' id='no_mobile' onclick='Mobile()' style='height:auto;' /> <span>N/A</span></td></tr>
 </table>";
 

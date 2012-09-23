@@ -6,7 +6,27 @@ mysql_select_db('vericon');
 $id = $_GET["id"];
 $action = $_GET["action"];
 
-if ($action == "bus_info")
+if ($action == "current_provider")
+{
+	$provider = $_GET["provider"];
+	$c_ac_number = trim($_GET["c_ac_number"]);
+	
+	if ($provider == "")
+	{
+		echo "Please select a valid provider";
+	}
+	elseif ($c_ac_number == "")
+	{
+		echo "Please enter the customer's current account number";
+	}
+	else
+	{
+		//mysql_query("UPDATE sales_customers SET provider = '" . mysql_real_escape_string($provider) . "', c_ac_number = '" . mysql_real_escape_string($c_ac_number) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+
+}
+elseif ($action == "bus_info")
 {
 	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
@@ -23,6 +43,26 @@ if ($action == "bus_info")
 	else
 	{
 		mysql_query("UPDATE sales_customers SET abn = '" . mysql_escape_string($abn) . "', position = '" . mysql_escape_string($position) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+
+}
+elseif ($action == "bus_info2")
+{
+	$bus_name = trim(strtoupper($_GET["bus_name"]));
+	$position = trim($_GET["position"]);
+	
+	if ($bus_name == "")
+	{
+		echo "Please enter a valid business name";
+	}
+	elseif ($position == "")
+	{
+		echo "Please enter the customer's position in the business";
+	}
+	else
+	{
+		//mysql_query("UPDATE sales_customers SET bus_name = '" . mysql_real_escape_string($bus_name) . "', position = '" . mysql_real_escape_string($position) . "' WHERE id = '$id'") or die(mysql_error());
 		echo "submitted";
 	}
 
@@ -97,7 +137,32 @@ elseif ($action == "physical")
 	mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
 	echo "submitted";
 }
+elseif ($action == "physical2")
+{
+	$physical = $_GET["physical"];
+	
+	mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
+	echo "submitted";
+}
 elseif ($action == "postal")
+{
+	$postal = $_GET["postal"];
+	
+	if ($postal == "same")
+	{
+		$q = mysql_query("SELECT physical FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+		$da = mysql_fetch_row($q);
+		
+		mysql_query("UPDATE sales_customers SET postal = '" . mysql_real_escape_string($da[0]) . "' WHERE id = '$id'") or die(mysql_error());
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET postal = '" . mysql_real_escape_string($postal) . "' WHERE id = '$id'") or die(mysql_error());
+	}
+	
+	echo "submitted";
+}
+elseif ($action == "postal2")
 {
 	$postal = $_GET["postal"];
 	
@@ -124,6 +189,24 @@ elseif ($action == "mobile")
 		echo "Please enter the customer's mobile number";
 	}
 	elseif ($mobile != "N/A" && !preg_match("/^04[0-9]{8}$/",$mobile))
+	{
+		echo "Please enter a valid mobile number";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET mobile = '" . mysql_escape_string($mobile) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+}
+elseif ($action == "mobile2")
+{
+	$mobile = $_GET["mobile"];
+	
+	if ($mobile == "")
+	{
+		echo "Please enter the customer's mobile number";
+	}
+	elseif ($mobile != "N/A" && !preg_match("/^02[0-9]{8}$/",$mobile))
 	{
 		echo "Please enter a valid mobile number";
 	}
