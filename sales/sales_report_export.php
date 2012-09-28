@@ -93,9 +93,13 @@ if (mysql_num_rows($q) != 0)
 			{
 				$adjusted += 0.25;
 			}
-			elseif ($b_type == "ABUNDLE")
+			elseif ($b_type == "ABUNDLE" && $sale_id[1] == "Business")
 			{
 				$adjusted += 1.5;
+			}
+			elseif ($b_type == "ABUNDLE" && $sale_id[1] == "Residential")
+			{
+				$adjusted += 0.75;
 			}
 		}
 		
