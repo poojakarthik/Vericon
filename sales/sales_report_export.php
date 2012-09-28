@@ -2,9 +2,14 @@
 mysql_connect('localhost','vericon','18450be');
 
 $date1 = $_GET["date1"];
+$date2 = $_GET["date2"];
 $centre = $_GET["centre"];
 
-$q = mysql_query("SELECT * FROM vericon.auth WHERE centre = '$centre' ORDER BY user ASC") or die(mysql_error());
+$q0 = mysql_query("SELECT campaigns.id FROM vericon.centres,vericon.campaigns WHERE centres.centre = '$centre' AND campaigns.campaign = centres.campaign") or die(mysql_error());
+$c = mysql_fetch_row($q0);
+$campaign_id = $c[0];
+
+$q = mysql_query("SELECT user,first,last FROM vericon.auth WHERE centre = '$centre' AND status = 'Enabled' ORDER BY user ASC") or die(mysql_error());
 
 if (mysql_num_rows($q) != 0)
 {
@@ -29,133 +34,100 @@ if (mysql_num_rows($q) != 0)
 				->setCellValue('C4', 'Agent Name')
 				->setCellValue('D4', 'Sales')
 				->setCellValue('E4', 'Adjusted Sales');
+	$i = 5;
 	
-	$objPHPExcel->setActiveSheetIndex(0)
-				->setCellValue('B2', $centre . ' Timesheet')
-				->setCellValue('B5', 'Campaign')
-				->setCellValue('E5', $campaign[0])
-				->setCellValue('B7', 'Team Leader')
-				->setCellValue('E7', $tl)
-				->setCellValue('B9', 'Date')
-				->setCellValue('E9', date("d/m/Y", strtotime($date)))
-				->setCellValue('B11', 'Total Hours')
-				->setCellValue('C11', number_format($total_hours,2))
-				->setCellValue('E11', 'CPS')
-				->setCellValue('H11', number_format((($total_hours*27)/($total_sales*0.62)),2))
-				->setCellValue('B12', 'Total Sales')
-				->setCellValue('C12', $total_sales)
-				->setCellValue('E12', 'Average SPH')
-				->setCellValue('H12', number_format(($total_sales/$total_hours),2))
-				->setCellValue('B13', 'Total Agents')
-				->setCellValue('C13', $total_agents)
-				->setCellValue('E13', 'Average SPA')
-				->setCellValue('H13', number_format(($total_sales/$total_agents),2))
-				->setCellValue('B15', 'Agent Name')
-				->setCellValue('C15', 'Start Time')
-				->setCellValue('D15', 'End Time')
-				->setCellValue('E15', 'Hours')
-				->setCellValue('F15', 'Sales')
-				->setCellValue('G15', 'Bonus')
-				->setCellValue('H15', 'Adjusted Sales');
+	while($data = mysql_fetch_row($q))
+	{
+		$q1 = mysql_query("SELECT id FROM vericon.employees WHERE user = '$data[0]'") or die(mysql_error());
+		$employee_id = mysql_fetch_row($q1);
+		
+		$q2 = mysql_query("SELECT id,type FROM vericon.sales_customers WHERE agent = '$data[0]' AND status = 'Approved' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
+		$sales = mysql_num_rows($q2);
+		
+		$adjusted = 0;
+		
+		while ($sale_id = mysql_fetch_row($q2))
+		{
+			$p_i = 0;
+			$a_i = 0;
+			$b_i = 0;
+			
+			$q3 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$sale_id[0]' ORDER BY plan DESC") or die(mysql_error());
+			
+			while ($pack = mysql_fetch_assoc($q3))
+			{
+				$q4 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$pack[plan]' AND campaign = '" . mysql_real_escape_string($campaign_id) . "'") or die(mysql_error());
+				$da = mysql_fetch_assoc($q4);
+				
+				if ($da["type"] == "PSTN")
+				{
+					$p_i++;
+				}
+				elseif ($da["type"] == "ADSL Metro" || $da["type"] == "ADSL Regional")
+				{
+					$a_i++;
+				}
+				elseif ($da["type"] == "Bundle")
+				{
+					$b_i++;
+				}
+			}
+			
+			$b_type = "ADSL";
+			if ($p_i >= 1) { $b_type = "PSTN"; }
+			if ($b_i >= 1) { $b_type = "ABUNDLE"; }
+			
+			if ($b_type == "PSTN" && $sale_id[1] == "Business")
+			{
+				$adjusted += 1;
+			}
+			elseif ($b_type == "PSTN" && $sale_id[1] == "Residential")
+			{
+				$adjusted += 0.5;
+			}
+			elseif ($b_type == "ADSL" && $sale_id[1] == "Business")
+			{
+				$adjusted += 0.5;
+			}
+			elseif ($b_type == "ADSL" && $sale_id[1] == "Residential")
+			{
+				$adjusted += 0.25;
+			}
+			elseif ($b_type == "ABUNDLE")
+			{
+				$adjusted += 1.5;
+			}
+		}
+		
+		$objPHPExcel->setActiveSheetIndex(0)
+					->setCellValue('B' . $i, $employee_id[0])
+					->setCellValue('C' . $i, $data[1] . " " . $data[2])
+					->setCellValue('D' . $i, $sales)
+					->setCellValue('E' . $i, $adjusted);
+		$i++;
+	}
+	
+	$i--;
 	
 	// Merge cells
-	$objPHPExcel->getActiveSheet()->mergeCells('B2:H3');
-	$objPHPExcel->getActiveSheet()->mergeCells('B5:C5');
-	$objPHPExcel->getActiveSheet()->mergeCells('E5:H5');
-	$objPHPExcel->getActiveSheet()->mergeCells('B7:C7');
-	$objPHPExcel->getActiveSheet()->mergeCells('E7:H7');
-	$objPHPExcel->getActiveSheet()->mergeCells('B9:C9');
-	$objPHPExcel->getActiveSheet()->mergeCells('E9:H9');
-	$objPHPExcel->getActiveSheet()->mergeCells('E11:G11');
-	$objPHPExcel->getActiveSheet()->mergeCells('E12:G12');
-	$objPHPExcel->getActiveSheet()->mergeCells('E13:G13');
-	$objPHPExcel->getActiveSheet()->mergeCells('B' . $i . ':D' . $i);
-	
-	// Set cell number formats
-	$objPHPExcel->getActiveSheet()->getStyle('H11')->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
-	$objPHPExcel->getActiveSheet()->getStyle('G16:G' . $i)->getNumberFormat()->setFormatCode('$#,##0_);[Red]($#,##0)');
+	$objPHPExcel->getActiveSheet()->mergeCells('B1:E1');
+	$objPHPExcel->getActiveSheet()->mergeCells('B2:E2');
 	
 	// Set column widths
-	$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(28.68);
-	$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(12);
-	$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(12);
-	$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(12);
-	$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(8.14);
-	$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(7.86);
-	$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(15.43);
-	
-	// Add conditional formatting
-	$objConditional1 = new PHPExcel_Style_Conditional();
-	$objConditional1->setConditionType(PHPExcel_Style_Conditional::CONDITION_CELLIS);
-	$objConditional1->setOperatorType(PHPExcel_Style_Conditional::OPERATOR_LESSTHANOREQUAL);
-	$objConditional1->addCondition('180');
-	$objConditional1->getStyle()->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_DARKGREEN);
-	$objConditional1->getStyle()->getFont()->setSize(12);
-	$objConditional1->getStyle()->getFont()->setBold(true);
-	$objConditional1->getStyle()->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
-	$objConditional1->getStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	
-	$objConditional2 = new PHPExcel_Style_Conditional();
-	$objConditional2->setConditionType(PHPExcel_Style_Conditional::CONDITION_CELLIS);
-	$objConditional2->setOperatorType(PHPExcel_Style_Conditional::OPERATOR_GREATERTHAN);
-	$objConditional2->addCondition('180');
-	$objConditional2->getStyle()->getFont()->getColor()->setARGB(PHPExcel_Style_Color::COLOR_RED);
-	$objConditional2->getStyle()->getFont()->setSize(12);
-	$objConditional2->getStyle()->getFont()->setBold(true);
-	$objConditional2->getStyle()->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
-	$objConditional2->getStyle()->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	
-	$conditionalStyles = $objPHPExcel->getActiveSheet()->getStyle('H11')->getConditionalStyles();
-	array_push($conditionalStyles, $objConditional1);
-	array_push($conditionalStyles, $objConditional2);
-	$objPHPExcel->getActiveSheet()->getStyle('H11')->setConditionalStyles($conditionalStyles);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(14);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(22);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(14);
 	
 	// Set fonts
-	$objPHPExcel->getActiveSheet()->getStyle('B2')->getFont()->setSize(26);
-	$objPHPExcel->getActiveSheet()->getStyle('B2')->getFont()->setBold(true);
-	$objPHPExcel->getActiveSheet()->getStyle('B5:E9')->getFont()->setSize(14);
-	$objPHPExcel->getActiveSheet()->getStyle('B5:E9')->getFont()->setBold(true);
-	$objPHPExcel->getActiveSheet()->getStyle('B11:H13')->getFont()->setSize(12);
-	$objPHPExcel->getActiveSheet()->getStyle('B11:H13')->getFont()->setBold(true);
-	$objPHPExcel->getActiveSheet()->getStyle('B11:B13')->getFont()->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
-	$objPHPExcel->getActiveSheet()->getStyle('E11:E15')->getFont()->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
-	$objPHPExcel->getActiveSheet()->getStyle('B15:H15')->getFont()->setSize(12);
-	$objPHPExcel->getActiveSheet()->getStyle('B15:H15')->getFont()->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
-	$objPHPExcel->getActiveSheet()->getStyle('B15:H' . $i)->getFont()->setBold(true);
-	$objPHPExcel->getActiveSheet()->getStyle('B' . $i . ':H' . $i)->getFont()->setUnderline(PHPExcel_Style_Font::UNDERLINE_SINGLE);
+	$objPHPExcel->getActiveSheet()->getStyle('B1')->getFont()->setSize(24);
+	$objPHPExcel->getActiveSheet()->getStyle('B1:B2')->getFont()->setBold(true);
+	$objPHPExcel->getActiveSheet()->getStyle('B4:E4')->getFont()->setBold(true);
 	
 	// Set alignments
-	$objPHPExcel->getActiveSheet()->getStyle('A1:H15')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
-	$objPHPExcel->getActiveSheet()->getStyle('B2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	$objPHPExcel->getActiveSheet()->getStyle('E5')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	$objPHPExcel->getActiveSheet()->getStyle('E7')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	$objPHPExcel->getActiveSheet()->getStyle('E9')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	$objPHPExcel->getActiveSheet()->getStyle('C11')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	$objPHPExcel->getActiveSheet()->getStyle('C12')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	$objPHPExcel->getActiveSheet()->getStyle('C13')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	$objPHPExcel->getActiveSheet()->getStyle('H11')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	$objPHPExcel->getActiveSheet()->getStyle('H12')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	$objPHPExcel->getActiveSheet()->getStyle('H13')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_LEFT);
-	$objPHPExcel->getActiveSheet()->getStyle('C15:H' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
-	$objPHPExcel->getActiveSheet()->getStyle('B' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-	
-	// Set medium border outline
-	$styleMediumBorderOutline = array(
-		'borders' => array(
-			'outline' => array(
-				'style' => PHPExcel_Style_Border::BORDER_MEDIUM,
-				'color' => array('argb' => 'FF000000'),
-			),
-		),
-	);
-	$objPHPExcel->getActiveSheet()->getStyle('B2:H3')->applyFromArray($styleMediumBorderOutline);
-	$objPHPExcel->getActiveSheet()->getStyle('B5:C5')->applyFromArray($styleMediumBorderOutline);
-	$objPHPExcel->getActiveSheet()->getStyle('E5:H5')->applyFromArray($styleMediumBorderOutline);
-	$objPHPExcel->getActiveSheet()->getStyle('B7:C7')->applyFromArray($styleMediumBorderOutline);
-	$objPHPExcel->getActiveSheet()->getStyle('E7:H7')->applyFromArray($styleMediumBorderOutline);
-	$objPHPExcel->getActiveSheet()->getStyle('B9:C9')->applyFromArray($styleMediumBorderOutline);
-	$objPHPExcel->getActiveSheet()->getStyle('E9:H9')->applyFromArray($styleMediumBorderOutline);
-	
+	$objPHPExcel->getActiveSheet()->getStyle('B1:E2')->getAlignment()->setVertical(PHPExcel_Style_Alignment::VERTICAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('B1:E2')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+	$objPHPExcel->getActiveSheet()->getStyle('D4:E' . $i)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		
 	// Set medium border outline medium border inside
 	$styleMediumBorderFill = array(
 		'borders' => array(
@@ -167,7 +139,8 @@ if (mysql_num_rows($q) != 0)
 			),
 		),
 	);
-	$objPHPExcel->getActiveSheet()->getStyle('B15:H15')->applyFromArray($styleMediumBorderFill);
+	$objPHPExcel->getActiveSheet()->getStyle('B4:E4')->applyFromArray($styleMediumBorderFill);
+	
 	// Set medium border outline thin border inside
 	$styleMediumThinBorderFill = array(
 		'borders' => array(
@@ -179,19 +152,161 @@ if (mysql_num_rows($q) != 0)
 			),
 		),
 	);
-	$objPHPExcel->getActiveSheet()->getStyle('B11:C13')->applyFromArray($styleMediumThinBorderFill);
-	$objPHPExcel->getActiveSheet()->getStyle('E11:H13')->applyFromArray($styleMediumThinBorderFill);
-	$objPHPExcel->getActiveSheet()->getStyle('B16:H' . $i)->applyFromArray($styleMediumThinBorderFill);
+	$objPHPExcel->getActiveSheet()->getStyle('B5:E' . $i)->applyFromArray($styleMediumThinBorderFill);
 	
 	// Rename sheet
-	$objPHPExcel->getActiveSheet()->setTitle('Sheet1');
+	$objPHPExcel->getActiveSheet()->setTitle('CSR');
+	
+	///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	// Create New Sheet
+	$objPHPExcel->createSheet();
+	
+	// Add some data
+	$objPHPExcel->setActiveSheetIndex(1)
+				->setCellValue('A1', 'Sale ID')
+				->setCellValue('B1', 'Employee ID')
+				->setCellValue('C1', 'Agent Name')
+				->setCellValue('D1', 'Date')
+				->setCellValue('E1', 'Type')
+				->setCellValue('F1', 'Sale Type')
+				->setCellValue('G1', 'Plan 1')
+				->setCellValue('H1', 'Plan 2')
+				->setCellValue('I1', 'Plan 3')
+				->setCellValue('J1', 'Plan 4')
+				->setCellValue('K1', 'Plan 5')
+				->setCellValue('L1', 'Plan 6')
+				->setCellValue('M1', 'Plan 7')
+				->setCellValue('N1', 'Plan 8')
+				->setCellValue('O1', 'Plan 9')
+				->setCellValue('P1', 'Plan 10');
+	$i = 2;
+	
+	$q = mysql_query("SELECT user,first,last FROM vericon.auth WHERE centre = '$centre' AND status = 'Enabled' ORDER BY user ASC") or die(mysql_error());
+	
+	while ($data2 = mysql_fetch_row($q))
+	{
+		$q1 = mysql_query("SELECT id,type,agent,approved_timestamp FROM vericon.sales_customers WHERE agent = '$data2[0]' AND status = 'Approved' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2' ORDER BY id ASC") or die(mysql_error());
+		
+		while($data = mysql_fetch_row($q1))
+		{
+			$q2 = mysql_query("SELECT id FROM vericon.employees WHERE user = '$data[2]'") or die(mysql_error());
+			$employee_id = mysql_fetch_row($q2);
+			
+			$plans = array();
+			$p_c = 1;
+			$p_i = 0;
+			$a_i = 0;
+			$b_i = 0;
+			
+			$q3 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$data[0]' ORDER BY plan DESC") or die(mysql_error());
+			
+			while ($pack = mysql_fetch_assoc($q3))
+			{
+				$plans[$p_c] = $pack["plan"];
+				$p_c++;
+				
+				$q4 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$pack[plan]' AND campaign = '" . mysql_real_escape_string($campaign_id) . "'") or die(mysql_error());
+				$da = mysql_fetch_assoc($q4);
+				
+				if ($da["type"] == "PSTN")
+				{
+					$p_i++;
+				}
+				elseif ($da["type"] == "ADSL Metro" || $da["type"] == "ADSL Regional")
+				{
+					$a_i++;
+				}
+				elseif ($da["type"] == "Bundle")
+				{
+					$b_i++;
+				}
+			}
+			
+			$b_type = "ADSL";
+			if ($p_i >= 1) { $b_type = "PSTN"; }
+			if ($b_i >= 1) { $b_type = "ABUNDLE"; }
+			
+			$objPHPExcel->setActiveSheetIndex(1)
+						->setCellValue('A' . $i, $data[0])
+						->setCellValue('B' . $i, $employee_id[0])
+						->setCellValue('C' . $i, $data2[1] . " " . $data2[2])
+						->setCellValue('D' . $i, date("d/m/Y", strtotime($data[3])))
+						->setCellValue('E' . $i, $data[1])
+						->setCellValue('F' . $i, $b_type)
+						->setCellValue('G' . $i, $plans[1])
+						->setCellValue('H' . $i, $plans[2])
+						->setCellValue('I' . $i, $plans[3])
+						->setCellValue('J' . $i, $plans[4])
+						->setCellValue('K' . $i, $plans[5])
+						->setCellValue('L' . $i, $plans[6])
+						->setCellValue('M' . $i, $plans[7])
+						->setCellValue('N' . $i, $plans[8])
+						->setCellValue('O' . $i, $plans[9])
+						->setCellValue('P' . $i, $plans[10]);
+			$i++;
+		}
+	}
+	
+	$i--;
+	
+	// Set column widths
+	$objPHPExcel->getActiveSheet()->getColumnDimension('A')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('B')->setWidth(14);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('C')->setWidth(22);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('D')->setWidth(11);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('E')->setWidth(11);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('F')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('G')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('H')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('I')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('J')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('K')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('L')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('M')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('N')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('O')->setWidth(10);
+	$objPHPExcel->getActiveSheet()->getColumnDimension('P')->setWidth(10);
+	
+	// Set fonts
+	$objPHPExcel->getActiveSheet()->getStyle('A1:P1')->getFont()->setBold(true);
+	
+	// Set alignments
+	$objPHPExcel->getActiveSheet()->getStyle('A1:P1')->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
+		
+	// Set medium border outline medium border inside
+	$styleMediumBorderFill = array(
+		'borders' => array(
+			'inside' => array(
+				'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+			),
+			'outline' => array(
+				'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+			),
+		),
+	);
+	$objPHPExcel->getActiveSheet()->getStyle('A1:P1')->applyFromArray($styleMediumBorderFill);
+	
+	// Set medium border outline thin border inside
+	$styleMediumThinBorderFill = array(
+		'borders' => array(
+			'inside' => array(
+				'style' => PHPExcel_Style_Border::BORDER_THIN
+			),
+			'outline' => array(
+				'style' => PHPExcel_Style_Border::BORDER_MEDIUM
+			),
+		),
+	);
+	$objPHPExcel->getActiveSheet()->getStyle('A2:P' . $i)->applyFromArray($styleMediumThinBorderFill);
+	
+	// Rename sheet
+	$objPHPExcel->getActiveSheet()->setTitle('Sales');
 	
 	// Set active sheet index to the first sheet, so Excel opens this as the first sheet
 	$objPHPExcel->setActiveSheetIndex(0);
 	
 	// Redirect output to a client’s web browser (Excel2007)
-	$date = date("d-m-Y", strtotime($date));
-	$filename = $centre . "_Timesheet_" . $date . ".xlsx";
+	$filename = $centre . "_CSR_" . date("d-m-Y", strtotime($date1)) . "_to_" . date("d-m-Y", strtotime($date2)) . ".xlsx";
 	
 	header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
 	header('Content-Disposition: attachment;filename=' . $filename);

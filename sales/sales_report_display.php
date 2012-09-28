@@ -9,9 +9,71 @@ $q0 = mysql_query("SELECT centre FROM vericon.auth WHERE user = '$user'") or die
 $centre = mysql_fetch_row($q0);
 ?>
 
+<script>
+$(function() {
+	$( "#datepicker" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		altField: "#datepicker2",
+		altFormat: "dd/mm/yy",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "0d",
+		minDate: "<?php echo "2012-03-01"; ?>",
+		onSelect: function(dateText, inst) {
+			var user = "<?php echo $user; ?>",
+				date2 = $( "#datepicker3" );
+			
+			$( "#display" ).hide('blind', '', 'slow',
+			function() {
+				$( "#display" ).load('sales_report_display.php?user=' + user + '&date1=' + dateText + '&date2=' + date2.val(),
+				function() {
+					$( "#display" ).show('blind', '' , 'slow');
+				});
+			});
+		}});
+});
+</script>
+<script>
+$(function() {
+	$( "#datepicker3" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		altField: "#datepicker4",
+		altFormat: "dd/mm/yy",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "0d",
+		minDate: "<?php echo "2012-03-01"; ?>",
+		onSelect: function(dateText, inst) {
+			var user = "<?php echo $user; ?>",
+				date1 = $( "#datepicker" );
+			
+			$( "#display" ).hide('blind', '', 'slow',
+			function() {
+				$( "#display" ).load('sales_report_display.php?user=' + user + '&date1=' + date1.val() + '&date2=' + dateText,
+				function() {
+					$( "#display" ).show('blind', '' , 'slow');
+				});
+			});
+		}});
+});
+</script>
+
 <table width="100%">
 <tr>
 <td align="left" style="padding-left:5px;"><img src="../images/sales_report_header.png" width="135" height="25" /></td>
+<td align="right" style="padding-right:10px;"><input type='text' size='9' id='datepicker2' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y", strtotime($date1)); ?>' /><input type='hidden' id='datepicker' value='<?php echo $date1; ?>' /> to <input type='text' size='9' id='datepicker4' readonly='readonly' style="height:20px;" value='<?php echo date("d/m/Y", strtotime($date2)); ?>' /><input type='hidden' id='datepicker3' value='<?php echo $date2; ?>' /></td>
 </tr>
 <tr>
 <td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
@@ -113,6 +175,6 @@ else
 
 <table width="100%">
 <tr>
-<td align="right" style="padding-right:10px;"><button onClick="CSR()" class="btn">Export</button></td>
+<td align="right" style="padding-right:10px;"><button onClick="Export()" class="btn">Export</button></td>
 </tr>
 </table>
