@@ -70,6 +70,10 @@ elseif ($data["type"] == "Business")
 <td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
 </tr>
 <tr>
+<td style="padding-left:5px;">Lead ID </td>
+<td><b><?php echo $data["lead_id"]; ?></b></td>
+</tr>
+<tr>
 <td width="100px" style="padding-left:5px;">Customer Name </td>
 <td><b><?php echo $data["title"] . " " . $data["firstname"] . " " . $data["lastname"]; ?></b></td>
 </tr>
