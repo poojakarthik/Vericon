@@ -8,6 +8,7 @@ As of 04/06/2012
 | [GNAF](#gnaf) |
 | [Leads](#leads) |
 | [PAF](#paf) |
+| Terralinks(#terralinks)  |
 | [VeriCon](#vericon)  |
 
 ##ADSL
@@ -742,6 +743,20 @@ CREATE TABLE IF NOT EXISTS `pcode` (
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 
+##Terralinks
+```sql
+--
+-- Table structure for table `po`
+--
+
+CREATE TABLE IF NOT EXISTS `po` (
+  `suburb` varchar(256) NOT NULL,
+  `city_town` varchar(256) NOT NULL,
+  `postcode` varchar(4) NOT NULL,
+  PRIMARY KEY (`suburb`,`city_town`,`postcode`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+
 ##VeriCon
 ```sql
 --
@@ -759,6 +774,7 @@ CREATE TABLE IF NOT EXISTS `address` (
   `street_name` varchar(512) NOT NULL,
   `street_type` varchar(128) NOT NULL,
   `suburb` varchar(128) NOT NULL,
+  `city_town` varchar(128) NOT NULL,
   `state` varchar(3) NOT NULL,
   `postcode` varchar(4) NOT NULL,
   PRIMARY KEY (`id`)
@@ -823,6 +839,7 @@ CREATE TABLE IF NOT EXISTS `campaigns` (
   `campaign` varchar(128) NOT NULL,
   `number` varchar(32) NOT NULL,
   `website` varchar(64) NOT NULL,
+  `country` varchar(8) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
@@ -964,6 +981,18 @@ CREATE TABLE IF NOT EXISTS `customers_notes` (
 ```
 ```sql
 --
+-- Table structure for table `employees`
+--
+
+CREATE TABLE IF NOT EXISTS `employees` (
+  `user` varchar(8) NOT NULL,
+  `id` varchar(32) NOT NULL,
+  PRIMARY KEY (`user`),
+  UNIQUE KEY `id` (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
 -- Table structure for table `groups`
 --
 
@@ -978,6 +1007,7 @@ CREATE TABLE IF NOT EXISTS `groups` (
 --
 
 CREATE TABLE IF NOT EXISTS `international` (
+
   `country` varchar(50) NOT NULL,
   `rate` varchar(50) NOT NULL,
   PRIMARY KEY (`country`)
@@ -1002,9 +1032,11 @@ CREATE TABLE IF NOT EXISTS `log_access` (
 
 CREATE TABLE IF NOT EXISTS `log_gnaf` (
   `timestamp` timestamp NOT NULL DEFAULT '0000-00-00 00:00:00',
+  `user` varchar(8) NOT NULL,
+  `input` varchar(512) NOT NULL,
   `result` int(1) NOT NULL,
   KEY `timestamp` (`timestamp`)
-) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 ```
 ```sql
 --
@@ -1165,6 +1197,17 @@ CREATE TABLE IF NOT EXISTS `portals_template` (
 ```
 ```sql
 --
+-- Table structure for table `providers`
+--
+
+CREATE TABLE IF NOT EXISTS `providers` (
+  `name` varchar(64) NOT NULL,
+  `value` varchar(64) NOT NULL,
+  PRIMARY KEY (`name`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
 -- Table structure for table `qa_customers`
 --
 
@@ -1230,6 +1273,7 @@ CREATE TABLE IF NOT EXISTS `sales_customers` (
   `id_type` varchar(25) NOT NULL,
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
+  `bus_name` varchar(256) NOT NULL,
   `position` varchar(300) NOT NULL,
   `best_buddy` varchar(16) NOT NULL,
   `ongoing_credit` int(11) NOT NULL,
@@ -1264,6 +1308,8 @@ CREATE TABLE IF NOT EXISTS `sales_packages` (
   `sid` varchar(10) NOT NULL,
   `cli` varchar(10) NOT NULL,
   `plan` varchar(300) NOT NULL,
+  `provider` varchar(64) NOT NULL,
+  `ac_number` varchar(32) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `sid` (`sid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1278,6 +1324,8 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `cli` varchar(10) NOT NULL,
   `plan` varchar(300) NOT NULL,
+  `provider` varchar(64) NOT NULL,
+  `ac_number` varchar(32) NOT NULL,
   KEY `lead_id` (`lead_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```
