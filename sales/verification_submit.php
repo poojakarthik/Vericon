@@ -6,21 +6,16 @@ $method = $_GET["method"];
 if ($method == "get") //get sale
 {
 	$id = $_GET["id"];
-	$user = $_GET["user"];
+	$centre = $_GET["centre"];
 	$date1 = date("Y-m-d");
 	$date2 = date("Y-m-d", strtotime("-1 week"));
-	$lead_id = substr($id,1,9);
-	
-	$q0 = mysql_query("SELECT centre FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
-	$c = mysql_fetch_row($q0);
-	$centre = $c[0];
 	
 	$lq = mysql_query("SELECT leads FROM vericon.centres WHERE centre = '$centre'") or die(mysql_error());
 	$lead_val = mysql_fetch_row($lq);
 	
 	if ($lead_val[0] == 1)
 	{
-		$q = mysql_query("SELECT * FROM leads.leads WHERE cli = '$lead_id'") or die(mysql_error());
+		$q = mysql_query("SELECT * FROM leads.leads WHERE cli = '$id'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q);
 	
 		$q1 = mysql_query("SELECT COUNT(lead_id),status FROM vericon.sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
@@ -78,7 +73,7 @@ if ($method == "get") //get sale
 			}
 		}
 		
-		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id) && !preg_match("/^0[34679][0-9]{7}$/",$id))
 		{
 			echo "Invalid Lead ID!";
 		}
@@ -112,9 +107,9 @@ if ($method == "get") //get sale
 		$q1 = mysql_query("SELECT COUNT(lead_id),status FROM vericon.sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q1);
 		
-		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id) && !preg_match("/^0[34679][0-9]{7}$/",$id))
 		{
-			echo "Invalid ID!";
+			echo "Invalid Lead ID!";
 		}
 		elseif ($check2[0] != 0 && $check2[1] == "Approved")
 		{
@@ -135,6 +130,9 @@ elseif ($method == "load")
 	$type = $_GET["type"];
 	$timestamp = date("Y-m-d H:i:s");
 	
+	$q0 = mysql_query("SELECT country FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($campaign) . "'") or die(mysql_error());
+	$country = mysql_fetch_row($q0);
+	
 	mysql_query("DELETE FROM vericon.verification_lock WHERE user = '$agent'") or die(mysql_error());
 	
 	$lq = mysql_query("SELECT * FROM leads.leads WHERE cli = '$lead_id'") or die(mysql_error());
@@ -146,7 +144,27 @@ elseif ($method == "load")
 	$q1 = mysql_query("SELECT user FROM vericon.verification_lock WHERE id = '" . mysql_real_escape_string($check["id"]) . "'") or die(mysql_error());
 	$lock = mysql_fetch_assoc($q1);
 	
-	if ($check["status"] == "Approved")
+	if ($lead_id == "" || $agent == "" || $centre == "")
+	{
+		echo "Error! Please contact your administrator";
+	}
+	elseif ($campaign == "")
+	{
+		echo "Please select a campaign";
+	}
+	elseif ($type == "")
+	{
+		echo "Please select a sale type";
+	}
+	elseif ($country[0] == "AU" && !preg_match("/^0[2378][0-9]{8}$/",$lead_id))
+	{
+		echo "Not an Australian Lead!";
+	}
+	elseif ($country[0] == "NZ" && !preg_match("/^0[34679][0-9]{7}$/",$lead_id))
+	{
+		echo "Not a New Zealand Lead!";
+	}
+	elseif ($check["status"] == "Approved")
 	{
 		echo "Sale is already approved";
 	}
@@ -170,7 +188,7 @@ elseif ($method == "load")
 		
 		mysql_query("INSERT INTO vericon.verification_lock (id, user) VALUES ('$id', '$agent') ON DUPLICATE KEY UPDATE id = '$id'") or die(mysql_error());
 		
-		echo "valid" . $id;
+		echo "valid_" . strtolower($country[0]) . "_" . $id;
 	}
 	else
 	{
@@ -184,7 +202,7 @@ elseif ($method == "load")
 			mysql_query("DELETE FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
 		}
 		
-		echo "valid" . $id;
+		echo "valid_" . strtolower($country[0]) . "_" . $id;
 	}
 }
 elseif ($method == "add") //add package
