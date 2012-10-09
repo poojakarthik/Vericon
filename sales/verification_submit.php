@@ -697,7 +697,7 @@ elseif ($method == "submit_nz") //submit sale
 	{
 		echo "Please enter the customer's mobile number";
 	}
-	elseif ($mobile != "N/A" && (!preg_match("/^02[0-9]{7}$/",$mobile) && !preg_match("/^02[0-9]{8}$/",$mobile) && !preg_match("/^02[0-9]{9}$/",$mobile)))
+	elseif ($data["mobile"] != "N/A" && (!preg_match("/^02[0-9]{7}$/",$data["mobile"]) && !preg_match("/^02[0-9]{8}$/",$data["mobile"]) && !preg_match("/^02[0-9]{9}$/",$data["mobile"])))
 	{
 		echo "Please enter a valid mobile number";
 	}
