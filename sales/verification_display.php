@@ -114,18 +114,34 @@ $(function() {
 </tr>
 <tr>
 <td>Campaign </td>
-<td><select id="campaign" style="width:120px; height:auto; padding:0px; margin:0px;">
-<option></option>
+<td>
 <?php
 $q = mysql_query("SELECT campaign FROM vericon.centres WHERE centre = '$ac[centre]'") or die(mysql_error());
 $cam = mysql_fetch_row($q);
 $campaign = explode(",",$cam[0]);
+if (count($campaign) > 1)
+{
+?>
+<select id="campaign" style="width:120px; height:auto; padding:0px; margin:0px;">
+<option></option>
+<?php
 for ($i = 0; $i < count($campaign); $i++)
 {
 	echo "<option>" . $campaign[$i] . "</option>";
 }
 ?>
-</select></td>
+</select>
+<?php
+}
+else
+{
+?>
+<input type="hidden" id="campaign" value="<?php echo $campaign[0]; ?>" />
+<b><?php echo $campaign[0]; ?></b>
+<?php
+}
+?>
+</td>
 </tr>
 <tr>
 <td>Type </td>
@@ -143,7 +159,7 @@ for ($i = 0; $i < count($campaign); $i++)
 <table>
 <tr>
 <td><p>Enter the Customer's Lead ID</p></td>
-<td><input type="text" id="id" size="25"/></td>
+<td><input type="text" id="id" size="25" autocomplete="off" /></td>
 <td><button type="submit" class="get_sale_btn" onclick="Get_Sale()"></button></td>
 </tr>
 </table>
@@ -161,17 +177,16 @@ for ($i = 0; $i < count($campaign); $i++)
 <th>Lead ID</th>
 <th>Status</th>
 <th>Date/Time</th>
-<th>Customer Name</th>
 </tr>
 </thead>
 <tbody>
 <?php
 $weekago = date("Y-m-d", strtotime("-1 week"));
-$q = mysql_query("SELECT id,status,timestamp,firstname,lastname,lead_id FROM vericon.sales_customers WHERE agent = '$ac[user]' AND DATE(timestamp) >= '$weekago' ORDER BY timestamp DESC") or die(mysql_error());
+$q = mysql_query("SELECT id,status,timestamp,lead_id FROM vericon.sales_customers WHERE agent = '$ac[user]' AND DATE(timestamp) >= '$weekago' ORDER BY timestamp DESC") or die(mysql_error());
 if (mysql_num_rows($q) == 0)
 {
 	echo "<tr>";
-	echo "<td colspan='5'><center>No Sales Submitted!</center></td>";
+	echo "<td colspan='4'><center>No Sales Submitted!</center></td>";
 	echo "</tr>";
 }
 else
@@ -183,7 +198,6 @@ else
 		echo "<td>" . $sales_data["lead_id"] . "</td>";
 		echo "<td>" . $sales_data["status"] . "</td>";
 		echo "<td>" . date("d/m/Y H:i", strtotime($sales_data["timestamp"])) . "</td>";
-		echo "<td>" . $sales_data["firstname"] . " " . $sales_data["lastname"] . "</td>";
 		echo "</tr>";
 	}
 }

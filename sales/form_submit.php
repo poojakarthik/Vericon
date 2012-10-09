@@ -166,7 +166,7 @@ elseif ($method == "add_au")
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
-	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
+	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp,3) = '$week'");
 	$check4 = mysql_fetch_row($ch4);
 	
 	if (!preg_match("/^0[2378][0-9]{8}$/",$cli))
@@ -202,7 +202,7 @@ elseif ($method == "add_nz")
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
-	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
+	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp,3) = '$week'");
 	$check4 = mysql_fetch_row($ch4);
 	
 	if (!preg_match("/^0[34679][0-9]{7}$/",$cli))
@@ -241,6 +241,7 @@ elseif ($method == "edit_au") //edit package
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
 	$cli2 = $_GET["cli2"];
+	$week = date("W");
 	
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages_temp WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check2 = mysql_fetch_row($ch2);
@@ -248,7 +249,7 @@ elseif ($method == "edit_au") //edit package
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
-	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
+	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp,3) = '$week'");
 	$check4 = mysql_fetch_row($ch4);
 	
 	if (!preg_match("/^0[2378][0-9]{8}$/",$cli))
@@ -298,6 +299,7 @@ elseif ($method == "edit_nz") //edit package
 	$cli2 = $_GET["cli2"];
 	$provider = $_GET["provider"];
 	$ac_number = trim($_GET["ac_number"]);
+	$week = date("W");
 	
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages_temp WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check2 = mysql_fetch_row($ch2);
@@ -305,7 +307,7 @@ elseif ($method == "edit_nz") //edit package
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
 	$check3 = mysql_fetch_row($ch3);
 	
-	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp) = '$week'");
+	$ch4 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '" . mysql_real_escape_string($cli) . "' AND WEEK(timestamp,3) = '$week'");
 	$check4 = mysql_fetch_row($ch4);
 	
 	if (!preg_match("/^0[34679][0-9]{7}$/",$cli))
@@ -376,7 +378,7 @@ elseif ($method == "submit_au")
 	$id_num = trim($_GET["id_num"]);
 	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
-	$position = trim($_GET["position"]);
+	$position = strtoupper(trim($_GET["position"]));
 	
 	$q4 = mysql_query("SELECT * FROM vericon.sales_packages_temp WHERE lead_id = '$lead_id'");
 	

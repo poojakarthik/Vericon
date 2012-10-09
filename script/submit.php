@@ -6,27 +6,7 @@ mysql_select_db('vericon');
 $id = $_GET["id"];
 $action = $_GET["action"];
 
-if ($action == "current_provider")
-{
-	$provider = $_GET["provider"];
-	$c_ac_number = trim($_GET["c_ac_number"]);
-	
-	if ($provider == "")
-	{
-		echo "Please select a valid provider";
-	}
-	elseif ($c_ac_number == "")
-	{
-		echo "Please enter the customer's current account number";
-	}
-	else
-	{
-		//mysql_query("UPDATE sales_customers SET provider = '" . mysql_real_escape_string($provider) . "', c_ac_number = '" . mysql_real_escape_string($c_ac_number) . "' WHERE id = '$id'") or die(mysql_error());
-		echo "submitted";
-	}
-
-}
-elseif ($action == "bus_info")
+if ($action == "bus_info")
 {
 	$abn = preg_replace("/\s/","",$_GET["abn"]);
 	$abn_status = $_GET["abn_status"];
@@ -49,8 +29,8 @@ elseif ($action == "bus_info")
 }
 elseif ($action == "bus_info2")
 {
-	$bus_name = trim(strtoupper($_GET["bus_name"]));
-	$position = trim($_GET["position"]);
+	$bus_name = strtoupper(trim($_GET["bus_name"]));
+	$position = strtoupper(trim($_GET["position"]));
 	
 	if ($bus_name == "")
 	{
@@ -62,7 +42,7 @@ elseif ($action == "bus_info2")
 	}
 	else
 	{
-		//mysql_query("UPDATE sales_customers SET bus_name = '" . mysql_real_escape_string($bus_name) . "', position = '" . mysql_real_escape_string($position) . "' WHERE id = '$id'") or die(mysql_error());
+		mysql_query("UPDATE sales_customers SET bus_name = '" . mysql_real_escape_string($bus_name) . "', position = '" . mysql_real_escape_string($position) . "' WHERE id = '$id'") or die(mysql_error());
 		echo "submitted";
 	}
 
@@ -123,6 +103,25 @@ elseif ($action == "id_info")
 	elseif ($id_type == "Pension Card" && !preg_match("/^[0-9]{9}[a-zA-Z]$/",$id_num))
 	{
 		echo "Please enter a valid Pension Card number";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET id_type = '" . mysql_escape_string($id_type) . "', id_num = '" . mysql_escape_string($id_num) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+}
+elseif ($action == "id_info2")
+{
+	$id_type = $_GET["id_type"];
+	$id_num = trim($_GET["id_num"]);
+	
+	if ($id_type == "")
+	{
+		echo "Please select an ID type";
+	}
+	elseif ($id_num == "")
+	{
+		echo "Please enter the customer's ID number";
 	}
 	else
 	{
@@ -206,7 +205,7 @@ elseif ($action == "mobile2")
 	{
 		echo "Please enter the customer's mobile number";
 	}
-	elseif ($mobile != "N/A" && !preg_match("/^02[0-9]{8}$/",$mobile))
+	elseif ($mobile != "N/A" && (!preg_match("/^02[0-9]{7}$/",$mobile) && !preg_match("/^02[0-9]{8}$/",$mobile) && !preg_match("/^02[0-9]{9}$/",$mobile)))
 	{
 		echo "Please enter a valid mobile number";
 	}
