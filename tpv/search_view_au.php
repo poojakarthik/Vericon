@@ -42,7 +42,7 @@ function Notes()
 {
 	var id = "<?php echo $id; ?>";
 	
-	$.get("sales_submit.php", { method: "notes", id: id }, function(data) {
+	$.get("search_submit.php", { method: "notes", id: id }, function(data) {
 		$( "#notes_display" ).val(data);
 	});
 	$( "#dialog-form_notes" ).dialog( "open" );
@@ -339,7 +339,7 @@ switch ($data["title"])
 <tr>
 <td colspan="2">
 <div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="99%" style="margin-top:0px; margin-left:3px;">
+<table id="users" class="ui-widget ui-widget-content" style="margin-top:0px; margin-left:3px; width:99%;">
 <thead>
 <tr class="ui-widget-header ">
 <th>CLI</th>
@@ -391,7 +391,7 @@ else
 </tr>
 <tr valign="bottom">
 <td align="left" style="padding-left:5px;"><button onclick="Notes()" class="btn">Notes</button></td>
-<td align="right" style="padding-right:5px;"><button onclick="Cancel_Search()" class="btn">Cancel</button></td>
+<td align="right" style="padding-right:5px;"><button onclick="Cancel_Search()" class="btn">Back</button></td>
 </tr>
 </table>
 </td>

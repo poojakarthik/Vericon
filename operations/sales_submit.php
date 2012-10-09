@@ -3,7 +3,16 @@ mysql_connect('localhost','vericon','18450be');
 
 $method = $_GET["method"];
 
-if ($method == "notes")
+if ($method == "country")
+{
+	$id = $_GET["id"];
+	
+	$q = mysql_query("SELECT campaigns.country FROM vericon.sales_customers,vericon.campaigns WHERE sales_customers.id = '$id' AND sales_customers.campaign = campaigns.campaign") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo strtolower($data[0]);
+}
+elseif ($method == "notes")
 {
 	$id = $_GET["id"];
 	

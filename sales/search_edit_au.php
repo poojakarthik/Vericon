@@ -1,8 +1,13 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$id = $_GET["id"];
+$q = mysql_query("SELECT user FROM vericon.currentuser WHERE hash = '" . $_COOKIE["hash"] . "'") or die(mysql_error());
+$user = mysql_fetch_row($q);
 
+$q1 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$user[0]'") or die(mysql_error());
+$ac = mysql_fetch_assoc($q1);
+
+$id = $_GET["id"];
 $q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
 
@@ -180,11 +185,11 @@ $(function() {
 				}
 				else
 				{
-					$.get("search_submit.php?method=add", { id: id.val(), cli: cli.val(), plan: plan.val() },
+					$.get("search_submit.php?method=add_au", { id: id.val(), cli: cli.val(), plan: plan.val() },
 					function(data) {
 						if (data == "added")
 						{
-							$( "#packages" ).load('packages.php?id=' + id.val());
+							$( "#packages" ).load('../tpv/packages_au.php?id=' + id.val());
 							$( "#dialog-form2" ).dialog( "close" );
 						}
 						else
@@ -212,7 +217,7 @@ function Add_Package()
 function Plan_Dropdown()
 {
 	$( "#plan" ).val("");
-	$( "#plan" ).load("plans.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
+	$( "#plan" ).load("../tpv/plans_au.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
 }
 </script>
 <script> //edit packages
@@ -256,11 +261,11 @@ $(function() {
 				}
 				else
 				{
-					$.get("search_submit.php?method=edit", { id: id.val(), cli: cli.val(), plan: plan.val(), cli2: cli2.val() },
+					$.get("search_submit.php?method=edit_au", { id: id.val(), cli: cli.val(), plan: plan.val(), cli2: cli2.val() },
 					function(data) {
 						if (data == "editted")
 						{
-							$( "#packages" ).load('packages.php?id=' + id.val());
+							$( "#packages" ).load('../tpv/packages_au.php?id=' + id.val());
 							$( "#dialog-form3" ).dialog( "close" );
 						}
 						else
@@ -280,7 +285,7 @@ $(function() {
 function Edit_Package(cli,plan)
 {
 	$( "#edit_cli" ).val(cli);
-	$( "#edit_plan" ).load("plans.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(),
+	$( "#edit_plan" ).load("../tpv/plans_au.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(),
 	function() {
 		$( "#edit_plan" ).val(plan);
 	});
@@ -291,7 +296,7 @@ function Edit_Package(cli,plan)
 
 function Plan_Dropdown_Edit()
 {
-	$( "#edit_plan" ).load("plans.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
+	$( "#edit_plan" ).load("../tpv/plans_au.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
 }
 </script>
 <script> //delete packages
@@ -303,7 +308,7 @@ function Delete_Package(cli)
 	function(data) {
 		if (data == "deleted")
 		{
-			$( "#packages" ).load('packages.php?id=' + id.val());
+			$( "#packages" ).load('../tpv/packages_au.php?id=' + id.val());
 		}
 	});
 }
@@ -386,6 +391,53 @@ function Mobile()
 		$( "#mobile" ).val("");
 		$( "#mobile" ).removeAttr("disabled");
 	}
+}
+</script>
+<script>
+function Submit_Details()
+{
+	var id = $( "#id" ),
+		title = $( "#title" ),
+		first = $( "#first" ),
+		middle = $( "#middle" ),
+		last = $( "#last" ),
+		dob = $( "#datepicker" ),
+		email = $( "#email" ),
+		mobile = $( "#mobile" ),
+		physical = $( "#physical" ),
+		postal = $( "#postal" ),
+		id_type = $( "#id_type" ),
+		id_num = $( "#id_num" ),
+		abn = $( "#abn" ),
+		abn_status = $( ".abn_status" ),
+		position = $( "#position" ),
+		user = "<?php echo $ac["user"]; ?>",
+		method = $( "#method" ),
+		query = $( "#query" ),
+		centre = "<?php echo $ac["centre"]; ?>";
+				
+		if ($('#postal_same').attr('checked'))
+		{
+			postal = $( "#physical" );
+		}
+	
+	$.get("search_submit.php?method=submit_au", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), user: user },
+	function(data) {
+		if (data == "submitted")
+		{
+			$( "#display" ).hide('blind', '', 'slow', function() {
+				$( "#display" ).load('search_display.php', function() {
+					$( "#results" ).load("search_results.php?method=" +  method.val() + "&query=" + query.val() + "&centre=" + centre, function() {
+						$( "#display" ).show('blind', '', 'slow');
+					});
+				});
+			});
+		}
+		else
+		{
+			Submit_Error(data);
+		}
+	});
 }
 </script>
 <!--#########################################################-->

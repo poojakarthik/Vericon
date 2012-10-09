@@ -102,56 +102,12 @@ $(function() {
 <script>
 function View_Search(id)
 {
-	$( "#display" ).hide('blind', '', 'slow', function() {
-		$( "#display" ).load('search_view.php?id=' + id, function() {
-			$( "#display" ).show('blind', '', 'slow');
-		});
-	});
-}
-
-function Submit_Details()
-{
-	var id = $( "#id" ),
-		title = $( "#title" ),
-		first = $( "#first" ),
-		middle = $( "#middle" ),
-		last = $( "#last" ),
-		dob = $( "#datepicker" ),
-		email = $( "#email" ),
-		mobile = $( "#mobile" ),
-		physical = $( "#physical" ),
-		postal = $( "#postal" ),
-		id_type = $( "#id_type" ),
-		id_num = $( "#id_num" ),
-		abn = $( "#abn" ),
-		abn_status = $( ".abn_status" ),
-		position = $( "#position" ),
-		user = "<?php echo $ac["user"]; ?>",
-		method = $( "#method" ),
-		query = $( "#query" ),
-		centre = "<?php echo $ac["centre"]; ?>";
-				
-		if ($('#postal_same').attr('checked'))
-		{
-			postal = $( "#physical" );
-		}
-	
-	$.get("search_submit.php?method=submit", { id: id.val(), title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), user: user },
-	function(data) {
-		if (data == "submitted")
-		{
-			$( "#display" ).hide('blind', '', 'slow', function() {
-				$( "#display" ).load('search_display.php', function() {
-					$( "#results" ).load("search_results.php?method=" +  method.val() + "&query=" + query.val() + "&centre=" + centre, function() {
-						$( "#display" ).show('blind', '', 'slow');
-					});
-				});
+	$.get('search_submit.php?method=country', { id: id }, function(data) {
+		$( "#display" ).hide('blind', '', 'slow', function() {
+			$( "#display" ).load('search_view_' + data + '.php?id=' + id, function() {
+				$( "#display" ).show('blind', '', 'slow');
 			});
-		}
-		else
-		{
-			Submit_Error(data);
-		}
+		});
 	});
 }
 
@@ -241,11 +197,13 @@ function Edit_Details()
 {
 	var id = $( "#id_store" ).val();
 	
-	$( "#dialog-form_edit_switch" ).dialog( "close" );
-	$( "#display" ).hide('blind', '', 'slow', function() {
-		$( "#display" ).load('search_edit.php?id=' + id, function() {
-			$( "#packages" ).load('packages.php?id=' + id, function() {
-				$( "#display" ).show('blind', '' , 'slow');
+	$.get('search_submit.php?method=country', { id: id }, function(data) {
+		$( "#dialog-form_edit_switch" ).dialog( "close" );
+		$( "#display" ).hide('blind', '', 'slow', function() {
+			$( "#display" ).load('search_edit_' + data + '.php?id=' + id, function() {
+				$( "#packages" ).load('../tpv/packages_' + data + '.php?id=' + id, function() {
+					$( "#display" ).show('blind', '' , 'slow');
+				});
 			});
 		});
 	});

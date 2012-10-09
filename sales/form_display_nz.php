@@ -570,6 +570,7 @@ $(function() {
 					postcode = $( "#mb_postcode" );
 					
 				$.get("../source/tlGet.php?type=store", { building_type: building_type.val(), building_number: building_number.val(), suburb: suburb.val(), city_town: city_town.val(), postcode: postcode.val() }, function(data) {
+					$( "#postal" ).val(data);
 					$.get("../source/tlGet.php?type=display", { id: data }, function(data2) {
 						var n = data2.split("}");
 						$( "#display_postal1" ).val(n[0]);
@@ -668,7 +669,7 @@ $(function() {
 					postcode = $( "#postal_postcode" );
 					
 				$.get("../source/tlGet.php?type=store", { building_type: building_type.val(), building_number: building_number.val(), building_name: building_name.val(), street_number: street_number.val(), street_name: street_name.val(), street_type: street_type.val(), suburb: suburb.val(), city_town: city_town.val(), postcode: postcode.val() }, function(data) {
-					$( "#physical" ).val(data);
+					$( "#postal" ).val(data);
 					$.get("../source/tlGet.php?type=display", { id: data }, function(data2) {
 						var n = data2.split("}");
 						$( "#display_postal1" ).val(n[0]);

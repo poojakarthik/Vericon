@@ -13,7 +13,7 @@ $c_id = $c2[0];
 
 if (!preg_match("/^0[34679][0-9]{7}$/",$cli))
 {
-	echo "<option disabled='disabled'>Invalid CLI</option>";
+	echo "<option value=''>Invalid CLI</option>";
 	exit;
 }
 
@@ -21,12 +21,12 @@ $check = exec("perl /var/vericon/source/nz_legacy.pl " . $cli);
 
 if ($check == "invalid")
 {
-	echo "<option disabled='disabled'>Invalid Network</option>";
+	echo "<option value=''>Invalid Network</option>";
 	exit;
 }
 elseif ($check == "error")
 {
-	echo "<option disabled='disabled'>Error! Contact your administrator</option>";
+	echo "<option value=''>Error! Contact your administrator</option>";
 	exit;
 }
 ?>
