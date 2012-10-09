@@ -93,8 +93,11 @@ function Add_Package()
 
 function Plan_Dropdown()
 {
-	$( "#plan" ).val("");
-	$( "#plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
+	$( "#plan" ).attr("disabled","disabled");
+	$( "#plan" ).html("<option value=''>Loading...</option>");
+	$( "#plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val(), function() {
+		$( "#plan" ).removeAttr("disabled");
+	});
 }
 </script>
 <script> //edit packages
@@ -157,7 +160,12 @@ function Edit_Package(cli,plan)
 	var id = $( "#lead_id" );
 	
 	$( "#edit_cli" ).val(cli);
+	$( "#edit_cli" ).attr("disabled","disabled");
+	$( "#edit_plan" ).attr("disabled","disabled");
+	$( "#edit_plan" ).html("<option value=''>Loading...</option>");
 	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
+		$( "#edit_cli" ).removeAttr("disabled");
+		$( "#edit_plan" ).removeAttr("disabled");
 		$( "#edit_plan" ).val(plan);
 	});
 	$.get("form_submit.php?method=nz_provider", { id: id.val(), cli: cli }, function(data) { $( "#edit_provider" ).val(data); });
@@ -168,7 +176,11 @@ function Edit_Package(cli,plan)
 
 function Plan_Dropdown_Edit()
 {
-	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
+	$( "#edit_plan" ).attr("disabled","disabled");
+	$( "#edit_plan" ).html("<option value=''>Loading...</option>");
+	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
+		$( "#edit_plan" ).removeAttr("disabled");
+	});
 }
 </script>
 <script> //delete packages
@@ -866,7 +878,7 @@ while ($providers = mysql_fetch_row($q))
 </tr>
 <tr>
 <td>Plan </td>
-<td><select id="edit_plan" style="margin-left:0px; width:210px; height:25px; padding:1px 0 0;">
+<td><select id="edit_plan" style="margin-left:0px; width:210px;">
 <option></option>
 </select></td>
 </tr>

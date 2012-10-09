@@ -376,7 +376,7 @@ $input["email2"] = $line . "<br><br><table border='0' width='100%'>
 </table>";
 
 $input["lines"] = $line . "<div id='users-contain' class='ui-widget'>
-<table id='users' class='ui-widget ui-widget-content' width='90%' style='margin-top:0px;'>
+<table id='users' class='ui-widget ui-widget-content' width='100%' style='margin-top:0px;'>
 <thead>
 <tr class='ui-widget-header'>
 <th width='20%'>CLI</th>
@@ -391,7 +391,7 @@ $input["lines"] = $line . "<div id='users-contain' class='ui-widget'>
 </div>";
 
 $input["lines2"] = $line . "<div id='users-contain' class='ui-widget'>
-<table id='users' class='ui-widget ui-widget-content' width='90%' style='margin-top:0px;'>
+<table id='users' class='ui-widget ui-widget-content' width='100%' style='margin-top:0px;'>
 <thead>
 <tr class='ui-widget-header'>
 <th width='12%'>CLI</th>

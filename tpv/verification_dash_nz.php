@@ -104,8 +104,11 @@ function Add_Package()
 
 function Plan_Dropdown()
 {
-	$( "#plan" ).val("");
-	$( "#plan" ).load("plans_nz.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
+	$( "#plan" ).attr("disabled","disabled");
+	$( "#plan" ).html("<option value=''>Loading...</option>");
+	$( "#plan" ).load("plans_nz.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val(), function() {
+		$( "#plan" ).removeAttr("disabled");
+	});
 }
 </script>
 <script> //edit packages
@@ -177,8 +180,13 @@ function Edit_Package(cli,plan)
 	var id = $( "#id" );
 	
 	$( "#edit_cli" ).val(cli);
+	$( "#edit_cli" ).attr("disabled","disabled");
+	$( "#edit_plan" ).attr("disabled","disabled");
+	$( "#edit_plan" ).html("<option value=''>Loading...</option>");
 	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(),
 	function() {
+		$( "#edit_cli" ).removeAttr("disabled");
+		$( "#edit_plan" ).removeAttr("disabled");
 		$( "#edit_plan" ).val(plan);
 	});
 	$( "#original_edit_cli" ).val(cli);
@@ -190,7 +198,11 @@ function Edit_Package(cli,plan)
 
 function Plan_Dropdown_Edit()
 {
-	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
+	$( "#edit_plan" ).attr("disabled","disabled");
+	$( "#edit_plan" ).html("<option value=''>Loading...</option>");
+	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
+		$( "#edit_plan" ).removeAttr("disabled");
+	});
 }
 </script>
 <script> //delete packages
