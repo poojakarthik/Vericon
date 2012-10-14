@@ -4,6 +4,7 @@ mysql_connect('localhost','vericon','18450be');
 $id = $_GET["id"];
 $type = $_GET["type"];
 $cli = $_GET["cli"];
+$option = $_GET["option"];
 
 $q0 = mysql_query("SELECT campaign FROM vericon.sales_customers_temp WHERE lead_id = '" . mysql_real_escape_string($id) . "'") or die(mysql_error());
 $c = mysql_fetch_row($q0);
@@ -39,14 +40,14 @@ if ($check == "other")
 	
 	while ($l_plan = mysql_fetch_assoc($qp))
 	{
-		echo "<option value='" . $l_plan["id"] . "'>" . $l_plan["name"] . "</option>";
+		echo "<option onclick='Plan_Option(\"$option\",\"PSTN\")' value='" . $l_plan["id"] . "'>" . $l_plan["name"] . "</option>";
 	}
 	
 	$qp = mysql_query("SELECT * FROM vericon.plan_matrix WHERE status = 'Active' AND rating = '$type' AND type = 'PSTN' AND campaign = '" . mysql_real_escape_string($c_id) . "' AND name = 'Addon'");
 	
 	while ($l_plan = mysql_fetch_assoc($qp))
 	{
-		echo "<option value='" . $l_plan["id"] . "'>" . $l_plan["name"] . "</option>";
+		echo "<option onclick='Plan_Option(\"$option\",\"PSTN\")' value='" . $l_plan["id"] . "'>" . $l_plan["name"] . "</option>";
 	}
 }
 else
@@ -60,6 +61,6 @@ $qp = mysql_query("SELECT * FROM vericon.plan_matrix WHERE status = 'Active' AND
 
 while ($b_plan = mysql_fetch_assoc($qp))
 {
-	echo "<option value='" . $b_plan["id"] . "'>" . $b_plan["name"] . "</option>";
+	echo "<option onclick='Plan_Option(\"$option\",\"Bundle\")' value='" . $b_plan["id"] . "'>" . $b_plan["name"] . "</option>";
 }
 ?>

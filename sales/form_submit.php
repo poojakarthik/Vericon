@@ -192,8 +192,11 @@ elseif ($method == "add_nz")
 	$lead_id = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
+	$plan_type = $_GET["plan_type"];
 	$provider = $_GET["provider"];
 	$ac_number = trim($_GET["ac_number"]);
+	$adsl_provider = $_GET["adsl_provider"];
+	$adsl_ac_number = trim($_GET["adsl_ac_number"]);
 	$week = date("W");
 	
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages_temp WHERE cli = '" . mysql_real_escape_string($cli) . "'");
@@ -221,6 +224,14 @@ elseif ($method == "add_nz")
 	{
 		echo "Please enter the CLI's account number";
 	}
+	elseif ($plan_type == "Bundle" && $adsl_provider == "")
+	{
+		echo "Please select the CLI's ADSL provider";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_ac_number == "")
+	{
+		echo "Please enter the CLI's ADSL account number";
+	}
 	elseif ($check3[0] != 0)
 	{
 		echo "CLI is on the SCT DNC list";
@@ -231,7 +242,7 @@ elseif ($method == "add_nz")
 	}
 	else
 	{
-		mysql_query("INSERT INTO vericon.sales_packages_temp (lead_id, cli, plan, provider, ac_number) VALUES ('$lead_id', '$cli', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.sales_packages_temp (lead_id, cli, plan, provider, ac_number, adsl_provider, adsl_ac_number) VALUES ('$lead_id', '$cli', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "', '" . mysql_real_escape_string($adsl_provider) . "', '" . mysql_real_escape_string($adsl_ac_number) . "')") or die(mysql_error());
 		echo "added";
 	}
 }
@@ -291,14 +302,37 @@ elseif ($method == "nz_ac_number") //get account number
 	
 	echo $data[0];
 }
+elseif ($method == "nz_adsl_provider") //get adsl provider
+{
+	$lead_id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT adsl_provider FROM vericon.sales_packages_temp WHERE lead_id = '$lead_id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "nz_adsl_ac_number") //get adsl account number
+{
+	$lead_id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT adsl_ac_number FROM vericon.sales_packages_temp WHERE lead_id = '$lead_id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
 elseif ($method == "edit_nz") //edit package
 {
 	$lead_id = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
-	$cli2 = $_GET["cli2"];
+	$plan_type = $_GET["plan_type"];
 	$provider = $_GET["provider"];
 	$ac_number = trim($_GET["ac_number"]);
+	$adsl_provider = $_GET["adsl_provider"];
+	$adsl_ac_number = trim($_GET["adsl_ac_number"]);
+	$cli2 = $_GET["cli2"];
 	$week = date("W");
 	
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages_temp WHERE cli = '" . mysql_real_escape_string($cli) . "'");
@@ -326,6 +360,14 @@ elseif ($method == "edit_nz") //edit package
 	{
 		echo "Please enter the CLI's account number";
 	}
+	elseif ($plan_type == "Bundle" && $adsl_provider == "")
+	{
+		echo "Please select the CLI's ADSL provider";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_ac_number == "")
+	{
+		echo "Please enter the CLI's ADSL account number";
+	}
 	elseif ($check3[0] != 0)
 	{
 		echo "CLI is on the SCT DNC list";
@@ -337,7 +379,7 @@ elseif ($method == "edit_nz") //edit package
 	else
 	{
 		mysql_query("DELETE FROM vericon.sales_packages_temp WHERE lead_id = '$lead_id' AND cli = '$cli2' LIMIT 1") or die(mysql_error());
-		mysql_query("INSERT INTO vericon.sales_packages_temp (lead_id, cli, plan, provider, ac_number) VALUES ('$lead_id', '$cli', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.sales_packages_temp (lead_id, cli, plan, provider, ac_number, adsl_provider, adsl_ac_number) VALUES ('$lead_id', '$cli', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "', '" . mysql_real_escape_string($adsl_provider) . "', '" . mysql_real_escape_string($adsl_ac_number) . "')") or die(mysql_error());
 		echo "editted";
 	}
 }

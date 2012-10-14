@@ -44,8 +44,8 @@ $(function() {
 
 	$( "#dialog-form2" ).dialog({
 		autoOpen: false,
-		height: 240,
-		width: 350,
+		height: 280,
+		width: 400,
 		modal: true,
 		resizable: false,
 		draggable: false,
@@ -56,10 +56,13 @@ $(function() {
 				var id = $( "#lead_id" ),
 					cli = $( "#cli" ),
 					plan = $( "#plan" ),
+					plan_type = $( "#plan_type" ),
 					provider = $( "#provider" ),
-					ac_number = $( "#ac_number" );
+					ac_number = $( "#ac_number" ),
+					adsl_provider = $( "#adsl_provider "),
+					adsl_ac_number = $( "#adsl_ac_number ");
 				
-				$.get("form_submit.php?method=add_nz", { id: id.val(), cli: cli.val(), plan: plan.val(), provider: provider.val(), ac_number: ac_number.val() },
+				$.get("form_submit.php?method=add_nz", { id: id.val(), cli: cli.val(), plan: plan.val(), plan_type: plan_type.val(), provider: provider.val(), ac_number: ac_number.val(), adsl_provider: adsl_provider.val(), adsl_ac_number: adsl_ac_number.val() },
 				function(data) {
 					if (data == "added")
 					{
@@ -75,8 +78,6 @@ $(function() {
 			Cancel: function() {
 				$( this ).dialog( "close" );
 			}
-		},
-		close: function() {
 		}
 	});
 });
@@ -87,6 +88,10 @@ function Add_Package()
 	$( "#plan" ).val("");
 	$( "#provider" ).val("");
 	$( "#ac_number" ).val("");
+	$( "#adsl_provider" ).val("");
+	$( "#adsl_ac_number" ).val("");
+	$( "#adsl_provider_tr" ).attr("style","display:none;");
+	$( "#adsl_ac_number_tr" ).attr("style","display:none;");
 	$( "#validateTips2" ).text("All fields are required");
 	$( "#dialog-form2" ).dialog( "open" );
 }
@@ -95,7 +100,7 @@ function Plan_Dropdown()
 {
 	$( "#plan" ).attr("disabled","disabled");
 	$( "#plan" ).html("<option value=''>Loading...</option>");
-	$( "#plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val(), function() {
+	$( "#plan" ).load("plans_nz.php?option=add&id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val(), function() {
 		$( "#plan" ).removeAttr("disabled");
 	});
 }
@@ -117,8 +122,8 @@ $(function() {
 
 	$( "#dialog-form3" ).dialog({
 		autoOpen: false,
-		height: 240,
-		width: 350,
+		height: 280,
+		width: 400,
 		modal: true,
 		resizable: false,
 		draggable: false,
@@ -129,11 +134,14 @@ $(function() {
 				var id = $( "#lead_id" ),
 					cli = $( "#edit_cli" ),
 					plan = $( "#edit_plan" ),
+					plan_type = $( "#edit_plan_type" ),
 					provider = $( "#edit_provider" ),
 					ac_number = $( "#edit_ac_number" ),
+					adsl_provider = $( "#edit_adsl_provider "),
+					adsl_ac_number = $( "#edit_adsl_ac_number "),
 					cli2 = $( "#original_edit_cli" );
 				
-				$.get("form_submit.php?method=edit_nz", { id: id.val(), cli: cli.val(), plan: plan.val(), provider: provider.val(), ac_number: ac_number.val(), cli2: cli2.val() },
+				$.get("form_submit.php?method=edit_nz", { id: id.val(), cli: cli.val(), plan: plan.val(), plan_type: plan_type.val(), provider: provider.val(), ac_number: ac_number.val(), adsl_provider: adsl_provider.val(), adsl_ac_number: adsl_ac_number.val(), cli2: cli2.val() },
 				function(data) {
 					if (data == "editted")
 					{
@@ -149,8 +157,6 @@ $(function() {
 			Cancel: function() {
 				$( this ).dialog( "close" );
 			}
-		},
-		close: function() {
 		}
 	});
 });
@@ -160,16 +166,37 @@ function Edit_Package(cli,plan)
 	var id = $( "#lead_id" );
 	
 	$( "#edit_cli" ).val(cli);
+	$( "#edit_plan_type" ).val("PSTN");
+	$( "#edit_adsl_provider" ).val("");
+	$( "#edit_adsl_ac_number" ).val("");
+	$( "#edit_adsl_provider_tr" ).attr("style","display:none;");
+	$( "#edit_adsl_ac_number_tr" ).attr("style","display:none;");
 	$( "#edit_cli" ).attr("disabled","disabled");
 	$( "#edit_plan" ).attr("disabled","disabled");
 	$( "#edit_plan" ).html("<option value=''>Loading...</option>");
-	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
+	$( "#edit_plan" ).load("plans_nz.php?option=edit&id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
 		$( "#edit_cli" ).removeAttr("disabled");
 		$( "#edit_plan" ).removeAttr("disabled");
 		$( "#edit_plan" ).val(plan);
 	});
 	$.get("form_submit.php?method=nz_provider", { id: id.val(), cli: cli }, function(data) { $( "#edit_provider" ).val(data); });
 	$.get("form_submit.php?method=nz_ac_number", { id: id.val(), cli: cli }, function(data) { $( "#edit_ac_number" ).val(data); });
+	$.get("form_submit.php?method=nz_adsl_provider", { id: id.val(), cli: cli }, function(data) {
+		if (data != "")
+		{
+			$( "#edit_plan_type" ).val("Bundle");
+			$( "#edit_adsl_provider_tr" ).removeAttr("style");
+			$( "#edit_adsl_provider" ).val(data);
+		}
+	});
+	$.get("form_submit.php?method=nz_adsl_ac_number", { id: id.val(), cli: cli }, function(data) {
+		if (data != "")
+		{
+			$( "#edit_plan_type" ).val("Bundle");
+			$( "#edit_adsl_ac_number_tr" ).removeAttr("style");
+			$( "#edit_adsl_ac_number" ).val(data);
+		}
+	});
 	$( "#original_edit_cli" ).val(cli);
 	$( "#dialog-form3" ).dialog( "open" );
 }
@@ -178,9 +205,52 @@ function Plan_Dropdown_Edit()
 {
 	$( "#edit_plan" ).attr("disabled","disabled");
 	$( "#edit_plan" ).html("<option value=''>Loading...</option>");
-	$( "#edit_plan" ).load("plans_nz.php?id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
+	$( "#edit_plan" ).load("plans_nz.php?option=edit&id=" + $( "#lead_id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(), function() {
 		$( "#edit_plan" ).removeAttr("disabled");
 	});
+}
+</script>
+<script>
+function Plan_Option(option,type)
+{
+	if (option == "add")
+	{
+		if (type == "PSTN")
+		{
+			$( "#adsl_provider" ).val("");
+			$( "#adsl_ac_number" ).val("");
+			$( "#adsl_provider_tr" ).attr("style","display:none;");
+			$( "#adsl_ac_number_tr" ).attr("style","display:none;");
+			$( "#plan_type" ).val("PSTN");
+		}
+		else if (type == "Bundle")
+		{
+			$( "#adsl_provider" ).val("");
+			$( "#adsl_ac_number" ).val("");
+			$( "#plan_type" ).val("Bundle");
+			$( "#adsl_provider_tr" ).removeAttr("style");
+			$( "#adsl_ac_number_tr" ).removeAttr("style");
+		}
+	}
+	else if (option == "edit")
+	{
+		if (type == "PSTN")
+		{
+			$( "#edit_adsl_provider" ).val("");
+			$( "#edit_adsl_ac_number" ).val("");
+			$( "#edit_adsl_provider_tr" ).attr("style","display:none;");
+			$( "#edit_adsl_ac_number_tr" ).attr("style","display:none;");
+			$( "#edit_plan_type" ).val("PSTN");
+		}
+		else if (type == "Bundle")
+		{
+			$( "#edit_adsl_provider" ).val("");
+			$( "#edit_adsl_ac_number" ).val("");
+			$( "#edit_plan_type" ).val("Bundle");
+			$( "#edit_adsl_provider_tr" ).removeAttr("style");
+			$( "#edit_adsl_ac_number_tr" ).removeAttr("style");
+		}
+	}
 }
 </script>
 <script> //delete packages
@@ -839,12 +909,13 @@ function Postal_Same()
 <p class="validateTips2">All fields are required</p><br />
 <table>
 <tr>
-<td width="95px">CLI </td>
+<td width="125px">CLI </td>
 <td><input type="text" size="15" id="cli" onchange="Plan_Dropdown()" style="margin-top:0px;" /></td>
 </tr>
 <tr>
 <td>Plan </td>
-<td><select id="plan" style="width:210px;">
+<td><input type="hidden" id="plan_type" value="" />
+<select id="plan" style="width:210px;">
 <option></option>
 </select></td>
 </tr>
@@ -866,6 +937,24 @@ while ($providers = mysql_fetch_row($q))
 <td>Account Number </td>
 <td><input type="text" size="15" id="ac_number" style="margin-top:0px;" /></td>
 </tr>
+<tr id="adsl_provider_tr" style="display:none;">
+<td>ADSL Provider </td>
+<td><select id="adsl_provider" style="width:210px;">
+<option></option>
+<?php
+$q = mysql_query("SELECT value,name FROM vericon.providers ORDER BY name ASC") or die(mysql_error());
+while ($providers = mysql_fetch_row($q))
+{
+	echo "<option value='" . $providers[0] . "'>" . $providers[1] . "</option>";
+}
+?>
+<option>Other</option>
+</select></td>
+</tr>
+<tr id="adsl_ac_number_tr" style="display:none;">
+<td>ADSL Account Number </td>
+<td><input type="text" size="15" id="adsl_ac_number" style="margin-top:0px;" /></td>
+</tr>
 </table>
 </div>
 
@@ -874,12 +963,13 @@ while ($providers = mysql_fetch_row($q))
 <input type="hidden" id="original_edit_cli" value="" />
 <table>
 <tr>
-<td width="95px">CLI </td>
+<td width="125px">CLI </td>
 <td><input type="text" size="15" id="edit_cli" onchange="Plan_Dropdown_Edit()" style="margin-top:0px;" /></td>
 </tr>
 <tr>
 <td>Plan </td>
-<td><select id="edit_plan" style="margin-left:0px; width:210px;">
+<td><input type="hidden" id="edit_plan_type" value="" />
+<select id="edit_plan" style="margin-left:0px; width:210px;">
 <option></option>
 </select></td>
 </tr>
@@ -900,6 +990,24 @@ while ($providers = mysql_fetch_row($q))
 <tr>
 <td>Account Number </td>
 <td><input type="text" size="15" id="edit_ac_number" style="margin-top:0px;" /></td>
+</tr>
+<tr id="edit_adsl_provider_tr" style="display:none;">
+<td>ADSL Provider </td>
+<td><select id="edit_adsl_provider" style="width:210px;">
+<option></option>
+<?php
+$q = mysql_query("SELECT value,name FROM vericon.providers ORDER BY name ASC") or die(mysql_error());
+while ($providers = mysql_fetch_row($q))
+{
+	echo "<option value='" . $providers[0] . "'>" . $providers[1] . "</option>";
+}
+?>
+<option>Other</option>
+</select></td>
+</tr>
+<tr id="edit_adsl_ac_number_tr" style="display:none;">
+<td>ADSL Account Number </td>
+<td><input type="text" size="15" id="edit_adsl_ac_number" style="margin-top:0px;" /></td>
 </tr>
 </table>
 </div>

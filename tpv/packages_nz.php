@@ -26,8 +26,22 @@ else
 		echo "<tr>";
 		echo "<td>" . $package["cli"] . "</td>";
 		echo "<td>" . $package_name["name"] . "</td>";
-		echo "<td>" . $package["provider"] . "</td>";
-		echo "<td>" . $package["ac_number"] . "</td>";
+		if ($package["adsl_provider"] == "")
+		{
+			echo "<td>" . $package["provider"] . "</td>";
+		}
+		else
+		{
+			echo "<td>PSTN - " . $package["provider"] . "<br>ADSL - " . $package["adsl_provider"] . "</td>";
+		}
+		if ($package["adsl_ac_number"] == "")
+		{
+			echo "<td>" . $package["ac_number"] . "</td>";
+		}
+		else
+		{
+			echo "<td>PSTN - " . $package["ac_number"] . "<br>ADSL - " . $package["adsl_ac_number"] . "</td>";
+		}
 		echo "<td style='text-align:center;'><input type='button' onclick='Edit_Package(\"$package[cli]\",\"$package[plan]\")' class='icon_edit' title='Edit'></td>";
 		echo "<td style='text-align:center;'><input type='button' onclick='Delete_Package(\"$package[cli]\")' class='icon_delete' title='Delete'></td>";
 		echo "</tr>";

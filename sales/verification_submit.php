@@ -241,8 +241,11 @@ elseif ($method == "add_nz") //add package
 	$sid = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
+	$plan_type = $_GET["plan_type"];
 	$provider = $_GET["provider"];
 	$ac_number = trim($_GET["ac_number"]);
+	$adsl_provider = $_GET["adsl_provider"];
+	$adsl_ac_number = trim($_GET["adsl_ac_number"]);
 	$week = date("W");
 	
 	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
@@ -255,6 +258,10 @@ elseif ($method == "add_nz") //add package
 	{
 		echo "Invalid CLI";
 	}
+	elseif ($plan == "")
+	{
+		echo "Please select a plan";
+	}
 	elseif ($provider == "")
 	{
 		echo "Please select the CLI's provider";
@@ -262,6 +269,14 @@ elseif ($method == "add_nz") //add package
 	elseif ($ac_number == "")
 	{
 		echo "Please enter the CLI's account number";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_provider == "")
+	{
+		echo "Please select the CLI's ADSL provider";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_ac_number == "")
+	{
+		echo "Please enter the CLI's ADSL account number";
 	}
 	elseif ($check3[0] != 0)
 	{
@@ -273,7 +288,7 @@ elseif ($method == "add_nz") //add package
 	}
 	else
 	{
-		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan, provider, ac_number) VALUES ('$sid', '" . mysql_real_escape_string($cli) . "', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan, provider, ac_number, adsl_provider, adsl_ac_number) VALUES ('$sid', '" . mysql_real_escape_string($cli) . "', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "', '" . mysql_real_escape_string($adsl_provider) . "', '" . mysql_real_escape_string($adsl_ac_number) . "')") or die(mysql_error());
 		echo "added";
 	}
 }
@@ -330,13 +345,36 @@ elseif ($method == "nz_ac_number") //get account number
 	
 	echo $data[0];
 }
+elseif ($method == "nz_adsl_provider") //get adsl provider
+{
+	$id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT adsl_provider FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "nz_adsl_ac_number") //get adsl account number
+{
+	$id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT adsl_ac_number FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
 elseif ($method == "edit_nz") //edit package
 {
 	$sid = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
+	$plan_type = $_GET["plan_type"];
 	$provider = $_GET["provider"];
 	$ac_number = trim($_GET["ac_number"]);
+	$adsl_provider = $_GET["adsl_provider"];
+	$adsl_ac_number = trim($_GET["adsl_ac_number"]);
 	$cli2 = $_GET["cli2"];
 	$week = date("W");
 	
@@ -350,6 +388,10 @@ elseif ($method == "edit_nz") //edit package
 	{
 		echo "Invalid CLI";
 	}
+	elseif ($plan == "")
+	{
+		echo "Please select a plan";
+	}
 	elseif ($provider == "")
 	{
 		echo "Please select the CLI's provider";
@@ -357,6 +399,14 @@ elseif ($method == "edit_nz") //edit package
 	elseif ($ac_number == "")
 	{
 		echo "Please enter the CLI's account number";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_provider == "")
+	{
+		echo "Please select the CLI's ADSL provider";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_ac_number == "")
+	{
+		echo "Please enter the CLI's ADSL account number";
 	}
 	elseif ($check3[0] != 0)
 	{
@@ -369,7 +419,7 @@ elseif ($method == "edit_nz") //edit package
 	else
 	{
 		mysql_query("DELETE FROM vericon.sales_packages WHERE sid = '$sid' AND cli = '$cli2' LIMIT 1") or die(mysql_error());
-		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan, provider, ac_number) VALUES ('$sid', '" . mysql_real_escape_string($cli) . "', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "')") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan, provider, ac_number, adsl_provider, adsl_ac_number) VALUES ('$sid', '" . mysql_real_escape_string($cli) . "', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "', '" . mysql_real_escape_string($adsl_provider) . "', '" . mysql_real_escape_string($adsl_ac_number) . "')") or die(mysql_error());
 		echo "editted";
 	}
 }
