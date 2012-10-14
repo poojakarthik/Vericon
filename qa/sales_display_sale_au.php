@@ -1,8 +1,13 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$id = $_GET["id"];
+$q = mysql_query("SELECT user FROM vericon.currentuser WHERE hash = '" . $_COOKIE["hash"] . "'") or die(mysql_error());
+$user = mysql_fetch_row($q);
 
+$q1 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$user[0]'") or die(mysql_error());
+$ac = mysql_fetch_assoc($q1);
+
+$id = $_GET["id"];
 $q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
 ?>
@@ -156,6 +161,123 @@ $(function() {
     });
 });
 </script>
+<script>
+function Approve()
+{
+	var id = $( "#sale_id" ),
+		verifier = "<?php echo $ac["user"]; ?>",
+		lead = $( "#lead_check" ),
+		recording = $( "#recording_check" ),
+		details = $( "#details_check" ),
+		billing = $( "#billing_comments"),
+		other = $( "#other_comments" );
+	
+	$.get("sales_process.php?method=approve_au", { id: id.val(), verifier: verifier, lead: lead.val(), recording: recording.val(), details: details.val(), billing: billing.val(), other: other.val() }, function (data) {
+		if (data == 1)
+		{
+			var date = $( "#store_date" ),
+				centre = $( "#store_centre" ),
+				type = $( "#store_type" );
+			
+			$( "#display" ).hide('blind', '' , 'slow', function() {
+				$( "#display_loading" ).show();
+				$( "#display" ).load('sales_display.php?date=' + date.val(),
+				function() {
+					$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
+					function() {
+						$( "#display_loading" ).hide();
+						$( "#display" ).show('blind', '' , 'slow');
+					});
+				});
+			});
+		}
+		else
+		{
+			$( ".validateTips" ).html(data);
+			$( "#dialog-form" ).dialog( "open" );
+		}
+	});
+}
+</script>
+<script> //reject sale
+$(function() {
+	$( "#dialog:ui-dialog_reject" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips3" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-form_reject" ).dialog({
+		autoOpen: false,
+		height: 225,
+		width: 425,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Reject Sale": function() {
+				var id = $( "#sale_id" ),
+					verifier = "<?php echo $ac["user"]; ?>",
+					reason = $( "#reason" ),
+					lead = $( "#lead_check" ),
+					recording = $( "#recording_check" ),
+					details = $( "#details_check" );
+				
+				if (reason.val() == "")
+				{
+					updateTips("Please Write a Reason for Rejecting the Sale Below");
+				}
+				else
+				{
+					$.get("sales_process.php?method=reject",{id: id.val(), verifier: verifier, reason: reason.val(), lead: lead.val(), recording: recording.val(), details: details.val() },
+					function(data) {
+						if (data == "submitted")
+						{
+							$( "#dialog-form_reject" ).dialog( "close" );
+							var date = $( "#store_date" ),
+								centre = $( "#store_centre" ),
+								type = $( "#store_type" );
+							
+							$( "#display" ).hide('blind', '' , 'slow', function() {
+								$( "#display_loading" ).show();
+								$( "#display" ).load('sales_display.php?date=' + date.val(),
+								function() {
+									$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
+									function() {
+										$( "#display_loading" ).hide();
+										$( "#display" ).show('blind', '' , 'slow');
+									});
+								});
+							});
+						}
+						else
+						{
+							updateTips(data);
+						}
+					});
+				}
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+
+function Reject()
+{
+	$( "#dialog-form_reject" ).dialog( "open" );
+}
+</script>
 
 <div id="dialog-form_lead" title="Validate Lead">
 <span class='ui-icon ui-icon-alert' style='float:left; margin-right:.3em; margin-top:4px'></span><p class="validateTips2">Are you sure you would like to validate this lead? This action cannot be reversed.</p>
@@ -210,6 +332,16 @@ $(function() {
 <p>To check the authenticity of your banking details <b><span class="dd_campaign"></span></b> will debit a dollar from your account which will be credited back to your account within 7 working days. <b><span class="dd_campaign"></span>'s</b> terms and conditions for providing this telecommunications service and Direct Debit set-up to you are available for viewing or downloading at our website.</p>
 </div>
 
+<div id="dialog-form_reject" title="Reject Sale">
+<p class="validateTips3">Please Write a Reason for Rejecting the Sale Below</p>
+<table width="100%">
+<tr>
+<td width="50px">Reason </td>
+<td><textarea id="reason" style="width:100%; height:100px; resize:none;"></textarea></td>
+</tr>
+</table>
+</div>
+
 <input type="hidden" id="sale_id" value="<?php echo $_GET["id"]; ?>" />
 
 <table width="100%">
@@ -240,7 +372,22 @@ if ($l[0] == 0)
 {
 	$dof = date("Y-m-d", strtotime($data["timestamp"]));
 	$dos = date("Y-m-d", strtotime($data["approved_timestamp"]));
-	$q2 = mysql_query("SELECT * FROM leads.log_leads WHERE cli = '$data[lead_id]' AND (centre = '$data[centre]' OR centre NOT LIKE 'CC%') AND issue_date <= '$dof' AND expiry_date >= '$dof' AND packet_expiry >= '$dos'") or die(mysql_error());
+	$ql = mysql_query("SELECT centres FROM leads.groups WHERE centres LIKE '%$data[centre]%'") or die(mysql_error());
+	$cq = "";
+	if (mysql_num_rows($ql) == 0)
+	{
+		$cq = "centre = '$data[centre]' OR ";
+	}
+	else
+	{
+		$cen = mysql_fetch_row($ql);
+		$centres = explode(",",$cen[0]);
+		for ($i = 0; $i < count($centres); $i++)
+		{
+			$cq .= "centre = '" . $centres[$i] . "' OR ";
+		}
+	}
+	$q2 = mysql_query("SELECT * FROM leads.log_leads WHERE cli = '$data[lead_id]' AND (" . $cq . "centre NOT LIKE 'CC%') AND issue_date <= '$dof' AND expiry_date >= '$dof' AND packet_expiry >= '$dos'") or die(mysql_error());
 	
 	if (mysql_num_rows($q2) == 0)
 	{

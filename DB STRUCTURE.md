@@ -897,7 +897,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `lastname` varchar(300) NOT NULL,
   `dob` date NOT NULL,
   `email` varchar(300) NOT NULL,
-  `mobile` varchar(10) NOT NULL,
+  `mobile` varchar(16) NOT NULL,
   `billing` varchar(25) NOT NULL,
   `welcome` varchar(25) NOT NULL,
   `promotions` varchar(8) NOT NULL,
@@ -906,6 +906,7 @@ CREATE TABLE IF NOT EXISTS `customers` (
   `id_type` varchar(25) NOT NULL,
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
+  `bus_name` varchar(256) NOT NULL,
   `position` varchar(300) NOT NULL,
   `best_buddy` varchar(16) NOT NULL,
   `credit` int(11) NOT NULL,
@@ -944,7 +945,7 @@ CREATE TABLE IF NOT EXISTS `customers_log` (
   `lastname` varchar(300) NOT NULL,
   `dob` date NOT NULL,
   `email` varchar(300) NOT NULL,
-  `mobile` varchar(10) NOT NULL,
+  `mobile` varchar(16) NOT NULL,
   `billing` varchar(25) NOT NULL,
   `welcome` varchar(25) NOT NULL,
   `promotions` varchar(8) NOT NULL,
@@ -953,6 +954,7 @@ CREATE TABLE IF NOT EXISTS `customers_log` (
   `id_type` varchar(25) NOT NULL,
   `id_num` varchar(25) NOT NULL,
   `abn` varchar(25) NOT NULL,
+  `bus_name` varchar(256) NOT NULL,
   `position` varchar(300) NOT NULL,
   `best_buddy` varchar(16) NOT NULL,
   `credit` int(11) NOT NULL,
@@ -1007,7 +1009,6 @@ CREATE TABLE IF NOT EXISTS `groups` (
 --
 
 CREATE TABLE IF NOT EXISTS `international` (
-
   `country` varchar(50) NOT NULL,
   `rate` varchar(50) NOT NULL,
   PRIMARY KEY (`country`)
@@ -1084,6 +1085,10 @@ CREATE TABLE IF NOT EXISTS `packages` (
   `id` varchar(16) NOT NULL,
   `cli` varchar(16) NOT NULL,
   `plan` varchar(64) NOT NULL,
+  `provider` varchar(64) NOT NULL,
+  `ac_number` varchar(32) NOT NULL,
+  `adsl_provider` varchar(64) NOT NULL,
+  `adsl_ac_number` varchar(32) NOT NULL,
   `status` varchar(32) NOT NULL,
   `edit_by` varchar(8) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -1099,6 +1104,10 @@ CREATE TABLE IF NOT EXISTS `packages_log` (
   `id` varchar(16) NOT NULL,
   `cli` varchar(16) NOT NULL,
   `plan` varchar(64) NOT NULL,
+  `provider` varchar(64) NOT NULL,
+  `ac_number` varchar(32) NOT NULL,
+  `adsl_provider` varchar(64) NOT NULL,
+  `adsl_ac_number` varchar(32) NOT NULL,
   `status` varchar(32) NOT NULL,
   `edit_by` varchar(8) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -1264,7 +1273,7 @@ CREATE TABLE IF NOT EXISTS `sales_customers` (
   `lastname` varchar(300) NOT NULL,
   `dob` date NOT NULL,
   `email` varchar(300) NOT NULL,
-  `mobile` varchar(10) NOT NULL,
+  `mobile` varchar(16) NOT NULL,
   `billing` varchar(25) NOT NULL,
   `welcome` varchar(25) NOT NULL,
   `promotions` varchar(8) NOT NULL,
@@ -1310,6 +1319,8 @@ CREATE TABLE IF NOT EXISTS `sales_packages` (
   `plan` varchar(300) NOT NULL,
   `provider` varchar(64) NOT NULL,
   `ac_number` varchar(32) NOT NULL,
+  `adsl_provider` varchar(64) NOT NULL,
+  `adsl_ac_number` varchar(32) NOT NULL,
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   KEY `sid` (`sid`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
@@ -1326,6 +1337,8 @@ CREATE TABLE IF NOT EXISTS `sales_packages_temp` (
   `plan` varchar(300) NOT NULL,
   `provider` varchar(64) NOT NULL,
   `ac_number` varchar(32) NOT NULL,
+  `adsl_provider` varchar(64) NOT NULL,
+  `adsl_ac_number` varchar(32) NOT NULL,
   KEY `lead_id` (`lead_id`)
 ) ENGINE=MEMORY DEFAULT CHARSET=latin1;
 ```

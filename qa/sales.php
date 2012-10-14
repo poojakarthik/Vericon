@@ -57,10 +57,12 @@ function View_Switch(centre)
 <script>
 function View_Sale(id)
 {
-	$( "#display" ).hide('blind', '' , 'slow', function() {
-		$( "#display" ).load('sales_display_sale.php?id=' + id,
-		function() {
-			$( "#display" ).show('blind', '' , 'slow');
+	$.get('sales_process.php?method=country', { id: id }, function(data) {
+		$( "#display" ).hide('blind', '' , 'slow', function() {
+			$( "#display" ).load('sales_display_sale_' + data + '.php?id=' + id,
+			function() {
+				$( "#display" ).show('blind', '' , 'slow');
+			});
 		});
 	});
 }
@@ -81,121 +83,6 @@ $(function() {
 	});
 });
 </script>
-<script>
-function Approve()
-{
-	var id = $( "#sale_id" ),
-		verifier = "<?php echo $ac["user"]; ?>",
-		lead = $( "#lead_check" ),
-		recording = $( "#recording_check" ),
-		details = $( "#details_check" ),
-		billing = $( "#billing_comments"),
-		other = $( "#other_comments" );
-	
-	$.get("sales_process.php?method=approve", { id: id.val(), verifier: verifier, lead: lead.val(), recording: recording.val(), details: details.val(), billing: billing.val(), other: other.val() }, function (data) {
-		if (data == 1)
-		{
-			var date = $( "#store_date" ),
-				centre = $( "#store_centre" ),
-				type = $( "#store_type" );
-			
-			$( "#display" ).hide('blind', '' , 'slow', function() {
-				$( "#display_loading" ).show();
-				$( "#display" ).load('sales_display.php?date=' + date.val(),
-				function() {
-					$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
-					function() {
-						$( "#display_loading" ).hide();
-						$( "#display" ).show('blind', '' , 'slow');
-					});
-				});
-			});
-		}
-		else
-		{
-			$( ".validateTips" ).html(data);
-			$( "#dialog-form" ).dialog( "open" );
-		}
-	});
-}
-</script>
-<script> //reject sale
-$(function() {
-	$( "#dialog:ui-dialog_reject" ).dialog( "destroy" );
-	
-	var tips = $( ".validateTips3" );
-
-	function updateTips( t ) {
-		tips
-			.text( t )
-			.addClass( "ui-state-highlight" );
-		setTimeout(function() {
-			tips.removeClass( "ui-state-highlight", 1500 );
-		}, 500 );
-	}
-
-	$( "#dialog-form_reject" ).dialog({
-		autoOpen: false,
-		height: 225,
-		width: 425,
-		modal: true,
-		resizable: false,
-		draggable: false,
-		buttons: {
-			"Reject Sale": function() {
-				var id = $( "#sale_id" ),
-					verifier = "<?php echo $ac["user"]; ?>",
-					reason = $( "#reason" ),
-					lead = $( "#lead_check" ),
-					recording = $( "#recording_check" ),
-					details = $( "#details_check" );
-				
-				if (reason.val() == "")
-				{
-					updateTips("Please Write a Reason for Rejecting the Sale Below");
-				}
-				else
-				{
-					$.get("sales_process.php?method=reject",{id: id.val(), verifier: verifier, reason: reason.val(), lead: lead.val(), recording: recording.val(), details: details.val() },
-					function(data) {
-						if (data == "submitted")
-						{
-							$( "#dialog-form_reject" ).dialog( "close" );
-							var date = $( "#store_date" ),
-								centre = $( "#store_centre" ),
-								type = $( "#store_type" );
-							
-							$( "#display" ).hide('blind', '' , 'slow', function() {
-								$( "#display_loading" ).show();
-								$( "#display" ).load('sales_display.php?date=' + date.val(),
-								function() {
-									$( "#display2" ).load('sales_display2.php?date=' + date.val() + '&centre=' + centre.val() + '&type=' + type.val(),
-									function() {
-										$( "#display_loading" ).hide();
-										$( "#display" ).show('blind', '' , 'slow');
-									});
-								});
-							});
-						}
-						else
-						{
-							updateTips(data);
-						}
-					});
-				}
-			},
-			Cancel: function() {
-				$( this ).dialog( "close" );
-			}
-		}
-	});
-});
-
-function Reject()
-{
-	$( "#dialog-form_reject" ).dialog( "open" );
-}
-</script>
 
 <div id="dialog-confirm_view_switch" title="Sale Status Type">
 <table width="100%" height="55px">
@@ -211,23 +98,13 @@ function Reject()
 <span class='ui-icon ui-icon-alert' style='float:left; margin-right:.3em; margin-top:4px'></span><p class="validateTips"></p>
 </div>
 
-<div id="dialog-form_reject" title="Reject Sale">
-<p class="validateTips3">Please Write a Reason for Rejecting the Sale Below</p>
-<table width="100%">
-<tr>
-<td width="50px">Reason </td>
-<td><textarea id="reason" style="width:100%; height:100px; resize:none;"></textarea></td>
-</tr>
-</table>
-</div>
-
 <input type="hidden" id="store_date" value="<?php echo date("Y-m-d"); ?>" />
 <input type="hidden" id="store_centre" value="" />
 <input type="hidden" id="store_type" value="" />
 
 <div id="display_loading">
 <center><img src="../images/ajax-loader.gif" /><br /><br />
-<p>Loading Sales. Please Wait...</p></center>
+<p>Loading. Please Wait...</p></center>
 </div>
 
 <div id="display">
