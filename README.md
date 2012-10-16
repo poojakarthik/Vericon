@@ -8,6 +8,8 @@
 5 0 * * * php /var/vericon/cron/sbt_dsr.php Residential &> /dev/null
 5 0 * * * php /var/vericon/cron/zen_dsr.php Business &> /dev/null
 5 0 * * * php /var/vericon/cron/zen_dsr.php Residential &> /dev/null
+5 0 * * * php /var/vericon/cron/nxt_dsr.php Business &> /dev/null
+5 0 * * * php /var/vericon/cron/nxt_dsr.php Residential &> /dev/null
 0 1 * * * /var/vericon/cron/db_backup.sh
 ```
 ##Other
