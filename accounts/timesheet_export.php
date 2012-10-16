@@ -144,7 +144,9 @@ if (mysql_num_rows($q) != 0)
 	$objPHPExcel->getActiveSheet()->mergeCells('B' . ($i + 4) . ':C' . ($i + 4));
 	
 	// Set cell number formats
-	$objPHPExcel->getActiveSheet()->getStyle('M5:T' . $i)->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
+	$objPHPExcel->getActiveSheet()->getStyle('M5:N' . $i)->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
+	$objPHPExcel->getActiveSheet()->getStyle('O5:O' . $i)->getNumberFormat()->setFormatCode('$#,##0.0000_);[Red]($#,##0.0000)');
+	$objPHPExcel->getActiveSheet()->getStyle('P5:T' . $i)->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
 	$objPHPExcel->getActiveSheet()->getStyle('D' . ($i + 2) . ':D' . ($i + 4))->getNumberFormat()->setFormatCode('$#,##0.00_);[Red]($#,##0.00)');
 	
 	// Set column widths

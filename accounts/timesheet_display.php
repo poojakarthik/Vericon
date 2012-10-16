@@ -103,7 +103,7 @@ else
 		$hours_d = number_format($da[0],2);
 		$bonus_d = "\$" . number_format($da[1],2);
 		if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
-		$rate_d = "\$" . number_format($rate,2);
+		$rate_d = "\$" . number_format($rate,4);
 		$gross = ($rate * ($da[0] + $da[4] + $da[5])) + $da[1];
 		$gross_d = "\$" . number_format($gross,2);
 		$payg = $da[3];
