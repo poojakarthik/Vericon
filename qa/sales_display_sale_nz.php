@@ -10,6 +10,9 @@ $ac = mysql_fetch_assoc($q1);
 $id = $_GET["id"];
 $q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
+
+$q3 = mysql_query("SELECT cli FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
+$cli = mysql_fetch_row($q3);
 ?>
 <script>
 $(function() {
@@ -256,6 +259,22 @@ function Reject()
 	$( "#dialog-form_reject" ).dialog( "open" );
 }
 </script>
+<script>
+var cli = "<?php echo $cli[0]; ?>";
+
+$.get("sales_process.php?method=nz_address_check", { cli: cli }, function(data) {
+	if (data == "Invalid Line" || data == "Application Error" || data == "Quota Limit Reached" || data == "Version Mismatch")
+	{
+		$( "#address_icon" ).html("<img src='../images/delete_icon.png'>");
+	}
+	else
+	{
+		$( "#address_icon" ).html("<img src='../images/check_icon.png'>");
+	}
+	
+	$( "#nz_address_check" ).html(data);
+});
+</script>
 
 <div id="dialog-form_lead" title="Validate Lead">
 <span class='ui-icon ui-icon-alert' style='float:left; margin-right:.3em; margin-top:4px'></span><p class="validateTips2">Are you sure you would like to validate this lead? This action cannot be reversed.</p>
@@ -461,6 +480,17 @@ else
 <td width="175px">Validated Customer Details?</td>
 <td></td>
 <td style="text-align:center;"><button onclick="Details()" class="btn2" style="font-size:9px;">Details</button></td>
+</tr>
+<tr>
+<td style="padding: .6em 10px; text-align:center;">
+<span id="address_icon">
+<img src="../images/ajax-loader.gif" width="16" height="16">
+</span>
+</td>
+<td width="175px">Address Pre-Check</td>
+<td colspan="2">
+<span id="nz_address_check" style="font-weight:bold;">Loading...</span>
+</td>
 </tr>
 <tr>
 <td style="padding: .6em 10px; text-align:center;">

@@ -120,6 +120,14 @@ elseif ($method == "approve_au")
 		echo 1;
 	}
 }
+elseif ($method == "nz_address_check")
+{
+	$cli = $_GET["cli"];
+	
+	$data = exec("perl /var/vericon/source/nz_address.pl " . $cli);
+	
+	echo $data;
+}
 elseif ($method == "approve_nz")
 {
 	$id = $_GET["id"];

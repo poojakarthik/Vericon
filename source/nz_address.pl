@@ -27,7 +27,7 @@ $mech->get('https://www.wireline.co.nz/ServiceProvider/Dashboard/WirelineOrders/
 if($mech->uri()->as_string =~ /Login/){ 
     $mech->submit_form(
 	form_name => 'Login',
-	fields    => { LoginNameTextBox => 'finbar@smartbusinesstelecom.com.au', LoginPasswordTextBox => 'somoxge18450be' },
+	fields    => { LoginNameTextBox => 'finbar@smartbusinesstelecom.com.au', LoginPasswordTextBox => 'somoxoge18450be' },
 	button    => 'LoginButton');
 
     $mech->get('https://www.wireline.co.nz/ServiceProvider/Dashboard/WirelineOrders/IntactLineCheck.aspx');
@@ -49,17 +49,22 @@ my $r = $mech->submit_form(
 my $data =  $r->decoded_content;
 
 if($data =~ /Invalid Line/){
-    print qq/{\n\t"error": "Invalid Line",\n\t"msg": "The line is not currently connected or is still pending connection"\n}\n/;
+    print "Invalid Line";
+    exit;
+}
+
+if($data =~ /Application Error/){
+    print "Application Error";
     exit;
 }
 
 if($data =~ /quota limit for the day has been reached/){
-    print qq/{\n\t"error": "Quota Limit Reached",\n\t"msg": "The quota limit has been reached for the day"\n}\n/;
+    print "Quota Limit Reached";
     exit;
 }
 
 if($data !~ /Version 6.4.11/){
-    print qq/{\n\t"error": "Version Mismatch",\n\t"msg": "Wireline version has changed, Verify HTML validity"\n}\n/;
+    print "Version Mismatch";
     exit;
 }
 
@@ -69,37 +74,5 @@ $data =~ s/ +/ /g;
 $te = HTML::TableExtract->new( );
 $te->parse($data);
 
-$out = qq/{\n\t"search": "$ph",\n/;
-
 @t = $te->table(2, 0)->rows();
-$out .= qq/\t"sam": "$t[1][0]",\n/;
-$out .= qq/\t"adr": "$t[1][1]",\n/;
-
-@t = $te->table(2, 1)->rows();
-$out .= qq/\t"zone": "$t[0][1]",\n/;
-$out .= qq/\t"density": "$t[1][1]",\n/;
-$out .= qq/\t"urbanisation": "$t[2][1]",\n/;
-
-$out .= qq/\t"service": [\n/;
-foreach $r ($te->table(2, 2)->rows()){
-    next if @$r[0] eq 'Line Type';
-    $out .= qq/\t\t{\n\t\t\t"type": "@$r[0]",\n/; 
-    $out .= qq/\t\t\t"serviceID": "@$r[1]",\n/; 
-    $out .= qq/\t\t\t"openSO": "@$r[2]",\n/; 
-    $out .= qq/\t\t\t"switch": "@$r[3]",\n/; 
-    $out .= qq/\t\t\t"DirectoryListing": "@$r[4]"\n\t\t},/; 
-}
-chop $out;
-$out .= qq/\n\t],\n/;
-
-$out .= qq/\t"orders": [\n/;
-foreach $r ($te->table(2, 3)->rows()){
-    next if @$r[0] eq 'Line Number';
-    $out .= qq/\t\t{\n\t\t\t"lineNumber": "@$r[0]",\n/; 
-    $out .= qq/\t\t\t"dueDate": "@$r[1]",\n/; 
-    $out .= qq/\t\t\t"serviceOrderClass": "@$r[2]"\n\t\t},/; 
-}
-chop $out;
-$out .= qq/\n\t]\n}\n/;
-
-print $out;
+print "$t[1][1]";

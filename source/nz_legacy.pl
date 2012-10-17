@@ -53,6 +53,11 @@ if($data =~ /Invalid Line/){
     exit;
 }
 
+if($data =~ /Application Error/){
+    print "error";
+    exit;
+}
+
 if($data =~ /quota limit for the day has been reached/){
     print "error";
     exit;
