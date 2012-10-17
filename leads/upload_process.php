@@ -30,7 +30,7 @@ foreach ($lines as $row)
 	if (!file_exists("/var/vtmp/leads_cancel.txt"))
 	{
 		$da = explode(",", $row);
-		if (preg_match('/([2378])([0-9]{8})/', $da[0]) && $da[1] != "")
+		if ((preg_match('/([2378])([0-9]{8})/', $da[0]) || preg_match('/([34679])([0-9]{7})/', $da[0])) && $da[1] != "")
 		{
 			$data .= $da[0] . "," . $da[1] . "," . $da[2] . "," . $da[3] . "," . $da[4];
 		}

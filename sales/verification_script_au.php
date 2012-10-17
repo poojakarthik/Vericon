@@ -1,32 +1,92 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$id = $_GET["id"];
+$q = mysql_query("SELECT user FROM vericon.currentuser WHERE hash = '" . $_COOKIE["hash"] . "'") or die(mysql_error());
+$user = mysql_fetch_row($q);
 
+$q1 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$user[0]'") or die(mysql_error());
+$ac = mysql_fetch_assoc($q1);
+
+$id = $_GET["id"];
 $q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
 
-$q2 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$data[agent]'") or die(mysql_error());
-$data2 = mysql_fetch_assoc($q2);
+$q1 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+$c = mysql_fetch_row($q1);
+$campaign_id = $c[0];
 
-$q3 = mysql_query("SELECT id FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
-$c = mysql_fetch_row($q3);
-$c_id = $c[0];
+$contract_months = 0;
+$p_i = 0;
+$a_i = 0;
+$b_i = 0;
+$p_packages = array();
+$a_packages = array();
+$b_packages = array();
 
-if ($data["status"] == "Line Issue")
+$q2 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id' ORDER BY plan DESC") or die(mysql_error());
+while ($pack = mysql_fetch_assoc($q2))
 {
-	$status_text = "line_issue";
+	$q3 = mysql_query("SELECT * FROM vericon.plan_matrix WHERE id = '$pack[plan]' AND campaign = '" . mysql_real_escape_string($campaign_id) . "'") or die(mysql_error());
+	$da = mysql_fetch_assoc($q3);
+	
+	if (preg_match("/24 Month Contract/", $da["name"]))
+	{
+		$contract = 24;
+	}
+	elseif (preg_match("/12 Month Contract/", $da["name"]))
+	{
+		$contract = 12;
+	}
+	else
+	{
+		$contract = 0;
+	}
+	
+	if ($da["type"] == "PSTN")
+	{
+		$p_packages[$p_i] = $contract . "," . $da["id"];
+		$p_i++;
+	}
+	elseif ($da["type"] == "ADSL Metro" || $da["type"] == "ADSL Regional")
+	{
+		$a_packages[$a_i] = $contract . "," . $da["id"];
+		$a_i++;
+	}
+	elseif ($da["type"] == "Bundle")
+	{
+		$b_packages[$b_i] = $contract . "," . $da["id"];
+		$b_i++;
+	}
 }
-else
+
+if ($b_i >= 1)
 {
-	$status_text = strtolower($data["status"]);
+	$package = explode(",", $b_packages[0]);
+	$plan = $package[1];
+}
+elseif ($a_i >= 1)
+{
+	$package = explode(",", $a_packages[0]);
+	$plan = $package[1];
+}
+elseif ($p_i >= 1)
+{
+	rsort($p_packages);
+	$package = explode(",", $p_packages[0]);
+	$plan = $package[1];
 }
 ?>
-
-<input type="hidden" id="id" value="<?php echo $data["id"]; ?>" />
-<input type="hidden" id="sale_type" value="<?php echo $data["type"]; ?>" />
-
 <style>
+div#users-contain table { margin: 1em 0; border-collapse: collapse; }
+div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+.ui-dialog_submit { padding: .3em; }
+.ui-dialog2 { padding: .3em; }
+.ui-dialog3 { padding: .3em; }
+.ui-dialog4 { padding: .3em; }
+.ui-state-highlight { padding: .3em; }
+.validateTips2 { border: 1px solid transparent; padding: 0.3em; }
+.validateTips3 { border: 1px solid transparent; padding: 0.3em; }
+.validateTips4 { border: 1px solid transparent; padding: 0.3em; }
 #physical_address_code { height:120px; margin:0px; overflow-y:auto; border:1px solid black; padding:3px; }
 #postal_address_code  { height:120px; margin:0px; overflow-y:auto; border:1px solid black; padding:3px; }
 .ui-dialog_physical { padding: .3em; }
@@ -37,13 +97,6 @@ else
 .ui-dialog_postal_mailbox { padding: .3em; }
 .ui-dialog_postal_confirm { padding: .3em; }
 .ui-dialog_postal_confirm_switch { padding: .3em; }
-.ui-dialog_submit { padding: .3em; }
-.ui-dialog2 { padding: .3em; }
-.ui-dialog3 { padding: .3em; }
-.ui-dialog4 { padding: .3em; }
-.validateTips2 { border: 1px solid transparent; padding: 0.3em; }
-.validateTips3 { border: 1px solid transparent; padding: 0.3em; }
-.validateTips4 { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPhysical { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPhysicalManual { border: 1px solid transparent; padding: 0.3em; }
 .validateTipsPostal { border: 1px solid transparent; padding: 0.3em; }
@@ -52,93 +105,29 @@ else
 .ui-autocomplete { max-height: 300px; overflow-y: auto; overflow-x: hidden; padding-right: 20px; }
 .ui-autocomplete-loading { background: white url('../images/ajax-loader.gif') right center no-repeat; }
 </style>
-<script> //notes button
-$(function() {
-	$( "#dialog:ui-dialog_notes" ).dialog( "destroy" );
-	
-	$( "#dialog-form_notes" ).dialog({
-		autoOpen: false,
-		height: 200,
-		width: 425,
-		modal: true,
-		resizable: false,
-		draggable: false,
-		show: "blind",
-		hide: "blind"
-	});
-});
-
-function Notes()
-{
-	var id = "<?php echo $id; ?>";
-	
-	$.get("search_submit.php", { method: "notes", id: id }, function(data) {
-		$( "#notes_display" ).val(data);
-	});
-	$( "#dialog-form_notes" ).dialog( "open" );
-}
-</script>
-<script> //dob datepicker
-$(function() {
-	$( "#datepicker" ).datepicker( {
-		showOn: "button",
-		buttonImage: "../images/calendar.png",
-		buttonImageOnly: true,
-		dateFormat: "yy-mm-dd",
-		firstDay: 1,
-		showOtherMonths: true,
-		selectOtherMonths: true,
-		altField: "#datepicker2",
-		altFormat: "dd/mm/yy",
-		changeMonth: true,
-		changeYear: true,
-		maxDate: "-216M",
-		yearRange: "-100Y:-18Y"
-	});
-});
-</script>
 <script>
-if ( $( "#mobile" ).val() == "N/A" )
-{
-	$( "#no_mobile" ).prop("checked", true);
-	$( "#mobile" ).attr("disabled", "disabled");
-}
-
-if ( $( "#email" ).val() == "N/A" )
-{
-	$( "#no_email" ).prop("checked", true);
-	$( "#email" ).attr("disabled", "disabled");
-}
-
-$.get("../source/gnafGet.php?type=display", { id: "<?php echo $data["physical"]; ?>" }, function(data) {
-	var n = data.split("}");
-	$( "#display_physical1" ).val(n[0]);
-	$( "#display_physical2" ).val(n[1]);
-	$( "#display_physical3" ).val(n[2]);
-	$( "#display_physical4" ).val(n[3]);
-});
-
-if ("<?php echo $data["physical"]; ?>" == "<?php echo $data["postal"]; ?>")
-{
-	$( "#display_postal1" ).val("SAME AS ABOVE");
-	$( "#postal_same" ).prop("checked", true);
-	$( "#display_postal1" ).attr("disabled", "disabled");
-	$( "#display_postal2" ).attr("disabled", "disabled");
-	$( "#display_postal3" ).attr("disabled", "disabled");
-	$( "#display_postal4" ).attr("disabled", "disabled");
-	$( "#postal_link" ).removeAttr("onclick");
-	$( "#postal_link" ).removeAttr("style");
-}
-else
-{
-	$.get("../source/gnafGet.php?type=display", { id: "<?php echo $data["postal"]; ?>" }, function(data) {
-		var n = data.split("}");
-		$( "#display_postal1" ).val(n[0]);
-		$( "#display_postal2" ).val(n[1]);
-		$( "#display_postal3" ).val(n[2]);
-		$( "#display_postal4" ).val(n[3]);
+$(function() {
+	$( "#sale_verifier_d" ).autocomplete({
+		source: function(request, response) {
+			$.ajax({
+				url: "verification_submit.php",
+				dataType: "json",
+				data: {
+					method : "verifier",
+					centre: "<?php echo $ac["centre"]; ?>",
+					term : request.term
+				},
+				success: function(data) {
+					response(data);
+				}
+			});
+		},
+		minLength: 2,
+		select: function (event, ui) {
+			$( "#sale_verifier" ).val(ui.item.id);
+		}
 	});
-}
+});
 </script>
 <script> //add packages
 $(function() {
@@ -180,11 +169,11 @@ $(function() {
 				}
 				else
 				{
-					$.get("search_submit.php?method=add", { id: id.val(), cli: cli.val(), plan: plan.val() },
+					$.get("verification_submit.php?method=add_au", { id: id.val(), cli: cli.val(), plan: plan.val() },
 					function(data) {
 						if (data == "added")
 						{
-							$( "#packages" ).load('packages.php?id=' + id.val());
+							$( "#packages" ).load('../tpv/packages_au.php?id=' + id.val());
 							$( "#dialog-form2" ).dialog( "close" );
 						}
 						else
@@ -212,7 +201,7 @@ function Add_Package()
 function Plan_Dropdown()
 {
 	$( "#plan" ).val("");
-	$( "#plan" ).load("plans.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
+	$( "#plan" ).load("../tpv/plans_au.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#cli').val());
 }
 </script>
 <script> //edit packages
@@ -256,11 +245,11 @@ $(function() {
 				}
 				else
 				{
-					$.get("search_submit.php?method=edit", { id: id.val(), cli: cli.val(), plan: plan.val(), cli2: cli2.val() },
+					$.get("verification_submit.php?method=edit_au", { id: id.val(), cli: cli.val(), plan: plan.val(), cli2: cli2.val() },
 					function(data) {
 						if (data == "editted")
 						{
-							$( "#packages" ).load('packages.php?id=' + id.val());
+							$( "#packages" ).load('../tpv/packages_au.php?id=' + id.val());
 							$( "#dialog-form3" ).dialog( "close" );
 						}
 						else
@@ -280,7 +269,7 @@ $(function() {
 function Edit_Package(cli,plan)
 {
 	$( "#edit_cli" ).val(cli);
-	$( "#edit_plan" ).load("plans.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(),
+	$( "#edit_plan" ).load("../tpv/plans_au.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val(),
 	function() {
 		$( "#edit_plan" ).val(plan);
 	});
@@ -291,7 +280,7 @@ function Edit_Package(cli,plan)
 
 function Plan_Dropdown_Edit()
 {
-	$( "#edit_plan" ).load("plans.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
+	$( "#edit_plan" ).load("../tpv/plans_au.php?id=" + $( "#id" ).val() + "&type=" + $( "#sale_type" ).val() + "&cli=" + $('#edit_cli').val());
 }
 </script>
 <script> //delete packages
@@ -299,11 +288,11 @@ function Delete_Package(cli)
 {
 	var id = $( "#id" );
 	
-	$.get("search_submit.php?method=delete", { id: id.val(), cli: cli},
+	$.get("verification_submit.php?method=delete", { id: id.val(), cli: cli},
 	function(data) {
 		if (data == "deleted")
 		{
-			$( "#packages" ).load('packages.php?id=' + id.val());
+			$( "#packages" ).load('../tpv/packages_au.php?id=' + id.val());
 		}
 	});
 }
@@ -330,62 +319,313 @@ function Submit_Error(data)
 	$( "#dialog-form_submit" ).dialog( "open" );
 }
 </script>
-<script> //get ABN
-function getABN(){
-	$.getJSON("../source/abrGet.php", {abn: $("#abn").val() },
-	function(data){
-		if (data['error'] == "true")
-		{
-			$(".bus_name").html( "" );
-			$(".abn_status").html( "" );
-			$(".bus_type").html( "" );
+<script> //cancel
+$(function() {
+	$( "#dialog:ui-dialog4" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips4" );
+	
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+	
+	$( "#dialog-form4" ).dialog({
+		autoOpen: false,
+		height: 250,
+		width: 425,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind",
+		buttons: {
+			"Submit": function() {
+				var id = $( "#id" ),
+					verifier = "<?php echo $ac["user"]; ?>",
+					status = $( "#status" ),
+					note = $( "#cancel_note" );
+				
+				$.get("verification_submit.php?method=cancel", { id: id.val(), verifier: verifier, status: status.val(), note: note.val() }, function(data) {
+					if (data == "done")
+					{
+						$( "#dialog-form4" ).dialog( "close" );
+						$( "#display" ).hide('blind', '', 'slow', function() {
+							window.location = "verification.php";
+						});
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
 		}
-		else 
+	});
+});
+
+function Cancel()
+{
+	$( ".validateTips4" ).text("All fields are required");
+	$( "#dialog-form4" ).dialog( "open" );
+}
+</script>
+<script> //submit
+function Submit()
+{
+	var id = $( "#id" ),
+		verifier = $( "#sale_verifier" ),
+		dialled = $( "#dialled" ),
+		note = $( "#notes" );
+	
+	$.get("verification_submit.php?method=submit_au", { id: id.val(), verifier: verifier.val(), dialled: dialled.val(), note: note.val() },
+	function(data) {
+		if (data == "done")
 		{
-			var abn = $("#abn").val();
-			$("#abn").val( abn.replace(/\s/g,""));
-			if( data['organisationName'] != null) {
-				$(".bus_name").html( data['organisationName'] );
-			}
-			else if (data['tradingName'] != null) {
-				$(".bus_name").html( data['tradingName'] );
-			}
-			else {
-				$(".bus_name").html( data['entityName'] );
-			}
-			$(".abn_status").html( data['entityStatus'] );
-			$(".bus_type").html( data['entityDescription'] );
+			$( "#display" ).hide('blind', '', 'slow', function() {
+				window.location = "verification.php";
+			});
+		}
+		else
+		{
+			Submit_Error(data);
 		}
 	});
 }
 </script>
 <script>
-function Email()
+function Back()
 {
-	if ($('#no_email').attr('checked'))
-	{
-		$( "#email" ).val("N/A");
-		$( "#email" ).attr("disabled", true);
-	}
-	else
-	{
-		$( "#email" ).val("");
-		$( "#email" ).removeAttr("disabled");
-	}
+	var id = $( "#id" ),
+		plan = $( "#script_plan" ),
+		user = "<?php echo $ac["user"]; ?>",
+		page = parseInt($( "#page" ).val()) - 1;
+	
+	$( "#Btn_Back").attr("style", "display:none;");
+	$("#page" ).val(page);
+	$( "#script_text" ).load("../script/script.php?method=New&in=1&id=" + id.val() + "&user=" + user + "&plan=" + plan.val() + "&page=" + page);
 }
 
-function Mobile()
+function N()
 {
-	if ($('#no_mobile').attr('checked'))
+	var id = $( "#id" ),
+		plan = $( "#script_plan" ),
+		user = "<?php echo $ac["user"]; ?>",
+		page = parseInt($( "#page" ).val()) + 1;
+	
+	$( "#Btn_Next").attr("style", "display:none;");
+	$("#page" ).val(page);
+	$( "#script_text" ).load("../script/script.php?method=New&in=1&id=" + id.val() + "&user=" + user + "&plan=" + plan.val() + "&page=" + page);
+}
+
+function Next(id,action)
+{
+	if (action == "bus_info")
 	{
-		$( "#mobile" ).val("N/A");
-		$( "#mobile" ).attr("disabled", true);
+		var abn = $( "#abn" ),
+			abn_status = $( ".abn_status" ),
+			position = $( "#position" );
+			
+		$.get("../script/submit.php", { id: id, action: action, abn: abn.val(), abn_status: abn_status.html(), position: position.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "name")
+	{
+		var title = $( "#title" ),
+			first = $( "#first" ),
+			middle = $( "#middle" ),
+			last = $( "#last" );
+			
+		$.get("../script/submit.php", { id: id, action: action, title: title.val(), first: first.val(), middle: middle.val(), last: last.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "dob")
+	{
+		var dob = $( "#datepicker" );
+			
+		$.get("../script/submit.php", { id: id, action: action, dob: dob.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "id_info")
+	{
+		var id_type = $( "#id_type" ),
+			id_num = $( "#id_num" );
+			
+		$.get("../script/submit.php", { id: id, action: action, id_type: id_type.val(), id_num: id_num.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "physical")
+	{
+		var physical = $( "#physical" );
+			
+		$.get("../script/submit.php", { id: id, action: action, physical: physical.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "postal")
+	{
+		var postal = $( "#postal" ).val();
+		
+		if ($('#postal_same').attr('checked'))
+		{
+			postal = "same";
+		}
+		
+		$.get("../script/submit.php", { id: id, action: action, postal: postal },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "mobile")
+	{
+		var mobile = $( "#mobile" );
+			
+		$.get("../script/submit.php", { id: id, action: action, mobile: mobile.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "email")
+	{
+		var email = $( "#email" ),
+			promotions = $('input[name=promotions]:checked');
+			
+		$.get("../script/submit.php", { id: id, action: action, email: email.val(), promotions: promotions.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "email2")
+	{
+		var email = $( "#email2" ),
+			promotions = $('input[name=promotions]:checked');
+		
+		$.get("../script/submit.php", { id: id, action: "email2", email: email.val(), promotions: promotions.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
+	else if (action == "best_buddy")
+	{
+		var best_buddy = $( "#best_buddy" );
+			
+		$.get("../script/submit.php", { id: id, action: action, best_buddy: best_buddy.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
 	}
 	else
 	{
-		$( "#mobile" ).val("");
-		$( "#mobile" ).removeAttr("disabled");
+		N();
 	}
+}
+</script>
+<script> //direct debit
+$(function() {
+	$( "#dialog:ui-dialog5" ).dialog( "destroy" );
+
+	$( "#dialog-form5" ).dialog({
+		autoOpen: false,
+		height: 465,
+		width: 575,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind'
+	});
+});
+
+function DD(campaign)
+{
+	$( ".dd_campaign" ).html(campaign);
+	$( "#dialog-form5" ).dialog( "open" );
 }
 </script>
 <!--#########################################################-->
@@ -868,6 +1108,7 @@ function Manual_Physical()
 	else {
 	  var options = select.attr('options');
 	}
+
 
 	$( "#physical_manual_building_type option" ).remove();
 
@@ -1560,7 +1801,7 @@ function Postal_Same()
 {
 	if ($('#postal_same').attr('checked'))
 	{
-		$( "#display_postal1" ).val("SAME AS ABOVE");
+		$( "#display_postal1" ).val("SAME AS PHYSICAL");
 		$( "#display_postal2" ).val("");
 		$( "#display_postal3" ).val("");
 		$( "#display_postal4" ).val("");
@@ -1568,8 +1809,8 @@ function Postal_Same()
 		$( "#display_postal2" ).attr("disabled","disabled");
 		$( "#display_postal3" ).attr("disabled","disabled");
 		$( "#display_postal4" ).attr("disabled","disabled");
+		$( "#postal_link" ).attr("disabled","disabled");
 		$( "#postal_link" ).removeAttr("onclick");
-		$( "#postal_link" ).removeAttr("style");
 	}
 	else
 	{
@@ -1582,16 +1823,11 @@ function Postal_Same()
 		$( "#display_postal3" ).removeAttr("disabled");
 		$( "#display_postal4" ).removeAttr("disabled");
 		$( "#postal" ).val("");
+		$( "#postal_link" ).removeAttr("disabled");
 		$( "#postal_link" ).attr("onclick", "Postal()");
-		$( "#postal_link" ).attr("style", "cursor:pointer; text-decoration:underline;");
 	}
 }
 </script>
-
-<div id="dialog-form_notes" title="Notes">
-<textarea disabled="disabled" id="notes_display" style="width:400px; height:150px; resize:none;">
-</textarea>
-</div>
 
 <div id="dialog-form2" title="Add a Package">
 <p class="validateTips2">All fields are required</p><br />
@@ -1627,6 +1863,69 @@ function Postal_Same()
 
 <div id="dialog-form_submit" title="Error!">
 <p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span><span class="submit_error"></span></p>
+</div>
+
+<div id="dialog-form4" title="Cancel Verification">
+<p class="validateTips4">All fields are required</p><br />
+<table>
+<tr>
+<td width="50px">Status </td>
+<td><select id="status" style="width:120px;">
+<option></option>
+<option>Declined</option>
+<option>Line Issue</option>
+</select></td>
+</tr>
+<tr>
+<td width="50px">Note </td>
+<td><textarea id="cancel_note" rows="5" style="width:350px; resize:none;"></textarea></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-form5" title="Direct Debit">
+<p>Do you agree to have either your credit card, or your bank account direct debited each month for any usage on your <b><span class="dd_campaign"></span></b> account?</p>
+<p><b>->CUSTOMER MUST SAY <span style="color:#FF0000;">YES</span></b></p><br>
+<p>Which account do you prefer, Credit Card or Bank Account?</p><br>
+<table style="width:360pt;table-layout:fixed;border-collapse:collapse; margin-left:auto; margin-right:auto;">
+<tr align="left" valign="top">
+<td style="width:180pt;padding:4.9pt;border:1pt solid black;">
+<p><b><span style="color:#000080;">Credit Card</span></b></p>
+</td>
+<td style="width:180pt;padding:4.9pt;border:1pt solid black;">
+<p><b><span style="color:#000080;">Bank Account</span></b></p>
+</td>
+</tr>
+<tr align="left" valign="top">
+<td style="width:124.2pt;padding:4.9pt;border:1pt solid black;">
+<span style="color:#000080;"><p>Please state the Card type<br>
+<b>VISA, MASTERCARD, DINERS or AMEX</b></p></span>
+<span style="color:#FF0000;"><b>Repeat the card type back</b></span><br>
+<span style="color:#000080;"><p>Please state the number as it appears on the Card</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the name as it appears on the card</p></span>
+<span style="color:#FF0000;"><b>Repeat, even spell the name back</b></span><br>
+<span style="color:#000080;"><p>Please state the expiry date on the card</p></span>
+<span style="color:#FF0000;"><b>Repeat the expiry date back</b></span><br>
+<span style="color:#000080;"><p>Please state the CVV number (last 3 digits on the back of the card for VISA or MASTERCARD, last 4 digits for AMEX or DINERS)</p></span>
+<span style="color:#FF0000;"><b>Repeat the CVV back</b></span>
+</td>
+<td style="width:124.2pt;padding:4.9pt;border:1pt solid black;">
+<span style="color:#000080;"><p>Please name the Financial Institution</p></span>
+<span style="color:#FF0000;"><b>Repeat the Institution back</b></span><br>
+<span style="color:#000080;"><p>Please state the type of Bank Account<br>
+(Savings, Credit, Cheque)</p></span>
+<span style="color:#FF0000;"><b>Repeat the Account type back</b></span><br>
+<span style="color:#000080;"><p>Please state the BSB number</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the Account number</p></span>
+<span style="color:#FF0000;"><b>Repeat the number back</b></span><br>
+<span style="color:#000080;"><p>Please state the name on the account as it appears on your bank statement</p></span>
+<span style="color:#FF0000;"><b>Repeat the name back</b></span>
+</td>
+</tr>
+</table><br>
+<p>To check the authenticity of your banking details <b><span class="dd_campaign"></span></b> will debit a dollar from your account which will be credited back to your account within 7 working days. <b><span class="dd_campaign"></span>'s</b> terms and conditions for providing this telecommunications service and Direct Debit set-up to you are available for viewing or downloading at our website.</p>
 </div>
 
 <div id="dialog-confirm_physical2" title="Verifying Physical Address">
@@ -1877,6 +2176,7 @@ function Postal_Same()
 <td width="80px">Building Name </td>
 <td><input type="text" id="postal_manual_building_name" value="" style="width:190px; height:auto; padding-left:3px;" /></td>
 
+
 </tr>
 <tr>
 <td width="80px">Street Number </td>
@@ -1901,273 +2201,93 @@ function Postal_Same()
 </table>
 </div>
 
-<table border="0" width="100%">
+<input type="hidden" id="id" value="<?php echo $data["id"]; ?>" />
+<input type="hidden" id="sale_type" value="<?php echo $data["type"]; ?>" />
+<input type="hidden" id="script_plan" value="<?php echo $plan; ?>" />
+<input type="hidden" id="page" value="1" />
+
+<table width="100%">
 <tr>
-<td width="50%" valign="top">
-<table border="0" width="100%" style="margin-bottom:10px;">
+<td width="50%" valign="top" style="padding-right:20px;">
+<table width="100%" style="margin-bottom:10px;">
 <tr>
-<td colspan="2"><img src="../images/sale_details_header.png" width="90" height="15" /><img src="../images/<?php echo $status_text; ?>_header.png" width="100" height="15" style="float:right; margin-right:80px;" /></td>
+<td align="left" style="padding-left:5px;"><img src="../images/sale_details_header.png" width="90" height="15" /></td>
+<td align="right" style="padding-right:10px;"></td>
 </tr>
 <tr>
-<td colspan="2"><img src="../images/line.png" width="80%" height="9" alt="line" /></td>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
 </tr>
 <tr>
-<td width="85px">Sale ID </td>
+<td width="100px" style="padding-left:5px;">Sale ID </td>
 <td><b><?php echo $data["id"]; ?></b></td>
 </tr>
 <tr>
-<td width="85px">Lead ID </td>
+<td width="100px" style="padding-left:5px;">Lead ID </td>
 <td><b><?php echo $data["lead_id"]; ?></b></td>
 </tr>
 <tr>
-<td>Agent </td>
-<td><b><?php echo $data2["first"] . " " . $data2["last"] . " (" . $data2["user"] . ")"; ?></b></td>
+<td style="padding-left:5px;">Agent Name </td>
+<td><b><?php echo $ac["first"] . " " . $ac["last"] . " (" . $ac["alias"] . ")"; ?></b></td>
 </tr>
 <tr>
-<td>Centre </td>
-<td><b><?php echo $data["centre"]; ?></b></td>
+<td style="padding-left:5px;">Centre </td>
+<td><b><?php echo $ac["centre"]; ?></b></td>
 </tr>
 <tr>
-<td>Campaign </td>
+<td style="padding-left:5px;">Campaign </td>
 <td><b><?php echo $data["campaign"]; ?></b></td>
 </tr>
 <tr>
-<td>Type </td>
+<td style="padding-left:5px;">Type </td>
 <td><b><?php echo $data["type"]; ?></b></td>
 </tr>
 </table>
 </td>
-<td width="50%" height="100%" valign="top">
-<table border="0" width="100%" style="margin-bottom:10px;">
-<?php
-if ($data["type"] == "Business")
-{
-?>
-<script> //get ABN
-$.getJSON("../source/abrGet.php", {abn: $("#abn").val() },
-	function(data){
-		if( data['organisationName'] != null) {
-			$(".bus_name").html( data['organisationName'] );
-		}
-		else if (data['tradingName'] != null) {
-			$(".bus_name").html( data['tradingName'] );
-		}
-		else {
-			$(".bus_name").html( data['entityName'] );
-		}
-		$(".abn_status").html( data['entityStatus'] );
-		$(".bus_type").html( data['entityDescription'] );
-});
-</script>
+<td width="50%" valign="top" style="padding-left:20px;">
+<table width="100%" style="margin-bottom:10px;">
 <tr>
-<td colspan="2"><img src="../images/business_identification_header.png" width="164" height="15" /></td>
+<td colspan="2" style="padding-left:5px;"><img src="../images/other_details_header.png" width="105" height="15" /></td>
 </tr>
 <tr>
-<td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
+<td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>
 </tr>
 <tr>
-<td width="85px">ABN </td>
-<td><input type="text" id="abn" onchange="getABN()" style="width:225px;" value="<?php echo $data["abn"]; ?>" /></td>
+<td style="padding-left:2px;">Dialled Number<span style="color:#ff0000;">*</span> </td>
+<td><input type="text" id="dialled" style="width:150px;" /></td>
 </tr>
 <tr>
-<td>Position </td>
-<td><input type="text" id="position" style="width:225px;" value="<?php echo $data["position"]; ?>" /></td>
+<td style="padding-left:2px;">Verifier<span style="color:#ff0000;">*</span> </td>
+<td><input type="text" id="sale_verifier_d" style="width:150px;" /><input type="hidden" id="sale_verifier" /></td>
 </tr>
 <tr>
-<td>Business Name </td>
-<td><b class="bus_name" style="font-size:9px;"></b></td>
-</tr>
-<tr>
-<td>ABN Status </td>
-<td><b class="abn_status" style="font-size:9px;"></b></td>
-</tr>
-<tr>
-<td>Business Type </td>
-<td><b class="bus_type" style="font-size:9px;"></b></td>
-</tr>
-<?php
-}
-elseif ($data["type"] == "Residential")
-{
-	switch ($data["id_type"])
-	{
-		case "Driver's Licence (AUS)":
-		$drl="selected";
-		break;
-		case "Medicare Card":
-		$mcc="selected";
-		break;
-		case "Healthcare Card":
-		$hcc="selected";
-		break;
-		case "Passport":
-		$ppt="selected";
-		break;
-		case "Pension Card":
-		$pnc="selected";
-		break;
-	}
-?>
-<tr>
-<td colspan="2"><img src="../images/customer_identification_header.png" width="172" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px">ID Type </td>
-<td><select id="id_type" style="width:192px;">
-<option <?php echo $drl; ?>>Driver's Licence (AUS)</option>
-<option <?php echo $hcc; ?>>Healthcare Card</option>
-<option <?php echo $mcc; ?>>Medicare Card</option>
-<option <?php echo $ppt; ?>>Passport</option>
-<option <?php echo $pnc; ?>>Pension Card</option>
-</select></td>
-</tr>
-<tr>
-<td>ID Number </td>
-<td><input type="text" id="id_num" style="width:190px;" value="<?php echo $data["id_num"]; ?>" /></td>
-</tr>
-<?php
-}
-
-switch ($data["title"])
-{
-	case "Mr":
-	$mr="selected";
-	break;
-	case "Mrs":
-	$mrs="selected";
-	break;
-	case "Miss":
-	$miss="selected";
-	break;
-	case "Ms":
-	$ms="selected";
-	break;
-	case "Dr":
-	$dr="selected";
-	break;
-}
-?>
-</table>
-</td>
-</tr>
-<tr>
-<td width="50%" valign="top">
-<table border="0" width="100%" style="margin-bottom:10px;">
-<tr>
-<td colspan="2"><img src="../images/customer_details_header.png" width="128" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="80%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px">Title </td>
-<td><select id="title" style="width:50px;">
-<option <?php echo $mr; ?>>Mr</option>
-<option <?php echo $mrs; ?>>Mrs</option>
-<option <?php echo $miss; ?>>Miss</option>
-<option <?php echo $ms; ?>>Ms</option>
-<option <?php echo $dr; ?>>Dr</option>
-</select></td>
-</tr>
-<tr>
-<td>First Name </td>
-<td><input type="text" id="first" style="width:150px;" value="<?php echo $data["firstname"]; ?>" /></td>
-</tr>
-<tr>
-<td>Middle Name </td>
-<td><input type="text" id="middle" style="width:150px;" value="<?php echo $data["middlename"]; ?>" /></td>
-</tr>
-<tr>
-<td>Last Name </td>
-<td><input type="text" id="last" style="width:150px;" value="<?php echo $data["lastname"]; ?>" /></td>
-</tr>
-<tr>
-<td>D.O.B </td>
-<td><input type="text" id="datepicker2" readonly style="width:80px;" value="<?php echo date("d/m/Y", strtotime($data["dob"])); ?>" /> <input type="hidden" id="datepicker" value="<?php echo date("Y-m-d", strtotime($data["dob"])); ?>" /></td>
-</tr>
-<tr>
-<td>E-Mail </td>
-<td><input type="text" id="email" style="width:150px;" value="<?php echo $data["email"]; ?>" /> <input type="checkbox" id="no_email" onclick="Email()" style="height:auto;" /> N/A</td>
-</tr>
-<tr>
-<td>Mobile </td>
-<td><input type="text" id="mobile" style="width:150px;" value="<?php echo $data["mobile"]; ?>" /> <input type="checkbox" id="no_mobile" onclick="Mobile()" style="height:auto;" /> N/A</td>
+<td style="padding-left:2px;">Sale Notes </td>
+<td><textarea id="notes" rows="4" style="width:98%; resize:none;"></textarea></td>
 </tr>
 </table>
 </td>
-<td width="50%" height="100%" valign="top">
-<table border="0" width="100%" height="100%" style="margin-bottom:10px;">
-<tr valign="top">
+</tr>
+<tr>
+<td colspan="2" valign="top">
+<table width="100%">
+<tr>
+<td style="padding-left:5px;"><img src="../images/verification_script_header2.png" width="140" height="15"></td>
+</tr>
+<tr>
+<td><img src="../images/line.png" width="100%" height="9"></td>
+</tr>
+<tr>
 <td>
-<table border="0" width="100%">
-<tr>
-<td colspan="2"><img src="../images/customer_address_header.png" width="136" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px"><a onclick="Physical()" style="cursor:pointer; text-decoration:underline;">Physical</a> </td>
-<td><input type="text" id="display_physical1" style="width:225px;" readonly /></td>
-</tr>
-<tr>
-<td><input type="hidden" id="physical" value="<?php echo $data["physical"]; ?>" /></td>
-<td><input type="text" id="display_physical2" style="width:225px;" readonly /></td>
-</tr>
-<tr>
-<td></td>
-<td><input type="text" id="display_physical3" style="width:45px;" readonly /> <input type="text" id="display_physical4" style="width:55px;" readonly /></td>
-</tr>
-<tr>
-<td width="85px"><a id="postal_link" onclick="Postal()" style="cursor:pointer; text-decoration:underline;">Postal</a> </td>
-<td><input type="text" id="display_postal1" readonly style="width:225px;" /></td>
-</tr>
-<tr>
-<td><input type="hidden" id="postal" value="<?php echo $data["postal"]; ?>" /></td>
-<td><input type="text" id="display_postal2" style="width:225px;" readonly /></td>
-</tr>
-<tr>
-<td></td>
-<td><input type="text" id="display_postal3" style="width:45px;" readonly /> <input type="text" id="display_postal4" style="width:55px; margin-right:12px;" readonly /> <input type="checkbox" id="postal_same" onclick="Postal_Same()" style="height:auto;" /> Same as Above</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-<table border="0" width="100%">
-<tr>
-<td colspan="2"><img src="../images/selected_packages_header.png" width="134" height="15" style="padding-left:3px;"/></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td colspan="2">
-<center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="99%" style="margin-top:0px;">
-<thead>
-<tr class="ui-widget-header ">
-<th width="20%">CLI</th>
-<th width="70%">Plan</th>
-<th width="10%" colspan="2" style="text-align:center;">Edit</th>
-</tr>
-</thead>
-<tbody id="packages">
-</tbody>
-</table>
+<center><div id="script_text" style="border:1px solid #eee; padding:3px; margin:0; width:98%; height:380px; overflow-y: auto;">
+<script>
+var id = $( "#id" ),
+	plan = $( "#script_plan" ),
+	user = "<?php echo $ac["user"]; ?>",
+	page = $( "#page" );
+
+$( "#script_text" ).load("../script/script.php?method=New&in=1&id=" + id.val() + "&user=" + user + "&plan=" + plan.val() + "&page=" + page.val());
+</script>
 </div></center>
 </td>
-</tr>
-<tr valign="bottom">
-<td align="left" style="padding-left:5px;"><button onclick="Add_Package()" class="btn">Add Package</button> <button onclick="Notes()" class="btn">Notes</button></td>
-<td align="right" style="padding-right:5px;"><button onclick="Submit_Details()" class="btn">Submit</button> <button onclick="Cancel_Search()" class="btn">Cancel</button></td>
 </tr>
 </table>
 </td>

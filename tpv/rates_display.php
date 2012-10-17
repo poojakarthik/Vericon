@@ -1,10 +1,3 @@
-<?php
-include "../source/rates.php";
-?>
-
-<p><img src="../images/international_rates_header.png" width="210" height="25" /></p>
-<p><img src="../images/line.png" width="740" height="9" /></p><br />
-
-<?php
-include "../source/international.php";
-?>
+<p><b>This page is temporarily unavailable.</b></p>
+<br />
+<p>Please excuse the inconvenience. This page is under review and will be reactivated at a later date.</p>

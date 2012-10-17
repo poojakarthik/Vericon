@@ -2,6 +2,9 @@
 $q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
 
+$q1 = mysql_query("SELECT country FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+$country = mysql_fetch_row($q1);
+
 //input variables
 $abn = $data["abn"];
 $position = $data["position"];
@@ -18,6 +21,7 @@ $postal = $data["postal"];
 $mobile = $data["mobile"];
 $email = $data["email"];
 $best_buddy = $data["best_buddy"];
+$bus_name = $data["bus_name"];
 
 switch ($title)
 {
@@ -54,6 +58,15 @@ switch ($data["id_type"])
 	break;
 	case "Pension Card":
 	$pnc="selected";
+	break;
+	case "Community Services Card":
+	$csc="selected";
+	break;
+	case "Driver's Licence (NZ)":
+	$dsl="selected";
+	break;
+	case "Gold Card":
+	$gdc="selected";
 	break;
 }
 
@@ -128,6 +141,7 @@ else if ( "<?php echo $data["promotions"]; ?>" == "Y" )
 	$( "#promotions_y" ).prop("checked", true);
 }
 
+<?php if ($country[0] == "AU") { ?>
 if ( $( '#physical' ).val() != undefined )
 {
 	$.get("../source/gnafGet.php?type=display", { id: "<?php echo $data["physical"]; ?>" }, function(data) {
@@ -166,11 +180,51 @@ if ( $( '#postal' ).val() != undefined )
 		});
 	}
 }
+<?php } elseif ($country[0] == "NZ") { ?>
+if ( $( '#physical' ).val() != undefined )
+{
+	$.get("../source/tlGet.php?type=display", { id: "<?php echo $data["physical"]; ?>" }, function(data) {
+		var n = data.split("}");
+		$( "#display_physical1" ).val(n[0]);
+		$( "#display_physical2" ).val(n[1]);
+		$( "#display_physical3" ).val(n[2]);
+		$( "#display_physical4" ).val(n[3]);
+	});
+}
+
+if ( $( '#postal' ).val() != undefined )
+{
+	if ("<?php echo $data["physical"]; ?>" == "<?php echo $data["postal"]; ?>")
+	{
+		$( "#display_postal1" ).val("SAME AS PHYSICAL");
+		$( "#display_postal2" ).val("");
+		$( "#display_postal3" ).val("");
+		$( "#display_postal4" ).val("");
+		$( "#display_postal1" ).attr("disabled","disabled");
+		$( "#display_postal2" ).attr("disabled","disabled");
+		$( "#display_postal3" ).attr("disabled","disabled");
+		$( "#display_postal4" ).attr("disabled","disabled");
+		$( "#postal_link" ).attr("disabled","disabled");
+		$( "#postal_link" ).removeAttr("onclick");
+		$( "#postal_same" ).prop("checked", true);
+	}
+	else
+	{
+		$.get("../source/tlGet.php?type=display", { id: "<?php echo $data["postal"]; ?>" }, function(data) {
+			var n = data.split("}");
+			$( "#display_postal1" ).val(n[0]);
+			$( "#display_postal2" ).val(n[1]);
+			$( "#display_postal3" ).val(n[2]);
+			$( "#display_postal4" ).val(n[3]);
+		});
+	}
+}
+<?php } ?>
 
 if ( $( '#packages' ) != null )
 {
 	var id = '<?php echo $id; ?>';
-	$( '#packages' ).load('../../tpv/packages.php?id=' + id);
+	$( '#packages' ).load('../../tpv/packages_<?php echo strtolower($country[0]); ?>.php?id=' + id);
 }
 
 if ( $( "#abn" ).val() != undefined )
@@ -232,6 +286,11 @@ $input["bus_info"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>Business Type</td><td><b class='bus_type' style='font-size:9px;'></b></td></tr>
 </table>";
 
+$input["bus_info2"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='95px'>Business Name<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='bus_name' size='25' value='$bus_name'></td></tr>
+<tr><td width='95px'>Position<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='position' value='$position'></td></tr>
+</table>";
+
 $input["name"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>Title<span style='color:#ff0000;'>*</span> </td><td><select id='title' style='width:50px;'>
 <option $mr>Mr</option>
@@ -260,11 +319,28 @@ $input["id_info"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>ID Number<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='id_num' value='$id_num' style='width: 190px;'></td></tr>
 </table>";
 
+$input["id_info2"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='95px'>ID Type<span style='color:#ff0000;'>*</span> </td><td><select id='id_type' style='width:192px;'>
+<option $csc>Community Services Card</option>
+<option $dsl>Driver's Licence (NZ)</option>
+<option $gdc>Gold Card</option>
+<option $ppt>Passport</option>
+</select></td></tr>
+<tr><td width='95px'>ID Number<span style='color:#ff0000;'>*</span> </td><td><input type='text' id='id_num' value='$id_num' style='width: 190px;'></td></tr>
+</table>";
+
 $input["physical"] = $line . "<input type='hidden' id='physical' value='$physical'><br><br>
 <table width='100%'>
 <tr><td><input type='text' id='display_physical1' readonly style='width:225px;' /></td></tr>
 <tr><td><input type='text' id='display_physical2' readonly style='width:225px;' /></td></tr>
 <tr><td><input type='text' id='display_physical3' readonly style='width:45px;' /> <input type='text' id='display_physical4' readonly style='width:55px;' /></td></tr>
+</table><br><button onclick='Physical()' class='btn'>Search</button>";
+
+$input["physical2"] = $line . "<input type='hidden' id='physical' value='$physical'><br><br>
+<table width='100%'>
+<tr><td><input type='text' id='display_physical1' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_physical2' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_physical3' readonly style='width:164px;' /> <input type='text' id='display_physical4' readonly style='width:55px;' /></td></tr>
 </table><br><button onclick='Physical()' class='btn'>Search</button>";
 
 $input["postal"] = $line . "<input type='hidden' id='postal' value='$postal'><br><br>
@@ -274,7 +350,18 @@ $input["postal"] = $line . "<input type='hidden' id='postal' value='$postal'><br
 <tr><td><input type='text' id='display_postal3' readonly style='width:45px;' /> <input type='text' id='display_postal4' readonly style='width:55px;' /> <input type='checkbox' id='postal_same' onclick='Postal_Same()' style='height:auto;' /> Same as Physical</td></tr>
 </table><br><button onclick='Postal()' id='postal_link' class='btn'>Search</button>";
 
+$input["postal2"] = $line . "<input type='hidden' id='postal' value='$postal'><br><br>
+<table width='100%'>
+<tr><td><input type='text' id='display_postal1' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_postal2' readonly style='width:225px;' /></td></tr>
+<tr><td><input type='text' id='display_postal3' readonly style='width:164px;' /> <input type='text' id='display_postal4' readonly style='width:55px;' /></td></tr>
+</table><br><button onclick='Postal()' id='postal_link' class='btn'>Search</button> <input type='checkbox' id='postal_same' onclick='Postal_Same()' style='height:auto;' /> Same as Physical";
+
 $input["mobile"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='95px'>Mobile<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='mobile' value='$mobile' /> <input type='checkbox' id='no_mobile' onclick='Mobile()' style='height:auto;' /> <span>N/A</span></td></tr>
+</table>";
+
+$input["mobile2"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>Mobile<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='mobile' value='$mobile' /> <input type='checkbox' id='no_mobile' onclick='Mobile()' style='height:auto;' /> <span>N/A</span></td></tr>
 </table>";
 
@@ -289,12 +376,29 @@ $input["email2"] = $line . "<br><br><table border='0' width='100%'>
 </table>";
 
 $input["lines"] = $line . "<div id='users-contain' class='ui-widget'>
-<table id='users' class='ui-widget ui-widget-content' width='90%' style='margin-top:0px;'>
+<table id='users' class='ui-widget ui-widget-content' width='100%' style='margin-top:0px;'>
 <thead>
 <tr class='ui-widget-header'>
 <th width='20%'>CLI</th>
 <th width='70%'>Plan</th>
 <th width='10%' colspan='2'>Edit</th>
+</tr>
+</thead>
+<tbody id='packages'>
+</tbody>
+</table>
+<button onclick='Add_Package()' class='btn'>Add Package</button>
+</div>";
+
+$input["lines2"] = $line . "<div id='users-contain' class='ui-widget'>
+<table id='users' class='ui-widget ui-widget-content' width='100%' style='margin-top:0px;'>
+<thead>
+<tr class='ui-widget-header'>
+<th width='12%'>CLI</th>
+<th width='30%'>Plan</th>
+<th width='28%'>Provider</th>
+<th width='20%'>Account Number</th>
+<th width='10%' colspan='2' style='text-align:center;'>Edit</th>
 </tr>
 </thead>
 <tbody id='packages'>

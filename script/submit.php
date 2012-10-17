@@ -27,6 +27,26 @@ if ($action == "bus_info")
 	}
 
 }
+elseif ($action == "bus_info2")
+{
+	$bus_name = strtoupper(trim($_GET["bus_name"]));
+	$position = strtoupper(trim($_GET["position"]));
+	
+	if ($bus_name == "")
+	{
+		echo "Please enter a valid business name";
+	}
+	elseif ($position == "")
+	{
+		echo "Please enter the customer's position in the business";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET bus_name = '" . mysql_real_escape_string($bus_name) . "', position = '" . mysql_real_escape_string($position) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+
+}
 elseif ($action == "name")
 {
 	$title = $_GET["title"];
@@ -90,6 +110,25 @@ elseif ($action == "id_info")
 		echo "submitted";
 	}
 }
+elseif ($action == "id_info2")
+{
+	$id_type = $_GET["id_type"];
+	$id_num = trim($_GET["id_num"]);
+	
+	if ($id_type == "")
+	{
+		echo "Please select an ID type";
+	}
+	elseif ($id_num == "")
+	{
+		echo "Please enter the customer's ID number";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET id_type = '" . mysql_escape_string($id_type) . "', id_num = '" . mysql_escape_string($id_num) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+}
 elseif ($action == "physical")
 {
 	$physical = $_GET["physical"];
@@ -97,7 +136,32 @@ elseif ($action == "physical")
 	mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
 	echo "submitted";
 }
+elseif ($action == "physical2")
+{
+	$physical = $_GET["physical"];
+	
+	mysql_query("UPDATE sales_customers SET physical = '" . mysql_escape_string($physical) . "' WHERE id = '$id'") or die(mysql_error());
+	echo "submitted";
+}
 elseif ($action == "postal")
+{
+	$postal = $_GET["postal"];
+	
+	if ($postal == "same")
+	{
+		$q = mysql_query("SELECT physical FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+		$da = mysql_fetch_row($q);
+		
+		mysql_query("UPDATE sales_customers SET postal = '" . mysql_real_escape_string($da[0]) . "' WHERE id = '$id'") or die(mysql_error());
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET postal = '" . mysql_real_escape_string($postal) . "' WHERE id = '$id'") or die(mysql_error());
+	}
+	
+	echo "submitted";
+}
+elseif ($action == "postal2")
 {
 	$postal = $_GET["postal"];
 	
@@ -124,6 +188,24 @@ elseif ($action == "mobile")
 		echo "Please enter the customer's mobile number";
 	}
 	elseif ($mobile != "N/A" && !preg_match("/^04[0-9]{8}$/",$mobile))
+	{
+		echo "Please enter a valid mobile number";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET mobile = '" . mysql_escape_string($mobile) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+}
+elseif ($action == "mobile2")
+{
+	$mobile = $_GET["mobile"];
+	
+	if ($mobile == "")
+	{
+		echo "Please enter the customer's mobile number";
+	}
+	elseif ($mobile != "N/A" && (!preg_match("/^02[0-9]{7}$/",$mobile) && !preg_match("/^02[0-9]{8}$/",$mobile) && !preg_match("/^02[0-9]{9}$/",$mobile)))
 	{
 		echo "Please enter a valid mobile number";
 	}

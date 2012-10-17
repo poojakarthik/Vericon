@@ -105,7 +105,7 @@ else
 		$hours_d = "<input type='text' id='$data[user]_hours' value='$hours' onChange='Hours(\"$data[user]\")' style='height:15px; width:35px;'>";
 		$bonus_d = "\$<input type='text' id='$data[user]_bonus' value='$bonus' onChange='Bonus(\"$data[user]\")' style='height:15px; width:35px;'>";
 		if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
-		$rate_d = "\$" . number_format($rate,2);
+		$rate_d = "\$" . number_format($rate,4);
 		$gross = ($rate * ($da[0] + $da[4] + $da[5])) + $da[1];
 		$gross_d = "\$" . number_format($gross,2);
 		$payg = $da[3];

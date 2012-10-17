@@ -87,9 +87,11 @@ function Search()
 <script>
 function View_Search(id)
 {
-	$( "#display" ).hide('blind', '', 'slow', function() {
-		$( "#display" ).load('sales_view.php?id=' + id, function() {
-			$( "#display" ).show('blind', '', 'slow');
+	$.get('sales_submit.php?method=country', { id: id }, function(data) {
+		$( "#display" ).hide('blind', '', 'slow', function() {
+			$( "#display" ).load('sales_view_' + data + '.php?id=' + id, function() {
+				$( "#display" ).show('blind', '', 'slow');
+			});
 		});
 	});
 }

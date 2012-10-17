@@ -1,13 +1,165 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$method = $_GET["method"];
-$user = $_GET["user"];
-$id = $_GET["id"];
+$q = mysql_query("SELECT user FROM vericon.currentuser WHERE hash = '" . $_COOKIE["hash"] . "'") or die(mysql_error());
+$user = mysql_fetch_row($q);
 
-if ($method == "init")
-{
+$q1 = mysql_query("SELECT * FROM vericon.auth WHERE user = '$user[0]'") or die(mysql_error());
+$ac = mysql_fetch_assoc($q1);
 ?>
+<style>
+.ui-dialog { padding: .3em; }
+.ui-state-highlight { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; }
+div#users-contain table td, div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+</style>
+<script> //init form
+function Get_Sale()
+{
+	var id = $( "#id" ),
+	centre = "<?php echo $ac["centre"]; ?>";
+	
+	$( ".error" ).html('<img src="../images/ajax-loader.gif" />');
+	
+	$.get("form_submit.php?method=get", { id: id.val(), centre: centre}, function(data) {
+		if (data == "valid")
+		{
+			$( ".id2" ).html(id.val());
+			$( "#dialog-form" ).dialog( "open" );
+			$( ".error" ).html('');
+		}
+		else
+		{
+			$( ".error" ).html(data);
+		}
+	});
+}
+</script>
+<script> //load form
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+	
+	var tips = $( ".validateTips" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-form" ).dialog({
+		autoOpen: false,
+		height: 225,
+		width: 300,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: "blind",
+		hide: "blind",
+		buttons: {
+			"Load Form": function() {
+				var id = $( "#id" ),
+					agent = "<?php echo $ac["user"]; ?>",
+					centre = "<?php echo $ac["centre"]; ?>",
+					campaign = $( "#campaign" ),
+					type = $( "#type" );
+
+				if (campaign.val() == "")
+				{
+					updateTips("Select a campaign!");
+				}
+				else if (type.val() == "")
+				{
+					updateTips("Select a type!");
+				}
+				else
+				{
+					$.get("form_submit.php?method=load", { id: id.val(), agent: agent, centre: centre, campaign: campaign.val(), type: type.val() },
+					function(data) {
+						if (data == "valid_au" || data == "valid_nz")
+						{
+							var d = data.split("_");
+							$( "#lead_id" ).val(id.val());
+							$( "#dialog-form" ).dialog( "close" );
+							if (d[1] == "au")
+							{
+								$( "#display" ).hide('blind', '' , 'slow', function() {
+									$( "#display" ).load("form_display_au.php?user=<?php echo $ac["user"]; ?>&id=" + id.val(),
+									function() {
+										$( "#display" ).show('blind', '' , 'slow');
+									});
+								});
+							}
+							else if (d[1] == "nz")
+							{
+								$( "#display" ).hide('blind', '' , 'slow', function() {
+									$( "#display" ).load("form_display_nz.php?user=<?php echo $ac["user"]; ?>&id=" + id.val(),
+									function() {
+										$( "#display" ).show('blind', '' , 'slow');
+									});
+								});
+							}
+						}
+						else
+						{
+							updateTips(data);
+						}
+					});
+				}
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+</script>
+
+<div id="dialog-form" title="Sale Details">
+<p class="validateTips">Please select a campaign and sale type</p><br />
+<table>
+<tr>
+<td width="60px">Lead ID </td>
+<td><b><p class="id2"></p></b></td>
+</tr>
+<tr>
+<td>Agent </td>
+<td><b><?php echo $ac["user"] . " (" . $ac["alias"] . ")"; ?></b></td>
+</tr>
+<tr>
+<td>Centre </td>
+<td><b><?php echo $ac["centre"]; ?></b></td>
+</tr>
+<tr>
+<td>Campaign </td>
+<td><select id="campaign" style="width:120px; height:auto; padding:0px; margin:0px;">
+<option></option>
+<?php
+$q = mysql_query("SELECT campaign FROM vericon.centres WHERE centre = '$ac[centre]'") or die(mysql_error());
+$cam = mysql_fetch_row($q);
+$campaign = explode(",",$cam[0]);
+for ($i = 0; $i < count($campaign); $i++)
+{
+	echo "<option>" . $campaign[$i] . "</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td>Type </td>
+<td><select id="type" style="width:120px; height:auto; padding:0px; margin:0;">
+<option></option>
+<option>Business</option>
+<option>Residential</option>
+</select></td>
+</tr>
+</table>
+</div>
+
 <div id="get_sale_table" style="margin-top:15px; margin-bottom:15px;">
 <form onsubmit="event.preventDefault()">
 <table>
@@ -36,7 +188,7 @@ if ($method == "init")
 <tbody>
 <?php
 $weekago = date("Y-m-d", strtotime("-1 week"));
-$q = mysql_query("SELECT id,status,timestamp,firstname,lastname FROM vericon.sales_customers WHERE agent = '$user' AND DATE(timestamp) >= '$weekago' ORDER BY timestamp DESC") or die(mysql_error());
+$q = mysql_query("SELECT id,status,timestamp,firstname,lastname FROM vericon.sales_customers WHERE agent = '$ac[user]' AND DATE(timestamp) >= '$weekago' ORDER BY timestamp DESC") or die(mysql_error());
 if (mysql_num_rows($q) == 0)
 {
 	echo "<tr>";
@@ -59,258 +211,3 @@ else
 </tbody>
 </table>
 </div>
-<?php
-}
-elseif ($method == "form")
-{
-	$q = mysql_query("SELECT * FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
-	$ac = mysql_fetch_assoc($q);
-	
-	$q1 = mysql_query("SELECT * FROM vericon.sales_customers_temp WHERE lead_id = '$id'") or die(mysql_error());
-	$data = mysql_fetch_assoc($q1);
-?>
-<script> //dob datepicker
-$(function() {
-	$( "#datepicker" ).datepicker( {
-		showOn: "button",
-		buttonImage: "../images/calendar.png",
-		buttonImageOnly: true,
-		dateFormat: "yy-mm-dd",
-		firstDay: 1,
-		showOtherMonths: true,
-		selectOtherMonths: true,
-		altField: "#datepicker2",
-		altFormat: "dd/mm/yy",
-		changeMonth: true,
-		changeYear: true,
-		maxDate: "-216M",
-		yearRange: "-100Y:-18Y"
-	});
-});
-</script>
-<table border="0" width="100%">
-<tr>
-<td width="50%" valign="top">
-<table border="0" width="100%" style="margin-bottom:10px;">
-<tr>
-<td colspan="2"><img src="../images/sale_details_header.png" width="90" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="80%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px">Lead ID </td>
-<td><b><?php echo $id; ?></b></td>
-</tr>
-<tr>
-<td>Agent </td>
-<td><b><?php echo $ac["user"] . " (" . $ac["alias"] . ")"; ?></b></td>
-</tr>
-<tr>
-<td>Centre </td>
-<td><b><?php echo $ac["centre"]; ?></b></td>
-</tr>
-<tr>
-<td>Campaign </td>
-<td><b class="campaign"><?php echo $data["campaign"]; ?></b></td>
-</tr>
-<tr>
-<td>Type </td>
-<td><b><?php echo $data["type"]; ?></b></td>
-</tr>
-</table>
-</td>
-<td width="50%" valign="top">
-<table border="0" width="100%" style="margin-bottom:10px;">
-<?php
-if ($data["type"] == "Business")
-{
-?>
-<input type="hidden" id="sale_type" value="Business" />
-<tr>
-<td colspan="2"><img src="../images/business_identification_header.png" width="164" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px">ABN<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="abn" onchange="getABN()" style="width:225px;" /></td>
-</tr>
-<tr>
-<td>Position<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="position" style="width:225px;" /></td>
-</tr>
-<tr>
-<td>Business Name </td>
-<td><b class="bus_name" style="font-size:9px;"></b></td>
-</tr>
-<tr>
-<td>ABN Status </td>
-<td><b class="abn_status" style="font-size:9px;"></b></td>
-</tr>
-<tr>
-<td>Business Type </td>
-<td><b class="bus_type" style="font-size:9px;"></b></td>
-</tr>
-<?php
-}
-elseif ($data["type"] == "Residential")
-{
-?>
-<input type="hidden" id="sale_type" value="Residential" />
-<tr>
-<td colspan="2"><img src="../images/customer_identification_header.png" width="172" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px">ID Type<span style="color:#ff0000;">*</span> </td>
-<td><select id="id_type" style="width:192px;">
-<option></option>
-<option>Driver's Licence (AUS)</option>
-<option>Healthcare Card</option>
-<option>Medicare Card</option>
-<option>Passport</option>
-<option>Pension Card</option>
-</select></td>
-</tr>
-<tr>
-<td>ID Number<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="id_num" style="width:190px;" /></td>
-</tr>
-<?php
-}
-?>
-</table>
-</td>
-</tr>
-<tr>
-<td width="50%" height="100%" valign="top">
-<table border="0" width="100%" style="margin-bottom:10px;">
-<tr>
-<td colspan="2"><img src="../images/customer_details_header.png" width="128" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="80%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px">Title<span style="color:#ff0000;">*</span> </td>
-<td><select id="title" style="width:50px;">
-<option></option>
-<option>Mr</option>
-<option>Mrs</option>
-<option>Miss</option>
-<option>Ms</option>
-<option>Dr</option>
-</select></td>
-</tr>
-<tr>
-<td>First Name<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="first" value="" style="width:150px;" /></td>
-</tr>
-<tr>
-<td>Middle Name </td>
-<td><input type="text" id="middle" value="" style="width:150px;" /></td>
-</tr>
-<tr>
-<td>Last Name<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="last" value="" style="width:150px;" /></td>
-</tr>
-<tr>
-<td>D.O.B<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="datepicker2" readonly style="width:80px;" /> <input type="hidden" id="datepicker" /></td>
-</tr>
-<tr>
-<td>E-Mail<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="email" style="width:150px;" /> <input type="checkbox" id="no_email" onclick="Email()" style="height:auto;" /> N/A</td>
-</tr>
-<tr>
-<td>Mobile<span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="mobile" style="width:150px;" /> <input type="checkbox" id="no_mobile" onclick="Mobile()" style="height:auto;" /> N/A</td>
-</tr>
-</table>
-</td>
-<td width="50%" height="100%" valign="top">
-<table border="0" width="100%" height="100%" style="margin-bottom:10px;">
-<tr valign="top">
-<td>
-<table border="0" width="100%">
-<tr>
-<td colspan="2"><img src="../images/customer_address_header.png" width="136" height="15" /></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="90%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td width="85px"><a onclick="Physical()" style="cursor:pointer; text-decoration:underline;">Physical</a><span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="display_physical1" readonly style="width:225px;" /></td>
-</tr>
-<tr>
-<td><input type="hidden" id="physical" value="" /></td>
-<td><input type="text" id="display_physical2" readonly style="width:225px;" /></td>
-</tr>
-<tr>
-<td></td>
-<td><input type="text" id="display_physical3" readonly style="width:45px;" /> <input type="text" id="display_physical4" readonly style="width:55px;" /></td>
-</tr>
-<tr>
-<td width="85px"><a id="postal_link" onclick="Postal()" style="cursor:pointer; text-decoration:underline;">Postal</a><span style="color:#ff0000;">*</span> </td>
-<td><input type="text" id="display_postal1" readonly style="width:225px;" /></td>
-</tr>
-<tr>
-<td><input type="hidden" id="postal" value="" /></td>
-<td><input type="text" id="display_postal2" readonly style="width:225px;" /></td>
-</tr>
-<tr>
-<td></td>
-<td><input type="text" id="display_postal3" readonly style="width:45px;" /> <input type="text" id="display_postal4" readonly style="width:55px; margin-right:12px;" /> <input type="checkbox" id="postal_same" onclick="Postal_Same()" style="height:auto;" /> Same as Above</td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-</td>
-</tr>
-<tr>
-<td colspan="2">
-<table border="0" width="100%">
-<tr>
-<td colspan="2"><img src="../images/selected_packages_header.png" width="134" height="15" style="padding-left:3px;"/></td>
-</tr>
-<tr>
-<td colspan="2"><img src="../images/line.png" width="100%" height="9" alt="line" /></td>
-</tr>
-<tr>
-<td colspan="2">
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="99%">
-<thead>
-<tr class="ui-widget-header ">
-<th width="20%">CLI</th>
-<th width="70%">Plan</th>
-<th width="10%" colspan="2">Edit</th>
-</tr>
-</thead>
-<tbody id="packages">
-<script>
-var id = "<?php echo $id; ?>";
-$( "#packages" ).load('packages.php?id=' + id);
-</script>
-</tbody>
-</table>
-</div>
-</td>
-</tr>
-<tr valign="bottom">
-<td align="left"><button onclick="Add_Package()" class="btn">Add Package</button></td>
-<td align="right"><button onclick="Submit()" class="btn" style="margin-right:10px;">Submit</button><button onclick="Cancel()" class="btn" style="margin-right:10px;">Cancel</button></td>
-</tr>
-</table>
-</td>
-</tr>
-</table>
-<?php
-}
-?>

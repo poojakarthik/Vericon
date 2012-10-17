@@ -6,21 +6,16 @@ $method = $_GET["method"];
 if ($method == "get") //get sale
 {
 	$id = $_GET["id"];
-	$user = $_GET["user"];
+	$centre = $_GET["centre"];
 	$date1 = date("Y-m-d");
 	$date2 = date("Y-m-d", strtotime("-1 week"));
-	$lead_id = substr($id,1,9);
-	
-	$q0 = mysql_query("SELECT centre FROM vericon.auth WHERE user = '$user'") or die(mysql_error());
-	$c = mysql_fetch_row($q0);
-	$centre = $c[0];
 	
 	$lq = mysql_query("SELECT leads FROM vericon.centres WHERE centre = '$centre'") or die(mysql_error());
 	$lead_val = mysql_fetch_row($lq);
 	
 	if ($lead_val[0] == 1)
 	{
-		$q = mysql_query("SELECT * FROM leads.leads WHERE cli = '$lead_id'") or die(mysql_error());
+		$q = mysql_query("SELECT * FROM leads.leads WHERE cli = '$id'") or die(mysql_error());
 		$check = mysql_fetch_assoc($q);
 	
 		$q1 = mysql_query("SELECT COUNT(lead_id),status FROM vericon.sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$check[issue_date]' AND '$check[expiry_date]'") or die(mysql_error());
@@ -78,7 +73,7 @@ if ($method == "get") //get sale
 			}
 		}
 		
-		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id) && !preg_match("/^0[34679][0-9]{7}$/",$id))
 		{
 			echo "Invalid Lead ID!";
 		}
@@ -112,9 +107,9 @@ if ($method == "get") //get sale
 		$q1 = mysql_query("SELECT COUNT(lead_id),status FROM vericon.sales_customers WHERE lead_id = '$id' AND DATE(timestamp) BETWEEN '$date2' AND '$date1'") or die(mysql_error());
 		$check2 = mysql_fetch_row($q1);
 		
-		if (!preg_match("/^0[2378][0-9]{8}$/",$id))
+		if (!preg_match("/^0[2378][0-9]{8}$/",$id) && !preg_match("/^0[34679][0-9]{7}$/",$id))
 		{
-			echo "Invalid ID!";
+			echo "Invalid Lead ID!";
 		}
 		elseif ($check2[0] != 0 && $check2[1] == "Approved")
 		{
@@ -135,6 +130,9 @@ elseif ($method == "load")
 	$type = $_GET["type"];
 	$timestamp = date("Y-m-d H:i:s");
 	
+	$q0 = mysql_query("SELECT country FROM vericon.campaigns WHERE campaign = '" . mysql_real_escape_string($campaign) . "'") or die(mysql_error());
+	$country = mysql_fetch_row($q0);
+	
 	mysql_query("DELETE FROM vericon.verification_lock WHERE user = '$agent'") or die(mysql_error());
 	
 	$lq = mysql_query("SELECT * FROM leads.leads WHERE cli = '$lead_id'") or die(mysql_error());
@@ -146,7 +144,27 @@ elseif ($method == "load")
 	$q1 = mysql_query("SELECT user FROM vericon.verification_lock WHERE id = '" . mysql_real_escape_string($check["id"]) . "'") or die(mysql_error());
 	$lock = mysql_fetch_assoc($q1);
 	
-	if ($check["status"] == "Approved")
+	if ($lead_id == "" || $agent == "" || $centre == "")
+	{
+		echo "Error! Please contact your administrator";
+	}
+	elseif ($campaign == "")
+	{
+		echo "Please select a campaign";
+	}
+	elseif ($type == "")
+	{
+		echo "Please select a sale type";
+	}
+	elseif ($country[0] == "AU" && !preg_match("/^0[2378][0-9]{8}$/",$lead_id))
+	{
+		echo "Not an Australian Lead!";
+	}
+	elseif ($country[0] == "NZ" && !preg_match("/^0[34679][0-9]{7}$/",$lead_id))
+	{
+		echo "Not a New Zealand Lead!";
+	}
+	elseif ($check["status"] == "Approved")
 	{
 		echo "Sale is already approved";
 	}
@@ -170,7 +188,7 @@ elseif ($method == "load")
 		
 		mysql_query("INSERT INTO vericon.verification_lock (id, user) VALUES ('$id', '$agent') ON DUPLICATE KEY UPDATE id = '$id'") or die(mysql_error());
 		
-		echo "valid" . $id;
+		echo "valid_" . strtolower($country[0]) . "_" . $id;
 	}
 	else
 	{
@@ -184,17 +202,17 @@ elseif ($method == "load")
 			mysql_query("DELETE FROM vericon.sales_packages WHERE sid = '$id'") or die(mysql_error());
 		}
 		
-		echo "valid" . $id;
+		echo "valid_" . strtolower($country[0]) . "_" . $id;
 	}
 }
-elseif ($method == "add") //add package
+elseif ($method == "add_au") //add package
 {
 	$sid = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
 	$week = date("W");
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp) = '$week'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
 	$check2 = mysql_fetch_row($ch2);
 	
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
@@ -218,14 +236,71 @@ elseif ($method == "add") //add package
 		echo "added";
 	}
 }
-elseif ($method == "edit") //edit package
+elseif ($method == "add_nz") //add package
+{
+	$sid = $_GET["id"];
+	$cli = $_GET["cli"];
+	$plan = $_GET["plan"];
+	$plan_type = $_GET["plan_type"];
+	$provider = $_GET["provider"];
+	$ac_number = trim($_GET["ac_number"]);
+	$adsl_provider = $_GET["adsl_provider"];
+	$adsl_ac_number = trim($_GET["adsl_ac_number"]);
+	$week = date("W");
+	
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
+	$check2 = mysql_fetch_row($ch2);
+	
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
+	$check3 = mysql_fetch_row($ch3);
+	
+	if (!preg_match("/^0[34679][0-9]{7}$/",$cli))
+	{
+		echo "Invalid CLI";
+	}
+	elseif ($plan == "")
+	{
+		echo "Please select a plan";
+	}
+	elseif ($provider == "")
+	{
+		echo "Please select the CLI's provider";
+	}
+	elseif ($ac_number == "")
+	{
+		echo "Please enter the CLI's account number";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_provider == "")
+	{
+		echo "Please select the CLI's ADSL provider";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_ac_number == "")
+	{
+		echo "Please enter the CLI's ADSL account number";
+	}
+	elseif ($check3[0] != 0)
+	{
+		echo "CLI is on the SCT DNC list";
+	}
+	elseif ($check2[0] != 0)
+	{
+		echo "CLI already added";
+	}
+	else
+	{
+		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan, provider, ac_number, adsl_provider, adsl_ac_number) VALUES ('$sid', '" . mysql_real_escape_string($cli) . "', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "', '" . mysql_real_escape_string($adsl_provider) . "', '" . mysql_real_escape_string($adsl_ac_number) . "')") or die(mysql_error());
+		echo "added";
+	}
+}
+elseif ($method == "edit_au") //edit package
 {
 	$sid = $_GET["id"];
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
 	$cli2 = $_GET["cli2"];
+	$week = date("W");
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
 	$check2 = mysql_fetch_row($ch2);
 	
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
@@ -250,6 +325,104 @@ elseif ($method == "edit") //edit package
 		echo "editted";
 	}
 }
+elseif ($method == "nz_provider") //get provider
+{
+	$id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT provider FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "nz_ac_number") //get account number
+{
+	$id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT ac_number FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "nz_adsl_provider") //get adsl provider
+{
+	$id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT adsl_provider FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "nz_adsl_ac_number") //get adsl account number
+{
+	$id = $_GET["id"];
+	$cli = $_GET["cli"];
+	
+	$q = mysql_query("SELECT adsl_ac_number FROM vericon.sales_packages WHERE sid = '$id' AND cli = '$cli'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "edit_nz") //edit package
+{
+	$sid = $_GET["id"];
+	$cli = $_GET["cli"];
+	$plan = $_GET["plan"];
+	$plan_type = $_GET["plan_type"];
+	$provider = $_GET["provider"];
+	$ac_number = trim($_GET["ac_number"]);
+	$adsl_provider = $_GET["adsl_provider"];
+	$adsl_ac_number = trim($_GET["adsl_ac_number"]);
+	$cli2 = $_GET["cli2"];
+	$week = date("W");
+	
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
+	$check2 = mysql_fetch_row($ch2);
+	
+	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
+	$check3 = mysql_fetch_row($ch3);
+	
+	if (!preg_match("/^0[34679][0-9]{7}$/",$cli))
+	{
+		echo "Invalid CLI";
+	}
+	elseif ($plan == "")
+	{
+		echo "Please select a plan";
+	}
+	elseif ($provider == "")
+	{
+		echo "Please select the CLI's provider";
+	}
+	elseif ($ac_number == "")
+	{
+		echo "Please enter the CLI's account number";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_provider == "")
+	{
+		echo "Please select the CLI's ADSL provider";
+	}
+	elseif ($plan_type == "Bundle" && $adsl_ac_number == "")
+	{
+		echo "Please enter the CLI's ADSL account number";
+	}
+	elseif ($check3[0] != 0)
+	{
+		echo "CLI is on the SCT DNC list";
+	}
+	elseif ($check2[0] != 0 && $cli != $cli2)
+	{
+		echo "CLI already added";
+	}
+	else
+	{
+		mysql_query("DELETE FROM vericon.sales_packages WHERE sid = '$sid' AND cli = '$cli2' LIMIT 1") or die(mysql_error());
+		mysql_query("INSERT INTO vericon.sales_packages (sid, cli, plan, provider, ac_number, adsl_provider, adsl_ac_number) VALUES ('$sid', '" . mysql_real_escape_string($cli) . "', '$plan', '" . mysql_real_escape_string($provider) . "', '" . mysql_real_escape_string($ac_number) . "', '" . mysql_real_escape_string($adsl_provider) . "', '" . mysql_real_escape_string($adsl_ac_number) . "')") or die(mysql_error());
+		echo "editted";
+	}
+}
 elseif ($method == "delete") //delete package
 {
 	$sid = $_GET["id"];
@@ -258,6 +431,44 @@ elseif ($method == "delete") //delete package
 	mysql_query("DELETE FROM vericon.sales_packages WHERE sid = '$sid' AND cli = '$cli' LIMIT 1") or die(mysql_error());
 	
 	echo "deleted";
+}
+elseif ($method == "cancel") //cancel sale
+{
+	$id = $_GET["id"];
+	$status = $_GET["status"];
+	$verifier = $_GET["verifier"];
+	$note = $_GET["note"];
+	$now = date("Y-m-d H:i:s");
+	
+	$q = mysql_query("SELECT centre,lead_id FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	if ($id == "")
+	{
+		echo "Error! Please contact your administrator";
+	}
+	elseif ($verifier == "")
+	{
+		echo "Please enter the verifier's name";
+	}
+	elseif ($status == "")
+	{
+		echo "Please select a status";
+	}
+	elseif ($note == "")
+	{
+		echo "Please enter a note";
+	}
+	else
+	{
+		mysql_query("INSERT INTO vericon.tpv_notes (id, status, lead_id, centre, verifier, note) VALUES ('$id', '$status', '$data[1]', '$data[0]', '$verifier', '". mysql_real_escape_string($note) . "')") or die(mysql_error());
+		
+		mysql_query("UPDATE vericon.sales_customers SET status = '$status', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
+		
+		mysql_query("DELETE FROM vericon.verification_lock WHERE id = '$id'") or die(mysql_error());
+		
+		echo "done";
+	}
 }
 elseif ($method == "script_check") //check packages
 {
@@ -279,20 +490,18 @@ elseif ($method == "verifier") //list verifiers
 	$term = explode(" ",$_GET["term"]);
 	$centre = $_GET["centre"];
 	
-	if ($centre == "CC51" || $centre == "CC52" || $centre == "CC53" || $centre == "CC54")
-	{
-		$inc = " (centre = 'CC51' OR centre = 'CC52' OR centre = 'CC53' OR centre = 'CC54') ";
-	}
-	elseif ($centre == "CC61" || $centre == "CC63")
-	{
-		$inc = " (centre = 'CC61' OR centre = 'CC63') ";
-	}
-	elseif ($centre == "CC71" || $centre == "CC72" || $centre == "CC73" || $centre == "CC74")
-	{
-		$inc = " (centre = 'CC71' OR centre = 'CC72' OR centre = 'CC73' OR centre = 'CC74') ";
-	}
+	$q = mysql_query("SELECT * FROM leads.groups WHERE centres LIKE '%$centre%'") or die(mysql_error());
+	$group = mysql_fetch_assoc($q);
 	
-	$q = mysql_query("SELECT * FROM vericon.auth WHERE" . $inc . "AND (first LIKE '" . mysql_real_escape_string($term[0]) . "%' AND last LIKE '" . mysql_real_escape_string($term[1]) . "%') AND status = 'Enabled'") or die(mysql_error());
+	$centres = explode(",",$group["centres"]);
+	$inc = "";
+	for ($i = 0; $i < count($centres); $i++)
+	{
+		$inc .= "centre = '" . $centres[$i] . "' OR ";
+	}
+	$inc = substr($inc,0,-4);
+	
+	$q = mysql_query("SELECT * FROM vericon.auth WHERE (" . $inc . ") AND (first LIKE '" . mysql_real_escape_string($term[0]) . "%' AND last LIKE '" . mysql_real_escape_string($term[1]) . "%') AND status = 'Enabled'") or die(mysql_error());
 	echo '[';
 	while ($data = mysql_fetch_assoc($q))
 	{
@@ -301,52 +510,7 @@ elseif ($method == "verifier") //list verifiers
 	echo implode(", ",$d);
 	echo ']';
 }
-elseif ($method == "cancel") //cancel sale
-{
-	$id = $_GET["id"];
-	$status = $_GET["status"];
-	$verifier = $_GET["verifier"];
-	$dialled = trim($_GET["dialled"]);
-	$note = $_GET["note"];
-	$now = date("Y-m-d H:i:s");
-	
-	$q = mysql_query("SELECT centre,lead_id FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
-	$data = mysql_fetch_row($q);
-	
-	if ($id == "")
-	{
-		echo "Error! Please contact your administrator";
-	}
-	elseif ($verifier == "")
-	{
-		echo "Please enter the verifier's name";
-	}
-	elseif (!preg_match("/^0[23478][0-9]{8}$/",$dialled))
-	{
-		echo "Please enter a valid dialled number";
-	}
-	elseif ($status == "")
-	{
-		echo "Please select a status";
-	}
-	elseif ($note == "")
-	{
-		echo "Please enter a note";
-	}
-	else
-	{
-		$note = "Dialled Number: " . $dialled . " -- " . $note;
-		
-		mysql_query("INSERT INTO vericon.tpv_notes (id, status, lead_id, centre, verifier, note) VALUES ('$id', '$status', '$data[1]', '$data[0]', '$verifier', '". mysql_real_escape_string($note) . "')") or die(mysql_error());
-		
-		mysql_query("UPDATE vericon.sales_customers SET status = '$status', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
-		
-		mysql_query("DELETE FROM vericon.verification_lock WHERE id = '$id'") or die(mysql_error());
-		
-		echo "done";
-	}
-}
-elseif ($method == "submit") //submit sale
+elseif ($method == "submit_au") //submit sale
 {
 	$id = $_GET["id"];
 	$status = "Approved";
@@ -400,13 +564,13 @@ elseif ($method == "submit") //submit sale
 	{
 		echo "Error! Please contact your administrator";
 	}
-	elseif ($verifier == "")
-	{
-		echo "Please enter the verifier's name";
-	}
 	elseif (!preg_match("/^0[23478][0-9]{8}$/",$dialled))
 	{
 		echo "Please enter a valid dialled number";
+	}
+	elseif ($verifier == "")
+	{
+		echo "Please enter the verifier's name";
 	}
 	elseif ($data["title"] == "")
 	{
@@ -475,6 +639,141 @@ elseif ($method == "submit") //submit sale
 	elseif ($data["type"] == "Business" && $data["abn"] == "")
 	{
 		echo "Please enter the customer's ABN";
+	}
+	elseif ($data["type"] == "Business" && $data["position"] == "")
+	{
+		echo "Please enter the customer's position in the business";
+	}
+	else
+	{
+		$note = "Dialled Number: " . $dialled . " -- " . $note;
+		
+		mysql_query("INSERT INTO vericon.tpv_notes (id, status, lead_id, centre, verifier, note) VALUES ('$id', '$status', '$data[lead_id]', '$data[centre]', '$verifier', '". mysql_real_escape_string($note) . "')") or die(mysql_error());
+		
+		mysql_query("UPDATE vericon.sales_customers SET status = '$status', industry = '$industry', approved_timestamp = '$now' WHERE id = '$id'") or die(mysql_error());
+		
+		mysql_query("DELETE FROM vericon.verification_lock WHERE id = '$id'") or die(mysql_error());
+		
+		echo "done";
+	}
+}
+elseif ($method == "submit_nz") //submit sale
+{
+	$id = $_GET["id"];
+	$status = "Approved";
+	$industry = "SELF";
+	$verifier = $_GET["verifier"];
+	$dialled = trim($_GET["dialled"]);
+	$note = $_GET["note"];
+	$now = date("Y-m-d H:i:s");
+	
+	function check_email_address($email) //email validation function
+	{
+		if (!ereg("^[^@]{1,64}@[^@]{1,255}$", $email)) 
+		{
+			return false;
+		}
+		$email_array = explode("@", $email);
+		$local_array = explode(".", $email_array[0]);
+		for ($i = 0; $i < sizeof($local_array); $i++) 
+		{
+			if(!ereg("^(([A-Za-z0-9!#$%&'*+/=?^_`{|}~-][A-Za-z0-9!#$%&'*+/=?^_`{|}~\.-]{0,63})|(\"[^(\\|\")]{0,62}\"))$",$local_array[$i]))
+			{
+				return false;
+			}
+		}
+		if (!ereg("^\[?[0-9\.]+\]?$", $email_array[1]))
+		{
+			$domain_array = explode(".", $email_array[1]);
+			if (sizeof($domain_array) < 2)
+			{
+				return false;
+			}
+			for ($i = 0; $i < sizeof($domain_array); $i++)
+			{
+				if(!ereg("^(([A-Za-z0-9][A-Za-z0-9-]{0,61}[A-Za-z0-9])|([A-Za-z0-9]+))$",$domain_array[$i]))
+				{
+					return false;
+				}
+			}
+		}
+		if(!checkdnsrr($email_array[1],'MX'))
+		{
+			return false;
+		}
+		return true;
+	} //end email check function 
+	
+	$q = mysql_query("SELECT * FROM vericon.sales_customers WHERE id = '$id'") or die(mysql_error());
+	$data = mysql_fetch_assoc($q);
+	
+	if ($id == "")
+	{
+		echo "Error! Please contact your administrator";
+	}
+	elseif (!preg_match("/^0[234679][0-9]{7}$/",$dialled) && !preg_match("/^02[0-9]{8}$/",$dialled) && !preg_match("/^02[0-9]{9}$/",$dialled))
+	{
+		echo "Please enter a valid dialled number";
+	}
+	elseif ($verifier == "")
+	{
+		echo "Please enter the verifier's name";
+	}
+	elseif ($data["title"] == "")
+	{
+		echo "Please select a title";
+	}
+	elseif ($data["firstname"] == "")
+	{
+		echo "Please enter the customer's first name";
+	}
+	elseif ($data["lastname"] == "")
+	{
+		echo "Please enter the customer's last name";
+	}
+	elseif ($data["dob"] == "0000-00-00" || $data["dob"] == "")
+	{
+		echo "Please enter the customer's date of birth";
+	}
+	elseif ($data["email"] == "")
+	{
+		echo "Please enter the customer's email address";
+	}
+	elseif ($data["email"] != "N/A" && !check_email_address($data["email"]))
+	{
+		echo 'Please enter a valid email address';
+	}
+	elseif ($data["mobile"] == "")
+	{
+		echo "Please enter the customer's mobile number";
+	}
+	elseif ($data["mobile"] != "N/A" && (!preg_match("/^02[0-9]{7}$/",$data["mobile"]) && !preg_match("/^02[0-9]{8}$/",$data["mobile"]) && !preg_match("/^02[0-9]{9}$/",$data["mobile"])))
+	{
+		echo "Please enter a valid mobile number";
+	}
+	elseif ($data["mobile"] != "N/A" && $data["mobile"] == "0200000000")
+	{
+		echo "Please enter a valid mobile number";
+	}
+	elseif ($data["physical"] == "")
+	{
+		echo "Please enter the customer's physical address";
+	}
+	elseif ($data["postal"] == "")
+	{
+		echo "Please enter the customer's postal address";
+	}
+	elseif ($data["type"] == "Residential" && $data["id_type"] == "")
+	{
+		echo "Please select an ID type";
+	}
+	elseif ($data["type"] == "Residential" && $data["id_num"] == "")
+	{
+		echo "Please enter the customer's ID number";
+	}
+	elseif ($data["type"] == "Business" && $data["bus_name"] == "")
+	{
+		echo "Please enter the customer's business name";
 	}
 	elseif ($data["type"] == "Business" && $data["position"] == "")
 	{
