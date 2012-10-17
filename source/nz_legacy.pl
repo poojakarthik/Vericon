@@ -72,9 +72,12 @@ $te->parse($data);
 $out = "other";
 foreach $r ($te->table(2, 2)->rows()){
     next if @$r[0] eq 'Line Type';
-    if (@$r[0] =~ /Legacy/)
+	if (@$r[1] == $ph)
 	{
-		$out = "legacy";
+		if (@$r[0] =~ /Legacy/)
+		{
+			$out = "legacy";
+		}
 	}
 }
 
