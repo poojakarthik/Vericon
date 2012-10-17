@@ -353,7 +353,7 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . '",';
 	$body .= '"' . '",';
 	$body .= '"' . $data["other_comments"] . '",';
-	$body .= '"' . "0" . '",';
+	$body .= '"' . "1" . '",';
 	$body .= "\n";
 	
 	for ($i = 1; $i < $p; $i++)
