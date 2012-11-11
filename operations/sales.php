@@ -119,6 +119,30 @@ function Cancel_Search()
 	
 }
 </script>
+<script>
+$(function() {
+	$( "#dialog:ui-dialog_sale_notes" ).dialog( "destroy" );
+	
+	$( "#dialog-form_sale_notes" ).dialog({
+		autoOpen: false,
+		height: 200,
+		width: 425,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind'
+	});
+});
+
+function Sale_Notes(id)
+{
+	$.get("sales_submit.php", { method: "notes", id: id }, function(data) {
+		$( "#sale_notes" ).val(data);
+	});
+	$( "#dialog-form_sale_notes" ).dialog( "open" );
+}
+</script>
 
 <div id="dialog-form_search" title="Search">
 <br><table>
@@ -135,6 +159,11 @@ function Cancel_Search()
 <td><input type="text" id="query" value="" style="width:125px;" /></td>
 </tr>
 </table>
+</div>
+
+<div id="dialog-form_sale_notes" title="Notes">
+<textarea readonly="readonly" id="sale_notes" style="width:400px; height:150px; resize:none;">
+</textarea>
 </div>
 
 <input type="hidden" id="date_store" value="<?php echo date("Y-m-d"); ?>" />

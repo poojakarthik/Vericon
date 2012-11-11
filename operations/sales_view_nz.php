@@ -42,7 +42,7 @@ function Notes()
 {
 	var id = "<?php echo $id; ?>";
 	
-	$.get("search_submit.php", { method: "notes", id: id }, function(data) {
+	$.get("sales_submit.php", { method: "notes", id: id }, function(data) {
 		$( "#notes_display" ).val(data);
 	});
 	$( "#dialog-form_notes" ).dialog( "open" );
