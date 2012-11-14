@@ -6,7 +6,7 @@ $p = $_GET["p"];
 $date = date("Y-m-d");
 if ($p == "stats")
 {
-	$cen = "CC51,CC52,CC53,CC54,CC61,CC63,CC71,CC72";
+	$cen = "CC51,CC52,CC53,CC54,CC61,CC63,CC71,CC72,CC73,CC74";
 	$centre = explode(",", $cen);
 	
 	for ($i = 0; $i < count($centre); $i++)
@@ -14,17 +14,11 @@ if ($p == "stats")
 		$q = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND DATE(approved_timestamp) = '$date' AND centre = '$centre[$i]'") or die(mysql_error());
 		$stats[$centre[$i]] = mysql_num_rows($q);
 	}
-	
-	$q1 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND DATE(approved_timestamp) = '$date' AND industry = 'SELF'") or die(mysql_error());
-	$melb = mysql_num_rows($q1);
-	
-	$q2 = mysql_query("SELECT * FROM sales_customers WHERE status = 'Approved' AND DATE(approved_timestamp) = '$date' AND industry = 'TPV'") or die(mysql_error());
-	$india = mysql_num_rows($q2);
 ?>
 <center><table id="users" style="margin-top:-15px; width:99%; padding:0px;">
 <thead>
 <tr class="ui-widget-header ">
-<th colspan="4" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Albert Road</th>
+<th colspan="4" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Koncept Marketing</th>
 </tr>
 </thead>
 <tr>
@@ -33,39 +27,7 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC51 (Liam)</th>
-</tr>
-</thead>
-<tbody>
-<tr height="75%">
-<td><span style="font-size:36px"><?php echo $stats["CC51"]; ?></span></td>
-</tr>
-</tbody>
-</table>
-</div></center>
-</td>
-<td width="25%" height="100%" valign="top">
-<center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
-<thead>
-<tr class="ui-widget-header ">
-<th>CC52 (Sanu)</th>
-</tr>
-</thead>
-<tbody>
-<tr height="75%">
-<td><span style="font-size:36px"><?php echo $stats["CC52"]; ?></span></td>
-</tr>
-</tbody>
-</table>
-</div></center>
-</td>
-<td width="25%" height="100%" valign="top">
-<center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
-<thead>
-<tr class="ui-widget-header ">
-<th>CC53 (Daniel)</th>
+<th>CC53 (Shaq)</th>
 </tr>
 </thead>
 <tbody>
@@ -92,23 +54,12 @@ if ($p == "stats")
 </table>
 </div></center>
 </td>
-</tr>
-</table></center>
-
-<center><table id="users" style="margin-top:0px; width:99%;">
-<thead>
-<tr class="ui-widget-header ">
-<th colspan="2" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Queen Street</th>
-<th colspan="2" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Lt Lonsdale</th>
-</tr>
-</thead>
-<tr>
 <td width="25%" height="100%" valign="top">
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC61 (Jesse)</th>
+<th>CC61 (Daniel)</th>
 </tr>
 </thead>
 <tbody>
@@ -135,12 +86,22 @@ if ($p == "stats")
 </table>
 </div></center>
 </td>
+</tr>
+</table></center>
+
+<center><table id="users" style="margin-top:0px; width:99%;">
+<thead>
+<tr class="ui-widget-header ">
+<th colspan="4" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Vibe Solutions</th>
+</tr>
+</thead>
+<tr>
 <td width="25%" height="100%" valign="top">
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC71 (Julie)</th>
+<th>CC71 (Will)</th>
 </tr>
 </thead>
 <tbody>
@@ -167,13 +128,45 @@ if ($p == "stats")
 </table>
 </div></center>
 </td>
+<td width="25%" height="100%" valign="top">
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
+<thead>
+<tr class="ui-widget-header ">
+<th>CC73 (Daniel)</th>
+</tr>
+</thead>
+<tbody>
+<tr height="75%">
+<td><span style="font-size:36px"><?php echo $stats["CC73"]; ?></span></td>
+</tr>
+</tbody>
+</table>
+</div></center>
+</td>
+<td width="25%" height="100%" valign="top">
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
+<thead>
+<tr class="ui-widget-header ">
+<th>CC74 (Alex)</th>
+</tr>
+</thead>
+<tbody>
+<tr height="75%">
+<td><span style="font-size:36px"><?php echo $stats["CC74"]; ?></span></td>
+</tr>
+</tbody>
+</table>
+</div></center>
+</td>
 </tr>
 </table></center>
 
 <center><table id="users" style="margin-top:0px; width:99%;">
 <thead>
 <tr class="ui-widget-header ">
-<th colspan="2" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Total</th>
+<th colspan="2" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Vibe Solutions</th>
 </tr>
 </thead>
 <tr>
@@ -182,12 +175,12 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>Melbourne</th>
+<th>CC51 (Sanu)</th>
 </tr>
 </thead>
 <tbody>
 <tr height="75%">
-<td><span style="font-size:36px"><?php echo $melb; ?></span></td>
+<td><span style="font-size:36px"><?php echo $stats["CC51"]; ?></span></td>
 </tr>
 </tbody>
 </table>
@@ -198,12 +191,12 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>India</th>
+<th>CC52 (WinBack)</th>
 </tr>
 </thead>
 <tbody>
 <tr height="75%">
-<td><span style="font-size:36px"><?php echo $india; ?></span></td>
+<td><span style="font-size:36px"><?php echo $stats["CC52"]; ?></span></td>
 </tr>
 </tbody>
 </table>
@@ -215,7 +208,7 @@ if ($p == "stats")
 <center><table id="users" style="margin-top:0px; width:99%;">
 <thead>
 <tr class="ui-widget-header ">
-<th style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">These stats are based on Actual Sales</th>
+<th style="border: 1px solid #eee; padding: .3em 10px; text-align: center; font-size: 10px;">These stats are based on Actual Sales</th>
 </tr>
 </thead>
 </table></center>
@@ -228,17 +221,18 @@ else
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<title>VeriCon :: Stats</title>
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
+<title>VeriCon :: Sale Stats</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/inner.css" type="text/css"/>
+<link rel="stylesheet" href="../jquery/css/custom-theme/jquery-ui-1.8.22.custom.css">
+<script src="../jquery/js/jquery-1.7.2.min.js"></script>
+<script src="../jquery/js/jquery-ui-1.8.22.custom.min.js"></script>
 <style>
 div#users-contain table { margin: 0; border-collapse: collapse; }
 div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: center; }
 div#users-contain table td { border: 1px solid #eee; padding: .6em 5px; text-align: center; }
 </style>
-<?php
-include "source/jquery.php";
-?>
 <?php
 $time = date("H:i:s");
 $time = explode(":", $time);
@@ -286,7 +280,7 @@ setTimeout("doTime()",1000);
 function Stats()
 {
 	$( "#text" ).load("screen.php?p=stats");
-	setTimeout("Stats()",5000);
+	setTimeout("Stats()",60000);
 }
 
 window.onload = function() {
