@@ -42,7 +42,7 @@ $(function() {
 <td align="right" style="padding-right:10px;"><select id="centre" style="width:75px;" onchange="Centre()">
 <option>Centre</option>
 <?php
-$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' AND type = 'Self' ORDER BY centre ASC") or die(mysql_error());
 while ($centres = mysql_fetch_row($q))
 {
 	echo "<option>" . $centres[0] . "</option>";
@@ -64,11 +64,11 @@ $( "#centre" ).val("<?php echo $centre; ?>");
 <table id="users" class="ui-widget ui-widget-content" style="margin-top:0px;">
 <thead>
 <tr class="ui-widget-header">
-<th style="text-align:left">Agent ID</th>
 <th style="text-align:left">Full Name</th>
 <th>Hours</th>
 <th>Bonus</th>
 <th>Rate</th>
+<th>Rate Bonus</th>
 <th>Gross Pay</th>
 <th>PAYG</th>
 <th>Net Pay</th>
@@ -94,17 +94,55 @@ else
 		$q0 = mysql_query("SELECT first,last FROM vericon.auth WHERE user = '$data[user]'") or die(mysql_error());
 		$user = mysql_fetch_row($q0);
 		
-		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg),SUM(annual),SUM(sick) FROM vericon.timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
+		$q1 = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),AVG(rate),SUM(payg),SUM(annual),SUM(sick),pay_type,AVG(base_rate) FROM vericon.timesheet_other WHERE user = '$data[user]' AND week BETWEEN '$week1' AND '$week2'") or die(mysql_error());
 		$da = mysql_fetch_row($q1);
 		
-		$q2 = mysql_query("SELECT rate FROM vericon.timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$q2 = mysql_query("SELECT rate,type FROM vericon.timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
 		$r = mysql_fetch_row($q2);
 		
 		$hours_d = number_format($da[0],2);
 		$bonus_d = "\$" . number_format($da[1],2);
-		if ($da[2] <= 0) { $rate = $r[0]; } else { $rate = $da[2]; }
+		if ($da[2] <= 0)
+		{
+			if ($r[1] == "F")
+			{
+				$rate = $r[0];
+				$r_bonus = 0;
+			}
+			elseif ($r[1] == "T")
+			{
+				$q3 = mysql_query("SELECT designation FROM vericon.timesheet_designation WHERE user = '$data[user]'") or die(mysql_error());
+				$desig = mysql_fetch_row($q3);
+				
+				$q3 = mysql_query("SELECT rate FROM vericon.timesheet_tiered WHERE designation = '$desig[0]' AND `from` = '0'");
+				$b_rate = mysql_fetch_row($q3);
+				$rate = $b_rate[0];
+				
+				$q3 = mysql_query("SELECT id FROM vericon.sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND WEEK(approved_timestamp,3) BETWEEN '$week1' AND '$week2'");
+				$sales = mysql_num_rows($q3);
+				
+				$q3 = mysql_query("SELECT rate FROM vericon.timesheet_tiered WHERE designation = '$desig[0]' AND '$sales' BETWEEN `from` AND `to`") or die(mysql_error());
+				$t_rate = mysql_fetch_row($q3);
+				
+				$r_bonus = ($t_rate[0] - $rate) * ($da[0] + $da[4] + $da[5]);
+			}
+		}
+		else
+		{
+			if ($da[6] == "F")
+			{
+				$rate = $da[2];
+				$r_bonus = 0;
+			}
+			elseif ($da[6] == "T")
+			{
+				$rate = $da[7];
+				$r_bonus = ($da[2] - $rate) * ($da[0] + $da[4] + $da[5]);
+			}
+		}
 		$rate_d = "\$" . number_format($rate,4);
-		$gross = ($rate * ($da[0] + $da[4] + $da[5])) + $da[1];
+		$r_bonus_d = "\$" . number_format($r_bonus,2);
+		$gross = ($rate * ($da[0] + $da[4] + $da[5])) + $da[1] + $r_bonus;
 		$gross_d = "\$" . number_format($gross,2);
 		$payg = $da[3];
 		$payg_d = "\$" . number_format($payg,2);
@@ -117,7 +155,8 @@ else
 			$hours_d = "-";
 			$bonus_d = "-";
 			$rate_d = "-";
-			$gross_d = "-";	
+			$r_bonus_d = "-";
+			$gross_d = "-";
 			$payg_d = "-";
 			$net_d = "-";
 			$other_d = "-";
@@ -125,7 +164,8 @@ else
 		elseif ($rate_d == "$0.00")
 		{
 			$rate_d = "-";
-			$gross_d = "-";	
+			$r_bonus_d = "-";
+			$gross_d = "-";
 			$payg_d = "-";
 			$net_d = "-";
 			$other_d = "-";
@@ -137,11 +177,11 @@ else
 		}
 		
 		echo "<tr>";
-		echo "<td style='text-align:left;'>" . $data["user"] . "</td>";
 		echo "<td style='text-align:left;'>" . $user[0] . " " . $user[1] . "</td>";
 		echo "<td>" . $hours_d . "</td>";
-		echo "<td >" . $bonus_d . "</td>";
+		echo "<td>" . $bonus_d . "</td>";
 		echo "<td>" . $rate_d . "</td>";
+		echo "<td>" . $r_bonus_d . "</td>";
 		echo "<td>" . $gross_d . "</td>";
 		echo "<td>" . $payg_d . "</td>";
 		echo "<td>" . $net_d . "</td>";

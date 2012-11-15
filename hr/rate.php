@@ -22,6 +22,7 @@ $(function() {
 	$( "#dialog:ui-dialog" ).dialog( "destroy" );
 	
 	var user = $( "#user" ),
+		type = $( "#rate_type" ),
 		rate = $( "#rate" ),
 		tips = $( ".validateTips" );
 
@@ -36,7 +37,7 @@ $(function() {
 
 	$( "#dialog-form" ).dialog({
 		autoOpen: false,
-		height: 175,
+		height: 200,
 		width: 275,
 		modal: true,
 		resizable: false,
@@ -45,7 +46,7 @@ $(function() {
 		hide: 'blind',
 		buttons: {
 			"Submit": function() {
-				$.get("rate_submit.php?method=edit", { user: user.val(), rate: rate.val() },
+				$.get("rate_submit.php?method=edit", { user: user.val(), type: type.val(), rate: rate.val() },
 				function(data) {
 					if (data == "submitted")
 					{
@@ -62,8 +63,6 @@ $(function() {
 			Cancel: function() {
 				$( this ).dialog( "close" );
 			}
-		},
-		close: function() {
 		}
 	});
 });
@@ -93,9 +92,38 @@ function Edit(user,rate)
 	{
 		$( "#user" ).val(user);
 		$.get("rate_submit.php?method=name", { user: user }, function(data) { $( "#name" ).val(data) });
-		$( "#rate" ).val(rate);
+		$.get("rate_submit.php?method=rate_type", { user: user }, function(data) {
+			$( "#rate_type" ).val(data);
+			if (data == "F")
+			{
+				$( "#rate_tr" ).removeAttr("style");
+				$( "#rate" ).val(rate);
+			}
+			else if (data == "T")
+			{
+				$( "#rate_tr" ).attr("style","display:none;");
+				$( "#rate" ).val("");
+			}
+			else
+			{
+				$( "#rate_tr" ).attr("style","display:none;");
+				$( "#rate" ).val("");
+			}
+		});
 		$( "#dialog-form" ).dialog( "open" );
 	}
+}
+
+function Fixed()
+{
+	$( "#rate_tr" ).removeAttr("style");
+	$( "#rate" ).val("");
+}
+
+function Tiered()
+{
+	$( "#rate_tr" ).attr("style","display:none;");
+	$( "#rate" ).val("");
 }
 </script>
 <?php
@@ -197,6 +225,14 @@ function Search()
 <td><input type="text" id="name" disabled="disabled" size="20" style='padding:0px; margin:0px;'></td>
 </tr>
 <tr>
+<td>Type </td>
+<td><select id="rate_type" style="width:75px;">
+<option></option>
+<option value="F" onclick="Fixed()">Fixed</option>
+<option value="T" onclick="Tiered()">Tiered</option>
+</select></td>
+</tr>
+<tr id="rate_tr" style="display:none;">
 <td width='80px'>Rate ($)<span style="color:#ff0000;">*</span> </td>
 <td><input type="text" id="rate" size="20" style='padding:0px; margin:0px;'></td>
 </tr>

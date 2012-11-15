@@ -111,10 +111,30 @@ else
 		$q3 = mysql_query("SELECT * FROM sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 		$da3 = mysql_num_rows($q3);
 		
-		$q4 = mysql_query("SELECT rate FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$q4 = mysql_query("SELECT rate,type FROM timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
 		$da4 = mysql_fetch_row($q4);
 		
-		if ($da4[0] == "") { $rate = 16.57; } else { $rate = $da4[0]; }
+		if ($da4[0] == "")
+		{
+			$rate = 17.0458;
+		}
+		else
+		{
+			if ($da4[1] == "F")
+			{
+				$rate = $da4[0];
+			}
+			elseif ($da4[1] == "T")
+			{
+				$q3 = mysql_query("SELECT designation FROM vericon.timesheet_designation WHERE user = '$data[user]'") or die(mysql_error());
+				$desig = mysql_fetch_row($q3);
+				
+				$q3 = mysql_query("SELECT rate FROM vericon.timesheet_tiered WHERE designation = '$desig[0]' AND '$da3' BETWEEN `from` AND `to`") or die(mysql_error());
+				$t_rate = mysql_fetch_row($q3);
+				
+				$rate = $t_rate[0];
+			}
+		}
 		
 		if ($da2[0] != "")
 		{
