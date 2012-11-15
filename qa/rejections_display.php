@@ -1,11 +1,8 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$date = $_GET["date"];
-$week = date("W", strtotime($date));
-$year = date("Y", strtotime($date));
-$date1 = date("Y-m-d", strtotime($year . "W" . $week . "1"));
-$date2 = date("Y-m-d", strtotime($year . "W" . $week . "7"));
+$date1 = $_GET["date1"];
+$date2 = $_GET["date2"];
 
 $q0 = mysql_query("SELECT * FROM vericon.centres WHERE status = 'Enabled'") or die(mysql_error());
 $num = mysql_num_rows($q0);
@@ -21,6 +18,8 @@ $(function() {
 		buttonImage: "../images/calendar.png",
 		buttonImageOnly: true,
 		dateFormat: "yy-mm-dd",
+		altField: "#datepicker2",
+		altFormat: "dd/mm/yy",
 		firstDay: 1,
 		showOtherMonths: true,
 		selectOtherMonths: true,
@@ -29,9 +28,41 @@ $(function() {
 		maxDate: "0d",
 		minDate: "<?php echo "2012-03-01"; ?>",
 		onSelect: function(dateText, inst) {
+			var date2 = $( "#datepicker3" );
+			
 			$( "#display" ).hide('blind', '' , 'slow', function() {
 				$( "#display_loading" ).show();
-				$( "#display" ).load('rejections_display.php?date=' + dateText,
+				$( "#display" ).load('rejections_display.php?date1=' + dateText + '&date2=' + date2.val(),
+				function() {
+					$( "#display_loading" ).hide();
+					$( "#display" ).show('blind', '' , 'slow');
+				});
+			});
+		}});
+});
+</script>
+<script>
+$(function() {
+	$( "#datepicker3" ).datepicker( {
+		showOn: "button",
+		buttonImage: "../images/calendar.png",
+		buttonImageOnly: true,
+		dateFormat: "yy-mm-dd",
+		altField: "#datepicker4",
+		altFormat: "dd/mm/yy",
+		firstDay: 1,
+		showOtherMonths: true,
+		selectOtherMonths: true,
+		changeMonth: true,
+		changeYear: true,
+		maxDate: "0d",
+		minDate: "<?php echo "2012-03-01"; ?>",
+		onSelect: function(dateText, inst) {
+			var date1 = $( "#datepicker" );
+			
+			$( "#display" ).hide('blind', '' , 'slow', function() {
+				$( "#display_loading" ).show();
+				$( "#display" ).load('rejections_display.php?date1=' + date1.val() + '&date2=' + dateText,
 				function() {
 					$( "#display_loading" ).hide();
 					$( "#display" ).show('blind', '' , 'slow');
@@ -44,7 +75,7 @@ $(function() {
 <table width="100%">
 <tr>
 <td align="left" style="padding-left:5px;"><img src="../images/rejection_report_header.png" width="170" height="25"></td>
-<td align="right" style="padding-right:10px;"><input type='text' size='9' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date1)); ?>" /> to <input type='text' size='9' readonly='readonly' style="height:20px;" value="<?php echo date("d/m/Y", strtotime($date2)); ?>" /><input type='hidden' id='datepicker' value='<?php echo $date; ?>' /></td>
+<td align="right" style="padding-right:10px;"><input type='text' size='9' id='datepicker2' readonly='readonly' value='<?php echo date("d/m/Y", strtotime($date1)); ?>' /><input type='hidden' id='datepicker' value='<?php echo $date1; ?>' /> to <input type='text' size='9' id='datepicker4' readonly='readonly' value='<?php echo date("d/m/Y", strtotime($date2)); ?>' /><input type='hidden' id='datepicker3' value='<?php echo $date2; ?>' /></td>
 </tr>
 <tr>
 <td colspan="2"><img src="../images/line.png" width="100%" height="9" /></td>

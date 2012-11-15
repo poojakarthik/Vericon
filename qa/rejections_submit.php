@@ -19,12 +19,9 @@ if ($method == "notes")
 elseif ($method == "export")
 {
 	$centre = $_GET["centre"];
-	$date = $_GET["date"];
-	$week = date("W", strtotime($date));
-	$year = date("Y", strtotime($date));
-	$date1 = date("Y-m-d", strtotime($year . "W" . $week . "1"));
-	$date2 = date("Y-m-d", strtotime($year . "W" . $week . "7"));	
-	
+	$date1 = $_GET["date1"];
+	$date2 = $_GET["date2"];
+		
 	$header = "Sale ID,Status,Centre,Agent Name,Date of Sale,Campaign,Type,Plans,Account Type,Rejection Reason";
 	
 	if ($centre == "All")

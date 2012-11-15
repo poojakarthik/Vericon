@@ -12,10 +12,11 @@ div#users-contain table td { border: 1px solid #eee; padding: .3em 5px; text-ali
 <script>
 function View(centre)
 {
-	var date = $( "#datepicker" );
+	var date1 = $( "#datepicker" ),
+		date2 = $( "#datepicker3" );
 	
 	$( "#display2" ).hide('blind', '', 'slow', function() {
-		$( "#display2" ).load("rejections_display2.php?centre=" + centre + "&date=" + date.val(), function() {
+		$( "#display2" ).load("rejections_display2.php?centre=" + centre + "&date1=" + date1.val() + "&date2=" + date2.val(), function() {
 			$( "#display2" ).show('blind', '' , 'slow');
 		});
 	});
@@ -68,13 +69,15 @@ function Export()
 
 function Export_All()
 {
-	var date = $( "#datepicker" );
-	window.location = "rejections_submit.php?method=export&centre=All&date=" + date.val();
+	var date1 = $( "#datepicker" ),
+		date2 = $( "#datepicker3" );
+	window.location = "rejections_submit.php?method=export&centre=All&date1=" + date1.val() + "&date2=" + date2.val();
 }
 
 function Export_Centre()
 {
-	var date = $( "#datepicker" ),
+	var date1 = $( "#datepicker" ),
+		date2 = $( "#datepicker3" ),
 		centre = $( "#centre_store" );
 	
 	if (!centre.val())
@@ -83,7 +86,7 @@ function Export_Centre()
 	}
 	else
 	{
-		window.location = "rejections_submit.php?method=export&centre=" + centre.val() + "&date=" + date.val();
+		window.location = "rejections_submit.php?method=export&centre=" + centre.val() + "&date1=" + date1.val() + "&date2=" + date2.val();
 	}
 }
 </script>
@@ -108,7 +111,7 @@ function Export_Centre()
 
 <div id="display">
 <script>
-$( "#display" ).load("rejections_display.php?date=<?php echo date("Y-m-d"); ?>",
+$( "#display" ).load("rejections_display.php?date1=<?php echo date("Y-m-d"); ?>&date2=<?php echo date("Y-m-d"); ?>",
 function() {
 	$( "#display_loading" ).hide();
 	$( "#display" ).show('blind', '' , 'slow');
