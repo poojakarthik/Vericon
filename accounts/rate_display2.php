@@ -24,7 +24,7 @@ $user = $_GET["user"];
 if ($query == "")
 {
 	$page_link = "?page=" . $_GET["page"] . "&user=" . $user;
-	$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+	$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' AND type = 'Self' ORDER BY centre ASC") or die(mysql_error());
 	while($centres = mysql_fetch_row($q))
 	{
 		$c_q .= "centre = '$centres[0]' OR ";
@@ -49,9 +49,13 @@ if ($query == "")
 		{
 			$q1 = mysql_query("SELECT * FROM vericon.timesheet_rate WHERE user = '$r[user]'") or die(mysql_error());
 			$d = mysql_fetch_assoc($q1);
-			if ($d["rate"] != "")
+			if ($d["type"] == "F")
 			{
 				$rate = "\$" . $d["rate"];
+			}
+			elseif ($d["type"] == "T")
+			{
+				$rate = "Tiered";
 			}
 			else
 			{
@@ -81,13 +85,17 @@ else
 	
 	$q1 = mysql_query("SELECT * FROM vericon.timesheet_rate WHERE user = '$r[user]'") or die(mysql_error());
 	$d = mysql_fetch_assoc($q1);
-	if ($d["rate"] != "")
+	if ($d["type"] == "F")
 	{
 		$rate = "\$" . $d["rate"];
 	}
+	elseif ($d["type"] == "T")
+	{
+		$rate = "Tiered";
+	}
 	else
 	{
-		$rate = "";
+		$rate = "-";
 	}
 	
 	$q2 = mysql_query("SELECT designation FROM vericon.timesheet_designation WHERE user = '$r[user]'") or die(mysql_error());

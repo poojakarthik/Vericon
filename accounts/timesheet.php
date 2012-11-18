@@ -121,8 +121,12 @@ function PAYG(user)
 	var field = "#" + user + "_payg",
 		field2 = "#" + user + "_net",
 		field3 = "#" + user + "_rate",
+		field4 = "#" + user + "_type",
+		field5 = "#" + user + "_actual",
 		payg = $( field ),
 		rate = $( field3 ).html().substr(1),
+		type = $( field4 ),
+		a_rate = $( field5 ),
 		date = $( "#datepicker" );
 
 	function checkRegexp( o, regexp, n ) {
@@ -140,7 +144,7 @@ function PAYG(user)
 	
 	if (bValid)
 	{
-		$.get("timesheet_process.php", { method: "payg", date: date.val(), user: user, payg: payg.val(), rate: rate }, function (data) {
+		$.get("timesheet_process.php", { method: "payg", date: date.val(), user: user, payg: payg.val(), rate: rate, type: type.val(), a_rate: a_rate.val() }, function (data) {
 			$( field2 ).html(data);
 		});
 	}

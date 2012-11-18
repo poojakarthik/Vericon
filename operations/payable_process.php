@@ -25,10 +25,30 @@ if ($method == "hours")
 	$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$user' AND WEEK(approved_timestamp) = '$week' AND status = 'Approved'") or die(mysql_error());
 	$sale = mysql_num_rows($q1);
 	
-	$q2 = mysql_query("SELECT rate FROM vericon.timesheet_rate WHERE user = '$user'") or die(mysql_error());
+	$q2 = mysql_query("SELECT rate,type FROM vericon.timesheet_rate WHERE user = '$user'") or die(mysql_error());
 	$da2 = mysql_fetch_row($q2);
 	
-	if ($da2[0] == "") { $rate = 16.57; } else { $rate = $da2[0]; }
+	if ($da2[0] == "")
+	{
+		$rate = 17.0458;
+	}
+	else
+	{
+		if ($da2[1] == "F")
+		{
+			$rate = $da2[0];
+		}
+		elseif ($da2[1] == "T")
+		{
+			$q3 = mysql_query("SELECT designation FROM vericon.timesheet_designation WHERE user = '$user'") or die(mysql_error());
+			$desig = mysql_fetch_row($q3);
+			
+			$q3 = mysql_query("SELECT rate FROM vericon.timesheet_tiered WHERE designation = '$desig[0]' AND '$sale' BETWEEN `from` AND `to`") or die(mysql_error());
+			$t_rate = mysql_fetch_row($q3);
+			
+			$rate = $t_rate[0];
+		}
+	}
 	
 	$gross = (($rate * $hours) + $da["op_bonus"]) * 1.09;
 	$net = $sale - $da["cancellations"];
@@ -60,10 +80,30 @@ elseif ($method == "bonus")
 	$q1 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$user' AND WEEK(approved_timestamp) = '$week' AND status = 'Approved'") or die(mysql_error());
 	$sale = mysql_num_rows($q1);
 	
-	$q2 = mysql_query("SELECT rate FROM vericon.timesheet_rate WHERE user = '$user'") or die(mysql_error());
+	$q2 = mysql_query("SELECT rate,type FROM vericon.timesheet_rate WHERE user = '$user'") or die(mysql_error());
 	$da2 = mysql_fetch_row($q2);
 	
-	if ($da2[0] == "") { $rate = 16.57; } else { $rate = $da2[0]; }
+	if ($da2[0] == "")
+	{
+		$rate = 17.0458;
+	}
+	else
+	{
+		if ($da2[1] == "F")
+		{
+			$rate = $da2[0];
+		}
+		elseif ($da2[1] == "T")
+		{
+			$q3 = mysql_query("SELECT designation FROM vericon.timesheet_designation WHERE user = '$user'") or die(mysql_error());
+			$desig = mysql_fetch_row($q3);
+			
+			$q3 = mysql_query("SELECT rate FROM vericon.timesheet_tiered WHERE designation = '$desig[0]' AND '$sale' BETWEEN `from` AND `to`") or die(mysql_error());
+			$t_rate = mysql_fetch_row($q3);
+			
+			$rate = $t_rate[0];
+		}
+	}
 	
 	$gross = (($rate * $da["op_hours"]) + $bonus) * 1.09;
 	$net = $sale - $da["cancellations"];

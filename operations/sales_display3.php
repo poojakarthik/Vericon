@@ -25,12 +25,13 @@ if ($method == "sales")
 <table id="users" class="ui-widget ui-widget-content" width="98%" style="margin-top:0px;">
 <thead>
 <tr class="ui-widget-header ">
-<th style="text-align:center;" colspan="3">Business</th>
+<th style="text-align:center;" colspan="4">Business</th>
 </tr>
 <tr class="ui-widget-header ">
 <th style="text-align:center;">Sale ID</th>
 <th style="text-align:center;">Status</th>
 <th style="text-align:center;">Agent</th>
+<th style="text-align:center;">Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -40,7 +41,7 @@ $q = mysql_query("SELECT * FROM vericon.sales_customers WHERE status != 'Queue' 
 if (mysql_num_rows($q) == 0)
 {
 	echo "<tr>";
-	echo "<td style='text-align:center;' colspan='3'>No Business Sales Made by $centre</td>";
+	echo "<td style='text-align:center;' colspan='4'>No Business Sales Made by $centre</td>";
 	echo "</tr>";
 }
 else
@@ -54,6 +55,7 @@ else
 		echo "<td style='text-align:center;'>" . $data["id"] . "</td>";
 		echo "<td style='text-align:center;'>" . $data["status"] . "</td>";
 		echo "<td style='text-align:center;'>" . $agent[0] . " " . $agent[1] . "</td>";
+		echo "<td style='text-align:center;'><button onclick='Sale_Notes(\"$data[id]\")' class='icon_notes'></button></td>";
 		echo "</tr>";
 	}
 }
@@ -67,12 +69,13 @@ else
 <table id="users" class="ui-widget ui-widget-content" width="98%" style="margin-top:0px;">
 <thead>
 <tr class="ui-widget-header ">
-<th style="text-align:center;" colspan="3">Residential</th>
+<th style="text-align:center;" colspan="4">Residential</th>
 </tr>
 <tr class="ui-widget-header ">
 <th style="text-align:center;">Sale ID</th>
 <th style="text-align:center;">Status</th>
 <th style="text-align:center;">Agent</th>
+<th style="text-align:center;">Notes</th>
 </tr>
 </thead>
 <tbody>
@@ -82,7 +85,7 @@ $q = mysql_query("SELECT * FROM vericon.sales_customers WHERE status != 'Queue' 
 if (mysql_num_rows($q) == 0)
 {
 	echo "<tr>";
-	echo "<td style='text-align:center;' colspan='3'>No Residential Sales Made by $centre</td>";
+	echo "<td style='text-align:center;' colspan='4'>No Residential Sales Made by $centre</td>";
 	echo "</tr>";
 }
 else
@@ -96,6 +99,7 @@ else
 		echo "<td style='text-align:center;'>" . $data["id"] . "</td>";
 		echo "<td style='text-align:center;'>" . $data["status"] . "</td>";
 		echo "<td style='text-align:center;'>" . $agent[0] . " " . $agent[1] . "</td>";
+		echo "<td style='text-align:center;'><button onclick='Sale_Notes(\"$data[id]\")' class='icon_notes'></button></td>";
 		echo "</tr>";
 	}
 }

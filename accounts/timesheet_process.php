@@ -53,16 +53,32 @@ elseif ($method == "payg")
 {
 	$user = $_GET["user"];
 	$payg = $_GET["payg"];
+	$type = $_GET["type"];
 	$rate = $_GET["rate"];
+	$a_rate = $_GET["a_rate"];
 	
-	mysql_query("UPDATE timesheet_other SET payg = '$payg', rate = '$rate' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
-	
-	$q = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),SUM(annual),SUM(sick) FROM timesheet_other WHERE user = '$user' AND week = '$week'") or die(mysql_error());
-	$da = mysql_fetch_row($q);
-	
-	$gross = ($rate * ($da[0] + $da[2] + $da[3])) + $da[1];
-	$net =  $gross - $payg;
-	echo "\$" . number_format($net,2);
+	if ($type == "F")
+	{
+		mysql_query("UPDATE timesheet_other SET payg = '$payg', rate = '$rate', pay_type = '$type' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+		
+		$q = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),SUM(annual),SUM(sick) FROM timesheet_other WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+		$da = mysql_fetch_row($q);
+		
+		$gross = ($rate * ($da[0] + $da[2] + $da[3])) + $da[1];
+		$net =  $gross - $payg;
+		echo "\$" . number_format($net,2);
+	}
+	elseif ($type == "T")
+	{
+		mysql_query("UPDATE timesheet_other SET payg = '$payg', rate = '$a_rate', base_rate = '$rate', pay_type = '$type' WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+		
+		$q = mysql_query("SELECT SUM(op_hours),SUM(op_bonus),SUM(annual),SUM(sick) FROM timesheet_other WHERE user = '$user' AND week = '$week'") or die(mysql_error());
+		$da = mysql_fetch_row($q);
+		
+		$gross = ($a_rate * ($da[0] + $da[2] + $da[3])) + $da[1];
+		$net =  $gross - $payg;
+		echo "\$" . number_format($net,2);
+	}
 }
 elseif ($method == "m_cost")
 {

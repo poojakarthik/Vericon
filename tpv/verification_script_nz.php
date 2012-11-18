@@ -602,6 +602,22 @@ function Next(id,action)
 				}
 			});
 	}
+	else if (action == "modem_delivery")
+	{
+		var modem_address = $( "#modem_address" );
+		
+		$.get("../script/submit.php", { id: id, action: action, modem_address: modem_address.val() },
+			function(data) {
+				if (data == "submitted")
+				{
+					N();
+				}
+				else
+				{
+					Submit_Error(data);
+				}
+			});
+	}
 	else if (action == "mobile2")
 	{
 		var mobile = $( "#mobile" );

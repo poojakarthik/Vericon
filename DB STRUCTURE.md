@@ -1445,11 +1445,13 @@ CREATE TABLE IF NOT EXISTS `timesheet_other` (
   `cancellations` int(11) NOT NULL,
   `op_hours` decimal(10,2) NOT NULL,
   `op_bonus` decimal(10,2) NOT NULL,
-  `rate` decimal(10,2) NOT NULL,
+  `rate` decimal(10,4) NOT NULL,
   `payg` decimal(10,2) NOT NULL,
   `annual` decimal(10,2) NOT NULL,
   `sick` decimal(10,2) NOT NULL,
   `comment` text NOT NULL,
+  `pay_type` varchar(1) NOT NULL,
+  `base_rate` decimal(10,4) NOT NULL,
   PRIMARY KEY (`user`,`week`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
@@ -1460,8 +1462,22 @@ CREATE TABLE IF NOT EXISTS `timesheet_other` (
 
 CREATE TABLE IF NOT EXISTS `timesheet_rate` (
   `user` varchar(16) NOT NULL,
-  `rate` decimal(10,2) NOT NULL,
+  `rate` decimal(10,4) NOT NULL,
+  `type` varchar(1) NOT NULL,
   PRIMARY KEY (`user`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
+```
+```sql
+--
+-- Table structure for table `timesheet_tiered`
+--
+
+CREATE TABLE IF NOT EXISTS `timesheet_tiered` (
+  `designation` varchar(32) NOT NULL,
+  `from` int(11) NOT NULL,
+  `to` int(11) NOT NULL,
+  `rate` decimal(10,4) NOT NULL,
+  KEY `designation` (`designation`)
 ) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 ```
 ```sql

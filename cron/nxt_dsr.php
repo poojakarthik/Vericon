@@ -14,7 +14,7 @@ if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/NXT/DSR_Se
 	exit;
 }
 
-$header = "DSR#,VeriCon ID,Recording,Sale ID,Account Status,Agent,Centre,Date of Sale,Telco Name,Rating,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,Company Number,Contact Name,Contact Phone Number,Service Number 1,Service Number 2,Service Number 3,Service Number 4,Bundle,Building Address,Street Number,Street Name,Street Type,Suburb,City/Town,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail City/Town,Mail Post Code,Contract Months,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Mobile Contact,Home Number,Email Address,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment,Address Verified";
+$header = "DSR#,VeriCon ID,Recording,Sale ID,Account Status,Agent,Centre,Date of Sale,Telco Name,Rating,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,Company Number,Contact Name,Contact Phone Number,Service Number 1,Service Number 2,Service Number 3,Service Number 4,Bundle,Building Address,Street Number,Street Name,Street Type,Suburb,City/Town,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail City/Town,Mail Post Code,Modem Delivery Address,Contract Months,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Mobile Contact,Home Number,Email Address,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment,Address Verified";
 
 $header1 = "Sale ID,Service Name,Service Number,Service Plan,Current Provider,Current SP Acc Number,Intact ADSL Connection,Pending Orders,Pending Order Closing,Service Status,Zone,Density,Urbanisation,Account Name";
 
@@ -337,6 +337,7 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . $mail_suburb . '",';
 	$body .= '"' . $mail_city_town . '",';
 	$body .= '"' . $mail_postcode . '",';
+	$body .= '"' . $data["modem_address"] . '",';
 	$body .= '"' . $contract_months . '",';
 	$body .= '"' . $data["ongoing_credit"] . '",';
 	$body .= '"' . $data["onceoff_credit"] . '",';

@@ -72,9 +72,13 @@ if ($query == "")
 		{
 			$q1 = mysql_query("SELECT * FROM vericon.timesheet_rate WHERE user = '$r[user]'") or die(mysql_error());
 			$d = mysql_fetch_assoc($q1);
-			if ($d["rate"] != "")
+			if ($d["type"] == "F")
 			{
 				$rate = "\$" . $d["rate"];
+			}
+			elseif ($d["type"] == "T")
+			{
+				$rate = "Tiered";
 			}
 			else
 			{
@@ -104,13 +108,17 @@ else
 	
 	$q1 = mysql_query("SELECT * FROM vericon.timesheet_rate WHERE user = '$r[user]'") or die(mysql_error());
 	$d = mysql_fetch_assoc($q1);
-	if ($d["rate"] != "")
+	if ($d["type"] == "F")
 	{
 		$rate = "\$" . $d["rate"];
 	}
+	elseif ($d["type"] == "T")
+	{
+		$rate = "Tiered";
+	}
 	else
 	{
-		$rate = "";
+		$rate = "-";
 	}
 	
 	$q2 = mysql_query("SELECT designation FROM vericon.timesheet_designation WHERE user = '$r[user]'") or die(mysql_error());

@@ -357,4 +357,18 @@ elseif ($action == "best_buddy")
 		echo "submitted";
 	}
 }
+elseif ($action == "modem_delivery")
+{
+	$modem_address = $_GET["modem_address"];
+	
+	if ($modem_address == "")
+	{
+		echo "Please enter the customer's nominated modem delivery address";
+	}
+	else
+	{
+		mysql_query("UPDATE sales_customers SET modem_address = '" . mysql_real_escape_string($modem_address) . "' WHERE id = '$id'") or die(mysql_error());
+		echo "submitted";
+	}
+}
 ?>

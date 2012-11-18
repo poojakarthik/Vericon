@@ -13,9 +13,15 @@
 0 1 * * * /var/vericon/cron/db_backup.sh
 ```
 ##Other
+###Additional Source List
+```
+deb http://ftp.debian.org/debian/ squeeze non-free
+```
 ###Additional Libraries
 ```
 apt-get install dos2unix
+apt-get install sun-java6-jre
+apt-get install sun-java6-jdk
 ```
 ###Directories
 ```

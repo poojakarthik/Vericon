@@ -22,6 +22,7 @@ $mobile = $data["mobile"];
 $email = $data["email"];
 $best_buddy = $data["best_buddy"];
 $bus_name = $data["bus_name"];
+$modem_address = $data["modem_address"];
 
 switch ($title)
 {
@@ -219,7 +220,50 @@ if ( $( '#postal' ).val() != undefined )
 		});
 	}
 }
-<?php } ?>
+<?php
+}
+?>
+
+function Modem_Physical()
+{
+	if ($('#modem_physical').attr('checked'))
+	{
+		$( "#modem_postal" ).prop("checked", false);
+		$( "#modem_address" ).val("Same as Physical");
+		$( "#modem_address" ).attr("disabled", true);
+	}
+	else
+	{
+		$( "#modem_address" ).val("");
+		$( "#modem_address" ).removeAttr("disabled");
+	}
+}
+
+function Modem_Postal()
+{
+	if ($('#modem_postal').attr('checked'))
+	{
+		$( "#modem_physical" ).prop("checked", false);
+		$( "#modem_address" ).val("Same as Postal");
+		$( "#modem_address" ).attr("disabled", true);
+	}
+	else
+	{
+		$( "#modem_address" ).val("");
+		$( "#modem_address" ).removeAttr("disabled");
+	}
+}
+
+if ( $( "#modem_address" ) != null && $( "#modem_address" ).val() == "Same as Physical" )
+{
+	$( "#modem_physical" ).prop("checked", true);
+	$( "#modem_address" ).attr("disabled", true);
+}
+else if ( $( "#modem_address" ) != null && $( "#modem_address" ).val() == "Same as Postal" )
+{
+	$( "#modem_postal" ).prop("checked", true);
+	$( "#modem_address" ).attr("disabled", true);
+}
 
 if ( $( '#packages' ) != null )
 {
@@ -409,5 +453,11 @@ $input["lines2"] = $line . "<div id='users-contain' class='ui-widget'>
 
 $input["best_buddy"] = $line . "<br><br><table border='0' width='100%'>
 <tr><td width='95px'>Best Buddy<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='25' id='best_buddy' value='$best_buddy' /></td></tr>
+</table>";
+
+$input["modem_delivery"] = $line . "<br><br><table border='0' width='100%'>
+<tr><td width='105px'>Modem Address<span style='color:#ff0000;'>*</span> </td><td><input type='text' size='50' id='modem_address' value='$modem_address' /></tr>
+<tr><td></td><td><input type='checkbox' id='modem_physical' onclick='Modem_Physical()' style='height:auto;' /> <span>Same as Physical</span></td></tr>
+<tr><td></td><td><input type='checkbox' id='modem_postal' onclick='Modem_Postal()' style='height:auto;' /> <span>Same as Postal</span></td></tr>
 </table>";
 ?>

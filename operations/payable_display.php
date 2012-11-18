@@ -110,10 +110,30 @@ else
 		$q3 = mysql_query("SELECT * FROM vericon.sales_customers WHERE agent = '$data[user]' AND status = 'Approved' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 		$da3 = mysql_num_rows($q3);
 		
-		$q4 = mysql_query("SELECT rate FROM vericon.timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
+		$q4 = mysql_query("SELECT rate,type FROM vericon.timesheet_rate WHERE user = '$data[user]'") or die(mysql_error());
 		$da4 = mysql_fetch_row($q4);
 		
-		if ($da4[0] == "") { $rate = 16.57; } else { $rate = $da4[0]; }
+		if ($da4[0] == "")
+		{
+			$rate = 17.0458;
+		}
+		else
+		{
+			if ($da4[1] == "F")
+			{
+				$rate = $da4[0];
+			}
+			elseif ($da4[1] == "T")
+			{
+				$q3 = mysql_query("SELECT designation FROM vericon.timesheet_designation WHERE user = '$data[user]'") or die(mysql_error());
+				$desig = mysql_fetch_row($q3);
+				
+				$q3 = mysql_query("SELECT rate FROM vericon.timesheet_tiered WHERE designation = '$desig[0]' AND '$da3' BETWEEN `from` AND `to`") or die(mysql_error());
+				$t_rate = mysql_fetch_row($q3);
+				
+				$rate = $t_rate[0];
+			}
+		}
 		
 		if ($da[0] == "")
 		{
@@ -184,7 +204,7 @@ else
 	$q2 = mysql_query("SELECT COUNT(id) FROM vericon.sales_customers WHERE status = 'Approved' AND centre = '$centre' AND DATE(approved_timestamp) BETWEEN '$date1' AND '$date2'") or die(mysql_error());
 	$da2 = mysql_fetch_row($q2);
 	
-	$total_gross = ((16.57 * $total_hours) + $total_bonus) * 1.09;
+	$total_gross = ((17.0458 * $total_hours) + $total_bonus) * 1.09;
 	$total_cps = $total_gross / $total_net;
 	
 	echo "<tr>";
