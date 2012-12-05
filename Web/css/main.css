@@ -1,0 +1,234 @@
+/* CSS Document */
+
+	html{
+		overflow-y:scroll;
+	}
+	*{
+	margin:0px; padding:0px;
+	}
+	body{
+	background:url(../images/bg.jpg) center top no-repeat #73d6f6; margin:0 auto;
+	font:normal 11px Tahoma; line-height:18px; color:#165C80;
+	}
+	h1{
+	font-size:28px; font-weight:normal; color:#165C80; padding:0 20px; text-shadow:0 1px 0 #FFF;
+	font-family:SansationRegular;
+	}
+	p{
+	padding:10px 0;
+	}
+	a{
+	text-decoration:none; color:#165C80; outline:none; border:none;
+	}
+	a:hover{
+	text-decoration:underline; color:#165C80; outline:none; border:none;
+	}
+	@font-face {
+	font-family:'SansationRegular';
+	src:url('../lib/fonts/Sansation_Regular-webfont.eot');
+	src:url('../lib/fonts/Sansation_Regular-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../lib/fonts/Sansation_Regular-webfont.woff') format('woff'),
+		url('../lib/fonts/Sansation_Regular-webfont.ttf') format('truetype'),
+		url('../lib/fonts/Sansation_Regular-webfont.svg#SansationRegular') format('svg');
+	font-weight:normal;
+	font-style:normal;
+	}
+	@font-face {
+	font-family:'DroidSansRegular';
+	src:url('../lib/fonts/DroidSans-webfont.eot');
+	src:url('../lib/fonts/DroidSans-webfont.eot?#iefix') format('embedded-opentype'),
+		url('../lib/fonts/DroidSans-webfont.woff') format('woff'),
+		url('../lib/fonts/DroidSans-webfont.ttf') format('truetype'),
+		url('../lib/fonts/DroidSans-webfont.svg#DroidSansRegular') format('svg');
+	font-weight:normal;
+	font-style:normal;
+	}
+/*-----------------------------------------------------------------------*/
+	#preload{
+	display:none;
+	}
+	#broadcast{
+	display:none;
+	}
+	#wrapper{
+	width:95%; min-width:1000px; max-width:1200px; height:auto; margin:-4px auto 0;
+	}
+	.jgrowl_theme{
+	background:rgba(0,0,0,0.75); border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;
+	color:#FFF; padding:5px; text-align:left; border:none; height:auto; width:350px; top:10px; right:10px;
+	left:'';
+	}
+/*-----------------------------------------------------------------------*/
+	#top_repeat{
+	background:url(../images/login_section_repeat.png) repeat; width:100%; height:4px;
+	}
+	#header_inner{
+	width:100%; height:124px; margin:0; padding:0px;
+	}
+	#header_inner .logo{
+	width:481px; height:124px; margin-top:10px; padding-left:34px; float:left;
+	}
+	#header_inner .rightSide{
+	width:460px; height:124px; margin:0px; padding:0px; float:right; font-size:12px; background:url(../images/toplevel.png) top right no-repeat;
+	}
+	#header_inner .rightSide ul{
+	width:400px; height:auto; margin:0px; padding:0 23px 0 0; float:right;
+	}
+	#header_inner .rightSide ul li{
+	width:auto; height:auto; margin:0px; padding:0 5px; float:right; display:block; list-style:none;
+	}
+	#header_inner .rightSide ul li a{
+	color:#FFFFFF; cursor:pointer;
+	}
+	#header_inner .rightSide ul li a:hover{
+	color:#FFFFFF; text-decoration:none;
+	}
+	#ncv{
+	width:100%; height:54px; margin: 0 auto; font-size:12px;
+	}
+	#contents_inner{
+	width:100%; height:auto; margin:0 auto; padding:30px 0 100px; box-shadow:0 -5px 5px -5px rgba(0, 0, 0, 0.22); -moz-box-shadow:0 -5px 5px -5px rgba(0, 0, 0, 0.22);
+	background:-moz-linear-gradient(center top , rgba(255, 255, 255, 0.31), rgba(255, 255, 255, 0)) repeat scroll 0 0 transparent;
+	background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.31), rgba(255, 255, 255, 0)) repeat scroll 0 0 transparent;
+	}
+	.links{
+	width:250px; height:auto; margin:0px; padding:0px; float:right;
+	}
+	.links ul li{
+	width:250px; height:auto; margin:0 0 25px 0; padding:0 0 0 20px; float:left; display:block; list-style:none; font-size:14px;
+	font-weight:bold; background:url(../images/arrow.png) no-repeat left 4px;
+	}
+	#display{
+	width:90%; height:auto; min-height:500px; margin:0 auto;
+	}
+	#display .head{
+	width:100%; margin:0 auto; padding:20px 0 10px; height:50px;
+	}
+	#display .head table{
+	width:100%; height:100%;
+	}
+	#display .head td{
+	height:100%; white-space:nowrap;
+	}
+	#display .dotted{
+	background:url(../images/header_bg.png) repeat; width:100%; height:100%;
+	}
+	#display .box{
+	width:100%; margin:0; padding:2px 0;
+	}
+	#display hr{
+	width:100%; height:2px; background:url(../images/tops.png) repeat-x; color: rgba(0,0,0,0); border:none;
+	}
+	#display .box table{
+	padding:0 10px; width:100%; 
+	}
+	#display .box td{
+	width:20%; 
+	}
+	#display .portal{
+	width:100%; height:119px; margin:0px; background:rgba(0,106,183,0.21);
+	font-size:18px; border:none; cursor:pointer; color:#006ab7; font-family:DroidSansRegular;
+	}
+	#display .portal:hover{
+	background:rgba(0,106,183,0.3); color:#1872ba;
+	}
+	#display .portal:disabled{
+	background:rgba(0,106,183,0.1); cursor:default; color: #a6c6e0;
+	}
+	#display .text{
+	width:100%; margin:0px; padding:0 10px;
+	}
+	#display .text li{
+	background:url("../images/arrow1.png") no-repeat scroll left 7px transparent;
+	width:100%; margin:3px 0 3px 20px; padding:0 0 0 20px; display:block; list-style: none outside none;
+	}
+/*-----------------------------------------------------------------------*/
+	#footer{
+		width:100%; padding-bottom:10px; margin-top:-80px;
+	}
+	#footer .line_left{
+	width:100%; height:2px; background:url(../images/footer_left.png) no-repeat; margin-bottom:5px;
+	padding-right:5px;
+	}
+	#footer .line_repeat{
+	width:100%; height:2px; background:url(../images/footer_repeat.png) repeat-x; margin-bottom:5px;
+	padding-right:5px;
+	}
+	#footer .line_right{
+	width:100%; height:2px; background:url(../images/footer_right.png) no-repeat; margin-bottom:5px;
+	}
+	#footer .left_f{
+	width:50%; padding-left:27px; margin:0px; font-size:9px;
+	}
+	#footer .right_f{
+	width:50%; padding-right:27px; margin:0px; font-size:9px;
+	}
+/*-----------------------------------------------------------------------*/
+	#menu, #menu ul {
+	margin: 0; padding: 0; list-style: none;
+	}
+	
+	#menu {
+	width: 100%; height: 54px; margin: 0 auto; font-size:12px;
+	}
+	
+	#menu:before, #menu:after {
+	content: ""; display: table;
+	}
+	
+	#menu:after {
+	clear: both;
+	}
+	
+	#menu {
+	zoom:1;
+	}
+	
+	#menu li {
+	width:auto; height:54px; margin:0 1px; padding:0px; float:right; display:block; list-style:none;
+	}
+	
+	#menu a {
+	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
+	background:none repeat scroll 0 0 rgba(181, 222, 241, 0.53); font-family:SansationRegular; color:#006ab7;
+	text-shadow:0 1px 0 #FFF; cursor:pointer; text-decoration: none;
+	}
+	
+	#menu li:hover > a {
+	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
+	background:rgba(181, 222, 241, 1); text-decoration:none; font-family:SansationRegular; color:#006ab7;
+	text-shadow:0 1px 0 #FFF;
+	}
+	
+	#menu ul {
+	margin: 20px 0 0 0; opacity: 0; visibility: hidden; position: absolute; top: 177px; z-index: 100;
+	-webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out;  
+	box-shadow: 0px 4px 5px rgba(0,0,0,0.22); -moz-box-shadow: 0px 4px 5px rgba(0,0,0,0.22); -webkit-box-shadow: 0px 4px 5px rgba(0,0,0,0.22);
+	}
+	
+	#menu li:hover > ul {
+	opacity: 1; visibility: visible; margin: 0;
+	}
+	
+	#menu ul li {
+	float: none; display: block; border: 0; margin: 1px 0;
+	}
+	
+	#menu ul a {    
+	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
+	background:none repeat scroll 0 0 rgba(181, 222, 241, 0.53); font-family:SansationRegular; color:#006ab7;
+	text-shadow:0 1px 0 #FFF; cursor:pointer; white-space: nowrap;
+	}
+	
+	#menu ul a:hover {
+	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
+	background:rgba(181, 222, 241, 1); text-decoration:none; font-family:SansationRegular; color:#006ab7;
+	text-shadow:0 1px 0 #FFF;
+	}
+	
+	#menu .active {
+	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
+	background:rgba(181, 222, 241, 1); text-decoration:none; font-family:SansationRegular; color:#006ab7;
+	text-shadow:0 1px 0 #FFF; cursor:default; text-decoration: none;
+	}
+/*-----------------------------------------------------------------------*/
