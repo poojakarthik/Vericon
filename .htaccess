@@ -1,4 +1,0 @@
-RewriteEngine On
-RewriteCond %{HTTP_HOST} !^www\.
-RewriteRule (.*) https://www.vericon.com.au%{REQUEST_URI} [R=301,L]
-Options -Indexess
