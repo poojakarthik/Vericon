@@ -182,6 +182,28 @@ function V_Page_Load(id, sub_id, page_link)
 	}
 }
 
+function V_Page_Reload()
+{
+	V_Loading_Start();
+	$( "#display" ).load(v_current_page_link, function(data, status, xhr){
+		if (status == "error")
+		{
+			$(".loading_message").html("<p><b>An error occurred while loading the page.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+			setTimeout(function() {
+				V_Loading_End();
+				if (xhr.status == 420 || xhr.status == 421)
+				{
+					window.location = "/";
+				}
+			}, 2500);
+		}
+		else
+		{
+			V_Loading_End();
+		}
+	});
+}
+
 var v_current_portal = "";
 
 function V_Menu_Load(portal)
@@ -258,8 +280,15 @@ setInterval("V_Broadcast()", 120000);
 $.jGrowl.defaults.closer = false;
 $.jGrowl.defaults.closeTemplate = '<img src="/images/close_icon.png" width="16px" height="16px">';
 
-$(window).bind('beforeunload', function(){
-  return 'Are you sure you want to leave?';
+$(window).bind('beforeunload', function() {
+	return 'Are you sure you want to leave?';
+});
+
+$(window).keydown(function(event) {
+	if((event.ctrlKey && event.keyCode == 82) || (event.ctrlKey && event.keyCode == 116) || event.keyCode == 116) {
+		V_Page_Reload();
+		event.preventDefault();
+	}
 });
 </script>
 </head>
