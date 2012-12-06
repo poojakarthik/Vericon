@@ -16,14 +16,14 @@ function Admin02_Logout_User(user)
 		if (xhr.status == 420)
 		{
 			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
+			setTimeout(function() {
 				V_Logout();
 			}, 2500);
 		}
 		else if (xhr.status == 421)
 		{
 			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
+			setTimeout(function() {
 				V_Logout();
 			}, 2500);
 		}

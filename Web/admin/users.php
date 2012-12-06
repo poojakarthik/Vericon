@@ -1,0 +1,354 @@
+<?php
+include("../auth/restrict.php");
+?>
+<style>
+div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
+div#users-contain table th { border: 1px solid rgba(41,171,226,0.25); padding: .6em 10px; text-align: left; }
+div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .6em 5px; text-align: left; }
+.ui-autocomplete { max-height: 100px; overflow-y: auto; overflow-x: hidden; }
+.ui-autocomplete-category { font-weight: bold; padding: .2em .4em; margin: .8em 0 .2em; line-height: 1.5; }
+</style>
+
+<script>
+function Admin03_More_Users(page)
+{
+	var method = $( "#Admin03_method" ),
+		query = $( "#Admin03_query" );
+	
+	V_Loading_Start();
+	$( "#display_inner" ).load("/admin/users_display.php", { m: method.val(), page: page, query: query.val() }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 420)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else if (xhr.status == 421)
+			{
+				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			V_Loading_End();
+		}
+	});
+}
+
+function Admin03_Search(category,id)
+{
+	V_Loading_Start();
+	$( "#display_inner" ).load("/admin/users_display.php", { m: "search_" + category, query: id }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 420)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else if (xhr.status == 421)
+			{
+				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			V_Loading_End();
+		}
+	});
+}
+
+function Admin03_Display_Reload()
+{
+	var method = $( "#Admin03_method" ),
+		page = $( "#Admin03_page" ),
+		query = $( "#Admin03_query" );
+	
+	V_Loading_Start();
+	$( "#display_inner" ).load("/admin/users_display.php", { m: method.val(), page: page.val(), query: query.val() }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 420)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else if (xhr.status == 421)
+			{
+				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			V_Loading_End();
+		}
+	});
+}
+
+function Admin03_Create_User()
+{
+	V_Loading_Start();
+	$( "#display_inner" ).load("/admin/users_new.php", { }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 420)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else if (xhr.status == 421)
+			{
+				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			$( "#Admin03_search" ).attr("disabled","disabled");
+			$( "#Admin03_create_user" ).attr("disabled","disabled");
+			$( "#Admin03_create_user" ).removeAttr("onlick");
+			$( "#Admin03_pending_users" ).attr("disabled","disabled");
+			$( "#Admin03_pending_users" ).removeAttr("onlick");
+			V_Loading_End();
+		}
+	});
+}
+
+$.widget( "custom.catcomplete", $.ui.autocomplete, {
+	_renderMenu: function( ul, items ) {
+		var that = this,
+			currentCategory = "";
+		$.each( items, function( index, item ) {
+			if ( item.category != currentCategory ) {
+				ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
+				currentCategory = item.category;
+			}
+			that._renderItemData( ul, item );
+		});
+	}
+});
+
+$(function() {
+	$( "#Admin03_search" ).catcomplete({
+		source: function(request, response) {
+			$.ajax({
+				url: "/admin/users_search.php",
+				dataType: "json",
+				type: "POST",
+				data: {
+					term: request.term
+				},
+				success: function(data) {
+					response(data);
+				}
+			});
+		},
+		minLength: 2,
+		select: function (event, ui) {
+			Admin03_Search(ui.item.category, ui.item.id);
+		}
+	});
+});
+</script>
+<script>
+function Admin03_Toggle_Status(user,method)
+{
+	$.post("/admin/users_process.php", { m: method, user: user }, function(data) {
+		Admin03_Display_Reload();
+	}).error( function(xhr, text, err) {
+		if (xhr.status == 420)
+		{
+			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+			setTimeout(function() {
+				V_Logout();
+			}, 2500);
+		}
+		else if (xhr.status == 421)
+		{
+			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+			setTimeout(function() {
+				V_Logout();
+			}, 2500);
+		}
+		else
+		{
+			$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+			setTimeout(function() {
+				V_Loading_End();
+			}, 2500);
+		}
+	});
+}
+</script>
+
+<div class="head">
+<table>
+<tr>
+<td style="width:90px;"><div class="dotted"></div></td>
+<td valign="middle" nowrap="nowrap" width="1px"><h1>VeriCon Users</h1></td>
+<td><div class="dotted"></div></td>
+</tr>
+</table>
+</div>
+
+<div style="width:98%; margin:0 auto 10px;">
+<table width="100%">
+<tr>
+<td><input type="search" id="Admin03_search" placeholder="Search..."></td>
+<td align="right"><button onclick="Admin03_Create_User()" id="Admin03_create_user" class="btn">Create User</button>
+<?php
+$q = mysql_query("SELECT `first` FROM `vericon`.`auth_temp`") or die(mysql_error());
+if (mysql_num_rows($q) == 0)
+{
+	echo "<button disabled='disabled' class='btn' style='margin-left:10px;'>Pending Users</button>";
+}
+else
+{
+	echo "<button onclick='Admin03_Pending_Users()' id='Admin03_pending_users' class='btn' style='margin-left:10px;'>Pending Users</button>";
+}
+?></td>
+</tr>
+</table>
+</div>
+
+<div id="display_inner">
+<center><table width="98%" height="500px">
+<tr valign="top" height="95%">
+<td>
+<div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; margin-top:0px;">
+<thead>
+<tr class="ui-widget-header ">
+<th width="10%">Username</th>
+<th width="18%">Full Name</th>
+<th width="18%" style='text-align:center;'>Access</th>
+<th width="8%" style='text-align:center;'>Centre</th>
+<th width="13%" style='text-align:center;'>Joining Date</th>
+<th width="13%" style='text-align:center;'>Last Login</th>
+<th width="10%" style='text-align:center;'>Status</th>
+<th width="10%" style='text-align:center;' colspan="2">Edit User</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$check = mysql_query("SELECT * FROM `vericon`.`auth`") or die(mysql_error());
+$rows = mysql_num_rows($check);
+
+if($rows == 0)
+{
+	echo "<tr>";
+	echo "<td colspan='9'>No Users?!?!?!</td>";
+	echo "</tr>";
+}
+else
+{
+	$q = mysql_query("SELECT * FROM `vericon`.`auth` ORDER BY `user` ASC LIMIT 0 , 13") or die(mysql_error());
+	while($r = mysql_fetch_assoc($q))
+	{
+		$q1 = mysql_query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . mysql_real_escape_string($r["user"]) . "'") or die(mysql_error());
+		$l = mysql_fetch_row($q1);
+		if ($l[0] == null) {
+			$last_login = "Never";
+		} else {
+			$last_login = date("d/m/Y H:i:s", strtotime($l[0]));
+		}
+		echo "<tr>";
+		echo "<td>" . $r["user"] . "</td>";
+		echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
+		echo "<td style='text-align:center;'>" . $r["type"] . "</td>";
+		echo "<td style='text-align:center;'>" . $r["centre"] . "</td>";
+		echo "<td style='text-align:center;'>" . date("d/m/Y H:i:s", strtotime($r["timestamp"])) . "</td>";
+		echo "<td style='text-align:center;'>" . $last_login . "</td>";
+		echo "<td style='text-align:center;'>" . $r["status"] . "</td>";
+		echo "<td style='text-align:center;'><button onclick='Admin03_Edit_User(\"$r[user]\")' class='icon_edit' title='Edit'></button></td>";
+		if($r["status"] == "Enabled") {
+			echo "<td style='text-align:center;'><button onclick='Admin03_Toggle_Status(\"$r[user]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
+		} else {
+			echo "<td style='text-align:center;'><button onclick='Admin03_Toggle_Status(\"$r[user]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
+		}
+		echo "</tr>";
+	}
+}
+?>
+</tbody>
+</table>
+</div>
+</td>
+</tr>
+<tr valign="bottom">
+<td>
+<table width="100%">
+<tr>
+<td align="left" width="40%"></td>
+<td align="center" width="20%">
+<?php
+$p_t = ceil($rows / 13);
+echo "1 of " . $p_t;
+?>
+</td>
+<td align="right" width="40%">
+<?php
+if (($st + 13) < $rows)
+{
+	$page = 1;
+	echo "<button onClick='Admin03_More_Users(\"$page\")' class='next'>Next</button>";
+}
+?>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table></center>
+<input type="hidden" id="Admin03_method" value="display" />
+<input type="hidden" id="Admin03_page" value="0" />
+<input type="hidden" id="Admin03_query" value="" />
+</div>

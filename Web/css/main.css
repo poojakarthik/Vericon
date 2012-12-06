@@ -99,7 +99,7 @@
 	font-weight:bold; background:url(../images/arrow.png) no-repeat left 4px;
 	}
 	#display{
-	width:90%; height:auto; min-height:500px; margin:0 auto;
+	width:90%; height:auto; min-height:550px; margin:0 auto;
 	}
 	#display .head{
 	width:100%; margin:0 auto; padding:20px 0 10px; height:50px;
@@ -219,7 +219,95 @@
 	text-shadow:0 1px 0 #FFF; cursor:default; text-decoration: none;
 	}
 /*-----------------------------------------------------------------------*/
+	.btn{
+	background:-moz-linear-gradient(top, #63d4fe 0%, #53bce8 50%, #2face1 51%, #007cc5 100%);
+	background:-webkit-linear-gradient(top, #63d4fe 0%,#53bce8 50%,#2face1 51%,#007cc5 100%);
+	border:none; -moz-border-radius:10px; -webkit-border-radius:10px; border-radius:10px;
+	-moz-box-shadow:0 1px 2px rgba(0,0,0,.2); -webkit-box-shadow:0 1px 2px rgba(0,0,0,.2); box-shadow:0 1px 2px rgba(0, 0, 0, 0.2);
+	color:#fff; cursor:pointer; display:inline-block; font-family:Tahoma,Geneva,sans-serif; font-size:12px;
+	outline:none; padding:6px; text-align:center; text-decoration:none; text-shadow:0 1px 1px rgba(0, 0, 0, 0.3);
+	min-width:110px; font-weight:bold;
+	}
+	.btn:hover{
+	background:-moz-linear-gradient(top, #25bfff 0%, #44b5e4 50%, #189acf 51%, #0468a2 100%);
+	background:-webkit-linear-gradient(top, #25bfff 0%, #44b5e4 50%, #189acf 51%, #0468a2 100%);
+	}
+	.btn:active{
+	position:relative; top:1px;
+	}
+	.btn:disabled{
+	background:-moz-linear-gradient(top, #63d4fe 0%, #53bce8 50%, #2face1 51%, #007cc5 100%);
+	background:-webkit-linear-gradient(top, #63d4fe 0%,#53bce8 50%,#2face1 51%,#007cc5 100%);
+	cursor:default; opacity:0.4;
+	}
+	.btn:disabled:active{
+	top:0;
+	}
+	input[type=text], input[type=password]{
+	width:250px; height:20px; margin:0px; padding:5px 10px; border:1px solid rgba(11,77,124,0.4); outline:none;
+	color:#165C80; border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px; font-size:11px;
+	box-shadow:inset 0 0 2px #C0C0C0; -moz-box-shadow:inset 0 0 2px #C0C0C0; -webkit-box-shadow:inset 0 0 2px #C0C0C0;
+	}
+	input[type=text]:disabled, input[type=password]:disabled{
+	opacity:0.4;
+	}
+	input[type=search]{
+	width:200px; height:20px; margin:0px; padding:5px 10px 5px 25px; border:1px solid rgba(11,77,124,0.4); outline:none;
+	color:#165C80; border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px; font-size:11px;
+	box-shadow:inset 0 0 2px #C0C0C0; -moz-box-shadow:inset 0 0 2px #C0C0C0; -webkit-box-shadow:inset 0 0 2px #C0C0C0;
+	background:url("/images/search_icon.png") no-repeat scroll 5px center #FFFFFF;
+	}
+	input[type=search]:disabled{
+	opacity:0.4;
+	}
+	select{
+	width:272px; height:32px; margin:0px; padding:7px 10px; border:1px solid rgba(11,77,124,0.4); outline:none;
+	color:#165C80; border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px; font-size:11px;
+	box-shadow:inset 0 0 2px #C0C0C0; -moz-box-shadow:inset 0 0 2px #C0C0C0; -webkit-box-shadow:inset 0 0 2px #C0C0C0;
+	}
+	select[multiple]{
+	height:100px; width:272px; margin:0px; padding:5px 10px; border:1px solid rgba(11,77,124,0.4); outline:none;
+	color:#165C80; border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px; font-size:11px;
+	box-shadow:inset 0 0 2px #C0C0C0; -moz-box-shadow:inset 0 0 2px #C0C0C0; -webkit-box-shadow:inset 0 0 2px #C0C0C0;
+	}
+	select[multiple]:disabled{
+	opacity:0.4;
+	}
+	
+	input:-moz-placeholder{
+	color: #666666; font-style: italic;
+	}
+	input:focus:-moz-placeholder{
+	color: #AAAAAA;
+	}
+	input::-webkit-input-placeholder{
+	color: #666666; font-style: italic;
+	}
+	input:focus::-webkit-input-placeholder{
+	color: #AAAAAA;
+	}
+/*-----------------------------------------------------------------------*/
 	.icon_logout{
+	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
+	border:none;*/ height:16px; width:16px; cursor:pointer;
+	}
+	.icon_change_password{
+	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
+	border:none;*/ height:16px; width:16px; cursor:pointer;
+	}
+	.icon_access{
+	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
+	border:none;*/ height:16px; width:16px; cursor:pointer;
+	}
+	.icon_edit{
+	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
+	border:none;*/ height:16px; width:16px; cursor:pointer;
+	}
+	.icon_disable{
+	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
+	border:none;*/ height:16px; width:16px; cursor:pointer;
+	}
+	.icon_enable{
 	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
 	border:none;*/ height:16px; width:16px; cursor:pointer;
 	}
