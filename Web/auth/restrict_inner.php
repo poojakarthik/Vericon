@@ -25,7 +25,7 @@ function CheckAccess()
 $referer = $_SERVER['SERVER_NAME'] . "/main/";
 $referer_check = split("//", $_SERVER['HTTP_REFERER']);
 
-if ($referer_check[1] != $referer || !CheckAccess())
+if ($referer_check[1] != $referer || !CheckAccess() || $_SERVER['REQUEST_METHOD'] != "POST")
 {
 	header('HTTP/1.1 404 Not Found');
 	header('Content-Type: text/html; charset=iso-8859-1');
@@ -53,4 +53,6 @@ if ($ac["status"] != "Enabled")
 	echo $forbidden;
 	exit;
 }
+
+mysql_query("UPDATE `vericon`.`current_users` SET `last_action` = NOW() WHERE `user` = '" . mysql_real_escape_string($ac["user"]) . "'") or die(mysql_error());
 ?>

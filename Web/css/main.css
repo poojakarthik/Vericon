@@ -167,68 +167,59 @@
 	#menu, #menu ul {
 	margin: 0; padding: 0; list-style: none;
 	}
-	
 	#menu {
 	width: 100%; height: 54px; margin: 0 auto; font-size:12px;
 	}
-	
 	#menu:before, #menu:after {
 	content: ""; display: table;
 	}
-	
 	#menu:after {
 	clear: both;
 	}
-	
 	#menu {
 	zoom:1;
 	}
-	
 	#menu li {
 	width:auto; height:54px; margin:0 1px; padding:0px; float:right; display:block; list-style:none;
 	}
-	
 	#menu a {
 	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
 	background:none repeat scroll 0 0 rgba(181, 222, 241, 0.53); font-family:SansationRegular; color:#006ab7;
 	text-shadow:0 1px 0 #FFF; cursor:pointer; text-decoration: none;
 	}
-	
 	#menu li:hover > a {
 	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
 	background:rgba(181, 222, 241, 1); text-decoration:none; font-family:SansationRegular; color:#006ab7;
 	text-shadow:0 1px 0 #FFF;
 	}
-	
 	#menu ul {
 	margin: 20px 0 0 0; opacity: 0; visibility: hidden; position: absolute; top: 177px; z-index: 100;
 	-webkit-transition: all .2s ease-in-out; -moz-transition: all .2s ease-in-out; transition: all .2s ease-in-out;  
 	box-shadow: 0px 4px 5px rgba(0,0,0,0.22); -moz-box-shadow: 0px 4px 5px rgba(0,0,0,0.22); -webkit-box-shadow: 0px 4px 5px rgba(0,0,0,0.22);
 	}
-	
 	#menu li:hover > ul {
 	opacity: 1; visibility: visible; margin: 0;
 	}
-	
 	#menu ul li {
 	float: none; display: block; border: 0; margin: 1px 0;
 	}
-	
 	#menu ul a {    
 	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
 	background:none repeat scroll 0 0 rgba(181, 222, 241, 0.53); font-family:SansationRegular; color:#006ab7;
 	text-shadow:0 1px 0 #FFF; cursor:pointer; white-space: nowrap;
 	}
-	
 	#menu ul a:hover {
 	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
 	background:rgba(181, 222, 241, 1); text-decoration:none; font-family:SansationRegular; color:#006ab7;
 	text-shadow:0 1px 0 #FFF;
 	}
-	
 	#menu .active {
 	width:auto; height:19px; margin:0px; padding:20px 20px 15px; display:block; list-style:none;
 	background:rgba(181, 222, 241, 1); text-decoration:none; font-family:SansationRegular; color:#006ab7;
 	text-shadow:0 1px 0 #FFF; cursor:default; text-decoration: none;
 	}
 /*-----------------------------------------------------------------------*/
+	.icon_logout{
+	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
+	border:none;*/ height:16px; width:16px; cursor:pointer;
+	}
