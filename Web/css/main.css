@@ -320,6 +320,20 @@
 	color: #AAAAAA;
 	}
 /*-----------------------------------------------------------------------*/
+	.back{
+	background-image:url('/images/back_btn.png'); background-repeat:no-repeat; height:25px; width:75px;
+	display:block; border:none; background-color:transparent; cursor:pointer;
+	}
+	.back:hover{
+	background-image:url('/images/back_btn_hover.png');
+	}
+	.next{
+	background-image:url('/images/next_btn.png'); background-repeat:no-repeat; height:25px; width:75px;
+	display:block; border:none; background-color:transparent; cursor:pointer;
+	}
+	.next:hover{
+	background-image:url('/images/next_btn_hover.png');
+	}
 	.icon_logout{
 	background-image:url('/images/logout_icon.png'); background-repeat:no-repeat; background-color:transparent;
 	border:none; height:16px; width:16px; cursor:pointer;

@@ -295,7 +295,7 @@ $(window).keydown(function(event) {
 
 <body>
 <div id="preload">
-<img src="../images/v_loading.gif" />
+<img src="/images/v_loading.gif" /><img src="/images/next_btn.png" /><img src="/images/next_btn_hover.png" /><img src="/images/back_btn.png" /><img src="/images/back_btn_hover.png" />
 </div>
 <div id="broadcast">
 <script>

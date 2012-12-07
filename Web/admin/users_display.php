@@ -196,7 +196,7 @@ elseif ($method == "search_Centres")
 if (($st - 13) < $rows && $page > 0)
 {
     $page_back = $page - 1;
-    echo "<button onClick='Admin03_More_Users(\"$page_back\")' class='back'>Back</button>";
+    echo "<button onClick='Admin03_More_Users(\"$page_back\")' class='back'></button>";
 }
 ?>
 </td>
@@ -212,7 +212,7 @@ echo $p . " of " . $p_t;
 if (($st + 13) < $rows)
 {
 	$page_next = $page + 1;
-	echo "<button onClick='Admin03_More_Users(\"$page_next\")' class='next'>Next</button>";
+	echo "<button onClick='Admin03_More_Users(\"$page_next\")' class='next'></button>";
 }
 ?>
 </td>

@@ -381,7 +381,7 @@ echo "1 of " . $p_t;
 if (($st + 13) < $rows)
 {
 	$page = 1;
-	echo "<button onClick='Admin03_More_Users(\"$page\")' class='next'>Next</button>";
+	echo "<button onClick='Admin03_More_Users(\"$page\")' class='next'></button>";
 }
 ?>
 </td>

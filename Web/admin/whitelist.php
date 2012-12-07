@@ -320,7 +320,7 @@ echo "1 of " . $p_t;
 if (($st + 13) < $rows)
 {
 	$page = 1;
-	echo "<button onClick='Admin04_More_IPs(\"$page\")' class='next'>Next</button>";
+	echo "<button onClick='Admin04_More_IPs(\"$page\")' class='next'></button>";
 }
 ?>
 </td>
