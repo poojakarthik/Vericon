@@ -22,7 +22,6 @@ $query = $_POST["query"];
 <th width="10%" style='text-align:center;' colspan="2">Edit User</th>
 </tr>
 </thead>
-</thead>
 <tbody>
 <?php
 if ($method == "display")

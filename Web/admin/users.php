@@ -242,6 +242,7 @@ function Admin03_Edit_User(user)
 
 function Admin03_Toggle_Status(user,method)
 {
+	V_Loading_Start();
 	$.post("/admin/users_process.php", { m: method, user: user }, function(data) {
 		Admin03_Display_Reload();
 	}).error( function(xhr, text, err) {
