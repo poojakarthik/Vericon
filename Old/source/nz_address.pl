@@ -27,7 +27,7 @@ $mech->get('https://www.wireline.co.nz/ServiceProvider/Dashboard/WirelineOrders/
 if($mech->uri()->as_string =~ /Login/){ 
     $mech->submit_form(
 	form_name => 'Login',
-	fields    => { LoginNameTextBox => 'finbar@smartbusinesstelecom.com.au', LoginPasswordTextBox => 'somoxoge18450be' },
+	fields    => { LoginNameTextBox => 'finbar@smartbusinesstelecom.com.au', LoginPasswordTextBox => 'somoxoge18450be!' },
 	button    => 'LoginButton');
 
     $mech->get('https://www.wireline.co.nz/ServiceProvider/Dashboard/WirelineOrders/IntactLineCheck.aspx');
@@ -63,7 +63,7 @@ if($data =~ /quota limit for the day has been reached/){
     exit;
 }
 
-if($data !~ /Version 8.9.4/){
+if($data !~ /Version 10.0.0/){
     print "Version Mismatch";
     exit;
 }
