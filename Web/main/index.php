@@ -154,7 +154,7 @@ function V_Page_Load(id, sub_id, page_link)
 					V_Loading_End();
 					if (xhr.status == 420 || xhr.status == 421)
 					{
-						window.location = "/";
+						V_Logout();
 					}
 				}, 2500);
 			}
@@ -193,7 +193,7 @@ function V_Page_Reload()
 				V_Loading_End();
 				if (xhr.status == 420 || xhr.status == 421)
 				{
-					window.location = "/";
+					V_Logout();
 				}
 			}, 2500);
 		}

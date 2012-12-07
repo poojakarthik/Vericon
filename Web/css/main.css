@@ -14,6 +14,10 @@
 	font-size:28px; font-weight:normal; color:#165C80; padding:0 20px; text-shadow:0 1px 0 #FFF;
 	font-family:SansationRegular;
 	}
+	h2 {
+	font-size:18px; font-weight:normal; color:#165C80; padding:0; text-shadow:0 1px 0 #FFF;
+	font-family:SansationRegular;
+	}
 	p{
 	padding:10px 0;
 	}
@@ -142,6 +146,17 @@
 	background:url("../images/arrow1.png") no-repeat scroll left 7px transparent;
 	width:100%; margin:3px 0 3px 20px; padding:0 0 0 20px; display:block; list-style: none outside none;
 	}
+	#display .line_left{
+	width:100%; height:2px; background:url(../images/footer_left.png) no-repeat;
+	padding-right:5px;
+	}
+	#display .line_repeat{
+	width:100%; height:2px; background:url(../images/footer_repeat.png) repeat-x;
+	padding-right:5px;
+	}
+	#display .line_right{
+	width:100%; height:2px; background:url(../images/footer_right.png) no-repeat;
+	}
 /*-----------------------------------------------------------------------*/
 	#footer{
 		width:100%; padding-bottom:10px; margin-top:-80px;
@@ -260,6 +275,25 @@
 	input[type=search]:disabled{
 	opacity:0.4;
 	}
+	input[type=checkbox] {
+	display:none;
+	}
+	input[type=checkbox] + label{
+	background:url('/images/checkbox.png') 0 0px no-repeat;
+	height:16px; width:16px; display:inline-block; padding:0px; cursor:pointer;
+	}
+	input[type=checkbox]:checked + label{
+	background:url('/images/checkbox_checked.png') 0 0px no-repeat;
+	height:16px; width:16px; display:inline-block; padding:0px; cursor:pointer;
+	}
+	input[type=checkbox]:disabled + label{
+	background:url('/images/checkbox.png') 0 0px no-repeat; opacity:0.4;
+	height:16px; width:16px; display:inline-block; padding:0px; cursor:default;
+	}
+	input[type=checkbox]:checked:disabled + label{
+	background:url('/images/checkbox_checked.png') 0 0px no-repeat; opacity:0.4;
+	height:16px; width:16px; display:inline-block; padding:0px; cursor:default;
+	}
 	select{
 	width:272px; height:32px; margin:0px; padding:7px 10px; border:1px solid rgba(11,77,124,0.4); outline:none;
 	color:#165C80; border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px; font-size:11px;
@@ -273,7 +307,6 @@
 	select[multiple]:disabled{
 	opacity:0.4;
 	}
-	
 	input:-moz-placeholder{
 	color: #666666; font-style: italic;
 	}
@@ -288,26 +321,23 @@
 	}
 /*-----------------------------------------------------------------------*/
 	.icon_logout{
-	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
-	border:none;*/ height:16px; width:16px; cursor:pointer;
+	background-image:url('/images/logout_icon.png'); background-repeat:no-repeat; background-color:transparent;
+	border:none; height:16px; width:16px; cursor:pointer;
 	}
 	.icon_change_password{
-	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
-	border:none;*/ height:16px; width:16px; cursor:pointer;
-	}
-	.icon_access{
-	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
-	border:none;*/ height:16px; width:16px; cursor:pointer;
+	background-image:url('/images/change_password_icon.png'); background-repeat:no-repeat; background-color:transparent;
+	border:none; height:16px; width:16px; cursor:pointer;
 	}
 	.icon_edit{
-	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
-	border:none;*/ height:16px; width:16px; cursor:pointer;
+	background-image:url('/images/edit_icon.png'); background-repeat:no-repeat; background-color:transparent;
+	border:none; height:16px; width:16px; cursor:pointer;
 	}
 	.icon_disable{
-	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
-	border:none;*/ height:16px; width:16px; cursor:pointer;
+	background-image:url('/images/disable_icon.png'); background-repeat:no-repeat; background-color:transparent;
+	border:none; height:16px; width:16px; cursor:pointer;
 	}
 	.icon_enable{
-	/*background-image:url('/images/'); background-repeat:no-repeat; background-color:transparent;
-	border:none;*/ height:16px; width:16px; cursor:pointer;
+	background-image:url('/images/enable_icon.png'); background-repeat:no-repeat; background-color:transparent;
+	border:none; height:16px; width:16px; cursor:pointer;
 	}
+/*-----------------------------------------------------------------------*/

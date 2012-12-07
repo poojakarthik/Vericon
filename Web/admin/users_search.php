@@ -70,13 +70,11 @@ while ($data = mysql_fetch_assoc($q))
 	$d[] = "{ \"id\": \"" . $data["id"] . "\", \"category\": \"Departments\", \"label\": \"" . $data["name"] . "\" }";
 }
 //Centre
-/*$q = mysql_query("SELECT `id` FROM `vericon`.`centres` WHERE `id` LIKE '%" . mysql_real_escape_string($term) . "%' ORDER BY `id` ASC") or die(mysql_error());
+$q = mysql_query("SELECT `id` FROM `vericon`.`centres` WHERE `id` LIKE '%" . mysql_real_escape_string($term) . "%' ORDER BY `id` ASC") or die(mysql_error());
 while ($data = mysql_fetch_assoc($q))
 {
 	$d[] = "{ \"id\": \"" . $data["id"] . "\", \"category\": \"Centres\", \"label\": \"" . $data["id"] . "\" }";
-}*/
+}
 echo implode(", ",$d);
 echo ']';
-
-sleep(10);
 ?>

@@ -14,7 +14,7 @@ $query = $_POST["query"];
 <tr class="ui-widget-header ">
 <th width="10%">Username</th>
 <th width="18%">Full Name</th>
-<th width="18%" style='text-align:center;'>Access</th>
+<th width="18%" style='text-align:center;'>Department</th>
 <th width="8%" style='text-align:center;'>Centre</th>
 <th width="13%" style='text-align:center;'>Joining Date</th>
 <th width="13%" style='text-align:center;'>Last Login</th>

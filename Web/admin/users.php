@@ -5,7 +5,7 @@ include("../auth/restrict.php");
 div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
 div#users-contain table th { border: 1px solid rgba(41,171,226,0.25); padding: .6em 10px; text-align: left; }
 div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .6em 5px; text-align: left; }
-.ui-autocomplete { max-height: 100px; overflow-y: auto; overflow-x: hidden; }
+.ui-autocomplete { max-height: 150px; overflow-y: auto; overflow-x: hidden; }
 .ui-autocomplete-category { font-weight: bold; padding: .2em .4em; margin: .8em 0 .2em; line-height: 1.5; }
 </style>
 
@@ -152,11 +152,10 @@ function Admin03_Create_User()
 		}
 		else
 		{
+			$( "#Admin03_search_bar" ).attr("style","display:none;");
 			$( "#Admin03_search" ).attr("disabled","disabled");
 			$( "#Admin03_create_user" ).attr("disabled","disabled");
-			$( "#Admin03_create_user" ).removeAttr("onlick");
 			$( "#Admin03_pending_users" ).attr("disabled","disabled");
-			$( "#Admin03_pending_users" ).removeAttr("onlick");
 			V_Loading_End();
 		}
 	});
@@ -197,8 +196,50 @@ $(function() {
 		}
 	});
 });
-</script>
-<script>
+
+function Admin03_Edit_User(user)
+{
+	var method = $( "#Admin03_method" ),
+		page = $( "#Admin03_page" ),
+		query = $( "#Admin03_query" );
+	
+	V_Loading_Start();
+	$( "#display_inner" ).load("/admin/users_edit.php", { user: user, method: method.val(), page: page.val(), query: query.val() }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 420)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else if (xhr.status == 421)
+			{
+				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			$( "#Admin03_search_bar" ).attr("style","display:none;");
+			$( "#Admin03_search" ).attr("disabled","disabled");
+			$( "#Admin03_create_user" ).attr("disabled","disabled");
+			$( "#Admin03_pending_users" ).attr("disabled","disabled");
+			V_Loading_End();
+		}
+	});
+}
+
 function Admin03_Toggle_Status(user,method)
 {
 	$.post("/admin/users_process.php", { m: method, user: user }, function(data) {
@@ -239,7 +280,7 @@ function Admin03_Toggle_Status(user,method)
 </table>
 </div>
 
-<div style="width:98%; margin:0 auto 10px;">
+<div id="Admin03_search_bar" style="width:98%; margin:0 auto 10px;">
 <table width="100%">
 <tr>
 <td><input type="search" id="Admin03_search" placeholder="Search..."></td>
@@ -269,7 +310,7 @@ else
 <tr class="ui-widget-header ">
 <th width="10%">Username</th>
 <th width="18%">Full Name</th>
-<th width="18%" style='text-align:center;'>Access</th>
+<th width="18%" style='text-align:center;'>Department</th>
 <th width="8%" style='text-align:center;'>Centre</th>
 <th width="13%" style='text-align:center;'>Joining Date</th>
 <th width="13%" style='text-align:center;'>Last Login</th>
