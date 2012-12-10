@@ -57,23 +57,24 @@ if ($ac["status"] != "Enabled")
 $term = trim($_POST["term"]);
 
 echo '[';
-//User
-$q = mysql_query("SELECT `user`, CONCAT(`first`, ' ', `last`) AS name FROM `vericon`.`auth` WHERE `user` LIKE '%" . mysql_real_escape_string($term) . "%' OR CONCAT(`first`, ' ', `last`) LIKE '%" . mysql_real_escape_string($term) . "%' ORDER BY `user` ASC") or die(mysql_error());
+//IP
+$q = mysql_query("SELECT INET_NTOA(`ip_start`) AS ip_start, INET_NTOA(`ip_end`) AS ip_end, `description` FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($term)) . "' BETWEEN `ip_start` AND `ip_end` ORDER BY `ip_start` ASC") or die(mysql_error());
 while ($data = mysql_fetch_assoc($q))
 {
-	$d[] = "{ \"id\": \"" . $data["user"] . "\", \"category\": \"Users\", \"label\": \"" . $data["name"] . " (" . $data["user"] . ")\" }";
+	if ($data["ip_start"] != $data["ip_end"])
+	{
+		$d[] = "{ \"id\": \"" . $data["ip_start"] . "," . $data["ip_end"] . "\", \"category\": \"IPs\", \"label\": \"" . $data["description"] . " (" . $data["ip_start"] . " - " . $data["ip_end"] . ")\" }";
+	}
+	else
+	{
+		$d[] = "{ \"id\": \"" . $data["ip_start"] . "," . $data["ip_end"] . "\", \"category\": \"IPs\", \"label\": \"" . $data["description"] . " (" . $data["ip_start"] . ")\" }";
+	}
 }
-//Type
-$q = mysql_query("SELECT `id`, `name` FROM `vericon`.`portals` WHERE `id` LIKE '%" . mysql_real_escape_string($term) . "%' OR `name` LIKE '%" . mysql_real_escape_string($term) . "%' ORDER BY `id` ASC") or die(mysql_error());
+//Description
+$q = mysql_query("SELECT `description` FROM `vericon`.`allowedip` WHERE `description` LIKE '%" . mysql_real_escape_string($term) . "%' GROUP BY `description` ORDER BY `description` ASC") or die(mysql_error());
 while ($data = mysql_fetch_assoc($q))
 {
-	$d[] = "{ \"id\": \"" . $data["id"] . "\", \"category\": \"Departments\", \"label\": \"" . $data["name"] . "\" }";
-}
-//Centre
-$q = mysql_query("SELECT `id` FROM `vericon`.`centres` WHERE `id` LIKE '%" . mysql_real_escape_string($term) . "%' ORDER BY `id` ASC") or die(mysql_error());
-while ($data = mysql_fetch_assoc($q))
-{
-	$d[] = "{ \"id\": \"" . $data["id"] . "\", \"category\": \"Centres\", \"label\": \"" . $data["id"] . "\" }";
+	$d[] = "{ \"id\": \"" . $data["description"] . "\", \"category\": \"Description\", \"label\": \"" . $data["description"] . "\" }";
 }
 echo implode(", ",$d);
 echo ']';

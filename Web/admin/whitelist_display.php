@@ -36,7 +36,7 @@ if ($method == "display")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`added_by` = `auth`.`user` ORDER BY INET_NTOA(`ip_start`) ASC LIMIT $st , 13") or die(mysql_error());
+		$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`added_by` = `auth`.`user` ORDER BY `ip_start` ASC LIMIT $st , 13") or die(mysql_error());
 		while($r = mysql_fetch_assoc($q))
 		{
 			if ($r["ip_start"] != $r["ip_end"]) {
@@ -60,9 +60,72 @@ if ($method == "display")
 		}
 	}
 }
-elseif ($method == "search")
+elseif ($method == "search_IPs")
 {
+	$query = explode(",",$query);
 	
+	$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE (`allowedip`.`ip_start` = '" . mysql_real_escape_string(ip2long($query[0])) . "' AND `allowedip`.`ip_end` = '" . mysql_real_escape_string(ip2long($query[1])) . "') AND `allowedip`.`added_by` = `auth`.`user`") or die(mysql_error());
+	$r = mysql_fetch_assoc($q);
+	$rows = 1;
+	
+	if ($r["ip_start"] != $r["ip_end"]) {
+		$ip = $r["ip_start"] . " - " . $r["ip_end"];
+	} else {
+		$ip = $r["ip_start"];
+	}
+	
+	echo "<tr>";
+	echo "<td>" . $ip . "</td>";
+	echo "<td>" . $r["description"] . "</td>";
+	echo "<td style='text-align:center;'>" . date("d/m/Y H:i:s", strtotime($r["timestamp"])) . "</td>";
+	echo "<td style='text-align:center;'>" . $r["name"] . "</td>";
+	echo "<td style='text-align:center;'>" . $r["status"] . "</td>";
+	if($r["status"] == "Enabled") {
+		echo "<td style='text-align:center;'><button onclick='Admin04_Toggle_Status(\"$r[ip_start]\",\"$r[ip_end]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
+	} else {
+		echo "<td style='text-align:center;'><button onclick='Admin04_Toggle_Status(\"$r[ip_start]\",\"$r[ip_end]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
+	}
+	echo "</tr>";
+	
+	$query = implode(",",$query);
+}
+elseif ($method == "search_Description")
+{
+	$check = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE `description` = '" . mysql_real_escape_string($query) . "'") or die(mysql_error());
+	$rows = mysql_num_rows($check);
+	
+	if($rows == 0)
+	{
+		echo "<tr>";
+		echo "<td colspan='6'>No IPs?!?!?!</td>";
+		echo "</tr>";
+	}
+	else
+	{
+		$st = $page * 13;
+		$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`description` = '" . mysql_real_escape_string($query) . "' AND `allowedip`.`added_by` = `auth`.`user`") or die(mysql_error());
+		while ($r = mysql_fetch_assoc($q))
+		{
+			if ($r["ip_start"] != $r["ip_end"]) {
+				$ip = $r["ip_start"] . " - " . $r["ip_end"];
+			} else {
+				$ip = $r["ip_start"];
+			}
+			
+			echo "<tr>";
+			echo "<td>" . $ip . "</td>";
+			echo "<td>" . $r["description"] . "</td>";
+			echo "<td style='text-align:center;'>" . date("d/m/Y H:i:s", strtotime($r["timestamp"])) . "</td>";
+			echo "<td style='text-align:center;'>" . $r["name"] . "</td>";
+			echo "<td style='text-align:center;'>" . $r["status"] . "</td>";
+			if($r["status"] == "Enabled") {
+				echo "<td style='text-align:center;'><button onclick='Admin04_Toggle_Status(\"$r[ip_start]\",\"$r[ip_end]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
+			} else {
+				echo "<td style='text-align:center;'><button onclick='Admin04_Toggle_Status(\"$r[ip_start]\",\"$r[ip_end]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
+			}
+			echo "</tr>";
+		}
+	}
 }
 ?>
 </tbody>

@@ -97,7 +97,7 @@ elseif ($method == "search_Users")
 }
 elseif ($method == "search_Departments")
 {
-	$check = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `type` LIKE '%" . mysql_real_escape_string($query) . "%'") or die(mysql_error());
+	$check = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . mysql_real_escape_string($query) . "'") or die(mysql_error());
 	$rows = mysql_num_rows($check);
 	
 	if($rows == 0)
@@ -109,7 +109,7 @@ elseif ($method == "search_Departments")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `type` LIKE '%" . mysql_real_escape_string($query) . "%' ORDER BY `user` ASC LIMIT $st , 13") or die(mysql_error());
+		$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . mysql_real_escape_string($query) . "' ORDER BY `user` ASC LIMIT $st , 13") or die(mysql_error());
 		
 		while($r = mysql_fetch_assoc($q))
 		{
@@ -140,7 +140,7 @@ elseif ($method == "search_Departments")
 }
 elseif ($method == "search_Centres")
 {
-	$check = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `centre` LIKE '%" . mysql_real_escape_string($query) . "%'") or die(mysql_error());
+	$check = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `centre` = '" . mysql_real_escape_string($query) . "'") or die(mysql_error());
 	$rows = mysql_num_rows($check);
 	
 	if($rows == 0)
@@ -152,7 +152,7 @@ elseif ($method == "search_Centres")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `centre` LIKE '%" . mysql_real_escape_string($query) . "%' ORDER BY `user` ASC LIMIT $st , 13") or die(mysql_error());
+		$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `centre` = '" . mysql_real_escape_string($query) . "' ORDER BY `user` ASC LIMIT $st , 13") or die(mysql_error());
 		
 		while($r = mysql_fetch_assoc($q))
 		{
