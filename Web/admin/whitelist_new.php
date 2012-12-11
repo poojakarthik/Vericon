@@ -14,6 +14,8 @@ function Admin04_Add_IP_Cancel()
 
 function Admin04_Add_IP_Submit()
 {
+	V_Loading_Start();
+	
 	var ip_start = $( "#Admin04_ip_start" ),
 		ip_end = $( "#Admin04_ip_end" ),
 		description = $( "#Admin04_description" );
@@ -29,6 +31,7 @@ function Admin04_Add_IP_Submit()
 		else
 		{
 			Admin04_Create_Error(data);
+			V_Loading_End();
 		}
 	}).error( function(xhr, text, err) {
 		if (xhr.status == 420)

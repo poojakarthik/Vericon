@@ -108,6 +108,8 @@ function Admin03_Edit_User_Check(field)
 
 function Admin03_Edit_User_Submit()
 {
+	V_Loading_Start();
+	
 	var user = $( "#Admin03_user" ),
 		password = $( "#Admin03_password" ),
 		password2 = $( "#Admin03_password2" ),
@@ -140,6 +142,7 @@ function Admin03_Edit_User_Submit()
 		else
 		{
 			Admin03_Edit_Error(data);
+			V_Loading_End();
 		}
 	}).error( function(xhr, text, err) {
 		if (xhr.status == 420)

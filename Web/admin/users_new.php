@@ -94,6 +94,8 @@ function Admin03_Create_User_Check(field)
 
 function Admin03_Create_User_Submit()
 {
+	V_Loading_Start();
+	
 	var first = $( "#Admin03_first" ),
 		last = $( "#Admin03_last" ),
 		password = $( "#Admin03_password" ),
@@ -127,6 +129,7 @@ function Admin03_Create_User_Submit()
 		else
 		{
 			Admin03_Create_Error(data);
+			V_Loading_End();
 		}
 	}).error( function(xhr, text, err) {
 		if (xhr.status == 420)

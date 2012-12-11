@@ -14,6 +14,8 @@ function Admin05_Add_Centre_Cancel()
 
 function Admin05_Add_Centre_Submit()
 {
+	V_Loading_Start();
+	
 	var centre = $( "#Admin05_centre" ),
 		campaign = $( "#Admin05_campaign" ),
 		type = $( "#Admin05_type" ),
@@ -27,6 +29,7 @@ function Admin05_Add_Centre_Submit()
 		else
 		{
 			Admin05_Create_Error(data);
+			V_Loading_End();
 		}
 	}).error( function(xhr, text, err) {
 		if (xhr.status == 420)

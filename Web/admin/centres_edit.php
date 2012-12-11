@@ -18,6 +18,8 @@ function Admin05_Edit_Centre_Cancel()
 
 function Admin05_Edit_Centre_Submit()
 {
+	V_Loading_Start();
+	
 	var centre = "<?php echo $centre; ?>",
 		campaign = $( "#Admin05_campaign" ),
 		type = $( "#Admin05_type" ),
@@ -31,6 +33,7 @@ function Admin05_Edit_Centre_Submit()
 		else
 		{
 			Admin05_Edit_Error(data);
+			V_Loading_End();
 		}
 	}).error( function(xhr, text, err) {
 		if (xhr.status == 420)
