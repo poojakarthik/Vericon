@@ -8,6 +8,78 @@ div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .
 div#users-contain table tbody tr:hover { background:rgba(255,255,255,0.25); }
 </style>
 
+<script>
+function Admin06_Add_Portal()
+{
+	V_Loading_Start();
+	$( "#display_inner" ).load("/admin/portals_new.php", { }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 420)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else if (xhr.status == 421)
+			{
+				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			V_Loading_End();
+		}
+	});
+}
+
+function Admin06_Edit_Portal()
+{
+	
+}
+
+function Admin06_Toggle_Status(id, method)
+{
+	V_Loading_Start();
+	$.post("/admin/portals_process.php", { m: method, id: id }, function(data) {
+		V_Page_Reload();
+	}).error( function(xhr, text, err) {
+		if (xhr.status == 420)
+		{
+			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+			setTimeout(function() {
+				V_Logout();
+			}, 2500);
+		}
+		else if (xhr.status == 421)
+		{
+			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
+			setTimeout(function() {
+				V_Logout();
+			}, 2500);
+		}
+		else
+		{
+			$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+			setTimeout(function() {
+				V_Loading_End();
+			}, 2500);
+		}
+	});
+}
+</script>
+
 <div class="head">
 <table>
 <tr>
@@ -16,4 +88,51 @@ div#users-contain table tbody tr:hover { background:rgba(255,255,255,0.25); }
 <td><div class="dotted"></div></td>
 </tr>
 </table>
+</div>
+
+<div id="display_inner">
+<center><div style="width:98%">
+<table width="100%">
+<tr>
+<td align="right"><button onclick="Admin06_Add_Portal()" id="Admin06_add_portal" class="btn">Add Portal</button></td>
+</tr>
+</table>
+</div>
+
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" width="98%">
+<thead>
+<tr class="ui-widget-header ">
+<th width="30%" style="text-align:left;">ID</th>
+<th width="40%">Name</th>
+<th width="20%">Status</th>
+<th width="10%" colspan="2">Edit</th>
+</tr>
+</thead>
+<tbody>
+<?php
+$q = mysql_query("SELECT * FROM `vericon`.`portals` ORDER BY `id` ASC") or die(mysql_error());
+while ($portals = mysql_fetch_assoc($q))
+{
+	echo "<tr>";
+	echo "<td style='text-align:left'>" . $portals["id"] . "</td>";
+	echo "<td style='text-align:left'>" . $portals["name"] . "</td>";
+	echo "<td>" . $portals["status"] . "</td>";
+	echo "<td><button onclick='Admin06_Edit_Portal(\"$portals[id]\")' class='icon_edit' title='Edit'></button></td>";
+	if ($portals["status"] == "Enabled") {
+		if ($portals["id"] == "MA") {
+			echo "<td>-</td>";
+		} else {
+			echo "<td><button onclick='Admin06_Toggle_Status(\"$portals[id]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
+		}
+	} else {
+		echo "<td><button onclick='Admin06_Toggle_Status(\"$portals[id]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
+	}
+	echo "</tr>";
+}
+?>
+</tbody>
+</table>
+</div></center>
+
 </div>
