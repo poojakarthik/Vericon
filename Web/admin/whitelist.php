@@ -5,6 +5,7 @@ include("../auth/restrict.php");
 div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
 div#users-contain table th { border: 1px solid rgba(41,171,226,0.25); padding: .6em 10px; text-align: left; }
 div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .6em 5px; text-align: left; }
+div#users-contain table tbody tr:hover { background:rgba(255,255,255,0.25); }
 .ui-autocomplete { max-height: 150px; overflow-y: auto; overflow-x: hidden; }
 .ui-autocomplete-category { font-weight: bold; padding: .2em .4em; margin: .8em 0 .2em; line-height: 1.5; }
 </style>
@@ -89,7 +90,10 @@ function Admin04_Display_Reload()
 		page = $( "#Admin04_page" ),
 		query = $( "#Admin04_query" );
 	
-	V_Loading_Start();
+	if ($( ".blockUI" ).val() != "")
+	{
+		V_Loading_Start();
+	}
 	$( "#display_inner" ).load("/admin/whitelist_display.php", { m: method.val(), page: page.val(), query: query.val() }, function(data, status, xhr){
 		if (status == "error")
 		{

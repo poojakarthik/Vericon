@@ -145,7 +145,10 @@ function V_Page_Load(id, sub_id, page_link)
 {
 	if (v_current_page_link != page_link)
 	{
-		V_Loading_Start();
+		if ($( ".blockUI" ).val() != "")
+		{
+			V_Loading_Start();
+		}
 		$( "#display" ).load(page_link, function(data, status, xhr){
 			if (status == "error")
 			{
@@ -184,7 +187,10 @@ function V_Page_Load(id, sub_id, page_link)
 
 function V_Page_Reload()
 {
-	V_Loading_Start();
+	if ($( ".blockUI" ).val() != "")
+	{
+		V_Loading_Start();
+	}
 	$( "#display" ).load(v_current_page_link, function(data, status, xhr){
 		if (status == "error")
 		{
