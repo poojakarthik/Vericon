@@ -62,7 +62,7 @@ function Admin07_Add_Message()
 <td align="right"><button onclick="Admin07_Add_Message()" id="Admin07_add_message" class="btn">Add Message</button></td>
 </tr>
 </table>
-</div>
+</div></center>
 
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" width="98%">

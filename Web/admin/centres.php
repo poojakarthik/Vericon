@@ -127,7 +127,7 @@ function Admin05_Edit_Centre(centre)
 <td align="right"><button onclick="Admin05_Add_Centre()" id="Admin05_add_centre" class="btn">Add Centre</button></td>
 </tr>
 </table>
-</div>
+</div></center>
 
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" width="98%">

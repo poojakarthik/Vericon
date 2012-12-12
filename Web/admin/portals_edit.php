@@ -1,18 +1,18 @@
 <?php
-include("../auth/restrict.php");
+include("../auth/restrict_inner.php");
+
+$id = $_POST["id"];
 ?>
-<style>
-div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
-div#users-contain table th { border: 1px solid rgba(41,171,226,0.25); padding: .6em 10px; text-align: center; }
-div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .6em 5px; text-align: center; }
-div#users-contain table tbody tr:hover { background:rgba(255,255,255,0.25); }
-</style>
-
 <script>
-function Admin06_Add_Portal()
+function Admin06_Edit_Portal_Cancel()
+{
+	V_Page_Reload();
+}
+
+function Admin06_Add_Page(portal_id)
 {
 	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/portals_new.php", { }, function(data, status, xhr){
+	$( "#display_inner" ).load("/admin/portals_new_page.php", { portal_id: portal_id }, function(data, status, xhr){
 		if (status == "error")
 		{
 			if (xhr.status == 420)
@@ -44,13 +44,10 @@ function Admin06_Add_Portal()
 	});
 }
 
-function Admin06_Edit_Portal(id)
+function Admin06_Edit_Page(portal_id,id)
 {
-	if ($( ".blockUI" ).val() != "")
-	{
-		V_Loading_Start();
-	}
-	$( "#display_inner" ).load("/admin/portals_edit.php", { id: id }, function(data, status, xhr){
+	V_Loading_Start();
+	$( "#display_inner" ).load("/admin/portals_edit_page.php", { portal_id: portal_id, id: id }, function(data, status, xhr){
 		if (status == "error")
 		{
 			if (xhr.status == 420)
@@ -82,11 +79,11 @@ function Admin06_Edit_Portal(id)
 	});
 }
 
-function Admin06_Toggle_Status(id, method)
+function Admin06_Toggle_Page_Status(id, method)
 {
 	V_Loading_Start();
-	$.post("/admin/portals_process.php", { m: method, id: id }, function(data) {
-		V_Page_Reload();
+	$.post("/admin/portals_process.php", { m: "page_" + method, id: id }, function(data) {
+		Admin06_Edit_Portal("<?php echo $id; ?>");
 	}).error( function(xhr, text, err) {
 		if (xhr.status == 420)
 		{
@@ -113,21 +110,10 @@ function Admin06_Toggle_Status(id, method)
 }
 </script>
 
-<div class="head">
-<table>
-<tr>
-<td style="width:90px;"><div class="dotted"></div></td>
-<td valign="middle" nowrap="nowrap" width="1px"><h1>Portal Management</h1></td>
-<td><div class="dotted"></div></td>
-</tr>
-</table>
-</div>
-
-<div id="display_inner">
 <center><div style="width:98%">
 <table width="100%">
 <tr>
-<td align="right"><button onclick="Admin06_Add_Portal()" id="Admin06_add_portal" class="btn">Add Portal</button></td>
+<td align="right"><button onclick="Admin06_Add_Page('<?php echo $id; ?>')" id="Admin06_add_page" class="btn">Add Page</button><button onclick="Admin06_Edit_Portal_Cancel()" class="btn" style="margin-left:10px;">Cancel</button></td>
 </tr>
 </table>
 </div></center>
@@ -136,30 +122,42 @@ function Admin06_Toggle_Status(id, method)
 <table id="users" class="ui-widget ui-widget-content" width="98%">
 <thead>
 <tr class="ui-widget-header ">
-<th width="30%" style="text-align:left;">ID</th>
+<th width="20%" style="text-align:left;">ID</th>
 <th width="40%">Name</th>
-<th width="20%">Status</th>
+<th width="15%">Level</th>
+<th width="15%">Status</th>
 <th width="10%" colspan="2">Edit</th>
 </tr>
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM `vericon`.`portals` ORDER BY `id` ASC") or die(mysql_error());
-while ($portals = mysql_fetch_assoc($q))
+$q = mysql_query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($id) . "' ORDER BY `level`,`sub_level` ASC") or die(mysql_error());
+while ($pages = mysql_fetch_assoc($q))
 {
+	if ($pages["sub_level"] != 0) { $level = $pages["level"] . " - " . $pages["sub_level"]; } else { $level = $pages["level"]; }
+	
 	echo "<tr>";
-	echo "<td style='text-align:left'>" . $portals["id"] . "</td>";
-	echo "<td style='text-align:left'>" . $portals["name"] . "</td>";
-	echo "<td>" . $portals["status"] . "</td>";
-	echo "<td><button onclick='Admin06_Edit_Portal(\"$portals[id]\")' class='icon_edit' title='Edit'></button></td>";
-	if ($portals["status"] == "Enabled") {
-		if ($portals["id"] == "MA" || $portals["id"] == "Admin") {
+	echo "<td style='text-align:left'>" . $pages["id"] . "</td>";
+	echo "<td style='text-align:left'>" . $pages["name"] . "</td>";
+	echo "<td>" . $level . "</td>";
+	echo "<td>" . $pages["status"] . "</td>";
+	if ($pages["id"] == $id . "01") {
+		echo "<td>-</td>";
+	} else {
+		echo "<td><button onclick='Admin06_Edit_Page(\"$id\",\"$pages[id]\")' class='icon_edit' title='Edit'></button></td>";
+	}
+	if ($pages["status"] == "Enabled") {
+		if ($pages["id"] == $id . "01") {
 			echo "<td>-</td>";
 		} else {
-			echo "<td><button onclick='Admin06_Toggle_Status(\"$portals[id]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
+			echo "<td><button onclick='Admin06_Toggle_Page_Status(\"$pages[id]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
 		}
 	} else {
-		echo "<td><button onclick='Admin06_Toggle_Status(\"$portals[id]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
+		if ($pages["id"] == $id . "01") {
+			echo "<td>-</td>";
+		} else {
+			echo "<td><button onclick='Admin06_Toggle_Page_Status(\"$pages[id]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
+		}
 	}
 	echo "</tr>";
 }
@@ -167,5 +165,3 @@ while ($portals = mysql_fetch_assoc($q))
 </tbody>
 </table>
 </div></center>
-
-</div>
