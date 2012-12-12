@@ -40,7 +40,7 @@ $ac = mysql_fetch_assoc($q);
 
 $v_page = explode("/", $_SERVER['REQUEST_URI']);
 
-$q = mysql_query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($v_page[1]) . "' AND `link` = '" . mysql_real_escape_string($v_page[2]) . "'") or die(mysql_error());
+$q = mysql_query("SELECT `id`,`status` FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($v_page[1]) . "' AND `link` = '" . mysql_real_escape_string($v_page[2]) . "'") or die(mysql_error());
 $v_page_id = mysql_fetch_row($q);
 
 $q = mysql_query("SELECT `pages` FROM `vericon`.`portals_access` WHERE `user` = '" . mysql_real_escape_string($ac["user"]) . "'") or die(mysql_error());
@@ -58,6 +58,14 @@ if ($ac["status"] != "Enabled")
 {
 	header('HTTP/1.1 421 Account Disabled');
 	header('Content-Type: text/html; charset=iso-8859-1');
+	exit;
+}
+
+if ($v_page_id[1] != "Enabled")
+{
+	header('HTTP/1.1 404 Not Found');
+	header('Content-Type: text/html; charset=iso-8859-1');
+	echo $forbidden;
 	exit;
 }
 

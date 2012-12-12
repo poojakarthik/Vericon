@@ -60,42 +60,55 @@ $q = mysql_query("SELECT `pages` FROM `vericon`.`portals_access` WHERE `user` = 
 $ap = mysql_fetch_row($q);
 $access_pages = explode(",", $ap[0]);
 
-echo "<ul id='menu'>";
+$q = mysql_query("SELECT `status` FROM `vericon`.`portals` WHERE `id` = '" . mysql_real_escape_string($portal) . "'") or die(mysql_error());
+$portal_status = mysql_fetch_row($q);
+
 $q = mysql_query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal) . "' AND `status` = 'Enabled' AND `sub_level` = '0' ORDER BY `level` DESC") or die(mysql_error());
-while ($pages = mysql_fetch_assoc($q))
+if (mysql_num_rows($q) == 0 || $portal_status[0] != "Enabled")
 {
-	if (in_array($pages["id"], $access_pages) || $ac["type"] == "Admin")
+	header('HTTP/1.1 404 Not Found');
+	header('Content-Type: text/html; charset=iso-8859-1');
+	echo $forbidden;
+	exit;
+}
+else
+{
+	echo "<ul id='menu'>";
+	while ($pages = mysql_fetch_assoc($q))
 	{
-		if ($pages["link"] != "" && $pages["jquery"] == "")
+		if (in_array($pages["id"], $access_pages) || $ac["type"] == "Admin")
 		{
-			if ($pages["name"] == "Home")
+			if ($pages["link"] != "" && $pages["jquery"] == "")
 			{
-				echo "<li><a id='" . $pages["id"] . "' onclick='V_Page_Load(\"" . $pages["id"] . "\",\"\",\"/" . $portal . "/" . $pages["link"] . "\")' class='active'><img border='0' src='/images/home.png'></a></li>";
+				if ($pages["name"] == "Home")
+				{
+					echo "<li><a id='" . $pages["id"] . "' onclick='V_Page_Load(\"" . $pages["id"] . "\",\"\",\"/" . $portal . "/" . $pages["link"] . "\")' class='active'><img border='0' src='/images/home.png'></a></li>";
+				}
+				else
+				{
+					echo "<li><a id='" . $pages["id"] . "' onclick='V_Page_Load(\"" . $pages["id"] . "\",\"\",\"/" . $portal . "/" . $pages["link"] . "\")'>" . $pages["name"] . "</a></li>";
+				}
+			}
+			elseif ($pages["link"] != "" && $pages["jquery"] != "")
+			{
+				echo $pages["jquery"];
+				echo "<li><a id='" . $pages["id"] . "' onclick='" . $pages["link"] . "'>" . $pages["name"] . "</a></li>";
 			}
 			else
 			{
-				echo "<li><a id='" . $pages["id"] . "' onclick='V_Page_Load(\"" . $pages["id"] . "\",\"\",\"/" . $portal . "/" . $pages["link"] . "\")'>" . $pages["name"] . "</a></li>";
-			}
-		}
-		elseif ($pages["link"] != "" && $pages["jquery"] != "")
-		{
-			echo $pages["jquery"];
-			echo "<li><a id='" . $pages["id"] . "' onclick='" . $pages["link"] . "'>" . $pages["name"] . "</a></li>";
-		}
-		else
-		{
-			echo  "<li><a id='" . $pages["id"] . "' style='cursor:default;'>" . $pages["name"] . "</a><ul>";
-			$q2 = mysql_query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal) . "' AND `status` = 'Enabled' AND `level` = '" . mysql_real_escape_string($pages["level"]) . "' AND `sub_level` > '0' ORDER BY `sub_level` ASC") or die(mysql_error());
-			while ($sub_pages = mysql_fetch_assoc($q2))
-			{
-				if (in_array($sub_pages["id"], $access_pages) || $ac["type"] == "Admin")
+				echo  "<li><a id='" . $pages["id"] . "' style='cursor:default;'>" . $pages["name"] . "</a><ul>";
+				$q2 = mysql_query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal) . "' AND `status` = 'Enabled' AND `level` = '" . mysql_real_escape_string($pages["level"]) . "' AND `sub_level` > '0' ORDER BY `sub_level` ASC") or die(mysql_error());
+				while ($sub_pages = mysql_fetch_assoc($q2))
 				{
-					echo "<li><a id='" . $sub_pages["id"] . "' onclick='V_Page_Load(\"" . $pages["id"] . "\",\"" . $sub_pages["id"] . "\",\"/" . $portal . "/" . $sub_pages["link"] . "\")'>" . $sub_pages["name"] . "</a></li>";
+					if (in_array($sub_pages["id"], $access_pages) || $ac["type"] == "Admin")
+					{
+						echo "<li><a id='" . $sub_pages["id"] . "' onclick='V_Page_Load(\"" . $pages["id"] . "\",\"" . $sub_pages["id"] . "\",\"/" . $portal . "/" . $sub_pages["link"] . "\")'>" . $sub_pages["name"] . "</a></li>";
+					}
 				}
+				echo "</ul></li>";
 			}
-			echo "</ul></li>";
 		}
 	}
+	echo "</ul>";
 }
-echo "</ul>";
 ?>
