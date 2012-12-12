@@ -14,8 +14,12 @@
 	font-size:28px; font-weight:normal; color:#165C80; padding:0 20px; text-shadow:0 1px 0 #FFF;
 	font-family:SansationRegular;
 	}
-	h2 {
+	h2{
 	font-size:18px; font-weight:normal; color:#165C80; padding:0; text-shadow:0 1px 0 #FFF;
+	font-family:SansationRegular;
+	}
+	h3{
+	font-size:14px; font-weight:normal; color:#165C80; padding:0; text-shadow:0 1px 0 #FFF;
 	font-family:SansationRegular;
 	}
 	p{
