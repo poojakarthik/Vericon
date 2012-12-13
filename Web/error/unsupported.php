@@ -11,7 +11,6 @@ body {
 #wrapper {
 	background:url(/images/error.png) center top no-repeat rgba(255, 255, 255, 0.31); margin:100px auto 0;
 	width:910px; padding:150px 0 50px; box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.22);
-	-moz-box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.22); -webkit-box-shadow:0 0 5px 5px rgba(0, 0, 0, 0.22);
 }
 #content {
 	padding:0 25px;
@@ -40,7 +39,9 @@ a{
 a:hover{
 	text-decoration:underline; color:#165C80; outline:none; border:none;
 }
-
+img {
+	border:none;
+}
 </style>
 </head>
 
