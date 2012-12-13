@@ -10,8 +10,8 @@
 <body>
 <center>
 <h1 style="margin-top:150px;">You have successfully logged out</h1><br><br>
-<img src="/images/logout.png"><br>
-<h3 style="text-decoration:underline;"><a href="/">Click Here to login again</a></h3>
+<div id="logout_image"></div><br>
+<h3 style="text-decoration:underline;"><a href="/">Click here to login again</a></h3>
 </center>
 </body>
 </html>
