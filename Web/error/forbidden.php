@@ -51,7 +51,7 @@ img {
 <h1>Forbidden</h1>
 <p>You unsuccessfully attempted to access a page, but were denied because this is a forbidden area. Off limits, like. Orbidden-fay, even. So just back away slowly and quietly and the large hungry bear won't hurt you.</p>
 <br>
-<h3><a href="/">Click here to go back</a></h3>
+<h3><a href="/">Click here to go back home</a></h3>
 </div>
 </div>
 </body>
