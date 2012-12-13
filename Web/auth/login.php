@@ -56,22 +56,28 @@ $browser = browser($_SERVER['HTTP_USER_AGENT']);
 $q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `user` = '" . mysql_real_escape_string($username) . "' AND `pass` = '" . md5($password) . "'") or die(mysql_error());
 $data = mysql_fetch_assoc($q);
 
-if ($username == "" || $password == "")
+$maintenance = mysql_query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die(mysql_error());
+
+if (!CheckAccess())
+{
+	mysql_query("INSERT INTO `logs`.`unauthorised` (`user`, `ip`, `timestamp`) VALUES ('" . mysql_real_escape_string($username) . "', '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW())") or die(mysql_error());
+	echo "<b>Error: </b>IP is not within the whitelist range. <a href=\"/\">Click here for more details.</a>";
+}
+elseif ($browser["name"] != "Firefox" || $browser["version"] < 17)
+{
+	echo "<b>Error: </b>Unsupported browser. <a href=\"/\">Click here for more details.</a>";
+}
+elseif(mysql_num_rows($maintenance) != 0)
+{
+	echo "<b>Error: </b>VeriCon is currently under maintenance. <a href=\"/\">Click here for more details.</a>";
+}
+elseif ($username == "" || $password == "")
 {
 	echo "<b>Error: </b>Incorrect username or password.";
 }
 elseif(mysql_num_rows($q) != 1)
 {
 	echo "<b>Error: </b>Incorrect username or password.";
-}
-elseif (!CheckAccess())
-{
-	mysql_query("INSERT INTO `logs`.`unauthorised` (`user`, `ip`, `timestamp`) VALUES ('" . mysql_real_escape_string($username) . "', '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW())") or die(mysql_error());
-	echo "<b>Error: </b>IP is not within the whitelist range.";
-}
-elseif ($browser["name"] != "Firefox" || $browser["version"] < 17)
-{
-	echo "<b>Error: </b>Unsupported browser. <a href=\"/\">Click here</a> for more details.";
 }
 elseif ($data["status"] == "Disabled")
 {

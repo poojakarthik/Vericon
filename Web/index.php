@@ -46,10 +46,22 @@ if ($browser["name"] != "Firefox" || $browser["version"] < 17)
 	include("error/unsupported.php");
 	exit;
 }
+
+$maintenance = mysql_query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die(mysql_error());
+
+if (mysql_num_rows($maintenance) != 0)
+{
+	echo "<script>window.location = '/maintenance';</script>";
+}
+else
+{
 ?>
 <script>
 window.location = '/login';
 </script>
+<?php
+}
+?>
 <noscript>
 <h1>Javascript must be enabled</h1>
 </noscript>
