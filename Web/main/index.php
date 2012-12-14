@@ -59,6 +59,7 @@ $dateTimeKolkata = new DateTime("now", new DateTimeZone("Asia/Kolkata"));
 <script type="text/javascript" src="../jquery/js/jquery-ui-1.9.2.custom.min.js"></script>
 <script type="text/javascript" src="../js/blockUI.js"></script>
 <script type="text/javascript" src="../js/jgrowl.js"></script>
+<script type="text/javascript" src="../js/highcharts.js"></script>
 <link type="text/css" rel="stylesheet" href="../css/main.css" />
 <link type="text/css" rel="stylesheet" href="../css/jgrowl.css" />
 <script>
