@@ -1,5 +1,20 @@
 <?php
 include("../auth/restrict.php");
+
+$approved = array();
+$declined = array();
+$line_issue = array();
+$q = mysql_query("SELECT DAYNAME(`approved_timestamp`), `status`, COUNT(`id`) FROM `vericon`.`sales_customers` WHERE `centre` = 'CC53' AND WEEK(`approved_timestamp`,3) = '" . mysql_real_escape_string(date("W")) . "' GROUP BY DAYOFWEEK(`approved_timestamp`), `status`") or die(mysql_error());
+while ($data = mysql_fetch_row($q))
+{
+	if ($data[1] == "Approved") {
+		$approved[$data[0]] = $data[2];
+	} elseif ($data[1] == "Declined") {
+		$declined[$data[0]] = $data[2];
+	} elseif ($data[1] == "Line Issue") {
+		$line_issue[$data[0]] = $data[2];
+	}
+}
 ?>
 <style>
 div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
@@ -18,7 +33,7 @@ $(function () {
                 type: 'column'
             },
             title: {
-                text: ''
+                text: ' '
             },
             subtitle: {
                 text: ''
@@ -54,66 +69,66 @@ $(function () {
                 series: [{
 					name: 'Approved',
 					data: [{
-						y: 1,
+						y: parseInt("<?php echo $approved["Monday"]; ?>") || 0,
 						extra: 'Approved'
 					}, {
-						y: 2,
+						y: parseInt("<?php echo $approved["Tuesday"]; ?>") || 0,
 						extra: 'Approved'
 					}, { 
-						y: 3,
+						y: parseInt("<?php echo $approved["Wednesday"]; ?>") || 0,
 						extra: 'Approved'
 					}, {
-						y: 4,
+						y: parseInt("<?php echo $approved["Thursday"]; ?>") || 0,
 						extra: 'Approved'
 					}, {
-						y: 5,
+						y: parseInt("<?php echo $approved["Friday"]; ?>") || 0,
 						extra: 'Approved'
 					}, {
-						y: 6,
+						y: parseInt("<?php echo $approved["Saturday"]; ?>") || 0,
 						extra: 'Approved'
 					}],
 					color: 'rgba(0, 128, 0, .81)'
             }, {
 					name: 'Declined',
 					data: [{
-						y: 1,
+						y: parseInt("<?php echo $declined["Monday"]; ?>") || 0,
 						extra: 'Declined'
 					}, {
-						y: 2,
+						y: parseInt("<?php echo $declined["Tuesday"]; ?>") || 0,
 						extra: 'Declined'
 					}, { 
-						y: 3,
+						y: parseInt("<?php echo $declined["Wednesday"]; ?>") || 0,
 						extra: 'Declined'
 					}, {
-						y: 4,
+						y: parseInt("<?php echo $declined["Thursday"]; ?>") || 0,
 						extra: 'Declined'
 					}, {
-						y: 5,
+						y: parseInt("<?php echo $declined["Friday"]; ?>") || 0,
 						extra: 'Declined'
 					}, {
-						y: 6,
+						y: parseInt("<?php echo $declined["Saturday"]; ?>") || 0,
 						extra: 'Declined'
 					}],
 					color: 'rgba(255, 0, 0, .81)'
             }, {
 					name: 'Line Issue',
 					data: [{
-						y: 1,
+						y: parseInt("<?php echo $line_issue["Monday"]; ?>") || 0,
 						extra: 'Line Issue'
 					}, {
-						y: 2,
+						y: parseInt("<?php echo $line_issue["Tuesday"]; ?>") || 0,
 						extra: 'Line Issue'
 					}, { 
-						y: 3,
+						y: parseInt("<?php echo $line_issue["Wednesday"]; ?>") || 0,
 						extra: 'Line Issue'
 					}, {
-						y: 4,
+						y: parseInt("<?php echo $line_issue["Thursday"]; ?>") || 0,
 						extra: 'Line Issue'
 					}, {
-						y: 5,
+						y: parseInt("<?php echo $line_issue["Friday"]; ?>") || 0,
 						extra: 'Line Issue'
 					}, {
-						y: 6,
+						y: parseInt("<?php echo $line_issue["Saturday"]; ?>") || 0,
 						extra: 'Line Issue'
 					}],
 					color: 'rgba(255, 255, 0, .81)'
@@ -184,12 +199,22 @@ $(function () {
 </thead>
 <tbody>
 <?php
-for ($i = 0; $i < 5; $i++)
+$q = mysql_query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . mysql_real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND DATE(`sales_customers`.`approved_timestamp`) = '" . mysql_real_escape_string(date("Y-m-d")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die(mysql_error());
+if (mysql_num_rows($q) == 0)
 {
 	echo "<tr>";
-	echo "<td style='text-align:left;'>Agent " . $i . "</td>";
-	echo "<td>" . rand(0,5) . "</td>";
+	echo "<td colspan='2'>No sales made today</td>";
 	echo "</tr>";
+}
+else
+{
+	while ($data = mysql_fetch_row($q))
+	{
+		echo "<tr>";
+		echo "<td style='text-align:left;'>" . $data[0] . "</td>";
+		echo "<td>" . $data[1] . "</td>";
+		echo "</tr>";
+	}
 }
 ?>
 </tbody>
@@ -209,12 +234,22 @@ for ($i = 0; $i < 5; $i++)
 </thead>
 <tbody>
 <?php
-for ($i = 0; $i < 5; $i++)
+$q = mysql_query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . mysql_real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND WEEK(`sales_customers`.`approved_timestamp`,3) = '" . mysql_real_escape_string(date("W")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die(mysql_error());
+if (mysql_num_rows($q) == 0)
 {
 	echo "<tr>";
-	echo "<td style='text-align:left;'>Agent " . $i . "</td>";
-	echo "<td>" . rand(4,20) . "</td>";
+	echo "<td colspan='2'>No sales made this week</td>";
 	echo "</tr>";
+}
+else
+{
+	while ($data = mysql_fetch_row($q))
+	{
+		echo "<tr>";
+		echo "<td style='text-align:left;'>" . $data[0] . "</td>";
+		echo "<td>" . $data[1] . "</td>";
+		echo "</tr>";
+	}
 }
 ?>
 </tbody>
@@ -234,12 +269,22 @@ for ($i = 0; $i < 5; $i++)
 </thead>
 <tbody>
 <?php
-for ($i = 0; $i < 5; $i++)
+$q = mysql_query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . mysql_real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die(mysql_error());
+if (mysql_num_rows($q) == 0)
 {
 	echo "<tr>";
-	echo "<td style='text-align:left;'>Agent " . $i . "</td>";
-	echo "<td>" . rand(30,150) . "</td>";
+	echo "<td colspan='2'>No sales made ever</td>";
 	echo "</tr>";
+}
+else
+{
+	while ($data = mysql_fetch_row($q))
+	{
+		echo "<tr>";
+		echo "<td style='text-align:left;'>" . $data[0] . "</td>";
+		echo "<td>" . $data[1] . "</td>";
+		echo "</tr>";
+	}
 }
 ?>
 </tbody>
