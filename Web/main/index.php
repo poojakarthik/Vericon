@@ -84,7 +84,7 @@ function Header_Time_EST()
 	TS_EST++;
 }
 
-var TS_IST = "<?php echo strtotime($dateTimeKolkata->format("d/m/Y H:i:s")); ?>";
+var TS_IST = "<?php echo strtotime($dateTimeKolkata->format("Y-m-d H:i:s")); ?>";
 function Header_Time_IST()
 {
 	var a = new Date(TS_IST*1000);
