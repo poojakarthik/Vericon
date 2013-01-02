@@ -136,13 +136,13 @@ while ($qa = mysql_fetch_assoc($q))
 	if ($a_i >= 1)
 	{
 		$b_type = "ADSL";
-		$a_status = "Pending";
+		$a_status = "Ready to Connect";
 	}
 	
 	if ($b_i >= 1)
 	{
 		$b_type = "ABUNDLE";
-		$a_status = "Pending";
+		$a_status = "Ready to Connect";
 	}
 	
 	$building_type = "";
@@ -393,6 +393,24 @@ while ($qa = mysql_fetch_assoc($q))
 	
 	if ($data["mobile"] == "N/A") { $mobile = ""; } else { $mobile = $data["mobile"]; }
 	
+	$dd_type = "";
+	
+	switch ($data["dd_type"])
+	{
+		case "AMEX":
+		$dd_type = "AX";
+		break;
+		case "VISA":
+		$dd_type = "VC";
+		break;
+		case "MASTERCARD":
+		$dd_type = "MC";
+		break;
+		case "DINERS":
+		$dd_type = "DC";
+		break;
+	}
+	
 	$body .= '"' . $dsr_num . '",';
 	$body .= '"' . '",';
 	$body .= '"' . '",';
@@ -461,7 +479,7 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . $data["promotions"] . '",';
 	$body .= '"' . $welcome . '",';
 	$body .= '"' . $data["payway"] . '",';
-	$body .= '"' . $data["dd_type"] . '",';
+	$body .= '"' . $dd_type . '",';
 	$body .= '"' . $ebill . '",';
 	$body .= '"' . "N" . '",';
 	$body .= '="' . $mobile . '",';
