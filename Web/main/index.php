@@ -33,7 +33,7 @@ function browser($ua)
 
 $token = $_COOKIE['vc_token'];
 
-$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . mysql_real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die(mysql_error());
+$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias`, `auth`.`pass_reset` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . mysql_real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die(mysql_error());
 $ac = mysql_fetch_assoc($q);
 
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
@@ -230,6 +230,35 @@ function V_Menu_Load(portal)
 	}
 }
 
+function V_Pass_Reset()
+{
+	if ($( ".blockUI" ).val() != "")
+	{
+		V_Loading_Start();
+	}
+	$( "#header_logo" ).removeAttr("style");
+	$( "#header_logo" ).removeAttr("onclick");
+	v_current_page_link = "/ma/pass_reset.php";
+	$( "#display" ).load("/ma/pass_reset.php", function(data, status, xhr){
+		if (status == "error")
+		{
+			$(".loading_message").html("<p><b>An error occurred while loading the page.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+			setTimeout(function() {
+				V_Loading_End();
+				if (xhr.status == 420 || xhr.status == 421)
+				{
+					V_Logout();
+				}
+			}, 2500);
+		}
+		else
+		{
+			V_Loading_End();
+		}
+	});
+	
+}
+
 openWins = new Array();
 
 function V_Mail_Open()
@@ -385,14 +414,25 @@ V_Broadcast();
 </div>
 <div id="ncv">
 <script>
-V_Menu_Load("ma");
+<?php
+if (date("Y-m-d", strtotime($ac["pass_reset"])) > date("Y-m-d", strtotime("-90 days")))
+{
+	echo 'V_Menu_Load("ma");';
+}
+?>
 </script>
 </div>
 
 <div id="contents_inner">
 <div id="display">
 <script>
-V_Page_Load("MA01","","/ma/index.php");
+<?php
+if (date("Y-m-d", strtotime($ac["pass_reset"])) <= date("Y-m-d", strtotime("-90 days"))) {
+	echo 'V_Pass_Reset()';
+} else {
+	echo 'V_Page_Load("MA01","","/ma/index.php");';
+}
+?>
 </script>
 </div>
 </div>
