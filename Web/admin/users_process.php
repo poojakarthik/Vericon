@@ -281,6 +281,10 @@ elseif ($method == "create")
 		
 		mysql_query("INSERT INTO `vericon`.`portals_access` (`user`, `pages`) VALUES ('" . mysql_real_escape_string($username) . "', '" . mysql_real_escape_string($pages) . "') ON DUPLICATE KEY UPDATE `pages` = '" . mysql_real_escape_string($pages) . "'") or die(mysql_error());
 		
+		mysql_query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . mysql_real_escape_string($username) . "', 'create') ON DUPLICATE KEY UPDATE `action` = 'create'") or die(mysql_error());
+		
+		exec("echo \"" . $username . " " . md5($password) . "\" >> /var/vc_tmp/new_email");
+		
 		echo "valid" . $username;
 	}
 }
@@ -363,7 +367,7 @@ elseif ($method == "edit")
 		
 		if ($password != "")
 		{
-			mysql_query("UPDATE `vericon`.`auth` SET `pass` = '" . mysql_real_escape_string($password) . "' WHERE `user` = '" . mysql_real_escape_string($user) . "' LIMIT 1");
+			mysql_query("UPDATE `vericon`.`auth` SET `pass` = '" . md5($password) . "' WHERE `user` = '" . mysql_real_escape_string($user) . "' LIMIT 1");
 		}
 		
 		if (in_array("Sales", $access))
@@ -382,6 +386,10 @@ elseif ($method == "edit")
 		$pages = implode(",", array_unique($pages));
 		
 		mysql_query("INSERT INTO `vericon`.`portals_access` (`user`, `pages`) VALUES ('" . mysql_real_escape_string($user) . "', '" . mysql_real_escape_string($pages) . "') ON DUPLICATE KEY UPDATE `pages` = '" . mysql_real_escape_string($pages) . "'") or die(mysql_error());
+		
+		mysql_query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . mysql_real_escape_string($user) . "', 'edit') ON DUPLICATE KEY UPDATE `action` = 'edit'") or die(mysql_error());
+		
+		exec("echo \"" . $user . " " . md5($password) . "\" >> /var/vc_tmp/edit_email");
 		
 		echo "valid";
 	}

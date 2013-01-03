@@ -41,13 +41,13 @@ if ($ac["status"] != "Enabled")
 ?>
 <script>
 <?php
-$messages = $_COOKIE["v_broadcast"];
+$messages = $_COOKIE["vc_broadcast"];
 $my_departments = explode(",", $ac["type"]);
 
 $q = mysql_query("SELECT `broadcast`.`id`, `broadcast`.`title`, `broadcast`.`message`, `broadcast`.`all`, `broadcast`.`department`, `broadcast`.`user`, `broadcast`.`timestamp`, `auth`.`first`, `auth`.`last` FROM `vericon`.`broadcast`, `vericon`.`auth` WHERE `broadcast`.`end_timestamp` >= NOW() AND `broadcast`.`poster` = `auth`.`user` ORDER BY `broadcast`.`id` ASC") or die(mysql_error());
 while($broadcast = mysql_fetch_assoc($q))
 {
-	$seen = explode(",", $_COOKIE["v_broadcast"]);
+	$seen = explode(",", $_COOKIE["vc_broadcast"]);
 	if (!in_array($broadcast["id"], $seen))
 	{
 		$department_count = 0;
@@ -76,15 +76,15 @@ while($broadcast = mysql_fetch_assoc($q))
 		
 		if ($broadcast["all"] == "1")
 		{
-			echo "$.jGrowl('" . $broadcast["message"] . "<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />" . $broadcast["first"] . " " . $broadcast["last"] . " | " . date("d/m/Y h:i A", strtotime($broadcast["timestamp"])) . "', { sticky: true, theme: 'jgrowl_theme', header: '" . $broadcast["title"] . "' });";
+			echo "$.jGrowl('" . $broadcast["message"] . "<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />" . $broadcast["first"] . " " . $broadcast["last"] . " | " . date("d/m/Y h:i A", strtotime($broadcast["timestamp"])) . "', { sticky: true, theme: 'jgrowl_theme', header: '" . $broadcast["title"] . "', open: function (e,m,o) { V_Notification_Open(); }, close: function (e,m,o) { V_Notification_Close(); } });";
 		}
 		elseif ($department_count > 0)
 		{
-			echo "$.jGrowl('" . $broadcast["message"] . "<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />" . $broadcast["first"] . " " . $broadcast["last"] . " | " . date("d/m/Y h:i A", strtotime($broadcast["timestamp"])) . "', { sticky: true, theme: 'jgrowl_theme', header: '" . $broadcast["title"] . "' });";
+			echo "$.jGrowl('" . $broadcast["message"] . "<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />" . $broadcast["first"] . " " . $broadcast["last"] . " | " . date("d/m/Y h:i A", strtotime($broadcast["timestamp"])) . "', { sticky: true, theme: 'jgrowl_theme', header: '" . $broadcast["title"] . "', open: function (e,m,o) { V_Notification_Open(); }, close: function (e,m,o) { V_Notification_Close(); } });";
 		}
 		elseif ($user_count > 0)
 		{
-			echo "$.jGrowl('" . $broadcast["message"] . "<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />" . $broadcast["first"] . " " . $broadcast["last"] . " | " . date("d/m/Y h:i A", strtotime($broadcast["timestamp"])) . "', { sticky: true, theme: 'jgrowl_theme', header: '" . $broadcast["title"] . "' });";
+			echo "$.jGrowl('" . $broadcast["message"] . "<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />" . $broadcast["first"] . " " . $broadcast["last"] . " | " . date("d/m/Y h:i A", strtotime($broadcast["timestamp"])) . "', { sticky: true, theme: 'jgrowl_theme', header: '" . $broadcast["title"] . "', open: function (e,m,o) { V_Notification_Open(); }, close: function (e,m,o) { V_Notification_Close(); } });";
 		}
 		
 		$messages .= "," . $broadcast["id"];
@@ -93,14 +93,14 @@ while($broadcast = mysql_fetch_assoc($q))
 
 $messages = trim(substr($messages,-512), ",");
 
-setcookie("v_broadcast", $messages, strtotime("+1 month"), "/");
+setcookie("vc_broadcast", $messages, strtotime("+1 month"), "/");
 
 $q = mysql_query("SELECT `last_action` FROM `vericon`.`current_users` WHERE `user` = '" . mysql_real_escape_string($ac["user"]) . "'") or die(mysql_error());
 $last_action = mysql_fetch_row($q);
 
 if (strtotime($last_action[0]) < strtotime("-12 minutes"))
 {
-	echo "$.jGrowl('Your session is about to expire, please perform an action to remain logged in.<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />VeriCon | " . date("d/m/Y h:i A") . "', { sticky: true, theme: 'jgrowl_theme', header: 'Inactive Session Warning' });";
+	echo "$.jGrowl('Your session is about to expire, please perform an action to remain logged in.<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />VeriCon | " . date("d/m/Y h:i A") . "', { sticky: true, theme: 'jgrowl_theme', header: 'Inactive Session Warning', open: function (e,m,o) { V_Notification_Open(); }, close: function (e,m,o) { V_Notification_Close(); } });";
 }
 ?>
 </script>

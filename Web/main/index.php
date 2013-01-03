@@ -222,10 +222,19 @@ function V_Menu_Load(portal)
 		
 		if (portal == "ma") {
 			$( "#header_logo" ).removeAttr("style");
+			$( "#header_logo" ).removeAttr("onclick");
 		} else {
 			$( "#header_logo" ).attr("style","cursor:pointer");
+			$( "#header_logo" ).attr("onclick","V_Page_Load('MA01','','/ma/index.php'); V_Menu_Load('ma');");
 		}
 	}
+}
+
+openWins = new Array();
+
+function V_Mail_Open()
+{
+	openWins[1]= window.open("/auth/mail_login.php", "V_Mail");
 }
 </script>
 <script>
@@ -250,6 +259,9 @@ function V_Logout()
 	});
 	
 	$.post("/auth/logout.php", function(data) {
+		if (openWins[1] && !openWins[1].closed) {
+			openWins[1].close();
+		}
 		setTimeout(function() {
 			V_Loading_End();
 			$(window).unbind("beforeunload");
@@ -269,12 +281,48 @@ function V_Broadcast()
 	$( "#broadcast" ).load("/source/broadcast.php", function(data, status, xhr) {
 		if (status == "error")
 		{
-			if (xhr.status == 404 || xhr.status == 420 || xhr.status == 421)
+			if (xhr.status == 403 || xhr.status == 420 || xhr.status == 421)
 			{
 				V_Logout();
 			}
 		}
 	});
+}
+
+function V_Mail_Check()
+{
+	$( "#inbox" ).load("/source/mail.php", function(data, status, xhr) {
+		if (status == "error")
+		{
+			if (xhr.status == 403 || xhr.status == 420 || xhr.status == 421)
+			{
+				V_Logout();
+			}
+		}
+	});
+}
+
+var v_notification_count = 0;
+
+function V_Notification_Open()
+{
+	v_notification_count++;
+	if (v_notification_count == 0) {
+		window.document.title = "VeriCon :: Main";
+	} else {
+		window.document.title = "VeriCon :: Main (" + v_notification_count + ")";
+		$( "#broadcast" ).html('<audio autoplay src="/audio/notify.ogg"></audio>');
+	}
+}
+
+function V_Notification_Close()
+{
+	v_notification_count--;
+	if (v_notification_count == 0) {
+		window.document.title = "VeriCon :: Main";
+	} else {
+		window.document.title = "VeriCon :: Main (" + v_notification_count + ")";
+	}
 }
 </script>
 <script>
@@ -284,6 +332,7 @@ setInterval("Header_Time_EST()", 1000);
 setInterval("Header_Time_IST()", 1000);
 setInterval("Update_Clock()", 900000);
 setInterval("V_Broadcast()", 120000);
+setInterval("V_Mail_Check()", 180000);
 $.jGrowl.defaults.closer = false;
 $.jGrowl.defaults.closeTemplate = '<img src="/images/close_icon.png" width="16px" height="16px">';
 
