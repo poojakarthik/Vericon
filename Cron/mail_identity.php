@@ -1,15 +1,20 @@
 <?php
-$rc_link = mysql_connect('localhost','roundcube','18450be');
-$vc_link = mysql_connect('localhost','vericon','18450be');
+$mysqli_rc = new mysqli('localhost','roundcube','18450be');
+$mysqli_vc = new mysqli('localhost','vericon','18450be');
 
-$q = mysql_query("SELECT `users`.`user_id`, `users`.`username`, `identities`.`name` FROM `roundcubemail`.`users`, `roundcubemail`.`identities` WHERE `users`.`user_id` = `identities`.`user_id`", $rc_link) or die(mysql_error());
-while ($rc_user = mysql_fetch_assoc($q))
+$q = $mysqli_rc->query("SELECT `users`.`user_id`, `users`.`username`, `identities`.`name` FROM `roundcubemail`.`users`, `roundcubemail`.`identities` WHERE `users`.`user_id` = `identities`.`user_id`") or die($mysqli_rc->error);
+while ($rc_user = $q->fetch_assoc())
 {
-        $q1 = mysql_query("SELECT CONCAT(`first`, ' ', `last`) FROM `vericon`.`auth` WHERE `user` = '" . mysql_real_escape_string($rc_user["username"]) . "'", $vc_link) or die(mysql_error());
-        $vc_name = mysql_fetch_row($q1);
+        $q1 = $mysqli_vc->query("SELECT CONCAT(`first`, ' ', `last`) FROM `vericon`.`auth` WHERE `user` = '" . $mysqli_vc->real_escape_string($rc_user["username"]) . "'") or die($mysqli_vc->error);
+        $vc_name = $q1->fetch_row();
         if ($rc_user["name"] != $vc_name[0])
         {
-                mysql_query("UPDATE `roundcubemail`.`identities` SET `name` = '" . mysql_real_escape_string($vc_name[0]) . "' WHERE `user_id` = '" . mysql_real_escape_string($rc_user["user_id"]) . "'", $rc_link) or die(mysql_error());
+                $mysqli_rc->query("UPDATE `roundcubemail`.`identities` SET `name` = '" . $mysqli_rc->real_escape_string($vc_name[0]) . "' WHERE `user_id` = '" . $mysqli_rc->real_escape_string($rc_user["user_id"]) . "'") or die($mysqli_rc->error);
         }
+		$q1->free();
 }
+$q->free();
+
+$mysqli_rc->close();
+$mysqli_vc->close();
 ?>

@@ -19,7 +19,7 @@ if ($referer_check[1] != $referer)
 <script src="../js/blockUI.js"></script>
 <link href="../css/login.css" rel="stylesheet" type="text/css" />
 <?php
-define('SALT', '95da736efb1fac79a9da5e02285ffb7617b3894283542cb3ce5d32e74ecf3241849fadb3df285afab6e0f81238c1421128b80b91ece99b17af346b013187e69a');
+define('SALT', 'IISp3dwbJu4UuMxWJWSfLrzR');
 
 function decrypt($text)
 {
@@ -129,7 +129,7 @@ function Login()
 
 <body>
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 ?>
 <div id="preload">
 <img src="../images/checkbox.png" /><img src="../images/checkbox_checked.png" /><img src="../images/v_loading.gif" />
@@ -358,11 +358,12 @@ else
 <p class="font_12"><strong>Fun Facts @ VeriCon</strong>
 </p>
 <?php
-$q = mysql_query("SELECT `fact` FROM `vericon`.`fun_facts` WHERE `status` = 'Enabled' ORDER BY RAND() LIMIT 3") or die(mysql_error());
-while ($ff = mysql_fetch_row($q))
+$q = $mysqli->query("SELECT `fact` FROM `vericon`.`fun_facts` WHERE `status` = 'Enabled' ORDER BY RAND() LIMIT 3") or die($mysqli->error);
+while ($ff = $q->fetch_row())
 {
 	echo "<li>" . $ff[0] . "</li>";
 }
+$q->free();
 ?>
 </ul>
 </div>
@@ -376,8 +377,11 @@ Copyrights 2011-<?php echo date("Y"); ?> | All Rights Reserved @ VeriCon<br />De
 <div class="right_f">
 <img src="../images/footer_logo.png" border="0" />
 <?php
-$q = mysql_query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die(mysql_error());
-$ver = mysql_fetch_row($q);
+$q = $mysqli->query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die($mysqli->error);
+$ver = $q->fetch_row();
+
+$q->free();
+$mysqli->close();
 ?>
 <div style="width:133px; text-align:right; margin-top:-5px;"><?php echo $ver[0]; ?></div>
 </div>

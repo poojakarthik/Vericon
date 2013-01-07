@@ -1,5 +1,5 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 $referer = $_SERVER['SERVER_NAME'] . "/login/";
 $referer_check = split("//", $_SERVER['HTTP_REFERER']);
@@ -10,7 +10,7 @@ if ($_SERVER["REQUEST_METHOD"] != "POST" || $referer_check[1] != $referer)
 	exit;
 }
 
-define('SALT', '95da736efb1fac79a9da5e02285ffb7617b3894283542cb3ce5d32e74ecf3241849fadb3df285afab6e0f81238c1421128b80b91ece99b17af346b013187e69a');
+define('SALT', 'IISp3dwbJu4UuMxWJWSfLrzR');
 
 function encrypt($text)
 {
@@ -19,13 +19,18 @@ function encrypt($text)
 
 function CheckAccess()
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die(mysql_error());
+	$mysqli = new mysqli('localhost','vericon','18450be');
 	
-	if (mysql_num_rows($q) == 0) {
+	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
+	
+	if ($q->num_rows == 0) {
 		return false;
 	} else {
 		return true;
 	}
+	
+	$q->free();
+	$mysqli->close();
 }
 
 function browser($ua)
@@ -53,21 +58,21 @@ $tracker = $_POST["tracker"];
 $remember = $_POST["remember"];
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
 
-$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `user` = '" . mysql_real_escape_string($username) . "' AND `pass` = '" . md5($password) . "'") or die(mysql_error());
-$data = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `user` = '" . $mysqli->real_escape_string($username) . "' AND `pass` = '" . md5($password) . "'") or die($mysqli->error);
+$data = $q->fetch_assoc();
 
-$maintenance = mysql_query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die(mysql_error());
+$maintenance = $mysqli->query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die($mysqli->error);
 
 if (!CheckAccess())
 {
-	mysql_query("INSERT INTO `logs`.`unauthorised` (`user`, `ip`, `timestamp`) VALUES ('" . mysql_real_escape_string($username) . "', '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW())") or die(mysql_error());
+	$mysqli->query("INSERT INTO `logs`.`unauthorised` (`user`, `ip`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW())") or die($mysqli->error);
 	echo "<b>Error: </b>IP is not within the whitelist range. <a href=\"/\">Click here for more details.</a>";
 }
 elseif ($browser["name"] != "Firefox" || $browser["version"] < 17)
 {
 	echo "<b>Error: </b>Unsupported browser. <a href=\"/\">Click here for more details.</a>";
 }
-elseif(mysql_num_rows($maintenance) != 0)
+elseif($maintenance->num_rows != 0)
 {
 	echo "<b>Error: </b>VeriCon is currently under maintenance. <a href=\"/\">Click here for more details.</a>";
 }
@@ -75,7 +80,7 @@ elseif ($username == "" || $password == "")
 {
 	echo "<b>Error: </b>Incorrect username or password.";
 }
-elseif(mysql_num_rows($q) != 1)
+elseif($q->num_rows != 1)
 {
 	echo "<b>Error: </b>Incorrect username or password.";
 }
@@ -87,9 +92,9 @@ else
 {
 	$token = hash('whirlpool', $username . rand());
 	
-	mysql_query("INSERT INTO `vericon`.`current_users` (`user`, `token`, `ip`, `timestamp`, `current_page`, `last_action`) VALUES ('" . mysql_real_escape_string($username) . "', '" . mysql_real_escape_string($token) . "', '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW(), 'MA01', NOW()) ON DUPLICATE KEY UPDATE `token` = '" . mysql_real_escape_string($token) . "', `ip` = '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', `timestamp` = NOW(), `current_page` = 'MA01', `last_action` = NOW()") or die(mysql_error());
+	$mysqli->query("INSERT INTO `vericon`.`current_users` (`user`, `token`, `ip`, `timestamp`, `current_page`, `last_action`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string($token) . "', '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW(), 'MA01', NOW()) ON DUPLICATE KEY UPDATE `token` = '" . $mysqli->real_escape_string($token) . "', `ip` = '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', `timestamp` = NOW(), `current_page` = 'MA01', `last_action` = NOW()") or die($mysqli->error);
 	
-	mysql_query("INSERT INTO `logs`.`login` (`user`, `ip`, `token`, `timestamp`) VALUES ('" . mysql_real_escape_string($username) . "', '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', '" . mysql_real_escape_string($token) . "', NOW())") or die(mysql_error());
+	$mysqli->query("INSERT INTO `logs`.`login` (`user`, `ip`, `token`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', '" . $mysqli->real_escape_string($token) . "', NOW())") or die($mysqli->error);
 	
 	setcookie("vc_token", $token, strtotime("+1 month"), '/');
 	
@@ -100,4 +105,8 @@ else
 	
 	echo "token=" . $token;
 }
+
+$q->free();
+$maintenance->free();
+$mysqli->close();
 ?>

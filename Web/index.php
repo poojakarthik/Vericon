@@ -1,15 +1,20 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 function CheckAccess()
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die(mysql_error());
+	$mysqli = new mysqli('localhost','vericon','18450be');
 	
-	if (mysql_num_rows($q) == 0) {
+	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
+	
+	if ($q->num_rows == 0) {
 		return false;
 	} else {
 		return true;
 	}
+	
+	$q->free();
+	$mysqli->close();
 }
 
 function browser($ua)
@@ -47,9 +52,9 @@ if ($browser["name"] != "Firefox" || $browser["version"] < 17)
 	exit;
 }
 
-$maintenance = mysql_query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die(mysql_error());
+$maintenance = $mysqli->query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die($mysqli->error);
 
-if (mysql_num_rows($maintenance) != 0)
+if ($maintenance->num_rows != 0)
 {
 	echo "<script>window.location = '/maintenance';</script>";
 }
@@ -61,7 +66,11 @@ window.location = '/login';
 </script>
 <?php
 }
+$maintenance->free();
 ?>
 <noscript>
 <h1>Javascript must be enabled</h1>
 </noscript>
+<?php
+$mysqli->close();
+?>

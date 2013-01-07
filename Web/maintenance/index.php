@@ -1,15 +1,20 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 function CheckAccess()
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die(mysql_error());
+	$mysqli = new mysqli('localhost','vericon','18450be');
 	
-	if (mysql_num_rows($q) == 0) {
+	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
+	
+	if ($q->num_rows == 0) {
 		return false;
 	} else {
 		return true;
 	}
+	
+	$q->free();
+	$mysqli->close();
 }
 
 $referer = $_SERVER['SERVER_NAME'] . "/";
@@ -23,13 +28,15 @@ if (($referer_check[1] != $referer && $referer_check[1] != $referer1) || !CheckA
 	exit;
 }
 
-$q = mysql_query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die(mysql_error());
-if (mysql_num_rows($q) == 0)
+$q = $mysqli->query("SELECT `message` FROM `vericon`.`maintenance` WHERE `status` = 'Enabled'") or die($mysqli->error);
+if ($q->num_rows == 0)
 {
 	header('Location: /');
 	exit;
 }
-$data = mysql_fetch_assoc($q);
+$data = $q->fetch_assoc();
+
+$q->free();
 ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">

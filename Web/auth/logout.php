@@ -1,5 +1,5 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 $referer = $_SERVER['SERVER_NAME'] . "/main/";
 $referer_check = split("//", $_SERVER['HTTP_REFERER']);
@@ -14,7 +14,10 @@ $token = $_COOKIE["vc_token"];;
 
 if($token == ""){ exit; }
 
-mysql_query("DELETE FROM `vericon`.`current_users` WHERE `token` = '" . mysql_real_escape_string($token) . "' LIMIT 1") or die(mysql_error());
+$mysqli->query("DELETE FROM `vericon`.`current_users` WHERE `token` = '" . $mysqli->real_escape_string($token) . "' LIMIT 1") or die($mysqli->error);
 
 setcookie('vc_token', null, time()-3600, '/');
+setcookie('vc_mail_token', null, time()-3600, '/');
+
+$mysqli->close();
 ?>
