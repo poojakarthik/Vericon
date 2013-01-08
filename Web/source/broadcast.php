@@ -1,15 +1,20 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 function CheckAccess()
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die(mysql_error());
+	$mysqli = new mysqli('localhost','vericon','18450be');
 	
-	if (mysql_num_rows($q) == 0) {
+	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
+	
+	if ($q->num_rows == 0) {
 		return false;
 	} else {
 		return true;
 	}
+	
+	$q->free();
+	$mysqli->close();
 }
 
 $referer = $_SERVER['SERVER_NAME'] . "/main/";
@@ -24,28 +29,32 @@ if ($referer_check[1] != $referer || !CheckAccess())
 
 $token = $_COOKIE['vc_token'];
 
-$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . mysql_real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die(mysql_error());
-$ac = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
+$ac = $q->fetch_assoc();
 
-if (mysql_num_rows($q) == 0)
+if ($q->num_rows == 0)
 {
 	header('HTTP/1.1 420 Not Logged In');
 	exit;
 }
-
 if ($ac["status"] != "Enabled")
 {
 	header('HTTP/1.1 421 Account Disabled');
 	exit;
 }
+$q->free();
 ?>
 <script>
 <?php
-$messages = $_COOKIE["vc_broadcast"];
+if (isset($_COOKIE["vc_broadcast"])) {
+	$messages = $_COOKIE["vc_broadcast"];
+} else {
+	$messages = "";
+}
 $my_departments = explode(",", $ac["type"]);
 
-$q = mysql_query("SELECT `broadcast`.`id`, `broadcast`.`title`, `broadcast`.`message`, `broadcast`.`all`, `broadcast`.`department`, `broadcast`.`user`, `broadcast`.`timestamp`, `auth`.`first`, `auth`.`last` FROM `vericon`.`broadcast`, `vericon`.`auth` WHERE `broadcast`.`end_timestamp` >= NOW() AND `broadcast`.`poster` = `auth`.`user` ORDER BY `broadcast`.`id` ASC") or die(mysql_error());
-while($broadcast = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT `broadcast`.`id`, `broadcast`.`title`, `broadcast`.`message`, `broadcast`.`all`, `broadcast`.`department`, `broadcast`.`user`, `broadcast`.`timestamp`, `auth`.`first`, `auth`.`last` FROM `vericon`.`broadcast`, `vericon`.`auth` WHERE `broadcast`.`end_timestamp` >= NOW() AND `broadcast`.`poster` = `auth`.`user` ORDER BY `broadcast`.`id` ASC") or die($mysqli->error);
+while($broadcast = $q->fetch_assoc())
 {
 	$seen = explode(",", $_COOKIE["vc_broadcast"]);
 	if (!in_array($broadcast["id"], $seen))
@@ -90,17 +99,21 @@ while($broadcast = mysql_fetch_assoc($q))
 		$messages .= "," . $broadcast["id"];
 	}
 }
+$q->free();
 
 $messages = trim(substr($messages,-512), ",");
 
 setcookie("vc_broadcast", $messages, strtotime("+1 month"), "/");
 
-$q = mysql_query("SELECT `last_action` FROM `vericon`.`current_users` WHERE `user` = '" . mysql_real_escape_string($ac["user"]) . "'") or die(mysql_error());
-$last_action = mysql_fetch_row($q);
+$q = $mysqli->query("SELECT `last_action` FROM `vericon`.`current_users` WHERE `user` = '" . $mysqli->real_escape_string($ac["user"]) . "'") or die($mysqli->error);
+$last_action = $q->fetch_row();
+$q->free();
 
 if (strtotime($last_action[0]) < strtotime("-12 minutes"))
 {
 	echo "$.jGrowl('Your session is about to expire, please perform an action to remain logged in.<hr style=\"width:75%; height:1px; margin-top:5px; border-top:1px dotted #3a65b4; background:none;\" />VeriCon | " . date("d/m/Y h:i A") . "', { sticky: true, theme: 'jgrowl_theme', header: 'Inactive Session Warning', open: function (e,m,o) { V_Notification_Open(); }, close: function (e,m,o) { V_Notification_Close(); } });";
 }
+
+$mysqli->close();
 ?>
 </script>

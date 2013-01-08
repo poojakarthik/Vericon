@@ -1,15 +1,20 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 function CheckAccess()
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die(mysql_error());
+	$mysqli = new mysqli('localhost','vericon','18450be');
 	
-	if (mysql_num_rows($q) == 0) {
+	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
+	
+	if ($q->num_rows == 0) {
 		return false;
 	} else {
 		return true;
 	}
+	
+	$q->free();
+	$mysqli->close();
 }
 
 function browser($ua)
@@ -33,18 +38,20 @@ function browser($ua)
 
 $token = $_COOKIE['vc_token'];
 
-$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias`, `auth`.`pass_reset` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . mysql_real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die(mysql_error());
-$ac = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias`, `auth`.`pass_reset` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
+$ac = $q->fetch_assoc();
 
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
 $referer = $_SERVER['SERVER_NAME'] . "/login/";
 $referer_check = split("//", $_SERVER['HTTP_REFERER']);
 
-if (!CheckAccess() || $browser["name"] != "Firefox" || $browser["version"] < 17 || mysql_num_rows($q) == 0 || $ac["status"] != "Enabled" || $referer_check[1] != $referer)
+if (!CheckAccess() || $browser["name"] != "Firefox" || $browser["version"] < 17 || $q->num_rows == 0 || $ac["status"] != "Enabled" || $referer_check[1] != $referer)
 {
 	header('Location: /');
 	exit;
 }
+
+$q->free();
 
 $dateTimeKolkata = new DateTime("now", new DateTimeZone("Asia/Kolkata"));
 ?>
@@ -454,8 +461,10 @@ if (date("Y-m-d", strtotime($ac["pass_reset"])) <= date("Y-m-d", strtotime("-90 
 <td class="right_f" align="right" valign="top">
 <img src="../images/footer_logo.png" border="0" />
 <?php
-$q = mysql_query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die(mysql_error());
-$ver = mysql_fetch_row($q);
+$q = $mysqli->query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die($mysqli->error);
+$ver = $q->fetch_row();
+$q->free();
+$mysqli->close();
 ?>
 <div style="width:133px; text-align:right; margin:-5px 30px 0 0;">
 <?php echo $ver[0]; ?>
