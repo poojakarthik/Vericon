@@ -53,26 +53,29 @@ function TPV01_More_Announcements(page)
 <tr valign="top" height="95%">
 <td>
 <?php
-$check = mysql_query("SELECT * FROM `vericon`.`announcements` WHERE `department` = 'TPV' AND `status` = 'Enabled'") or die(mysql_error());
-$rows = mysql_num_rows($check);
+$check = $mysqli->query("SELECT * FROM `vericon`.`announcements` WHERE `department` = 'TPV' AND `status` = 'Enabled'") or die($mysqli->error);
+$rows = $check->num_rows;
+$check->free();
 
 if ($rows == 0)
 {
+	$st = 0;
 	echo "<p>No Announcements</p>";
 }
 else
 {
 	$st = 0;
-	$q = mysql_query("SELECT `announcements`.`subject`, `announcements`.`message`, `announcements`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS poster FROM `vericon`.`announcements`, `vericon`.`auth` WHERE `announcements`.`department` = 'TPV' AND `announcements`.`status` = 'Enabled' AND `announcements`.`poster` = `auth`.`user` ORDER BY `announcements`.`id` DESC LIMIT $st , 3") or die(mysql_error());
-	
-	while($r = mysql_fetch_assoc($q))
+	$q = $mysqli->query("SELECT `announcements`.`subject`, `announcements`.`message`, `announcements`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS poster FROM `vericon`.`announcements`, `vericon`.`auth` WHERE `announcements`.`department` = 'TPV' AND `announcements`.`status` = 'Enabled' AND `announcements`.`poster` = `auth`.`user` ORDER BY `announcements`.`id` DESC LIMIT $st , 3") or die($mysqli->error);
+	while($r = $q->fetch_assoc())
 	{
 		echo "<p><span style='font-size:14px;'><b>" . $r["subject"] . "</b></span></p>";
 		echo $r["message"];
 		echo "<hr style='width:70%; height:1px; margin-top:10px; border-top:1px dotted #3a65b4; background:none;' />";
 		echo "<p style='font-size:9px;'>Posted by " . $r["poster"] . " | " . date("d F Y h:i A", strtotime($r["timestamp"])) . "</p><br>";
 	}
+	$q->free();
 }
+$mysqli->close();
 ?>
 </td>
 </tr>

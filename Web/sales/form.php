@@ -6,7 +6,7 @@ include("../auth/restrict.php");
 <table>
 <tr>
 <td style="width:90px;"><div class="dotted"></div></td>
-<td valign="middle" nowrap="nowrap" width="1px"><h1>Sale Form</h1></td>
+<td valign="middle" nowrap="nowrap" width="1px"><h1>Sales Form</h1></td>
 <td><div class="dotted"></div></td>
 </tr>
 </table>

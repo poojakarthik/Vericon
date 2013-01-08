@@ -1,11 +1,11 @@
 <?php
 include("../auth/restrict.php");
 
-$approved = array();
-$declined = array();
-$line_issue = array();
-$q = mysql_query("SELECT DAYNAME(`approved_timestamp`), `status`, COUNT(`id`) FROM `vericon`.`sales_customers` WHERE `centre` = 'CC53' AND WEEK(`approved_timestamp`,3) = '" . mysql_real_escape_string(date("W")) . "' GROUP BY DAYOFWEEK(`approved_timestamp`), `status`") or die(mysql_error());
-while ($data = mysql_fetch_row($q))
+$approved = array("Monday" => "0", "Tuesday" => "0", "Wednesday" => "0", "Thursday" => "0", "Friday" => "0", "Saturday" => "0");
+$declined = array("Monday" => "0", "Tuesday" => "0", "Wednesday" => "0", "Thursday" => "0", "Friday" => "0", "Saturday" => "0");
+$line_issue = array("Monday" => "0", "Tuesday" => "0", "Wednesday" => "0", "Thursday" => "0", "Friday" => "0", "Saturday" => "0");
+$q = $mysqli->query("SELECT DAYNAME(`approved_timestamp`), `status`, COUNT(`id`) FROM `vericon`.`sales_customers` WHERE `centre` = 'CC53' AND WEEK(`approved_timestamp`,3) = '" . $mysqli->real_escape_string(date("W")) . "' GROUP BY DAYOFWEEK(`approved_timestamp`), `status`") or die($mysqli->error);
+while ($data = $q->fetch_row())
 {
 	if ($data[1] == "Approved") {
 		$approved[$data[0]] = $data[2];
@@ -15,6 +15,7 @@ while ($data = mysql_fetch_row($q))
 		$line_issue[$data[0]] = $data[2];
 	}
 }
+$q->free();
 ?>
 <style>
 div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
@@ -199,8 +200,8 @@ $(function () {
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . mysql_real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND DATE(`sales_customers`.`approved_timestamp`) = '" . mysql_real_escape_string(date("Y-m-d")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die(mysql_error());
-if (mysql_num_rows($q) == 0)
+$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND DATE(`sales_customers`.`approved_timestamp`) = '" . $mysqli->real_escape_string(date("Y-m-d")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
+if ($q->num_rows == 0)
 {
 	echo "<tr>";
 	echo "<td colspan='2'>No sales made today</td>";
@@ -208,7 +209,7 @@ if (mysql_num_rows($q) == 0)
 }
 else
 {
-	while ($data = mysql_fetch_row($q))
+	while ($data = $q->fetch_row())
 	{
 		echo "<tr>";
 		echo "<td style='text-align:left;'>" . $data[0] . "</td>";
@@ -216,6 +217,7 @@ else
 		echo "</tr>";
 	}
 }
+$q->free();
 ?>
 </tbody>
 </table>
@@ -234,8 +236,8 @@ else
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . mysql_real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND WEEK(`sales_customers`.`approved_timestamp`,3) = '" . mysql_real_escape_string(date("W")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die(mysql_error());
-if (mysql_num_rows($q) == 0)
+$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND WEEK(`sales_customers`.`approved_timestamp`,3) = '" . $mysqli->real_escape_string(date("W")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
+if ($q->num_rows == 0)
 {
 	echo "<tr>";
 	echo "<td colspan='2'>No sales made this week</td>";
@@ -243,7 +245,7 @@ if (mysql_num_rows($q) == 0)
 }
 else
 {
-	while ($data = mysql_fetch_row($q))
+	while ($data = $q->fetch_row())
 	{
 		echo "<tr>";
 		echo "<td style='text-align:left;'>" . $data[0] . "</td>";
@@ -251,6 +253,7 @@ else
 		echo "</tr>";
 	}
 }
+$q->free();
 ?>
 </tbody>
 </table>
@@ -269,8 +272,8 @@ else
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . mysql_real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die(mysql_error());
-if (mysql_num_rows($q) == 0)
+$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
+if ($q->num_rows == 0)
 {
 	echo "<tr>";
 	echo "<td colspan='2'>No sales made ever</td>";
@@ -278,7 +281,7 @@ if (mysql_num_rows($q) == 0)
 }
 else
 {
-	while ($data = mysql_fetch_row($q))
+	while ($data = $q->fetch_row())
 	{
 		echo "<tr>";
 		echo "<td style='text-align:left;'>" . $data[0] . "</td>";
@@ -286,6 +289,8 @@ else
 		echo "</tr>";
 	}
 }
+$q->free();
+$mysqli->close();
 ?>
 </tbody>
 </table>
