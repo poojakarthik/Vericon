@@ -47,7 +47,44 @@ $mysqli->close();
 
 $method = $_POST["m"];
 
-if ($method == "load")
+if ($method == "services")
+{
+?>
+<tr>
+<td>Virtual Machine</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "143", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "25", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+</tr>
+<tr>
+<td>VeriCon 01</td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc01.vericon.com.au", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc01.vericon.com.au", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc01.vericon.com.au", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>VeriCon 02</td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc02.vericon.com.au", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc02.vericon.com.au", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc02.vericon.com.au", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<tr>
+<td>VeriCon Storage</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><?php $checkport = fsockopen("test.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+</tr>
+<?php
+}
+elseif ($method == "load")
 {
 	$load = exec("cat /proc/loadavg");
 	$load = split(" ",$load);

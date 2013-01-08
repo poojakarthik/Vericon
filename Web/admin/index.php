@@ -7,6 +7,10 @@ $uptime = split(" ",$uptime);
 $uptimeSecs = substr($uptime[0],0,-3);
 ?>
 <script>
+function doServices(){
+	$( "#services" ).load("/admin/index_process.php", { m: "services" });
+}
+
 var upSeconds = "<?php echo $uptimeSecs; ?>";
 function doUptime()
 {
@@ -52,11 +56,13 @@ function doSwap(){
 }
 </script>
 <script>
+clearInterval(doServicesInterval);
 clearInterval(doUptimeInterval);
 clearInterval(doLoadInterval);
 clearInterval(doMemInterval);
 clearInterval(doSwapInterval);
 
+var doServicesInterval = setInterval("doServices()",15000);
 var doUptimeInterval = setInterval("doUptime()",1000);
 var doLoadInterval = setInterval("doLoad()",5000);
 var doMemInterval = setInterval("doMem()",10000);
@@ -91,7 +97,7 @@ div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .
 <th width="15%" style="text-align:center;">SMTP (25)</th>
 </tr>
 </thead>
-<tbody>
+<tbody id="services">
 <tr>
 <td>Virtual Machine</td>
 <td style="text-align:center">-</td>
