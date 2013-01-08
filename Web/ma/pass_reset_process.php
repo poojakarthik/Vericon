@@ -9,8 +9,9 @@ if ($method == "check")
 	$input = trim($_POST["input"]);
 	$input2 = trim($_POST["input2"]);
 	
-	$q = mysql_query("SELECT `pass` FROM `vericon`.`auth` WHERE `user` = '" . mysql_real_escape_string($ac["user"]) . "' LIMIT 1") or die(mysql_error());
-	$real_current_pass = mysql_fetch_row($q);
+	$q = $mysqli->query("SELECT `pass` FROM `vericon`.`auth` WHERE `user` = '" . $mysqli->real_escape_string($ac["user"]) . "' LIMIT 1") or die($mysqli->error);
+	$real_current_pass = $q->fetch_row();
+	$q->free();
 	
 	if ($field == "new_pass")
 	{
@@ -65,8 +66,9 @@ elseif ($method == "submit")
 	$new_pass = trim($_POST["new_pass"]);
 	$new_pass2 = trim($_POST["new_pass2"]);
 	
-	$q = mysql_query("SELECT `pass` FROM `vericon`.`auth` WHERE `user` = '" . mysql_real_escape_string($ac["user"]) . "' LIMIT 1") or die(mysql_error());
-	$real_current_pass = mysql_fetch_row($q);
+	$q = $mysqli->query("SELECT `pass` FROM `vericon`.`auth` WHERE `user` = '" . $mysqli->real_escape_string($ac["user"]) . "' LIMIT 1") or die($mysqli->error);
+	$real_current_pass = $q->fetch_row();
+	$q->free();
 	
 	if ($real_current_pass[0] != md5($current_pass))
 	{
@@ -102,13 +104,15 @@ elseif ($method == "submit")
 	}
 	else
 	{
-		mysql_query("UPDATE `vericon`.`auth` SET `pass` = '" . md5($new_pass) . "', `pass_reset` = NOW() WHERE `user` = '" . mysql_real_escape_string($ac["user"]) . "' LIMIT 1");
+		$mysqli->query("UPDATE `vericon`.`auth` SET `pass` = '" . md5($new_pass) . "', `pass_reset` = NOW() WHERE `user` = '" . $mysqli->real_escape_string($ac["user"]) . "' LIMIT 1") or die($mysqli->error);
 		
-		mysql_query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . mysql_real_escape_string($ac["user"]) . "', 'edit') ON DUPLICATE KEY UPDATE `action` = 'edit'") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . $mysqli->real_escape_string($ac["user"]) . "', 'edit') ON DUPLICATE KEY UPDATE `action` = 'edit'") or die($mysqli->error);
 		
 		exec("echo \"" . $ac["user"] . " " . md5($new_pass) . "\" >> /var/vc_tmp/edit_email");
 		
 		echo "valid";
 	}
 }
+
+$mysqli->close();
 ?>

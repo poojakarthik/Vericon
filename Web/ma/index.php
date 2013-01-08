@@ -15,10 +15,10 @@ include("../auth/restrict.php");
 <table>
 <tr>
 <?php
-$q = mysql_query("SELECT `id`,`name`,`status` FROM `vericon`.`portals` WHERE `id` != 'MA'") or die(mysql_error());
+$q = $mysqli->query("SELECT `id`,`name`,`status` FROM `vericon`.`portals` WHERE `id` != 'MA'") or die($mysqli->error);
 $i = 0;
 $active_portals = explode(",", $ac["type"]);
-while ($portals = mysql_fetch_row($q))
+while ($portals = $q->fetch_row())
 {
 	if ($i == 5)
 	{
@@ -38,6 +38,7 @@ while ($portals = mysql_fetch_row($q))
 	
 	$i++;
 }
+$q->free();
 ?>
 
 </tr>
@@ -63,8 +64,10 @@ while ($portals = mysql_fetch_row($q))
 <td width="75%" valign="top">
 <div class="text">
 <?php
-$q = mysql_query("SELECT `updates`.`subject`, `updates`.`message`, `updates`.`date`, `auth`.`first`, `auth`.`last` FROM `vericon`.`updates`,`vericon`.`auth` WHERE `updates`.`poster` = `auth`.`user` ORDER BY `updates`.`id` DESC LIMIT 1") or die(mysql_error());
-$update = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT `updates`.`subject`, `updates`.`message`, `updates`.`date`, `auth`.`first`, `auth`.`last` FROM `vericon`.`updates`,`vericon`.`auth` WHERE `updates`.`poster` = `auth`.`user` ORDER BY `updates`.`id` DESC LIMIT 1") or die($mysqli->error);
+$update = $q->fetch_assoc();
+$q->free();
+$mysqli->close();
 ?>
 <p><span style="font-size:14px;"><b><?php echo $update["subject"]; ?></b></span></p>
 <?php

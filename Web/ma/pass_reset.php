@@ -1,15 +1,20 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 function CheckAccess()
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die(mysql_error());
+	$mysqli = new mysqli('localhost','vericon','18450be');
 	
-	if (mysql_num_rows($q) == 0) {
+	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
+	
+	if ($q->num_rows == 0) {
 		return false;
 	} else {
 		return true;
 	}
+	
+	$q->free();
+	$mysqli->close();
 }
 
 $referer = $_SERVER['SERVER_NAME'] . "/main/";
@@ -24,20 +29,21 @@ if ($referer_check[1] != $referer || !CheckAccess())
 
 $token = $_COOKIE['vc_token'];
 
-$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . mysql_real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die(mysql_error());
-$ac = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
+$ac = $q->fetch_assoc();
 
-if (mysql_num_rows($q) == 0)
+if ($q->num_rows == 0)
 {
 	header('HTTP/1.1 420 Not Logged In');
 	exit;
 }
-
 if ($ac["status"] != "Enabled")
 {
 	header('HTTP/1.1 421 Account Disabled');
 	exit;
 }
+$q->free();
+$mysqli->close();
 ?>
 
 <script>
@@ -153,17 +159,17 @@ function Pass_Reset_Submit()
 </tr>
 <tr>
 <td width="115px">Current Password<span style="color:#ff0000;">*</span> </td>
-<td width="272px"><input id="Pass_Reset_current_pass" type="password"></td>
+<td width="272px"><input id="Pass_Reset_current_pass" autofocus="autofocus" autocomplete="off" type="password"></td>
 <td></td>
 </tr>
 <tr>
 <td>New Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="Pass_Reset_new_pass" onchange="Pass_Reset_Check('new_pass')" type="password"></td>
+<td><input id="Pass_Reset_new_pass" onchange="Pass_Reset_Check('new_pass')" autocomplete="off" type="password"></td>
 <td id="Pass_Reset_new_pass_check" style="padding-left:5px;"></td>
 </tr>
 <tr>
 <td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
-<td><input id="Pass_Reset_new_pass2" onchange="Pass_Reset_Check('new_pass2')" type="password"></td>
+<td><input id="Pass_Reset_new_pass2" onchange="Pass_Reset_Check('new_pass2')" autocomplete="off" type="password"></td>
 <td id="Pass_Reset_new_pass2_check" style="padding-left:5px;"></td>
 </tr>
 <tr>
