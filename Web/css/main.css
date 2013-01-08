@@ -59,7 +59,7 @@
 	display:none;
 	}
 	#wrapper{
-	width:95%; min-width:1000px; max-width:1200px; height:auto; margin:-4px auto 0;
+	width:95%; min-width:1100px; max-width:1200px; height:auto; margin:-4px auto 0;
 	}
 	.jgrowl_theme{
 	background:rgba(0,0,0,0.75); border-radius:10px; -moz-border-radius:10px; -webkit-border-radius:10px;
