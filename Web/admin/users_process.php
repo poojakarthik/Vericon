@@ -7,13 +7,13 @@ if ($method == "disable")
 {
 	$user = $_POST["user"];
 	
-	mysql_query("UPDATE `vericon`.`auth` SET `status` = 'Disabled' WHERE `user` = '" . mysql_real_escape_string($user) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`auth` SET `status` = 'Disabled' WHERE `user` = '" . $mysqli->real_escape_string($user) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "enable")
 {
 	$user = $_POST["user"];
 	
-	mysql_query("UPDATE `vericon`.`auth` SET `status` = 'Enabled' WHERE `user` = '" . mysql_real_escape_string($user) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`auth` SET `status` = 'Enabled' WHERE `user` = '" . $mysqli->real_escape_string($user) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "check")
 {
@@ -256,17 +256,18 @@ elseif ($method == "create")
 			$centres = "";
 		}
 		
-		$q = mysql_query("SELECT COUNT(`user`) FROM `vericon`.`auth` WHERE `user` LIKE '" . mysql_real_escape_string($user1) . "%'");
-		$num = mysql_fetch_row($q);
+		$q = $mysqli->query("SELECT COUNT(`user`) FROM `vericon`.`auth` WHERE `user` LIKE '" . $mysqli->real_escape_string($user1) . "%'") or die($mysqli->error);
+		$num = $q->fetch_row();
+		$q->free();
 		
 		$username = $user1 . str_pad(($num[0]+1),3,"0",STR_PAD_LEFT);
 		$type = implode(",",$access);
 		
-		mysql_query("INSERT INTO `vericon`.`auth` (`user`, `pass`, `type`, `centre`, `status`, `first`, `last`, `alias`, `timestamp`) VALUES ('" . mysql_real_escape_string($username) . "' ,'" . md5($password) . "', '" . mysql_real_escape_string($type) . "', '" . mysql_real_escape_string($centre) . "', 'Enabled', '" . mysql_real_escape_string($first) . "', '" . mysql_real_escape_string($last) . "', '" . mysql_real_escape_string($alias) . "', NOW())");
+		$mysqli->query("INSERT INTO `vericon`.`auth` (`user`, `pass`, `type`, `centre`, `status`, `first`, `last`, `alias`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($username) . "' ,'" . md5($password) . "', '" . $mysqli->real_escape_string($type) . "', '" . $mysqli->real_escape_string($centre) . "', 'Enabled', '" . $mysqli->real_escape_string($first) . "', '" . $mysqli->real_escape_string($last) . "', '" . $mysqli->real_escape_string($alias) . "', NOW())") or die($mysqli->error);
 		
 		if (in_array("Sales", $access))
 		{
-			mysql_query("INSERT INTO `vericon`.`timesheet_designation` (`user`, `designation`) VALUES ('" . mysql_real_escape_string($username) . "','" . mysql_real_escape_string($designation) . "')") or die(mysql_error());
+			$mysqli->query("INSERT INTO `vericon`.`timesheet_designation` (`user`, `designation`) VALUES ('" . $mysqli->real_escape_string($username) . "','" . $mysqli->real_escape_string($designation) . "')") or die($mysqli->error);
 		}
 		
 		$pages = array( );
@@ -279,9 +280,9 @@ elseif ($method == "create")
 		}
 		$pages = implode(",", array_unique($pages));
 		
-		mysql_query("INSERT INTO `vericon`.`portals_access` (`user`, `pages`) VALUES ('" . mysql_real_escape_string($username) . "', '" . mysql_real_escape_string($pages) . "') ON DUPLICATE KEY UPDATE `pages` = '" . mysql_real_escape_string($pages) . "'") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`portals_access` (`user`, `pages`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string($pages) . "') ON DUPLICATE KEY UPDATE `pages` = '" . $mysqli->real_escape_string($pages) . "'") or die($mysqli->error);
 		
-		mysql_query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . mysql_real_escape_string($username) . "', 'create') ON DUPLICATE KEY UPDATE `action` = 'create'") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . $mysqli->real_escape_string($username) . "', 'create') ON DUPLICATE KEY UPDATE `action` = 'create'") or die($mysqli->error);
 		
 		exec("echo \"" . $username . " " . md5($password) . "\" >> /var/vc_tmp/new_email");
 		
@@ -363,16 +364,20 @@ elseif ($method == "edit")
 		
 		$type = implode(",",$access);
 		
-		mysql_query("UPDATE `vericon`.`auth` SET `type` = '" . mysql_real_escape_string($type) . "', `centre` = '" . mysql_real_escape_string($centre) . "', `alias` = '" . mysql_real_escape_string($alias) . "' WHERE `user` = '" . mysql_real_escape_string($user) . "' LIMIT 1");
+		$mysqli->query("UPDATE `vericon`.`auth` SET `type` = '" . $mysqli->real_escape_string($type) . "', `centre` = '" . $mysqli->real_escape_string($centre) . "', `alias` = '" . $mysqli->real_escape_string($alias) . "' WHERE `user` = '" . $mysqli->real_escape_string($user) . "' LIMIT 1") or die($mysqli->error);
 		
 		if ($password != "")
 		{
-			mysql_query("UPDATE `vericon`.`auth` SET `pass` = '" . md5($password) . "' WHERE `user` = '" . mysql_real_escape_string($user) . "' LIMIT 1");
+			$mysqli->query("UPDATE `vericon`.`auth` SET `pass` = '" . md5($password) . "' WHERE `user` = '" . $mysqli->real_escape_string($user) . "' LIMIT 1") or die($mysqli->error);
+			
+			$mysqli->query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . $mysqli->real_escape_string($user) . "', 'edit') ON DUPLICATE KEY UPDATE `action` = 'edit'") or die($mysqli->error);
+			
+			exec("echo \"" . $user . " " . md5($password) . "\" >> /var/vc_tmp/edit_email");
 		}
 		
 		if (in_array("Sales", $access))
 		{
-			mysql_query("INSERT INTO `vericon`.`timesheet_designation` (`user`, `designation`) VALUES ('" . mysql_real_escape_string($user) . "','" . mysql_real_escape_string($designation) . "') ON DUPLICATE KEY UPDATE `designation` = '" . mysql_real_escape_string($designation) . "'") or die(mysql_error());
+			$mysqli->query("INSERT INTO `vericon`.`timesheet_designation` (`user`, `designation`) VALUES ('" . $mysqli->real_escape_string($user) . "','" . $mysqli->real_escape_string($designation) . "') ON DUPLICATE KEY UPDATE `designation` = '" . $mysqli->real_escape_string($designation) . "'") or die($mysqli->error);
 		}
 		
 		$pages = array( );
@@ -385,13 +390,10 @@ elseif ($method == "edit")
 		}
 		$pages = implode(",", array_unique($pages));
 		
-		mysql_query("INSERT INTO `vericon`.`portals_access` (`user`, `pages`) VALUES ('" . mysql_real_escape_string($user) . "', '" . mysql_real_escape_string($pages) . "') ON DUPLICATE KEY UPDATE `pages` = '" . mysql_real_escape_string($pages) . "'") or die(mysql_error());
-		
-		mysql_query("INSERT INTO `vericon`.`mail_pending` (`user`, `action`) VALUES ('" . mysql_real_escape_string($user) . "', 'edit') ON DUPLICATE KEY UPDATE `action` = 'edit'") or die(mysql_error());
-		
-		exec("echo \"" . $user . " " . md5($password) . "\" >> /var/vc_tmp/edit_email");
+		$mysqli->query("INSERT INTO `vericon`.`portals_access` (`user`, `pages`) VALUES ('" . $mysqli->real_escape_string($user) . "', '" . $mysqli->real_escape_string($pages) . "') ON DUPLICATE KEY UPDATE `pages` = '" . $mysqli->real_escape_string($pages) . "'") or die($mysqli->error);
 		
 		echo "valid";
 	}
 }
+$mysqli->close();
 ?>

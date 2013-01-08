@@ -26,11 +26,13 @@ $query = $_POST["query"];
 <?php
 if ($method == "display")
 {
-	$check = mysql_query("SELECT * FROM `vericon`.`auth`") or die(mysql_error());
-	$rows = mysql_num_rows($check);
+	$check = $mysqli->query("SELECT * FROM `vericon`.`auth`") or die($mysqli->error);
+	$rows = $check->num_rows;
+	$check->free();
 	
 	if($rows == 0)
 	{
+		$st = 0;
 		echo "<tr>";
 		echo "<td colspan='9' style='text-align:center;'>No Users?!?!?!</td>";
 		echo "</tr>";
@@ -38,17 +40,18 @@ if ($method == "display")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT * FROM `vericon`.`auth` ORDER BY `user` ASC LIMIT $st , 13") or die(mysql_error());
+		$q = $mysqli->query("SELECT * FROM `vericon`.`auth` ORDER BY `user` ASC LIMIT $st , 13") or die($mysqli->error);
 		
-		while($r = mysql_fetch_assoc($q))
+		while($r = $q->fetch_assoc())
 		{
-			$q1 = mysql_query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . mysql_real_escape_string($r["user"]) . "'") or die(mysql_error());
-			$l = mysql_fetch_row($q1);
+			$q1 = $mysqli->query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . $mysqli->real_escape_string($r["user"]) . "'") or die($mysqli->error);
+			$l = $q1->fetch_row();
 			if ($l[0] == null) {
 				$last_login = "Never";
 			} else {
 				$last_login = date("d/m/Y H:i:s", strtotime($l[0]));
 			}
+			$q1->free();
 			echo "<tr>";
 			echo "<td>" . $r["user"] . "</td>";
 			echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
@@ -65,20 +68,24 @@ if ($method == "display")
 			}
 			echo "</tr>";
 		}
+		$q->free();
 	}
 }
 elseif ($method == "search_Users")
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `user` = '" . mysql_real_escape_string($query) . "'") or die(mysql_error());
-	$r = mysql_fetch_assoc($q);
+	$q = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `user` = '" . $mysqli->real_escape_string($query) . "'") or die($mysqli->error);
+	$r = $q->fetch_assoc();
+	$q->free();
 	$rows = 1;
-	$q1 = mysql_query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . mysql_real_escape_string($r["user"]) . "'") or die(mysql_error());
-	$l = mysql_fetch_row($q1);
+	$st = 0;
+	$q = $mysqli->query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . $mysqli->real_escape_string($r["user"]) . "'") or die($mysqli->error);
+	$l = $q->fetch_row();
 	if ($l[0] == null) {
 		$last_login = "Never";
 	} else {
 		$last_login = date("d/m/Y H:i:s", strtotime($l[0]));
 	}
+	$q->free();
 	echo "<tr>";
 	echo "<td>" . $r["user"] . "</td>";
 	echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
@@ -97,11 +104,13 @@ elseif ($method == "search_Users")
 }
 elseif ($method == "search_Departments")
 {
-	$check = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . mysql_real_escape_string($query) . "'") or die(mysql_error());
-	$rows = mysql_num_rows($check);
+	$check = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . $mysqli->real_escape_string($query) . "'") or die($mysqli->error());
+	$rows = $check->num_rows;
+	$check->free();
 	
 	if($rows == 0)
 	{
+		$st = 0;
 		echo "<tr>";
 		echo "<td colspan='9' style='text-align:center;'>No Users</td>";
 		echo "</tr>";
@@ -109,17 +118,18 @@ elseif ($method == "search_Departments")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . mysql_real_escape_string($query) . "' ORDER BY `user` ASC LIMIT $st , 13") or die(mysql_error());
+		$q = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . $mysqli->real_escape_string($query) . "' ORDER BY `user` ASC LIMIT $st , 13") or die($mysqli->error);
 		
-		while($r = mysql_fetch_assoc($q))
+		while($r = $q->fetch_assoc())
 		{
-			$q1 = mysql_query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . mysql_real_escape_string($r["user"]) . "'") or die(mysql_error());
-			$l = mysql_fetch_row($q1);
+			$q1 = $mysqli->query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . $mysqli->real_escape_string($r["user"]) . "'") or die($mysqli->error);
+			$l = $q1->fetch_row();
 			if ($l[0] == null) {
 				$last_login = "Never";
 			} else {
 				$last_login = date("d/m/Y H:i:s", strtotime($l[0]));
 			}
+			$q1->free();
 			echo "<tr>";
 			echo "<td>" . $r["user"] . "</td>";
 			echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
@@ -136,15 +146,18 @@ elseif ($method == "search_Departments")
 			}
 			echo "</tr>";
 		}
+		$q->free();
 	}
 }
 elseif ($method == "search_Centres")
 {
-	$check = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `centre` = '" . mysql_real_escape_string($query) . "'") or die(mysql_error());
-	$rows = mysql_num_rows($check);
+	$check = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `centre` = '" . $mysqli->real_escape_string($query) . "'") or die($mysqli->error);
+	$rows = $check->num_rows;
+	$check->free();
 	
 	if($rows == 0)
 	{
+		$st = 0;
 		echo "<tr>";
 		echo "<td colspan='9' style='text-align:center;'>No Users</td>";
 		echo "</tr>";
@@ -152,17 +165,18 @@ elseif ($method == "search_Centres")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT * FROM `vericon`.`auth` WHERE `centre` = '" . mysql_real_escape_string($query) . "' ORDER BY `user` ASC LIMIT $st , 13") or die(mysql_error());
+		$q = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `centre` = '" . $mysqli->real_escape_string($query) . "' ORDER BY `user` ASC LIMIT $st , 13") or die($mysqli->error);
 		
-		while($r = mysql_fetch_assoc($q))
+		while($r = $q->fetch_assoc())
 		{
-			$q1 = mysql_query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . mysql_real_escape_string($r["user"]) . "'") or die(mysql_error());
-			$l = mysql_fetch_row($q1);
+			$q1 = $mysqli->query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . $mysqli->real_escape_string($r["user"]) . "'") or die($mysqli->error);
+			$l = $q1->fetch_row();
 			if ($l[0] == null) {
 				$last_login = "Never";
 			} else {
 				$last_login = date("d/m/Y H:i:s", strtotime($l[0]));
 			}
+			$q1->free();
 			echo "<tr>";
 			echo "<td>" . $r["user"] . "</td>";
 			echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
@@ -179,8 +193,10 @@ elseif ($method == "search_Centres")
 			}
 			echo "</tr>";
 		}
+		$q->free();
 	}
 }
+$mysqli->close();
 ?>
 </tbody>
 </table>

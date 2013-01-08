@@ -52,7 +52,7 @@ function Admin04_More_IPs(page)
 function Admin04_Search(category,id)
 {
 	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/whitelist_display.php", { m: "search_" + category, query: id }, function(data, status, xhr){
+	$( "#display_inner" ).load("/admin/whitelist_display.php", { m: "search_" + category, query: id, page: 0 }, function(data, status, xhr){
 		if (status == "error")
 		{
 			if (xhr.status == 420)
@@ -268,19 +268,22 @@ function Admin04_Toggle_Status(ip_start,ip_end,method)
 </thead>
 <tbody>
 <?php
-$check = mysql_query("SELECT * FROM `vericon`.`allowedip`") or die(mysql_error());
-$rows = mysql_num_rows($check);
+$check = $mysqli->query("SELECT * FROM `vericon`.`allowedip`") or die($mysqli->error);
+$rows = $check->num_rows;
+$check->free();
 
 if($rows == 0)
 {
+	$st = 0;
 	echo "<tr>";
 	echo "<td colspan='6'>No IPs?!?!?!</td>";
 	echo "</tr>";
 }
 else
 {
-	$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`added_by` = `auth`.`user` ORDER BY `ip_start` ASC LIMIT 0 , 13") or die(mysql_error());
-	while($r = mysql_fetch_assoc($q))
+	$st = 0;
+	$q = $mysqli->query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`added_by` = `auth`.`user` ORDER BY `ip_start` ASC LIMIT 0 , 13") or die($mysqli->error);
+	while($r = $q->fetch_assoc())
 	{
 		if ($r["ip_start"] != $r["ip_end"]) {
 			$ip = $r["ip_start"] . " - " . $r["ip_end"];
@@ -301,6 +304,7 @@ else
 		}
 		echo "</tr>";
 	}
+	$q->free();
 }
 ?>
 </tbody>

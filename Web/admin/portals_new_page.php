@@ -1,5 +1,6 @@
 <?php
 include("../auth/restrict_inner.php");
+$mysqli->close();
 
 $portal_id = $_POST["portal_id"];
 ?>

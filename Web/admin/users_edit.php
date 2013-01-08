@@ -18,10 +18,11 @@ function Admin03_Edit_User_Cancel()
 	$( "#Admin03_search" ).removeAttr("disabled");
 	$( "#Admin03_create_user" ).removeAttr("disabled");
 	<?php
-	$q = mysql_query("SELECT `first` FROM `vericon`.`auth_temp`") or die(mysql_error());
-	if (mysql_num_rows($q) > 0) {
+	$q = $mysqli->query("SELECT `first` FROM `vericon`.`auth_temp`") or die($mysqli->error());
+	if ($q->num_rows > 0) {
 		echo '$( "#Admin03_pending_users" ).removeAttr("disabled");';
 	}
+	$q->free();
 	?>
 	Admin03_Display_Reload();
 }
@@ -132,10 +133,11 @@ function Admin03_Edit_User_Submit()
 			$( "#Admin03_search" ).removeAttr("disabled");
 			$( "#Admin03_create_user" ).removeAttr("disabled");
 			<?php
-			$q = mysql_query("SELECT `first` FROM `vericon`.`auth_temp`") or die(mysql_error());
-			if (mysql_num_rows($q) > 0) {
+			$q = $mysqli->query("SELECT `first` FROM `vericon`.`auth_temp`") or die($mysqli->error);
+			if ($q->num_rows > 0) {
 				echo '$( "#Admin03_pending_users" ).removeAttr("disabled");';
 			}
+			$q->free();
 			?>
 			Admin03_Display_Reload();
 		}
@@ -171,8 +173,9 @@ function Admin03_Edit_User_Submit()
 </script>
 
 <?php
-$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`first`, `auth`.`last`, `auth`.`alias`, `timesheet_designation`.`designation` FROM `vericon`.`auth` LEFT JOIN `vericon`.`timesheet_designation` ON `auth`.`user` = `timesheet_designation`.`user` WHERE `auth`.`user` = '" . mysql_real_escape_string($user) . "'") or die(mysql_error());
-$data = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`first`, `auth`.`last`, `auth`.`alias`, `timesheet_designation`.`designation` FROM `vericon`.`auth` LEFT JOIN `vericon`.`timesheet_designation` ON `auth`.`user` = `timesheet_designation`.`user` WHERE `auth`.`user` = '" . $mysqli->real_escape_string($user) . "'") or die($mysqli->error);
+$data = $q->fetch_assoc();
+$q->free();
 ?>
 
 <center><div style="width:98%;">
@@ -221,11 +224,12 @@ $data = mysql_fetch_assoc($q);
 <td>Department<span style="color:#ff0000;">*</span> </td>
 <td><select id="Admin03_access" multiple="multiple">
 <?php
-$q = mysql_query("SELECT `id`, `name` FROM `vericon`.`portals` WHERE `id` != 'MA' AND `status` = 'Enabled' ORDER BY `name` ASC") or die(mysql_error());
-while($portals = mysql_fetch_row($q))
+$q = $mysqli->query("SELECT `id`, `name` FROM `vericon`.`portals` WHERE `id` != 'MA' AND `status` = 'Enabled' ORDER BY `name` ASC") or die($mysqli->error);
+while($portals = $q->fetch_row())
 {
 	echo "<option value='$portals[0]' onclick='Admin03_Portal_Select(\"$portals[0]\")'>" . $portals[1] . "</option>";
 }
+$q->free();
 ?>
 </select></td>
 <td></td>
@@ -238,11 +242,12 @@ while($portals = mysql_fetch_row($q))
 <option>Melbourne</option>
 <option disabled="disabled">---------------------------------------------------------</option>
 <?php
-$q = mysql_query("SELECT `id` FROM `vericon`.`centres` WHERE `id` != '' AND `status` = 'Enabled' ORDER BY `id` ASC") or die(mysql_error());
-while($centres = mysql_fetch_row($q))
+$q = $mysqli->query("SELECT `id` FROM `vericon`.`centres` WHERE `id` != '' AND `status` = 'Enabled' ORDER BY `id` ASC") or die($mysqli->error);
+while($centres = $q->fetch_row())
 {
 	echo "<option>" . $centres[0] . "</option>";
 }
+$q->free();
 ?>
 </select></td>
 <td></td>
@@ -252,11 +257,12 @@ while($centres = mysql_fetch_row($q))
 <td><select id="Admin03_centre">
 <option></option>
 <?php
-$q = mysql_query("SELECT `id` FROM `vericon`.`centres` WHERE `id` != '' AND `status` = 'Enabled' ORDER BY `id` ASC") or die(mysql_error());
-while($centres = mysql_fetch_row($q))
+$q = $mysqli->query("SELECT `id` FROM `vericon`.`centres` WHERE `id` != '' AND `status` = 'Enabled' ORDER BY `id` ASC") or die($mysqli->error);
+while($centres = $q->fetch_row())
 {
 	echo "<option>" . $centres[0] . "</option>";
 }
+$q->free();
 ?>
 </select></td>
 <td></td>
@@ -300,8 +306,8 @@ while($centres = mysql_fetch_row($q))
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = 'MA' ORDER BY `id` ASC") or die(mysql_error());
-while ($da = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = 'MA' ORDER BY `id` ASC") or die($mysqli->error);
+while ($da = $q->fetch_assoc())
 {
 	if ($da["sub_level"] != 0) { $level = $da["level"] . " - " . $da["sub_level"]; } else { $level = $da["level"]; }
 	
@@ -314,9 +320,10 @@ while ($da = mysql_fetch_assoc($q))
 	echo "<td style='padding: .3em 5px;'>" . $da["name"] . "</td>";
 	echo "</tr>";
 }
+$q->free();
 
-$q = mysql_query("SELECT `portals_pages`.`id`, `portals_pages`.`name`, `portals_pages`.`level`, `portals_pages`.`sub_level`, `portals`.`name` AS portal_name FROM `vericon`.`portals_pages`, `vericon`.`portals` WHERE `portals_pages`.`portal` != 'MA' AND `portals_pages`.`portal` = `portals`.`id` ORDER BY `portals_pages`.`id` ASC") or die(mysql_error());
-while ($da = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT `portals_pages`.`id`, `portals_pages`.`name`, `portals_pages`.`level`, `portals_pages`.`sub_level`, `portals`.`name` AS portal_name FROM `vericon`.`portals_pages`, `vericon`.`portals` WHERE `portals_pages`.`portal` != 'MA' AND `portals_pages`.`portal` = `portals`.`id` ORDER BY `portals_pages`.`id` ASC") or die($mysqli->error);
+while ($da = $q->fetch_assoc())
 {
 	if ($da["sub_level"] != 0) { $level = $da["level"] . " - " . $da["sub_level"]; } else { $level = $da["level"]; }
 	
@@ -336,6 +343,8 @@ while ($da = mysql_fetch_assoc($q))
 	echo "<td style='padding: .3em 5px;'>" . $da["name"] . "</td>";
 	echo "</tr>";
 }
+$q->free();
+$mysqli->close();
 ?>
 </tbody>
 </table>

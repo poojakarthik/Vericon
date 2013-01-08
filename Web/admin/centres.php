@@ -143,15 +143,16 @@ function Admin05_Edit_Centre(centre)
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM `vericon`.`centres` WHERE `centres`.`id` != '' ORDER BY `id` ASC") or die(mysql_error());
-while ($centre = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT * FROM `vericon`.`centres` WHERE `centres`.`id` != '' ORDER BY `id` ASC") or die($mysqli->error);
+while ($centre = $q->fetch_assoc())
 {
 	$campaign = array();
 	$cam = explode(",", $centre["campaign"]);
 	foreach ($cam as $value)
 	{
-		$q1 = mysql_query("SELECT `campaign` FROM `vericon`.`campaigns` WHERE `id` = '" . mysql_real_escape_string($value) . "'") or die(mysql_error());
-		$data = mysql_fetch_row($q1);
+		$q1 = $mysqli->query("SELECT `campaign` FROM `vericon`.`campaigns` WHERE `id` = '" . $mysqli->real_escape_string($value) . "'") or die($mysqli->error);
+		$data = $q1->fetch_row();
+		$q1->free();
 		array_push($campaign, $data[0]);
 	}
 	$campaign = implode(", ", $campaign);
@@ -173,6 +174,8 @@ while ($centre = mysql_fetch_assoc($q))
 	}
 	echo "</tr>";
 }
+$q->free();
+$mysqli->close();
 ?>
 </tbody>
 </table>

@@ -76,8 +76,8 @@ function Admin07_Add_Message()
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT `broadcast`.`title`, `broadcast`.`all`, `broadcast`.`department`, `broadcast`.`user`, `broadcast`.`end_timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`broadcast`, `vericon`.`auth` WHERE `broadcast`.`end_timestamp` > NOW() AND `broadcast`.`poster` = `auth`.`user` ORDER BY `id` ASC") or die(mysql_error());
-if (mysql_num_rows($q) == 0)
+$q = $mysqli->query("SELECT `broadcast`.`title`, `broadcast`.`all`, `broadcast`.`department`, `broadcast`.`user`, `broadcast`.`end_timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`broadcast`, `vericon`.`auth` WHERE `broadcast`.`end_timestamp` > NOW() AND `broadcast`.`poster` = `auth`.`user` ORDER BY `id` ASC") or die($mysqli->error);
+if ($q->num_rows == 0)
 {
 	echo "<tr>";
 	echo "<td colspan='6' style='text-align:center;'>No current broadcast messages</td>";
@@ -85,17 +85,19 @@ if (mysql_num_rows($q) == 0)
 }
 else
 {
-	while ($broadcast = mysql_fetch_assoc($q))
+	while ($broadcast = $q->fetch_assoc())
 	{
 		if ($broadcast["all"] == 1) {
 			$recipient = "All";
 		} elseif ($broadcast["department"] != "") {
-			$q1 = mysql_query("SELECT `name` FROM `vericon`.`portals` WHERE `id` = '" . mysql_real_escape_string($broadcast["department"]) . "'") or die(mysql_error());
-			$data = mysql_fetch_row($q1);
+			$q1 = $mysqli->query("SELECT `name` FROM `vericon`.`portals` WHERE `id` = '" . $mysqli->real_escape_string($broadcast["department"]) . "'") or die($mysqli->error);
+			$data = $q1->fetch_row();
+			$q1->free();
 			$recipient = "Department - " . $data[0];
 		} elseif ($broadcast["user"] != "") {
-			$q1 = mysql_query("SELECT CONCAT(`first`, ' ', `last`) AS name FROM `vericon`.`auth` WHERE `user` = '" . mysql_real_escape_string($broadcast["user"]) . "'") or die(mysql_error());
-			$data = mysql_fetch_row($q1);
+			$q1 = $mysqli->query("SELECT CONCAT(`first`, ' ', `last`) AS name FROM `vericon`.`auth` WHERE `user` = '" . $mysqli->real_escape_string($broadcast["user"]) . "'") or die($mysqli->error);
+			$data = $q1->fetch_row();
+			$q1->free();
 			$recipient = "User - " . $data[0];
 		} else {
 			$recipient = "-";
@@ -109,6 +111,8 @@ else
 		echo "</tr>";
 	}
 }
+$q->free();
+$mysqli->close();
 ?>
 </tbody>
 </table>

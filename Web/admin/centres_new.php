@@ -70,16 +70,19 @@ function Admin05_Add_Centre_Submit()
 <td width="85px">Campaign<span style="color:#ff0000;">*</span> </td>
 <td><select id="Admin05_campaign" multiple="multiple">
 <?php
-$q = mysql_query("SELECT `id`, `name` FROM `vericon`.`groups` ORDER BY `id` ASC") or die(mysql_error());
-while ($group = mysql_fetch_row($q))
+$q = $mysqli->query("SELECT `id`, `name` FROM `vericon`.`groups` ORDER BY `id` ASC") or die($mysqli->error);
+while ($group = $q->fetch_row())
 {
 	echo "<option disabled='disabled'>--- $group[1] ---</option>";
-	$q1 = mysql_query("SELECT `id`, `campaign` FROM `vericon`.`campaigns` WHERE `group` = '" . mysql_real_escape_string($group[0]) . "' ORDER BY `id` ASC") or die(mysql_error());
-	while ($campaign = mysql_fetch_row($q1))
+	$q1 = $mysqli->query("SELECT `id`, `campaign` FROM `vericon`.`campaigns` WHERE `group` = '" . $mysqli->real_escape_string($group[0]) . "' ORDER BY `id` ASC") or die($mysqli->error);
+	while ($campaign = $q1->fetch_row())
 	{
 		echo "<option value='$campaign[0]'>$campaign[1]</option>";
 	}
+	$q1->free();
 }
+$q->free();
+$mysqli->close();
 ?>
 </select></td>
 </tr>

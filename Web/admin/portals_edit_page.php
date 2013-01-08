@@ -4,8 +4,10 @@ include("../auth/restrict_inner.php");
 $portal_id = $_POST["portal_id"];
 $id = $_POST["id"];
 
-$q = mysql_query("SELECT * FROM `vericon`.`portals_pages` WHERE `id` = '". mysql_real_escape_string($id) . "'") or die(mysql_error());
-$data = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT * FROM `vericon`.`portals_pages` WHERE `id` = '". $mysqli->real_escape_string($id) . "'") or die($mysqli->error);
+$data = $q->fetch_assoc();
+$q->free();
+$mysqli->close();
 ?>
 <script>
 function Admin06_Edit_Error(text)

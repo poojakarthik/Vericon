@@ -7,20 +7,20 @@ if ($method == "disable")
 {
 	$id = $_POST["id"];
 	
-	mysql_query("UPDATE `vericon`.`portals` SET `status` = 'Disabled' WHERE `id` = '" . mysql_real_escape_string($id) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`portals` SET `status` = 'Disabled' WHERE `id` = '" . $mysqli->real_escape_string($id) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "enable")
 {
 	$id = $_POST["id"];
 	
-	mysql_query("UPDATE `vericon`.`portals` SET `status` = 'Enabled' WHERE `id` = '" . mysql_real_escape_string($id) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`portals` SET `status` = 'Enabled' WHERE `id` = '" . $mysqli->real_escape_string($id) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "add")
 {
 	$id = trim($_POST["id"]);
 	$name = trim($_POST["name"]);
 	
-	$q = mysql_query("SELECT * FROM `vericon`.`portals` WHERE `id` = '" . mysql_real_escape_string($id) . "' OR `name` = '" . mysql_real_escape_string($name) . "'") or die(mysql_error());
+	$q = $mysqli->query("SELECT * FROM `vericon`.`portals` WHERE `id` = '" . $mysqli->real_escape_string($id) . "' OR `name` = '" . $mysqli->real_escape_string($name) . "'") or die($mysqli->error);
 	
 	if ($id == "")
 	{
@@ -38,30 +38,31 @@ elseif ($method == "add")
 	{
 		echo "<b>Error: </b>The name may only contain letters and spaces.";
 	}
-	elseif (mysql_num_rows($q) != 0)
+	elseif ($q->num_rows != 0)
 	{
 		echo "<b>Error: </b>Portal already exists.";
 	}
 	else
 	{
-		mysql_query("INSERT INTO `vericon`.`portals` (`id`, `name`, `status`) VALUES ('" . mysql_real_escape_string($id) . "', '" . mysql_real_escape_string($name) . "', 'Enabled')") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`portals` (`id`, `name`, `status`) VALUES ('" . $mysqli->real_escape_string($id) . "', '" . $mysqli->real_escape_string($name) . "', 'Enabled')") or die($mysqli->error);
 		
-		mysql_query("INSERT INTO `vericon`.`portals_pages` (`id`, `portal`, `name`, `link`, `level`, `sub_level`, `status`) VALUES ('" . mysql_real_escape_string($id . "01") . "', '" . mysql_real_escape_string($id) . "', 'Home', '" . mysql_real_escape_string("index.php") . "', '1', '0', 'Enabled')") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`portals_pages` (`id`, `portal`, `name`, `link`, `level`, `sub_level`, `status`) VALUES ('" . $mysqli->real_escape_string($id . "01") . "', '" . $mysqli->real_escape_string($id) . "', 'Home', '" . $mysqli->real_escape_string("index.php") . "', '1', '0', 'Enabled')") or die($mysqli->error);
 		
 		echo "valid";
 	}
+	$q->free();
 }
 elseif ($method == "page_disable")
 {
 	$id = $_POST["id"];
 	
-	mysql_query("UPDATE `vericon`.`portals_pages` SET `status` = 'Disabled' WHERE `id` = '" . mysql_real_escape_string($id) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`portals_pages` SET `status` = 'Disabled' WHERE `id` = '" . $mysqli->real_escape_string($id) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "page_enable")
 {
 	$id = $_POST["id"];
 	
-	mysql_query("UPDATE `vericon`.`portals_pages` SET `status` = 'Enabled' WHERE `id` = '" . mysql_real_escape_string($id) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`portals_pages` SET `status` = 'Enabled' WHERE `id` = '" . $mysqli->real_escape_string($id) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "page_add") // i know i've done this in a really stupid way, but i cbf
 {
@@ -72,9 +73,9 @@ elseif ($method == "page_add") // i know i've done this in a really stupid way, 
 	$level = trim($_POST["level"]);
 	$sub_level = trim($_POST["sub_level"]);
 	
-	$q = mysql_query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal_id) . "' AND `level` = '" . mysql_real_escape_string($level) . "' AND `sub_level` = '0'") or die(mysql_error());
+	$q = $mysqli->query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . $mysqli->real_escape_string($portal_id) . "' AND `level` = '" . $mysqli->real_escape_string($level) . "' AND `sub_level` = '0'") or die($mysqli->error);
 	
-	$q1 = mysql_query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal_id) . "' AND `level` = '" . mysql_real_escape_string($level) . "' AND `sub_level` = '" . mysql_real_escape_string($sub_level) . "'") or die(mysql_error());
+	$q1 = $mysqli->query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . $mysqli->real_escape_string($portal_id) . "' AND `level` = '" . $mysqli->real_escape_string($level) . "' AND `sub_level` = '" . $mysqli->real_escape_string($sub_level) . "'") or die($mysqli->error);
 	
 	if ($name == "")
 	{
@@ -100,21 +101,25 @@ elseif ($method == "page_add") // i know i've done this in a really stupid way, 
 	{
 		echo "<b>Error: </b>Please enter the jQuery onClick call.";
 	}
-	elseif ($sub_level > 0 && mysql_num_rows($q) == 0)
+	elseif ($sub_level > 0 && $q->num_rows == 0)
 	{
 		echo "<b>Error: </b>Cannot add sub-menu to non-existing level.";
 	}
-	elseif (mysql_num_rows($q1) != 0)
+	elseif ($q1->num_rows != 0)
 	{
 		echo "<b>Error: </b>A page already exists at that level/sub-level.";
 	}
 	else
 	{
-		$q = mysql_query("SELECT COUNT(`id`) FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal_id) . "'") or die(mysql_error());
-		$c = mysql_fetch_row($q);
+		$q->free();
+		$q1->free();
+		
+		$q = $mysqli->query("SELECT COUNT(`id`) FROM `vericon`.`portals_pages` WHERE `portal` = '" . $mysqli->real_escape_string($portal_id) . "'") or die($mysqli->error);
+		$c = $q->fetch_row();
+		$q->free();
 		$id = $portal_id . str_pad(($c[0] + 1),2,'0',STR_PAD_LEFT);
 		
-		mysql_query("INSERT INTO `vericon`.`portals_pages` (`id`, `portal`, `name`, `link`, `jquery`, `level`, `sub_level`, `status`) VALUES ('" . mysql_real_escape_string($id) . "', '" . mysql_real_escape_string($portal_id) . "', '" . mysql_real_escape_string($name) . "', '" . mysql_real_escape_string($link) . "', '" . mysql_real_escape_string($jquery) . "', '" . mysql_real_escape_string($level) . "', '" . mysql_real_escape_string($sub_level) . "', 'Enabled')") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`portals_pages` (`id`, `portal`, `name`, `link`, `jquery`, `level`, `sub_level`, `status`) VALUES ('" . $mysqli->real_escape_string($id) . "', '" . $mysqli->real_escape_string($portal_id) . "', '" . $mysqli->real_escape_string($name) . "', '" . $mysqli->real_escape_string($link) . "', '" . $mysqli->real_escape_string($jquery) . "', '" . $mysqli->real_escape_string($level) . "', '" . $mysqli->real_escape_string($sub_level) . "', 'Enabled')") or die($mysqli->error);
 		
 		echo "valid";
 	}
@@ -129,9 +134,9 @@ elseif ($method == "page_edit")
 	$level = trim($_POST["level"]);
 	$sub_level = trim($_POST["sub_level"]);
 	
-	$q = mysql_query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal_id) . "' AND `level` = '" . mysql_real_escape_string($level) . "' AND `sub_level` = '0' AND `id` != '" . mysql_real_escape_string($id) . "'") or die(mysql_error());
+	$q = $mysqli->query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . $mysqli->real_escape_string($portal_id) . "' AND `level` = '" . $mysqli->real_escape_string($level) . "' AND `sub_level` = '0' AND `id` != '" . $mysqli->real_escape_string($id) . "'") or die($mysqli->error);
 	
-	$q1 = mysql_query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($portal_id) . "' AND `level` = '" . mysql_real_escape_string($level) . "' AND `sub_level` = '" . mysql_real_escape_string($sub_level) . "' AND `id` != '" . mysql_real_escape_string($id) . "'") or die(mysql_error());
+	$q1 = $mysqli->query("SELECT `id` FROM `vericon`.`portals_pages` WHERE `portal` = '" . $mysqli->real_escape_string($portal_id) . "' AND `level` = '" . $mysqli->real_escape_string($level) . "' AND `sub_level` = '" . $mysqli->real_escape_string($sub_level) . "' AND `id` != '" . $mysqli->real_escape_string($id) . "'") or die($mysqli->error);
 	
 	if ($name == "")
 	{
@@ -157,19 +162,23 @@ elseif ($method == "page_edit")
 	{
 		echo "<b>Error: </b>Please enter the jQuery onClick call.";
 	}
-	elseif ($sub_level > 0 && mysql_num_rows($q) == 0)
+	elseif ($sub_level > 0 && $q->num_rows == 0)
 	{
 		echo "<b>Error: </b>Cannot add sub-menu to non-existing level.";
 	}
-	elseif (mysql_num_rows($q1) != 0)
+	elseif ($q1->num_rows != 0)
 	{
 		echo "<b>Error: </b>A page already exists at that level/sub-level.";
 	}
 	else
 	{
-		mysql_query("UPDATE `vericon`.`portals_pages` SET `name` = '" . mysql_real_escape_string($name) . "', `link` = '" . mysql_real_escape_string($link) . "', `jquery` = '" . mysql_real_escape_string($jquery) . "', `level` = '" . mysql_real_escape_string($level) . "', `sub_level` = '" . mysql_real_escape_string($sub_level) . "' WHERE `id` = '" . mysql_real_escape_string($id) . "'") or die(mysql_error());
+		$q->free();
+		$q1->free();
+		
+		$mysqli->query("UPDATE `vericon`.`portals_pages` SET `name` = '" . $mysqli->real_escape_string($name) . "', `link` = '" . $mysqli->real_escape_string($link) . "', `jquery` = '" . $mysqli->real_escape_string($jquery) . "', `level` = '" . $mysqli->real_escape_string($level) . "', `sub_level` = '" . $mysqli->real_escape_string($sub_level) . "' WHERE `id` = '" . $mysqli->real_escape_string($id) . "'") or die($mysqli->error);
 		
 		echo "valid";
 	}
 }
+$mysqli->close();
 ?>

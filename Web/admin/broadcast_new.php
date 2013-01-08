@@ -110,11 +110,13 @@ function Admin07_Add_Message_Submit()
 <td><select id="Admin07_department">
 <option></option>
 <?php
-$q = mysql_query("SELECT `id`, `name` FROM `vericon`.`portals` WHERE `id` != 'MA' AND `status` = 'Enabled' ORDER BY `name` ASC") or die(mysql_error());
-while($portals = mysql_fetch_row($q))
+$q = $mysqli->query("SELECT `id`, `name` FROM `vericon`.`portals` WHERE `id` != 'MA' AND `status` = 'Enabled' ORDER BY `name` ASC") or die($mysqli->error);
+while($portals = $q->fetch_row())
 {
 	echo "<option value='$portals[0]'>" . $portals[1] . "</option>";
 }
+$q->free();
+$mysqli->close();
 ?>
 </select></td>
 </tr>

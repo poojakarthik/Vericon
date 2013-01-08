@@ -1,5 +1,6 @@
 <?php
 include("../auth/restrict.php");
+$mysqli->close();
 
 $uptime = exec("cat /proc/uptime");
 $uptime = split(" ",$uptime);
@@ -82,41 +83,46 @@ div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .
 <table id="users" class="ui-widget ui-widget-content" style="width: 98%;">
 <thead>
 <tr class="ui-widget-header ">
-<th>Services</th>
-<th style="text-align:center;">HTTP (80)</th>
-<th style="text-align:center;">HTTPS (443)</th>
-<th style="text-align:center;">SFTP/SSH (22)</th>
-<th style="text-align:center;">MySQL (3306)</th>
+<th width="25%">Services</th>
+<th width="15%" style="text-align:center;">HTTPS (443)</th>
+<th width="15%" style="text-align:center;">SFTP/SSH (21119)</th>
+<th width="15%" style="text-align:center;">MySQL (3306)</th>
+<th width="15%" style="text-align:center;">IMAP (143)</th>
+<th width="15%" style="text-align:center;">SMTP (25)</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td width="24%">Virtual Machine</td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "443", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td>Virtual Machine</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "143", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "25", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
 </tr>
 <tr>
-<td width="24%">VeriCon 01</td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "443", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td>VeriCon 01</td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc01.vericon.com.au", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc01.vericon.com.au", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc01.vericon.com.au", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
 </tr>
 <tr>
-<td width="24%">VeriCon 02</td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "443", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td>VeriCon 02</td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc02.vericon.com.au", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc02.vericon.com.au", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("vc02.vericon.com.au", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
 </tr>
 <tr>
-<td width="24%">VeriCon Storage</td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "80", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "443", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "22", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
-<td width="19%" style="text-align:center"><?php $checkport = fsockopen("localhost", "3306", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td>VeriCon Storage</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center"><?php $checkport = fsockopen("test.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
+<td style="text-align:center">-</td>
 </tr>
 </tbody>
 </table>

@@ -65,8 +65,8 @@ function Admin02_Logout_User(user)
 <tbody>
 <?php
 $i = 0;
-$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`first`, `auth`.`last`, `current_users`.`timestamp`, `current_users`.`last_action`, `portals_pages`.`name` AS page_name, `portals`.`name` AS portal_name FROM `vericon`.`current_users`,`vericon`.`auth`,`vericon`.`portals_pages`,`vericon`.`portals` WHERE `current_users`.`user` = `auth`.`user` AND `current_users`.`current_page` = `portals_pages`.`id` AND `portals_pages`.`portal` = `portals`.`id` ORDER BY `current_users`.`user` ASC") or die(mysql_error());
-while($current = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`first`, `auth`.`last`, `current_users`.`timestamp`, `current_users`.`last_action`, `portals_pages`.`name` AS page_name, `portals`.`name` AS portal_name FROM `vericon`.`current_users`,`vericon`.`auth`,`vericon`.`portals_pages`,`vericon`.`portals` WHERE `current_users`.`user` = `auth`.`user` AND `current_users`.`current_page` = `portals_pages`.`id` AND `portals_pages`.`portal` = `portals`.`id` ORDER BY `current_users`.`user` ASC") or die($mysqli->error);
+while($current = $q->fetch_assoc())
 {
 	if ($i == 25)
 	{
@@ -99,6 +99,8 @@ while($current = mysql_fetch_assoc($q))
 	echo "</tr>";
 	$i++;
 }
+$q->free();
+$mysqli->close();
 ?>
 </tbody>
 </table>

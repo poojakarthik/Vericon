@@ -7,13 +7,13 @@ if ($method == "disable")
 {
 	$centre = $_POST["centre"];
 	
-	mysql_query("UPDATE `vericon`.`centres` SET `status` = 'Disabled' WHERE `id` = '" . mysql_real_escape_string($centre) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`centres` SET `status` = 'Disabled' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "enable")
 {
 	$centre = $_POST["centre"];
 	
-	mysql_query("UPDATE `vericon`.`centres` SET `status` = 'Enabled' WHERE `id` = '" . mysql_real_escape_string($centre) . "' LIMIT 1") or die(mysql_error());
+	$mysqli->query("UPDATE `vericon`.`centres` SET `status` = 'Enabled' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
 }
 elseif ($method == "add")
 {
@@ -22,13 +22,13 @@ elseif ($method == "add")
 	$type = $_POST["type"];
 	$leads = $_POST["leads"];
 	
-	$q = mysql_query("SELECT `id` FROM `vericon`.`centres` WHERE `id` = '" . mysql_real_escape_string($centre) . "'") or die(mysql_error());
+	$q = $mysqli->query("SELECT `id` FROM `vericon`.`centres` WHERE `id` = '" . $mysqli->real_escape_string($centre) . "'") or die($mysqli->error);
 	
 	if (!preg_match("/^CC[0-9]{2}$/", $centre))
 	{
 		echo "<b>Error: </b>Please enter a valid centre code.";
 	}
-	elseif (mysql_num_rows($q) != 0)
+	elseif ($q->num_rows != 0)
 	{
 		echo "<b>Error: </b>Centre code is taken.";
 	}
@@ -46,10 +46,11 @@ elseif ($method == "add")
 	}
 	else
 	{
-		mysql_query("INSERT INTO `vericon`.`centres` (`id`, `campaign`, `type`, `status`, `leads`) VALUES ('" . mysql_real_escape_string($centre) . "', '" . mysql_real_escape_string($campaign) . "', '" . mysql_real_escape_string($type) . "', 'Enabled', '" . mysql_real_escape_string($leads) . "')") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`centres` (`id`, `campaign`, `type`, `status`, `leads`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($campaign) . "', '" . $mysqli->real_escape_string($type) . "', 'Enabled', '" . $mysqli->real_escape_string($leads) . "')") or die($mysqli->error);
 		
 		echo "valid";
 	}
+	$q->free();
 }
 elseif ($method == "edit")
 {
@@ -72,9 +73,10 @@ elseif ($method == "edit")
 	}
 	else
 	{
-		mysql_query("UPDATE `vericon`.`centres` SET `campaign` = '" . mysql_real_escape_string($campaign) . "', `type` = '" . mysql_real_escape_string($type) . "', `leads` = '" . mysql_real_escape_string($leads) . "' WHERE `id` = '" . mysql_real_escape_string($centre) . "' LIMIT 1") or die(mysql_error());
+		$mysqli->query("UPDATE `vericon`.`centres` SET `campaign` = '" . $mysqli->real_escape_string($campaign) . "', `type` = '" . $mysqli->real_escape_string($type) . "', `leads` = '" . $mysqli->real_escape_string($leads) . "' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
 		
 		echo "valid";
 	}
 }
+$mysqli->close();
 ?>

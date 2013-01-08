@@ -144,8 +144,8 @@ function Admin06_Toggle_Status(id, method)
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM `vericon`.`portals` ORDER BY `id` ASC") or die(mysql_error());
-while ($portals = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT * FROM `vericon`.`portals` ORDER BY `id` ASC") or die($mysqli->error);
+while ($portals = $q->fetch_assoc())
 {
 	echo "<tr>";
 	echo "<td style='text-align:left'>" . $portals["id"] . "</td>";
@@ -163,6 +163,8 @@ while ($portals = mysql_fetch_assoc($q))
 	}
 	echo "</tr>";
 }
+$q->free();
+$mysqli->close();
 ?>
 </tbody>
 </table>

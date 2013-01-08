@@ -73,7 +73,7 @@ $mysqli->close();
 <?php
 echo $update["message"];
 ?>
-<hr style="width:70%; height:1px; margin-top:20px; border-top:1px dotted #3a65b4; background:none;" />
+<hr style="width:70%; height:1px; margin-top:20px; border-style:dotted none none; border-width:1px; border-color:#3a65b4; background:none;" />
 <span style="font-size:9px;">Posted by <?php echo $update["first"] . " " . $update["last"]; ?> | <?php echo date("d F Y", strtotime($update["date"])); ?></span>
 </div>
 </td>

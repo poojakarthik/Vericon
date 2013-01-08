@@ -59,9 +59,10 @@ if ($method == "add")
 			$department = "";
 		}
 		
-		mysql_query("INSERT INTO `vericon`.`broadcast` (`poster`, `title`, `message`, `all`, `department`, `user`, `timestamp`, `end_timestamp`) VALUES ('" . mysql_real_escape_string($ac["user"]) . "', '" . mysql_real_escape_string($title) . "', '" . mysql_real_escape_string($message) . "', '" . mysql_real_escape_string($all) . "', '" . mysql_real_escape_string($department) . "', '" . mysql_real_escape_string($user) . "', NOW(), '" . mysql_real_escape_string($expiry_time) . "')") or die(mysql_error());
+		$mysqli->query("INSERT INTO `vericon`.`broadcast` (`poster`, `title`, `message`, `all`, `department`, `user`, `timestamp`, `end_timestamp`) VALUES ('" . $mysqli->real_escape_string($ac["user"]) . "', '" . $mysqli->real_escape_string($title) . "', '" . $mysqli->real_escape_string($message) . "', '" . $mysqli->real_escape_string($all) . "', '" . $mysqli->real_escape_string($department) . "', '" . $mysqli->real_escape_string($user) . "', NOW(), '" . $mysqli->real_escape_string($expiry_time) . "')") or die($mysqli->error);
 		
 		echo "valid";
 	}
 }
+$mysqli->close();
 ?>

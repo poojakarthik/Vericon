@@ -24,11 +24,13 @@ $query = $_POST["query"];
 <?php
 if ($method == "display")
 {
-	$check = mysql_query("SELECT * FROM `vericon`.`allowedip`") or die(mysql_error());
-	$rows = mysql_num_rows($check);
+	$check = $mysqli->query("SELECT * FROM `vericon`.`allowedip`") or die($mysqli->error());
+	$rows = $check->num_rows;
+	$check->free();
 	
 	if($rows == 0)
 	{
+		$st = 0;
 		echo "<tr>";
 		echo "<td colspan='6'>No IPs?!?!?!</td>";
 		echo "</tr>";
@@ -36,8 +38,8 @@ if ($method == "display")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`added_by` = `auth`.`user` ORDER BY `ip_start` ASC LIMIT $st , 13") or die(mysql_error());
-		while($r = mysql_fetch_assoc($q))
+		$q = $mysqli->query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`added_by` = `auth`.`user` ORDER BY `ip_start` ASC LIMIT $st , 13") or die($mysqli->error);
+		while($r = $q->fetch_assoc())
 		{
 			if ($r["ip_start"] != $r["ip_end"]) {
 				$ip = $r["ip_start"] . " - " . $r["ip_end"];
@@ -58,14 +60,16 @@ if ($method == "display")
 			}
 			echo "</tr>";
 		}
+		$q->free();
 	}
 }
 elseif ($method == "search_IPs")
 {
 	$query = explode(",",$query);
-	
-	$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE (`allowedip`.`ip_start` = '" . mysql_real_escape_string(ip2long($query[0])) . "' AND `allowedip`.`ip_end` = '" . mysql_real_escape_string(ip2long($query[1])) . "') AND `allowedip`.`added_by` = `auth`.`user`") or die(mysql_error());
-	$r = mysql_fetch_assoc($q);
+	$st = 0;
+	$q = $mysqli->query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE (`allowedip`.`ip_start` = '" . $mysqli->real_escape_string(ip2long($query[0])) . "' AND `allowedip`.`ip_end` = '" . $mysqli->real_escape_string(ip2long($query[1])) . "') AND `allowedip`.`added_by` = `auth`.`user`") or die($mysqli->error);
+	$r = $q->fetch_assoc();
+	$q->free();
 	$rows = 1;
 	
 	if ($r["ip_start"] != $r["ip_end"]) {
@@ -91,11 +95,12 @@ elseif ($method == "search_IPs")
 }
 elseif ($method == "search_Description")
 {
-	$check = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE `description` = '" . mysql_real_escape_string($query) . "'") or die(mysql_error());
-	$rows = mysql_num_rows($check);
+	$check = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE `description` = '" . $mysqli->real_escape_string($query) . "'") or die($mysqli->error);
+	$rows = $check->num_rows;
 	
 	if($rows == 0)
 	{
+		$st = 0;
 		echo "<tr>";
 		echo "<td colspan='6'>No IPs?!?!?!</td>";
 		echo "</tr>";
@@ -103,8 +108,8 @@ elseif ($method == "search_Description")
 	else
 	{
 		$st = $page * 13;
-		$q = mysql_query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`description` = '" . mysql_real_escape_string($query) . "' AND `allowedip`.`added_by` = `auth`.`user`") or die(mysql_error());
-		while ($r = mysql_fetch_assoc($q))
+		$q = $mysqli->query("SELECT INET_NTOA(`allowedip`.`ip_start`) AS ip_start, INET_NTOA(`allowedip`.`ip_end`) AS ip_end, `allowedip`.`description`, `allowedip`.`status`, `allowedip`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS name FROM `vericon`.`allowedip`, `vericon`.`auth` WHERE `allowedip`.`description` = '" . $mysqli->real_escape_string($query) . "' AND `allowedip`.`added_by` = `auth`.`user`") or die($mysqli->error);
+		while ($r = $q->fetch_assoc())
 		{
 			if ($r["ip_start"] != $r["ip_end"]) {
 				$ip = $r["ip_start"] . " - " . $r["ip_end"];
@@ -125,8 +130,10 @@ elseif ($method == "search_Description")
 			}
 			echo "</tr>";
 		}
+		$q->free();
 	}
 }
+$mysqli->close();
 ?>
 </tbody>
 </table>

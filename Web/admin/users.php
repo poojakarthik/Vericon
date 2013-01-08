@@ -52,7 +52,7 @@ function Admin03_More_Users(page)
 function Admin03_Search(category,id)
 {
 	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/users_display.php", { m: "search_" + category, query: id }, function(data, status, xhr){
+	$( "#display_inner" ).load("/admin/users_display.php", { m: "search_" + category, query: id, page: 0 }, function(data, status, xhr){
 		if (status == "error")
 		{
 			if (xhr.status == 420)
@@ -291,8 +291,8 @@ function Admin03_Toggle_Status(user,method)
 <td><input type="search" id="Admin03_search" placeholder="Search..."></td>
 <td align="right"><button onclick="Admin03_Create_User()" id="Admin03_create_user" class="btn">Create User</button>
 <?php
-$q = mysql_query("SELECT `first` FROM `vericon`.`auth_temp`") or die(mysql_error());
-if (mysql_num_rows($q) == 0)
+$q = $mysqli->query("SELECT `first` FROM `vericon`.`auth_temp`") or die($mysqli->error);
+if ($q->num_rows == 0)
 {
 	echo "<button disabled='disabled' class='btn' style='margin-left:10px;'>Pending Users</button>";
 }
@@ -300,6 +300,7 @@ else
 {
 	echo "<button onclick='Admin03_Pending_Users()' id='Admin03_pending_users' class='btn' style='margin-left:10px;'>Pending Users</button>";
 }
+$q->free();
 ?></td>
 </tr>
 </table>
@@ -325,22 +326,26 @@ else
 </thead>
 <tbody>
 <?php
-$check = mysql_query("SELECT * FROM `vericon`.`auth`") or die(mysql_error());
-$rows = mysql_num_rows($check);
+$check = $mysqli->query("SELECT * FROM `vericon`.`auth`") or die($mysqli->error);
+$rows = $check->num_rows;
+$check->free();
 
 if($rows == 0)
 {
+	$st = 0;
 	echo "<tr>";
 	echo "<td colspan='9'>No Users?!?!?!</td>";
 	echo "</tr>";
 }
 else
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`auth` ORDER BY `user` ASC LIMIT 0 , 13") or die(mysql_error());
-	while($r = mysql_fetch_assoc($q))
+	$st = 0;
+	$q = $mysqli->query("SELECT * FROM `vericon`.`auth` ORDER BY `user` ASC LIMIT 0 , 13") or die($mysqli->error);
+	while($r = $q->fetch_assoc())
 	{
-		$q1 = mysql_query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . mysql_real_escape_string($r["user"]) . "'") or die(mysql_error());
-		$l = mysql_fetch_row($q1);
+		$q1 = $mysqli->query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . $mysqli->real_escape_string($r["user"]) . "'") or die($mysqli->error);
+		$l = $q1->fetch_row();
+		$q1->free();
 		if ($l[0] == null) {
 			$last_login = "Never";
 		} else {
@@ -362,7 +367,9 @@ else
 		}
 		echo "</tr>";
 	}
+	$q->free();
 }
+$mysqli->close();
 ?>
 </tbody>
 </table>

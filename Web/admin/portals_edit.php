@@ -131,8 +131,8 @@ function Admin06_Toggle_Page_Status(id, method)
 </thead>
 <tbody>
 <?php
-$q = mysql_query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = '" . mysql_real_escape_string($id) . "' ORDER BY `level`,`sub_level` ASC") or die(mysql_error());
-while ($pages = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT * FROM `vericon`.`portals_pages` WHERE `portal` = '" . $mysqli->real_escape_string($id) . "' ORDER BY `level`,`sub_level` ASC") or die($mysqli->error);
+while ($pages = $q->fetch_assoc())
 {
 	if ($pages["sub_level"] != 0) { $level = $pages["level"] . " - " . $pages["sub_level"]; } else { $level = $pages["level"]; }
 	
@@ -161,6 +161,8 @@ while ($pages = mysql_fetch_assoc($q))
 	}
 	echo "</tr>";
 }
+$q->free();
+$mysqli->close();
 ?>
 </tbody>
 </table>

@@ -1,15 +1,20 @@
 <?php
-mysql_connect('localhost','vericon','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
 function CheckAccess()
 {
-	$q = mysql_query("SELECT * FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die(mysql_error());
+	$mysqli = new mysqli('localhost','vericon','18450be');
 	
-	if (mysql_num_rows($q) == 0) {
+	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
+	
+	if ($q->num_rows == 0) {
 		return false;
 	} else {
 		return true;
 	}
+	
+	$q->free();
+	$mysqli->close();
 }
 
 $referer = $_SERVER['SERVER_NAME'] . "/main/";
@@ -24,27 +29,27 @@ if ($referer_check[1] != $referer || !CheckAccess())
 
 $token = $_COOKIE['vc_token'];
 
-$q = mysql_query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . mysql_real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die(mysql_error());
-$ac = mysql_fetch_assoc($q);
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
+$ac = $q->fetch_assoc();
 
-if (mysql_num_rows($q) == 0)
+if ($q->num_rows == 0)
 {
 	header('HTTP/1.1 420 Not Logged In');
 	exit;
 }
-
 if ($ac["status"] != "Enabled")
 {
 	header('HTTP/1.1 421 Account Disabled');
 	exit;
 }
+$q->free();
 
 $term = trim($_POST["term"]);
 
 echo '[';
 //IP
-$q = mysql_query("SELECT INET_NTOA(`ip_start`) AS ip_start, INET_NTOA(`ip_end`) AS ip_end, `description` FROM `vericon`.`allowedip` WHERE '" . mysql_real_escape_string(ip2long($term)) . "' BETWEEN `ip_start` AND `ip_end` ORDER BY `ip_start` ASC") or die(mysql_error());
-while ($data = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT INET_NTOA(`ip_start`) AS ip_start, INET_NTOA(`ip_end`) AS ip_end, `description` FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($term)) . "' BETWEEN `ip_start` AND `ip_end` ORDER BY `ip_start` ASC") or die($mysqli->error);
+while ($data = $q->fetch_assoc())
 {
 	if ($data["ip_start"] != $data["ip_end"])
 	{
@@ -55,12 +60,15 @@ while ($data = mysql_fetch_assoc($q))
 		$d[] = "{ \"id\": \"" . $data["ip_start"] . "," . $data["ip_end"] . "\", \"category\": \"IPs\", \"label\": \"" . $data["description"] . " (" . $data["ip_start"] . ")\" }";
 	}
 }
+$q->free();
 //Description
-$q = mysql_query("SELECT `description` FROM `vericon`.`allowedip` WHERE `description` LIKE '%" . mysql_real_escape_string($term) . "%' GROUP BY `description` ORDER BY `description` ASC") or die(mysql_error());
-while ($data = mysql_fetch_assoc($q))
+$q = $mysqli->query("SELECT `description` FROM `vericon`.`allowedip` WHERE `description` LIKE '%" . $mysqli->real_escape_string($term) . "%' GROUP BY `description` ORDER BY `description` ASC") or die($mysqli->error);
+while ($data = $q->fetch_assoc())
 {
 	$d[] = "{ \"id\": \"" . $data["description"] . "\", \"category\": \"Description\", \"label\": \"" . $data["description"] . "\" }";
 }
+$q->free();
 echo implode(", ",$d);
 echo ']';
+$mysqli->close();
 ?>

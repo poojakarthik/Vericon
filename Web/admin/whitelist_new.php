@@ -1,5 +1,6 @@
 <?php
 include("../auth/restrict_inner.php");
+$mysqli->close();
 ?>
 <script>
 function Admin04_Create_Error(text)
