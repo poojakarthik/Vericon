@@ -9,18 +9,11 @@ $mysqli = new mysqli('localhost','vericon','18450be');
 
 function CheckAccess()
 {
-	$mysqli = new mysqli('localhost','vericon','18450be');
-	
-	$q = $mysqli->query("SELECT * FROM `vericon`.`allowedip` WHERE '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' BETWEEN `ip_start` AND `ip_end` AND `status` = 'Enabled'") or die($mysqli->error);
-	
-	if ($q->num_rows == 0) {
+	if (ip2long($_SERVER['REMOTE_ADDR']) != ip2long("122.129.217.194")) {
 		return false;
 	} else {
 		return true;
 	}
-	
-	$q->free();
-	$mysqli->close();
 }
 
 function browser($ua)
