@@ -6,6 +6,9 @@
 	*{
 	margin:0px; padding:0px;
 	}
+	::-moz-focus-inner{
+	border:0;
+	}
 	body{
 	background:url(../images/bg.jpg) center top no-repeat #73d6f6; margin:0 auto;
 	font:normal 11px Tahoma; line-height:18px; color:#165C80;

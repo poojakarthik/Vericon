@@ -200,7 +200,7 @@ $(function () {
 </thead>
 <tbody>
 <?php
-$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND DATE(`sales_customers`.`approved_timestamp`) = '" . $mysqli->real_escape_string(date("Y-m-d")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
+$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND DATE(`sales_customers`.`approved_timestamp`) = '" . $mysqli->real_escape_string(date("Y-m-d")) . "' AND `sales_customers`.`user` = `auth`.`user` GROUP BY `sales_customers`.`user` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
 if ($q->num_rows == 0)
 {
 	echo "<tr>";
@@ -236,7 +236,7 @@ $q->free();
 </thead>
 <tbody>
 <?php
-$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND WEEK(`sales_customers`.`approved_timestamp`,3) = '" . $mysqli->real_escape_string(date("W")) . "' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
+$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND WEEK(`sales_customers`.`approved_timestamp`,3) = '" . $mysqli->real_escape_string(date("W")) . "' AND `sales_customers`.`user` = `auth`.`user` GROUP BY `sales_customers`.`user` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
 if ($q->num_rows == 0)
 {
 	echo "<tr>";
@@ -272,7 +272,7 @@ $q->free();
 </thead>
 <tbody>
 <?php
-$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND `sales_customers`.`agent` = `auth`.`user` GROUP BY `sales_customers`.`agent` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
+$q = $mysqli->query("SELECT CONCAT(`auth`.`first`, ' ', `auth`.`last`), COUNT(`sales_customers`.`id`) FROM `vericon`.`sales_customers`, `vericon`.`auth` WHERE `sales_customers`.`centre` = '" . $mysqli->real_escape_string($ac["centre"]) . "' AND `sales_customers`.`status` = 'Approved' AND `sales_customers`.`user` = `auth`.`user` GROUP BY `sales_customers`.`user` ORDER BY COUNT(`sales_customers`.`id`) DESC LIMIT 5") or die($mysqli->error);
 if ($q->num_rows == 0)
 {
 	echo "<tr>";
