@@ -46,7 +46,13 @@ elseif ($method == "add")
 	}
 	else
 	{
-		$mysqli->query("INSERT INTO `vericon`.`centres` (`id`, `campaign`, `type`, `status`, `leads`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($campaign) . "', '" . $mysqli->real_escape_string($type) . "', 'Enabled', '" . $mysqli->real_escape_string($leads) . "')") or die($mysqli->error);
+		$mysqli->query("INSERT INTO `vericon`.`centres` (`id`, `type`, `status`, `leads`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($type) . "', 'Enabled', '" . $mysqli->real_escape_string($leads) . "')") or die($mysqli->error);
+		
+		$campaign = explode(",", $campaign);
+		for ($i = 0; $i < count($campaign); $i++)
+		{
+			$mysqli->query("INSERT INTO `vericon`.`centre_campaigns` (`centre`, `campaign`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($campaign[$i]) . "')") or die($mysqli->error);
+		}
 		
 		echo "valid";
 	}
@@ -73,7 +79,15 @@ elseif ($method == "edit")
 	}
 	else
 	{
-		$mysqli->query("UPDATE `vericon`.`centres` SET `campaign` = '" . $mysqli->real_escape_string($campaign) . "', `type` = '" . $mysqli->real_escape_string($type) . "', `leads` = '" . $mysqli->real_escape_string($leads) . "' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
+		$mysqli->query("UPDATE `vericon`.`centres` SET `type` = '" . $mysqli->real_escape_string($type) . "', `leads` = '" . $mysqli->real_escape_string($leads) . "' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
+		
+		$mysqli->query("DELETE FROM `vericon`.`centre_campaigns` WHERE `centre` = '" . $mysqli->real_escape_string($centre) . "'") or die($mysqli->error);
+		
+		$campaign = explode(",", $campaign);
+		for ($i = 0; $i < count($campaign); $i++)
+		{
+			$mysqli->query("INSERT INTO `vericon`.`centre_campaigns` (`centre`, `campaign`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($campaign[$i]) . "')") or die($mysqli->error);
+		}
 		
 		echo "valid";
 	}

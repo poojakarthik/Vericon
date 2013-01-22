@@ -147,14 +147,12 @@ $q = $mysqli->query("SELECT * FROM `vericon`.`centres` WHERE `centres`.`id` != '
 while ($centre = $q->fetch_assoc())
 {
 	$campaign = array();
-	$cam = explode(",", $centre["campaign"]);
-	foreach ($cam as $value)
+	$q1 = $mysqli->query("SELECT `campaigns`.`campaign` FROM `vericon`.`campaigns`, `vericon`.`centre_campaigns` WHERE `centre_campaigns`.`centre` = '" . $mysqli->real_escape_string($centre["id"]) . "' AND `centre_campaigns`.`campaign` = `campaigns`.`id`") or die($mysqli->error);
+	while ($data = $q1->fetch_row())
 	{
-		$q1 = $mysqli->query("SELECT `campaign` FROM `vericon`.`campaigns` WHERE `id` = '" . $mysqli->real_escape_string($value) . "'") or die($mysqli->error);
-		$data = $q1->fetch_row();
-		$q1->free();
 		array_push($campaign, $data[0]);
 	}
+	$q1->free();
 	$campaign = implode(", ", $campaign);
 	
 	echo "<tr>";

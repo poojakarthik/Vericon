@@ -87,7 +87,6 @@ while ($group = $q->fetch_row())
 	$q1->free();
 }
 $q->free();
-$mysqli->close();
 ?>
 </select></td>
 </tr>
@@ -116,8 +115,19 @@ $mysqli->close();
 </table>
 </div></center>
 
+<?php
+$campaign = array();
+$q = $mysqli->query("SELECT `campaign` FROM `vericon`.`centre_campaigns` WHERE `centre` = '" . $mysqli->real_escape_string($data["id"]) . "'") or die($mysqli->error);
+while ($cam = $q->fetch_row())
+{
+	array_push($campaign, $cam[0]);
+}
+$q->free();
+$campaign = implode(",", $campaign);
+$mysqli->close();
+?>
 <script>
-var c_campaigns = "<?php echo $data["campaign"]; ?>".split(',');
+var c_campaigns = "<?php echo $campaign; ?>".split(',');
 for (i = 0; i < c_campaigns.length; i++)
 {
 	l = "#Admin05_campaign option[value='" + c_campaigns[i] + "']";
