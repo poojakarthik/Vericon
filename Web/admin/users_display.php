@@ -104,7 +104,7 @@ elseif ($method == "search_Users")
 }
 elseif ($method == "search_Departments")
 {
-	$check = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . $mysqli->real_escape_string($query) . "'") or die($mysqli->error());
+	$check = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `type` = '" . $mysqli->real_escape_string($query) . "'") or die($mysqli->error);
 	$rows = $check->num_rows;
 	$check->free();
 	

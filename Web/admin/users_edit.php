@@ -18,7 +18,7 @@ function Admin03_Edit_User_Cancel()
 	$( "#Admin03_search" ).removeAttr("disabled");
 	$( "#Admin03_create_user" ).removeAttr("disabled");
 	<?php
-	$q = $mysqli->query("SELECT `first` FROM `vericon`.`auth_temp`") or die($mysqli->error());
+	$q = $mysqli->query("SELECT `first` FROM `vericon`.`auth_temp`") or die($mysqli->error);
 	if ($q->num_rows > 0) {
 		echo '$( "#Admin03_pending_users" ).removeAttr("disabled");';
 	}

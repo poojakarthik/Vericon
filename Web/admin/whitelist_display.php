@@ -24,7 +24,7 @@ $query = $_POST["query"];
 <?php
 if ($method == "display")
 {
-	$check = $mysqli->query("SELECT * FROM `vericon`.`allowedip`") or die($mysqli->error());
+	$check = $mysqli->query("SELECT * FROM `vericon`.`allowedip`") or die($mysqli->error);
 	$rows = $check->num_rows;
 	$check->free();
 	
