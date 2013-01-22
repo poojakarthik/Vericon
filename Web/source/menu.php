@@ -46,7 +46,7 @@ $q->free();
 
 function CountUnreadMails($host, $login, $passwd)
 {
-	$mbox = imap_open("{{$host}:143/novalidate-cert}", $login, $passwd);
+	$mbox = imap_open("{{$host}:993/ssl}", $login, $passwd);
 	
 	$count = 0;
 	if (!$mbox)
