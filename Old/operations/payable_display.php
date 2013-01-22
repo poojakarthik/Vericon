@@ -24,7 +24,7 @@ $(function() {
 		selectOtherMonths: true,
 		changeMonth: true,
 		changeYear: true,
-		maxDate: "<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>",
+		maxDate: "<?php echo date("Y-m-d", strtotime("-1 week")); ?>",
 		onSelect: function(dateText, inst) {
 			var centre = $( "#centre" ),
 				centres = "<?php echo implode(",", $centres); ?>";
@@ -224,7 +224,7 @@ else
 </div></center><br>
 
 <?php
-if ($centre != "Centre" && mysql_num_rows($q) != 0 && date("W", strtotime(date("Y")."W".(date("W") - 2)."7")) <= date("W", strtotime($date)))
+if ($centre != "Centre" && mysql_num_rows($q) != 0 && date("W", strtotime("-2 weeks")) <= date("W", strtotime($date)))
 {
 ?>
 <center><table width="98%">

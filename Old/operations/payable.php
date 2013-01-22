@@ -136,7 +136,7 @@ function Bonus(user)
 
 <div id="display">
 <script>
-$( "#display" ).load('payable_display.php?centre=Centre&centres=<?php echo $centres_link; ?>&date=<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 2)."7")); ?>',
+$( "#display" ).load('payable_display.php?centre=Centre&centres=<?php echo $centres_link; ?>&date=<?php echo date("Y-m-d", strtotime("-2 weeks")); ?>',
 function() {
 	$( "#display" ).show('blind', '', 'slow');
 });

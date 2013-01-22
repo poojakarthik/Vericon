@@ -25,7 +25,7 @@ $(function() {
 		selectOtherMonths: true,
 		changeMonth: true,
 		changeYear: true,
-		maxDate: "<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 1)."7")); ?>",
+		maxDate: "<?php echo date("Y-m-d", strtotime("-1 week")); ?>",
 		onSelect: function(dateText, inst) {
 			var centre = $( "#centre" ),
 				centres = "<?php echo implode(",", $centres); ?>";
