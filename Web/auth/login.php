@@ -58,7 +58,6 @@ $maintenance = $mysqli->query("SELECT `message` FROM `vericon`.`maintenance` WHE
 
 if (!CheckAccess())
 {
-	$mysqli->query("INSERT INTO `logs`.`unauthorised` (`user`, `ip`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW())") or die($mysqli->error);
 	echo "<b>Error: </b>IP is not within the whitelist range. <a href=\"/\">Click here for more details.</a>";
 }
 elseif ($browser["name"] != "Firefox" || $browser["version"] < 17)
@@ -85,9 +84,9 @@ else
 {
 	$token = hash('whirlpool', $username . rand());
 	
-	$mysqli->query("INSERT INTO `vericon`.`current_users` (`user`, `token`, `ip`, `timestamp`, `current_page`, `last_action`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string($token) . "', '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', NOW(), 'MA01', NOW()) ON DUPLICATE KEY UPDATE `token` = '" . $mysqli->real_escape_string($token) . "', `ip` = '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', `timestamp` = NOW(), `current_page` = 'MA01', `last_action` = NOW()") or die($mysqli->error);
+	$mysqli->query("INSERT INTO `vericon`.`current_users` (`user`, `token`, `timestamp`, `current_page`, `last_action`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string($token) . "', NOW(), 'MA01', NOW()) ON DUPLICATE KEY UPDATE `token` = '" . $mysqli->real_escape_string($token) . "', `timestamp` = NOW(), `current_page` = 'MA01', `last_action` = NOW()") or die($mysqli->error);
 	
-	$mysqli->query("INSERT INTO `logs`.`login` (`user`, `ip`, `token`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "', '" . $mysqli->real_escape_string($token) . "', NOW())") or die($mysqli->error);
+	$mysqli->query("INSERT INTO `logs`.`login` (`user`, `token`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string($token) . "', NOW())") or die($mysqli->error);
 	
 	setcookie("vc_token", $token, strtotime("+1 month"), '/');
 	

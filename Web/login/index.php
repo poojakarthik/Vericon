@@ -13,9 +13,9 @@ if ($referer_check[1] != $referer)
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>VeriCon :: Login</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
-<link rel="stylesheet" href="../jquery/css/vc-theme/jquery-ui-1.9.2.custom.min.css">
-<script src="../jquery/js/jquery-1.8.3.js"></script>
-<script src="../jquery/js/jquery-ui-1.9.2.custom.min.js"></script>
+<link rel="stylesheet" href="../jquery/css/vc-theme/jquery-ui.custom.min.css">
+<script src="../jquery/js/jquery.js"></script>
+<script src="../jquery/js/jquery-ui.custom.min.js"></script>
 <script src="../js/blockUI.js"></script>
 <link href="../css/login.css" rel="stylesheet" type="text/css" />
 <?php

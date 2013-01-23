@@ -37,9 +37,9 @@ $q->free();
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
 <title>VeriCon :: Maintenance</title>
 <link rel="shortcut icon" href="/images/vericon.ico">
-<link rel="stylesheet" href="../jquery/css/vc-theme/jquery-ui-1.9.2.custom.min.css">
-<script type="text/javascript" src="../jquery/js/jquery-1.8.3.js"></script>
-<script type="text/javascript" src="../jquery/js/jquery-ui-1.9.2.custom.min.js"></script>
+<link rel="stylesheet" href="../jquery/css/vc-theme/jquery-ui.custom.min.css">
+<script type="text/javascript" src="../jquery/js/jquery.js"></script>
+<script type="text/javascript" src="../jquery/js/jquery-ui.custom.min.js"></script>
 <style>
 body {
 	background:url(/images/bg.jpg) center top no-repeat #73d6f6; margin:0 auto;

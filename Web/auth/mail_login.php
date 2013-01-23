@@ -49,7 +49,7 @@ if ($q->num_rows != 0)
 $q->free();
 $mysqli->close();
 ?>
-<script type="text/javascript" src="/jquery/js/jquery-1.8.3.js"></script>
+<script type="text/javascript" src="/jquery/js/jquery.js"></script>
 
 <form id="form" name="form" action="/mail/" method="post">
 <input type="hidden" name="_action" value="login" />

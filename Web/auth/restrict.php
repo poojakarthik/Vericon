@@ -65,5 +65,5 @@ if (!in_array($v_page_id[0], $access_pages) && $ac["type"] != "Admin")
 
 $mysqli->query("UPDATE `vericon`.`current_users` SET `current_page` = '" . $mysqli->real_escape_string($v_page_id[0]) . "', `last_action` = NOW() WHERE `user` = '" . $mysqli->real_escape_string($ac["user"]) . "'") or die($mysqli->error);
 
-$mysqli->query("INSERT INTO `logs`.`access` (`user`, `ip`, `page`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($ac["user"]) . "', '" . $mysqli->real_escape_string(ip2long($_SERVER['REMOTE_ADDR'])) . "' ,'" . $mysqli->real_escape_string($v_page_id[0]) . "', NOW())") or die($mysqli->error);
+$mysqli->query("INSERT INTO `logs`.`access` (`user`, `page`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($ac["user"]) . "', '" . $mysqli->real_escape_string($v_page_id[0]) . "', NOW())") or die($mysqli->error);
 ?>
