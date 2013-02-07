@@ -28,20 +28,26 @@ function CheckAccess()
 
 function browser($ua)
 {
+	/*if (preg_match('/vericon/i', $ua)) {
+		preg_match('/VeriCon\/([0-9\.]+)(\+)?/i', $ua, $b);
+		$return['name'] = 'VeriCon';
+		unset($b[0]);
+		$return['version'] = implode('', $b);
+	} else {
+		$return['name'] = 'Other';
+		$return['version'] = 'Other';
+	}*/
+	//Temp for Development
 	if (preg_match('/firefox/i', $ua)) {
 		preg_match('/Firefox\/([0-9\.]+)(\+)?/i', $ua, $b);
 		$return['name'] = 'Firefox';
-		unset($b[0]);
-		$return['version'] = implode('', $b);
-	} elseif (preg_match('/chrome/i', $ua)) {
-		preg_match('/Chrome\/([0-9\.]+)(\+)?/i', $ua, $b);
-		$return['name'] = 'Chrome';
 		unset($b[0]);
 		$return['version'] = implode('', $b);
 	} else {
 		$return['name'] = 'Other';
 		$return['version'] = 'Other';
 	}
+	//End Temp
 	return $return;
 }
 
@@ -60,7 +66,7 @@ if (!CheckAccess())
 {
 	echo "<b>Error: </b>IP is not within the whitelist range. <a href=\"/\">Click here for more details.</a>";
 }
-elseif ($browser["name"] != "Firefox" || $browser["version"] < 17)
+elseif ($browser["name"] == "Other" || $browser["version"] == "Other")
 {
 	echo "<b>Error: </b>Unsupported browser. <a href=\"/\">Click here for more details.</a>";
 }

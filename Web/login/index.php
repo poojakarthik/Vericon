@@ -11,7 +11,7 @@ if ($referer_check[1] != $referer)
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>VeriCon :: Login</title>
+<title>Login</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../jquery/css/vc-theme/jquery-ui.custom.min.css">
 <script src="../jquery/js/jquery.js"></script>
@@ -33,17 +33,6 @@ if (!isset($_COOKIE["vc_username"]))
 else
 {
 	$username = decrypt($_COOKIE["vc_username"]);
-}
-
-if (!isset($_COOKIE["vc_tracker"]))
-{
-	$tracker = hash('whirlpool', $_SERVER['REMOTE_ADDR'] . rand() . date("Y-m-d H:i:s"));
-	setcookie("vc_tracker", $tracker, strtotime("+1 month"), '/');
-}
-else
-{
-	$tracker = $_COOKIE["vc_tracker"];
-	setcookie("vc_tracker", $tracker, strtotime("+1 month"), '/');
 }
 ?>
 <script>

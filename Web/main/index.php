@@ -18,20 +18,26 @@ function CheckAccess()
 
 function browser($ua)
 {
+	/*if (preg_match('/vericon/i', $ua)) {
+		preg_match('/VeriCon\/([0-9\.]+)(\+)?/i', $ua, $b);
+		$return['name'] = 'VeriCon';
+		unset($b[0]);
+		$return['version'] = implode('', $b);
+	} else {
+		$return['name'] = 'Other';
+		$return['version'] = 'Other';
+	}*/
+	//Temp for Development
 	if (preg_match('/firefox/i', $ua)) {
 		preg_match('/Firefox\/([0-9\.]+)(\+)?/i', $ua, $b);
 		$return['name'] = 'Firefox';
-		unset($b[0]);
-		$return['version'] = implode('', $b);
-	} elseif (preg_match('/chrome/i', $ua)) {
-		preg_match('/Chrome\/([0-9\.]+)(\+)?/i', $ua, $b);
-		$return['name'] = 'Chrome';
 		unset($b[0]);
 		$return['version'] = implode('', $b);
 	} else {
 		$return['name'] = 'Other';
 		$return['version'] = 'Other';
 	}
+	//End Temp
 	return $return;
 }
 
@@ -44,7 +50,7 @@ $browser = browser($_SERVER['HTTP_USER_AGENT']);
 $referer = $_SERVER['SERVER_NAME'] . "/login/";
 $referer_check = split("//", $_SERVER['HTTP_REFERER']);
 
-if (!CheckAccess() || $browser["name"] != "Firefox" || $browser["version"] < 17 || $q->num_rows == 0 || $ac["status"] != "Enabled" || $referer_check[1] != $referer)
+if (!CheckAccess() || $browser["name"] == "Other" || $browser["version"] == "Other" || $q->num_rows == 0 || $ac["status"] != "Enabled" || $referer_check[1] != $referer)
 {
 	header('Location: /');
 	exit;
@@ -58,7 +64,7 @@ $dateTimeKolkata = new DateTime("now", new DateTimeZone("Asia/Kolkata"));
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>VeriCon :: Main</title>
+<title>Main</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../jquery/css/vc-theme/jquery-ui.custom.min.css">
 <script type="text/javascript" src="../jquery/js/jquery.js"></script>
@@ -162,7 +168,7 @@ function V_Page_Load(id, sub_id, page_link)
 				$(".loading_message").html("<p><b>An error occurred while loading the page.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
 				setTimeout(function() {
 					V_Loading_End();
-					if (xhr.status == 420 || xhr.status == 421)
+					if (xhr.status == 403 || xhr.status == 0)
 					{
 						V_Logout();
 					}
@@ -204,7 +210,7 @@ function V_Page_Reload()
 			$(".loading_message").html("<p><b>An error occurred while loading the page.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
 			setTimeout(function() {
 				V_Loading_End();
-				if (xhr.status == 420 || xhr.status == 421)
+				if (xhr.status == 403 || xhr.status == 0)
 				{
 					V_Logout();
 				}
@@ -251,7 +257,7 @@ function V_Pass_Reset()
 			$(".loading_message").html("<p><b>An error occurred while loading the page.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
 			setTimeout(function() {
 				V_Loading_End();
-				if (xhr.status == 420 || xhr.status == 421)
+				if (xhr.status == 403 || xhr.status == 0)
 				{
 					V_Logout();
 				}
@@ -269,7 +275,7 @@ openWins = new Array();
 
 function V_Mail_Open()
 {
-	openWins[1]= window.open("/auth/mail_login.php", "V_Mail");
+	openWins[1]= window.open("/auth/mail_login.php", "V_Mail", "left=1px,top=1px");
 }
 </script>
 <script>
@@ -316,7 +322,7 @@ function V_Broadcast()
 	$( "#broadcast" ).load("/source/broadcast.php", function(data, status, xhr) {
 		if (status == "error")
 		{
-			if (xhr.status == 403 || xhr.status == 420 || xhr.status == 421)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				V_Logout();
 			}
@@ -329,7 +335,7 @@ function V_Mail_Check()
 	$( "#inbox" ).load("/source/mail.php", function(data, status, xhr) {
 		if (status == "error")
 		{
-			if (xhr.status == 403 || xhr.status == 420 || xhr.status == 421)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				V_Logout();
 			}
@@ -381,12 +387,18 @@ $(window).keydown(function(event) {
 		event.preventDefault();
 	}
 });
+
+$(window).keydown(function(event) {
+	if(event.keyCode == 8) {
+		event.preventDefault();
+	}
+});
 </script>
 </head>
 
 <body>
 <div id="preload">
-<img src="/images/v_loading.gif" /><img src="/images/next_btn.png" /><img src="/images/next_btn_hover.png" /><img src="/images/back_btn.png" /><img src="/images/back_btn_hover.png" /><img src="/images/older_btn.png" /><img src="/images/older_btn_hover.png" /><img src="/images/newer_btn.png" /><img src="/images/newer_btn_hover.png" /><img src="/images/change_password_icon.png" /><img src="/images/checkbox.png" /><img src="/images/checkbox_checked.png" /><img src="/images/close_icon.png" /><img src="/images/delete_icon.png" /><img src="/images/disable_icon.png" /><img src="/images/down.png" /><img src="/images/edit_icon.png" /><img src="/images/enable_icon.png" /><img src="/images/loading_icon.gif" /><img src="/images/logout_icon.png" /><img src="/images/notes_icon.png" /><img src="/images/radio.png" /><img src="/images/radio_checked.png" /><img src="/images/search_icon.png" /><img src="/images/up.png" /><img src="/images/logout.png" />
+<img src="/images/v_loading.gif" /><img src="/images/next_btn.png" /><img src="/images/next_btn_hover.png" /><img src="/images/back_btn.png" /><img src="/images/back_btn_hover.png" /><img src="/images/older_btn.png" /><img src="/images/older_btn_hover.png" /><img src="/images/newer_btn.png" /><img src="/images/newer_btn_hover.png" /><img src="/images/change_password_icon.png" /><img src="/images/checkbox.png" /><img src="/images/checkbox_checked.png" /><img src="/images/close_icon.png" /><img src="/images/delete_icon.png" /><img src="/images/disable_icon.png" /><img src="/images/down.png" /><img src="/images/edit_icon.png" /><img src="/images/enable_icon.png" /><img src="/images/loading_icon.gif" /><img src="/images/logout_icon.png" /><img src="/images/notes_icon.png" /><img src="/images/radio.png" /><img src="/images/radio_checked.png" /><img src="/images/search_icon.png" /><img src="/images/up.png" /><img src="/images/logout.png" /><img src="/images/select.png" />
 </div>
 <div id="broadcast">
 <script>
