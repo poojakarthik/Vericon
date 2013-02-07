@@ -35,7 +35,7 @@ function Export_Cancellations()
 
 <div id="display">
 <script>
-$( "#display" ).load('cancellations_display.php?centre=Centre&date=<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 2)."7")); ?>', function() {
+$( "#display" ).load('cancellations_display.php?centre=Centre&date=<?php echo date("Y-m-d", strtotime("-2 weeks")); ?>', function() {
 	$( "#display" ).show('blind', '', 'slow');
 });
 </script>

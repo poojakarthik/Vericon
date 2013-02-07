@@ -317,7 +317,7 @@ function More_Edit(user,name)
 var centre = $( "#centre" ),
 	date = $( "#datepicker" );
 
-$( "#display" ).load('timesheet_display.php?centre=Centre&date=<?php echo date("Y-m-d", strtotime(date("Y")."W".(date("W") - 2)."7")); ?>',
+$( "#display" ).load('timesheet_display.php?centre=Centre&date=<?php echo date("Y-m-d", strtotime("-2 weeks")); ?>',
 function() {
 	$( "#display" ).show('blind', '', 'slow');
 });
