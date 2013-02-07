@@ -1,6 +1,8 @@
 <?php
 $mysqli = new mysqli('localhost','vericon','18450be');
 
+header("Content-Type: text/html; charset=iso-8859-1");
+
 define('SALT', 'IISp3dwbJu4UuMxWJWSfLrzR');
 
 function encrypt($text)
