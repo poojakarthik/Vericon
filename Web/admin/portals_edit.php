@@ -15,16 +15,9 @@ function Admin06_Add_Page(portal_id)
 	$( "#display_inner" ).load("/admin/portals_new_page.php", { portal_id: portal_id }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -50,16 +43,9 @@ function Admin06_Edit_Page(portal_id,id)
 	$( "#display_inner" ).load("/admin/portals_edit_page.php", { portal_id: portal_id, id: id }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -85,16 +71,9 @@ function Admin06_Toggle_Page_Status(id, method)
 	$.post("/admin/portals_process.php", { m: "page_" + method, id: id }, function(data) {
 		Admin06_Edit_Portal("<?php echo $id; ?>");
 	}).error( function(xhr, text, err) {
-		if (xhr.status == 420)
+		if (xhr.status == 403 || xhr.status == 0)
 		{
 			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-			setTimeout(function() {
-				V_Logout();
-			}, 2500);
-		}
-		else if (xhr.status == 421)
-		{
-			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 			setTimeout(function() {
 				V_Logout();
 			}, 2500);

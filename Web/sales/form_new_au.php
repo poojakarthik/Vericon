@@ -2,7 +2,7 @@
 include("../auth/restrict_inner.php");
 
 $id = $_POST["lead"];
-$q = $mysqli->query("SELECT `sales_customers_temp`.`id`, `sales_customers_temp`.`user`, `sales_customers_temp`.`centre`, `sales_customers_temp`.`type`, CONCAT(`auth`.`first`,' ',`auth`.`last`) AS name, `campaigns`.`campaign` FROM `vericon`.`sales_customers_temp`, `vericon`.`auth`, `vericon`.`campaigns` WHERE `sales_customers_temp`.`id` = '" . $mysqli->real_escape_string($id) . "' AND `sales_customers_temp`.`user` = `auth`.`user` AND `sales_customers_temp`.`campaign` = `campaigns`.`id`") or die($mysqli->error);
+$q = $mysqli->query("SELECT `sales_customers_temp`.`id`, `sales_customers_temp`.`user`, `sales_customers_temp`.`centre`, `sales_customers_temp`.`type`, `sales_customers_temp`.`campaign` AS campaign_id, CONCAT(`auth`.`first`,' ',`auth`.`last`) AS name, `campaigns`.`campaign` FROM `vericon`.`sales_customers_temp`, `vericon`.`auth`, `vericon`.`campaigns` WHERE `sales_customers_temp`.`id` = '" . $mysqli->real_escape_string($id) . "' AND `sales_customers_temp`.`user` = `auth`.`user` AND `sales_customers_temp`.`campaign` = `campaigns`.`id`") or die($mysqli->error);
 $data = $q->fetch_assoc();
 $q->free();
 ?>
@@ -70,9 +70,18 @@ function Plan_Load(number)
 	}
 	else
 	{
-		$.post( "/source/plans_au.php", { campaign: "<?php echo $data["campaign"]; ?>", type: "<?php echo $data["type"]; ?>", cli: cli.val() }, function(data) {
-			plan.html(data);
-			plan.removeAttr("disabled");
+		$.post( "/source/plans_au.php", { campaign: "<?php echo $data["campaign_id"]; ?>", type: "<?php echo $data["type"]; ?>", cli: cli.val() }, function(data) {
+			data = data.split(":=");
+			if (data[0] == "error")
+			{
+				plan.attr("disabled", "disabled");
+				plan.html(data[1]);
+			}
+			else
+			{
+				plan.html(data);
+				plan.removeAttr("disabled");
+			}
 			V_Loading_End();
 		}).error( function(xhr, text, err) {
 			$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
@@ -81,6 +90,18 @@ function Plan_Load(number)
 			}, 2500);
 		});
 	}
+}
+</script>
+<script>
+package_count = 1;
+function Add_Package()
+{
+	package_count++;
+	$( "#packages" ).append('<tr id="package_' + package_count + '"><td><input type="text" autocomplete="off" id="cli_' + package_count + '" onchange="Plan_Load(' + package_count + ')" style="width:91%;" /></td><td><select id="plan_' + package_count + '" disabled="disabled" style="width:100%;"><option></option></select></td><td style="text-align:center;"><button onclick="Delete_Package(' + package_count + ')" class="icon_delete" title="Remove Package"></button></th></tr>');
+}
+function Delete_Package(number)
+{
+	$( "#package_" + number ).remove();
 }
 </script>
 
@@ -275,18 +296,18 @@ elseif ($data["type"] == "Residential")
 <table id="users" class="ui-widget ui-widget-content" width="100%">
 <thead>
 <tr class="ui-widget-header ">
-<th width="3%" style="text-align:center;">#</th>
 <th width="25%">CLI</th>
 <th width="72%">Plan</th>
+<th width="3%" style="text-align:center;">Remove</th>
 </tr>
 </thead>
-<tbody>
-<tr>
-<td style="text-align:center;">01</td>
-<td><input type="text" autocomplete="off" id="cli_1" onchange="Plan_Load(1)" style="width:200px;" /></td>
-<td><select id="plan_1" disabled="disabled" style="width:400px;">
+<tbody id="packages">
+<tr id="package_1">
+<td><input type="text" autocomplete="off" id="cli_1" onchange="Plan_Load(1)" style="width:91%;" /></td>
+<td><select id="plan_1" disabled="disabled" style="width:100%;">
 <option></option>
 </select></td>
+<td style="text-align:center;"><button disabled="disabled" class="icon_delete" title="Can't Remove this Package"></button></th>
 </tr>
 </tbody>
 </table>
@@ -297,7 +318,7 @@ elseif ($data["type"] == "Residential")
 <td colspan="2" width="100%" valign="top">
 <table width="100%">
 <tr>
-<td align="left"><button onclick="" class="btn">Add Package</button></td>
+<td align="left"><button onclick="Add_Package()" class="btn">Add Package</button></td>
 </tr>
 </table>
 </td>

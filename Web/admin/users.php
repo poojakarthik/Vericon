@@ -20,16 +20,9 @@ function Admin03_More_Users(page)
 	$( "#display_inner" ).load("/admin/users_display.php", { m: method.val(), page: page, query: query.val() }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -55,16 +48,9 @@ function Admin03_Search(category,id)
 	$( "#display_inner" ).load("/admin/users_display.php", { m: "search_" + category, query: id, page: 0 }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -97,16 +83,9 @@ function Admin03_Display_Reload()
 	$( "#display_inner" ).load("/admin/users_display.php", { m: method.val(), page: page.val(), query: query.val() }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -132,16 +111,9 @@ function Admin03_Create_User()
 	$( "#display_inner" ).load("/admin/users_new.php", { }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -211,16 +183,9 @@ function Admin03_Edit_User(user)
 	$( "#display_inner" ).load("/admin/users_edit.php", { user: user, method: method.val(), page: page.val(), query: query.val() }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -250,16 +215,9 @@ function Admin03_Toggle_Status(user,method)
 	$.post("/admin/users_process.php", { m: method, user: user }, function(data) {
 		Admin03_Display_Reload();
 	}).error( function(xhr, text, err) {
-		if (xhr.status == 420)
+		if (xhr.status == 403 || xhr.status == 0)
 		{
 			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-			setTimeout(function() {
-				V_Logout();
-			}, 2500);
-		}
-		else if (xhr.status == 421)
-		{
-			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 			setTimeout(function() {
 				V_Logout();
 			}, 2500);
@@ -288,7 +246,7 @@ function Admin03_Toggle_Status(user,method)
 <div id="Admin03_search_bar" style="width:98%; margin:0 auto 10px;">
 <table width="100%">
 <tr>
-<td><input type="search" id="Admin03_search" placeholder="Search..."></td>
+<td><input type="text" id="Admin03_search" style="padding:5px 10px 5px 25px; background:url('/images/search_icon.png') no-repeat scroll 5px center #FFFFFF;" placeholder="Search..."></td>
 <td align="right"><button onclick="Admin03_Create_User()" id="Admin03_create_user" class="btn">Create User</button>
 <?php
 $q = $mysqli->query("SELECT `first` FROM `vericon`.`auth_temp`") or die($mysqli->error);

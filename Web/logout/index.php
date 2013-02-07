@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>VeriCon :: Logout</title>
+<title>Logout</title>
 <link rel="shortcut icon" href="/images/vericon.ico">
 <link type="text/css" rel="stylesheet" href="/css/main.css" />
 </head>

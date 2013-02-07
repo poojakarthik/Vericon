@@ -27,12 +27,12 @@ $ac = $q->fetch_assoc();
 
 if ($q->num_rows == 0)
 {
-	header('HTTP/1.1 420 Not Logged In');
+	header('HTTP/1.1 403 Forbidden');
 	exit;
 }
 if ($ac["status"] != "Enabled")
 {
-	header('HTTP/1.1 421 Account Disabled');
+	header('HTTP/1.1 403 Forbidden');
 	exit;
 }
 $q->free();
@@ -63,16 +63,9 @@ function Pass_Reset_Check(field)
 			Pass_Reset_Error(data);
 		}
 	}).error( function(xhr, text, err) {
-		if (xhr.status == 420)
+		if (xhr.status == 403 || xhr.status == 0)
 		{
 			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-			setTimeout(function() {
-				V_Logout();
-			}, 2500);
-		}
-		else if (xhr.status == 421)
-		{
-			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 			setTimeout(function() {
 				V_Logout();
 			}, 2500);
@@ -109,16 +102,9 @@ function Pass_Reset_Submit()
 			V_Loading_End();
 		}
 	}).error( function(xhr, text, err) {
-		if (xhr.status == 420)
+		if (xhr.status == 403 || xhr.status == 0)
 		{
 			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-			setTimeout(function() {
-				V_Logout();
-			}, 2500);
-		}
-		else if (xhr.status == 421)
-		{
-			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 			setTimeout(function() {
 				V_Logout();
 			}, 2500);

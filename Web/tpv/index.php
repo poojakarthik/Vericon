@@ -8,16 +8,9 @@ function TPV01_More_Announcements(page)
 	$( "#display_inner" ).load("/tpv/index_display.php", { page: page }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);

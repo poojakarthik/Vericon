@@ -27,7 +27,7 @@ $ac = $q->fetch_assoc();
 
 if ($q->num_rows == 0)
 {
-	header('HTTP/1.1 420 Not Logged In');
+	header('HTTP/1.1 403 Forbidden');
 	exit;
 }
 
@@ -35,7 +35,7 @@ $q->free();
 
 if ($ac["status"] != "Enabled")
 {
-	header('HTTP/1.1 421 Account Disabled');
+	header('HTTP/1.1 403 Forbidden');
 	exit;
 }
 

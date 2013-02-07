@@ -15,16 +15,9 @@ function Admin05_Toggle_Status(centre,method)
 	$.post("/admin/centres_process.php", { m: method, centre: centre }, function(data) {
 		V_Page_Reload();
 	}).error( function(xhr, text, err) {
-		if (xhr.status == 420)
+		if (xhr.status == 403 || xhr.status == 0)
 		{
 			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-			setTimeout(function() {
-				V_Logout();
-			}, 2500);
-		}
-		else if (xhr.status == 421)
-		{
-			$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 			setTimeout(function() {
 				V_Logout();
 			}, 2500);
@@ -45,16 +38,9 @@ function Admin05_Add_Centre()
 	$( "#display_inner" ).load("/admin/centres_new.php", { }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);
@@ -80,16 +66,9 @@ function Admin05_Edit_Centre(centre)
 	$( "#display_inner" ).load("/admin/centres_edit.php", { centre: centre }, function(data, status, xhr){
 		if (status == "error")
 		{
-			if (xhr.status == 420)
+			if (xhr.status == 403 || xhr.status == 0)
 			{
 				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else if (xhr.status == 421)
-			{
-				$(".loading_message").html("<p><b>Your account has been disabled.</b></p><p><b>You will be logged out shortly.</b></p>");
 				setTimeout(function() {
 					V_Logout();
 				}, 2500);

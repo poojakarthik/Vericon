@@ -28,7 +28,17 @@ if (preg_match('/0([2378])([0-9]{8})/',$cli,$d))
 }
 else
 {
-	echo "<option value=''>Invalid CLI</option>";
+	echo "error:=<option value=''>Invalid CLI</option>";
+	$mysqli->close();
+	exit;
+}
+
+$sct = $mysqli->query("SELECT `cli` FROM `vericon`.`sct_dnc` WHERE `cli` = '" . $mysqli->real_escape_string($cli) . "'") or die($mysqli->error);
+
+if ($sct->num_rows != 0)
+{
+	echo "error:=<option value=''>SCT DNC</option>";
+	$sct->free();
 	$mysqli->close();
 	exit;
 }
@@ -69,7 +79,7 @@ $q->free();
 <?php
 $q = $mysqli->query("SELECT * FROM `vericon`.`plan_matrix` WHERE `status` = 'Active' AND `rating` = '" . $mysqli->real_escape_string($type) . "' AND `type` = 'Bundle' AND `campaign` = '" . $mysqli->real_escape_string($campaign) . "' ORDER BY `id` ASC") or die($mysqli->error);
 
-while ($b_plan = $mysqli->fetch_assoc())
+while ($b_plan = $q->fetch_assoc())
 {
 	echo "<option value='" . $b_plan["id"] . "'>" . $b_plan["name"] . "</option>";
 }
