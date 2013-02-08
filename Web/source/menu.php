@@ -22,7 +22,7 @@ if ($referer_check[1] != $referer || !CheckAccess())
 
 $token = $_COOKIE['vc_token'];
 
-$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`pass`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
 $ac = $q->fetch_assoc();
 
 if ($q->num_rows == 0)
@@ -36,31 +36,6 @@ if ($ac["status"] != "Enabled")
 	exit;
 }
 $q->free();
-
-function CountUnreadMails($host, $login, $passwd)
-{
-	$mbox = imap_open("{{$host}:993/ssl}", $login, $passwd);
-	
-	$count = 0;
-	if (!$mbox)
-	{
-		$count = "0";
-	}
-	else
-	{
-		$headers = imap_headers($mbox);
-		foreach ($headers as $mail)
-		{
-			$flags = substr($mail, 0, 4);
-			$isunr = (strpos($flags, "U") !== false);
-			if ($isunr) {
-				$count++;
-			}
-		}
-	}
-	imap_close($mbox);
-	return $count;
-}
 
 $portal = strtolower($_POST["p"]);
 
@@ -82,20 +57,7 @@ if ($q->num_rows == 0 || $portal_status[0] != "Enabled")
 }
 else
 {
-	$q1 = $mysqli->query("SELECT * FROM `vericon`.`mail_pending` WHERE `user` = '" . $mysqli->real_escape_string($ac["user"]) . "'") or die($mysqli->error);
-	if ($q1->num_rows != 0)
-	{
-		$email_count_text = "Inbox (??)";
-	}
-	else
-	{
-		$email_count = CountUnreadMails('mail.vericon.com.au', $ac["user"], $ac["pass"]);
-		if ($email_count > 0) { $email_count_text = "Inbox <b>(" . $email_count . ")</b>"; } else { $email_count_text = "Inbox (" . $email_count . ")"; }
-	}
-	$q1->free();
-	
 	echo "<ul id='menu'>";
-	echo "<li style='float:right;'><a onclick='V_Mail_Open()'><img border='0' src='/images/email.png' style='vertical-align:middle;'><span id='inbox' style='margin-left:7px;'>" . $email_count_text . "</span></a></li>";
 	while ($pages = $q->fetch_assoc())
 	{
 		if (in_array($pages["id"], $access_pages) || $ac["type"] == "Admin")

@@ -19,4 +19,5 @@ FORMS    += mainwindow.ui
 
 RC_FILE = vericon.rc
 
-RESOURCES +=
+RESOURCES += \
+    vericon.qrc

@@ -219,7 +219,7 @@ else
 	<?php if ($username != "") { ?>
 	$( "#login_username" ).html('<input id="username" type="text" class="input_form" autocomplete="off" placeholder="Enter your username" value="<?php echo $username; ?>" />');
 	<?php } else { ?>
-	$( "#login_username" ).html('<input id="username" type="text" class="input_form" autocomplete="off" placeholder="Enter your username" value="" autofocus="autofocus" />');
+	$( "#login_username" ).html('<input id="username" type="text" class="input_form" autocomplete="off" placeholder="Enter your username" value="" />');
 	<?php } ?>
 }
 </script>
@@ -271,7 +271,7 @@ if (cookie_check == 0)
 else
 {
 	<?php if ($username != "") { ?>
-	$( "#login_password" ).html('<input id="password" type="password" class="input_form" autocomplete="off" placeholder="Enter your password" autofocus="autofocus" />');
+	$( "#login_password" ).html('<input id="password" type="password" class="input_form" autocomplete="off" placeholder="Enter your password" />');
 	<?php } else { ?>
 	$( "#login_password" ).html('<input id="password" type="password" class="input_form" autocomplete="off" placeholder="Enter your password" />');
 	<?php } ?>

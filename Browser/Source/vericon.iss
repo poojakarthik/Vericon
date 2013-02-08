@@ -48,9 +48,9 @@ Source: "{#SourceFileDir}\QtGui4.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\QtNetwork4.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\QtWebKit4.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourceFileDir}\graphicssystems\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourceFileDir}\iconengines\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourceFileDir}\imageformats\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourceFileDir}\graphicssystems\*"; DestDir: "{app}\graphicssystems\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourceFileDir}\iconengines\*"; DestDir: "{app}\iconengines\"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "{#SourceFileDir}\imageformats\*"; DestDir: "{app}\imageformats\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#SourceFileDir}\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 

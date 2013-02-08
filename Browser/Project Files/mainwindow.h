@@ -3,7 +3,6 @@
 
 #include <QMainWindow>
 #include <QtWebKit>
-#include <QWebView>
 
 namespace Ui {
 class MainWindow;
@@ -22,6 +21,9 @@ private:
 
 protected slots:
     void adjustTitle();
+    void adjustTitle_2();
+    void checkPage();
+    void checkPage_2();
 };
 
 class webPage : public QWebPage {

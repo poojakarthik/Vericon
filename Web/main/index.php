@@ -270,13 +270,6 @@ function V_Pass_Reset()
 	});
 	
 }
-
-openWins = new Array();
-
-function V_Mail_Open()
-{
-	openWins[1]= window.open("/auth/mail_login.php", "V_Mail", "left=1px,top=1px");
-}
 </script>
 <script>
 function V_Logout()
@@ -300,9 +293,6 @@ function V_Logout()
 	});
 	
 	$.post("/auth/logout.php", function(data) {
-		if (openWins[1] && !openWins[1].closed) {
-			openWins[1].close();
-		}
 		setTimeout(function() {
 			V_Loading_End();
 			$(window).unbind("beforeunload");
@@ -320,19 +310,6 @@ function V_Logout()
 function V_Broadcast()
 {
 	$( "#broadcast" ).load("/source/broadcast.php", function(data, status, xhr) {
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				V_Logout();
-			}
-		}
-	});
-}
-
-function V_Mail_Check()
-{
-	$( "#inbox" ).load("/source/mail.php", function(data, status, xhr) {
 		if (status == "error")
 		{
 			if (xhr.status == 403 || xhr.status == 0)
@@ -373,7 +350,6 @@ setInterval("Header_Time_EST()", 1000);
 setInterval("Header_Time_IST()", 1000);
 setInterval("Update_Clock()", 900000);
 setInterval("V_Broadcast()", 120000);
-setInterval("V_Mail_Check()", 180000);
 $.jGrowl.defaults.closer = false;
 $.jGrowl.defaults.closeTemplate = '<img src="/images/close_icon.png" width="16px" height="16px">';
 

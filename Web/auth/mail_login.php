@@ -1,3 +1,4 @@
+<title>VeriCon :: Mail</title>
 <?php
 $mysqli = new mysqli('localhost','vericon','18450be');
 
@@ -13,7 +14,7 @@ function CheckAccess()
 $referer = $_SERVER['SERVER_NAME'] . "/main/";
 $referer_check = split("//", $_SERVER['HTTP_REFERER']);
 
-if ($referer_check[1] != $referer || !CheckAccess())
+if (!CheckAccess())
 {
 	header('HTTP/1.1 403 Forbidden');
 	include("../error/forbidden.php");
@@ -22,12 +23,13 @@ if ($referer_check[1] != $referer || !CheckAccess())
 
 $token = $_COOKIE['vc_token'];
 
-$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`pass`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
+$q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
 $ac = $q->fetch_assoc();
 
 if ($q->num_rows == 0)
 {
 	header('HTTP/1.1 403 Forbidden');
+	include("../error/forbidden.php");
 	exit;
 }
 
@@ -36,6 +38,7 @@ $q->free();
 if ($ac["status"] != "Enabled")
 {
 	header('HTTP/1.1 403 Forbidden');
+	include("../error/forbidden.php");
 	exit;
 }
 
@@ -43,6 +46,7 @@ $q = $mysqli->query("SELECT * FROM `vericon`.`mail_pending` WHERE `user` = '" . 
 if ($q->num_rows != 0)
 {
 	echo "<h1>Your email account is currrently under maintenance, please check back in 2 minutes.</h1>";
+	echo "<a href='../mail/login/'>Click here to refresh</a>";
 	exit;
 }
 
