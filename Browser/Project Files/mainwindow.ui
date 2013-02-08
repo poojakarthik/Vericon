@@ -156,7 +156,7 @@ QTabBar{
         <enum>QTabWidget::Rounded</enum>
        </property>
        <property name="currentIndex">
-        <number>1</number>
+        <number>0</number>
        </property>
        <property name="documentMode">
         <bool>true</bool>
@@ -167,7 +167,7 @@ QTabBar{
           <normaloff>:/new/images/home.png</normaloff>:/new/images/home.png</iconset>
         </attribute>
         <attribute name="title">
-         <string>Tab 1</string>
+         <string>VeriCon :: Login</string>
         </attribute>
         <widget class="QWidget" name="verticalLayoutWidget_2">
          <property name="geometry">
