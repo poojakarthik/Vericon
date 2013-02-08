@@ -53,9 +53,23 @@ function browser($ua)
 
 $username = $_POST["username"];
 $password = $_POST["password"];
-$tracker = $_POST["tracker"];
+$tracker_check = $_POST["tracker"];
 $remember = $_POST["remember"];
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
+if (!isset($_COOKIE["vc_tracker"])) {
+	$tracker = "";
+} else {
+	$tracker = $_COOKIE["vc_tracker"];
+}
+
+$q1 = $mysqli->query("SELECT `attempts` FROM `vericon`.`invalid_login` WHERE `tracker` = '" . $mysqli->real_escape_string($tracker) . "'") or die($mysqli->error);
+if ($q1->num_rows == 0) {
+	$attempts_count = 0;
+} else {
+	$attempts = $q1->fetch_row();
+	$attempts_count = $attempts[0];
+}
+$q1->free();
 
 $q = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `user` = '" . $mysqli->real_escape_string($username) . "' AND `pass` = '" . md5($password) . "'") or die($mysqli->error);
 $data = $q->fetch_assoc();
@@ -66,7 +80,7 @@ if (!CheckAccess())
 {
 	echo "<b>Error: </b>IP is not within the whitelist range. <a href=\"/\">Click here for more details.</a>";
 }
-elseif ($browser["name"] == "Other" || $browser["version"] == "Other")
+elseif ($browser["name"] == "Other" || $browser["version"] == "Other" || $tracker == "" || $tracker != $tracker_check)
 {
 	echo "<b>Error: </b>Unsupported browser. <a href=\"/\">Click here for more details.</a>";
 }
@@ -78,9 +92,22 @@ elseif ($username == "" || $password == "")
 {
 	echo "<b>Error: </b>Incorrect username or password.";
 }
+elseif ($attempts[0] >= 3)
+{
+	echo "<b>Error: </b>Exceeded allowed login attempts. Session locked for 2 minutes.";
+}
 elseif($q->num_rows != 1)
 {
-	echo "<b>Error: </b>Incorrect username or password.";
+	$attempts_count = $attempts_count + 1;
+	
+	$mysqli->query("INSERT INTO `vericon`.`invalid_login` (`tracker`, `attempts`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($tracker) . "', '" . $mysqli->real_escape_string($attempts_count) . "', NOW()) ON DUPLICATE KEY UPDATE `attempts` = '" . $mysqli->real_escape_string($attempts_count) . "', `timestamp` = NOW()") or die($mysqli->error);
+	
+	if ($attempts_count >= 3) {
+		echo "<b>Error: </b>Exceeded allowed login attempts. Session locked for 2 minutes.";
+	}
+	else {
+		echo "<b>Error: </b>Incorrect username or password. Attempt " . $attempts_count . " of 3.";
+	}
 }
 elseif ($data["status"] == "Disabled")
 {
@@ -93,6 +120,8 @@ else
 	$mysqli->query("INSERT INTO `vericon`.`current_users` (`user`, `token`, `timestamp`, `current_page`, `last_action`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string($token) . "', NOW(), 'MA01', NOW()) ON DUPLICATE KEY UPDATE `token` = '" . $mysqli->real_escape_string($token) . "', `timestamp` = NOW(), `current_page` = 'MA01', `last_action` = NOW()") or die($mysqli->error);
 	
 	$mysqli->query("INSERT INTO `logs`.`login` (`user`, `token`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($username) . "', '" . $mysqli->real_escape_string($token) . "', NOW())") or die($mysqli->error);
+	
+	$mysqli->query("DELETE FROM `vericon`.`invalid_login` WHERE `tracker` = '" . $mysqli->real_escape_string($tracker) . "'") or die($mysqli->error);
 	
 	setcookie("vc_token", $token, strtotime("+1 month"), '/');
 	

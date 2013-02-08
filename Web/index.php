@@ -1,3 +1,4 @@
+<title>Login</title>
 <?php
 $mysqli = new mysqli('localhost','vericon','18450be');
 
@@ -13,8 +14,7 @@ function encrypt($text)
 if (isset($_SERVER['HTTP_MAC'])) {
 	$tracker = encrypt($_SERVER['HTTP_MAC']);
 } else {
-	//$tracker = "";
-	$tracker = encrypt($_SERVER['REMOTE_ADDR'] . rand() . date("Y-m-d H:i:s")); //temp for development
+	$tracker = encrypt($_SERVER['REMOTE_ADDR'] . rand() . date("Y-m-d H:i:s"));
 }
 setcookie("vc_tracker", $tracker, strtotime("+1 month"), '/');
 
