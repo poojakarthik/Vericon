@@ -417,7 +417,11 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . $data["id"] . '",';
 	$body .= '="' . $p_cli[1] . '.gsm",';
 	$body .= '"' . $sale_id . '",';
-	$body .= '"' . $data["status"] . '",';
+	if ($data["campaign"] == "Angle Telecom" || $data["campaign"] == "Passion Telecom") {
+		$body .= '"Waiting Provisioning",';
+	} else {
+		$body .= '"' . $data["status"] . '",';
+	}
 	$body .= '"' . $a_status . '",';
 	$body .= '"' . '",';
 	$body .= '"' . $agent . '",';
