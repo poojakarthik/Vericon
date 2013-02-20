@@ -91,7 +91,7 @@ elseif ($method == "approve_au")
 		}
 		else
 		{
-			mysql_query("UPDATE vericon.qa_customers SET status = 'Approved', timestamp = '$timestamp', verifier = '$verifier', lead_check = '$lead', recording_check = '$recording', details_check = '$details' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+			mysql_query("UPDATE vericon.qa_customers SET status = 'Approved', timestamp = '$timestamp', verifier = '$verifier', sale_timestamp = '$data[approved_timestamp]', lead_check = '$lead', recording_check = '$recording', details_check = '$details' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		}
 		
 		$pre_id = date("y", strtotime($data["approved_timestamp"])) . str_pad(date("z", strtotime($data["approved_timestamp"])),3,"0",STR_PAD_LEFT);
@@ -177,7 +177,7 @@ elseif ($method == "approve_nz")
 		}
 		else
 		{
-			mysql_query("UPDATE vericon.qa_customers SET status = 'Approved', timestamp = '$timestamp', verifier = '$verifier', lead_check = '$lead', recording_check = '$recording', details_check = '$details' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+			mysql_query("UPDATE vericon.qa_customers SET status = 'Approved', timestamp = '$timestamp', verifier = '$verifier', sale_timestamp = '$data[approved_timestamp]', lead_check = '$lead', recording_check = '$recording', details_check = '$details' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		}
 		
 		$pre_id = date("y", strtotime($data["approved_timestamp"])) . str_pad(date("z", strtotime($data["approved_timestamp"])),3,"0",STR_PAD_LEFT);
@@ -234,7 +234,7 @@ elseif ($method == "reject")
 		}
 		else
 		{
-			mysql_query("UPDATE vericon.qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', lead_check = '$lead', recording_check = '$recording', details_check = '$details', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+			mysql_query("UPDATE vericon.qa_customers SET status = 'Rejected', timestamp = '$timestamp', verifier = '$verifier', sale_timestamp = '$data[approved_timestamp]', lead_check = '$lead', recording_check = '$recording', details_check = '$details', rejection_reason = '" . mysql_escape_string($reason) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		}
 					
 		$command = "rm " . $filename;
