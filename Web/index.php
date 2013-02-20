@@ -14,7 +14,7 @@ function encrypt($text)
 if (isset($_SERVER['HTTP_MAC'])) {
 	$tracker = encrypt($_SERVER['HTTP_MAC']);
 } else {
-	$tracker = encrypt($_SERVER['REMOTE_ADDR'] . rand() . date("Y-m-d H:i:s"));
+	$tracker = encrypt($_SERVER['REMOTE_ADDR'] . date("Y-m-d H:i:s"));
 }
 setcookie("vc_tracker", $tracker, strtotime("+1 month"), '/');
 
@@ -29,26 +29,15 @@ function CheckAccess()
 
 function browser($ua)
 {
-	/*if (preg_match('/vericon/i', $ua)) {
+	if (preg_match('/vericon/i', $ua)) {
 		preg_match('/VeriCon\/([0-9\.]+)(\+)?/i', $ua, $b);
 		$return['name'] = 'VeriCon';
 		unset($b[0]);
 		$return['version'] = implode('', $b);
 	} else {
 		$return['name'] = 'Other';
-		$return['version'] = 'Other';
-	}*/
-	//Temp for Development
-	if (preg_match('/firefox/i', $ua)) {
-		preg_match('/Firefox\/([0-9\.]+)(\+)?/i', $ua, $b);
-		$return['name'] = 'Firefox';
-		unset($b[0]);
-		$return['version'] = implode('', $b);
-	} else {
-		$return['name'] = 'Other';
-		$return['version'] = 'Other';
+		$return['version'] = '0';
 	}
-	//End Temp
 	return $return;
 }
 
@@ -60,8 +49,21 @@ if (!CheckAccess())
 }
 
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
+$server_name = $_SERVER['SERVER_NAME'];
 
-if ($browser["name"] == "Other" || $browser["version"] == "Other" || $tracker == "")
+$q = $mysqli->query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die($mysqli->error);
+$ver = $q->fetch_row();
+$q->free();
+$version = explode(" ", $ver[0]);
+
+if (($browser["name"] != "VeriCon" || version_compare($browser["version"], $version[1], '<')) && $server_name != "lb01.vericon.com.au")
+{
+	header('HTTP/1.1 419 Unsupported Browser');
+	include("error/unsupported.php");
+	exit;
+}
+
+if ($tracker == "")
 {
 	header('HTTP/1.1 419 Unsupported Browser');
 	include("error/unsupported.php");

@@ -28,26 +28,15 @@ function CheckAccess()
 
 function browser($ua)
 {
-	/*if (preg_match('/vericon/i', $ua)) {
+	if (preg_match('/vericon/i', $ua)) {
 		preg_match('/VeriCon\/([0-9\.]+)(\+)?/i', $ua, $b);
 		$return['name'] = 'VeriCon';
 		unset($b[0]);
 		$return['version'] = implode('', $b);
 	} else {
 		$return['name'] = 'Other';
-		$return['version'] = 'Other';
-	}*/
-	//Temp for Development
-	if (preg_match('/firefox/i', $ua)) {
-		preg_match('/Firefox\/([0-9\.]+)(\+)?/i', $ua, $b);
-		$return['name'] = 'Firefox';
-		unset($b[0]);
-		$return['version'] = implode('', $b);
-	} else {
-		$return['name'] = 'Other';
-		$return['version'] = 'Other';
+		$return['version'] = '0';
 	}
-	//End Temp
 	return $return;
 }
 
@@ -56,20 +45,27 @@ $password = $_POST["password"];
 $tracker_check = $_POST["tracker"];
 $remember = $_POST["remember"];
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
+$server_name = $_SERVER['SERVER_NAME'];
 if (!isset($_COOKIE["vc_tracker"])) {
 	$tracker = "";
 } else {
 	$tracker = $_COOKIE["vc_tracker"];
 }
 
-$q1 = $mysqli->query("SELECT `attempts` FROM `vericon`.`invalid_login` WHERE `tracker` = '" . $mysqli->real_escape_string($tracker) . "'") or die($mysqli->error);
-if ($q1->num_rows == 0) {
+$q = $mysqli->query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die($mysqli->error);
+$ver = $q->fetch_row();
+$q->free();
+$version = explode(" ", $ver[0]);
+
+$q = $mysqli->query("SELECT `attempts` FROM `vericon`.`invalid_login` WHERE `tracker` = '" . $mysqli->real_escape_string($tracker) . "'") or die($mysqli->error);
+if ($q->num_rows == 0) {
 	$attempts_count = 0;
+	$attempts[0] = 0;
 } else {
-	$attempts = $q1->fetch_row();
+	$attempts = $q->fetch_row();
 	$attempts_count = $attempts[0];
 }
-$q1->free();
+$q->free();
 
 $q = $mysqli->query("SELECT * FROM `vericon`.`auth` WHERE `user` = '" . $mysqli->real_escape_string($username) . "' AND `pass` = '" . md5($password) . "'") or die($mysqli->error);
 $data = $q->fetch_assoc();
@@ -80,23 +76,36 @@ if (!CheckAccess())
 {
 	echo "<b>Error: </b>IP is not within the whitelist range. <a href=\"/\">Click here for more details.</a>";
 }
-elseif ($browser["name"] == "Other" || $browser["version"] == "Other" || $tracker == "" || $tracker != $tracker_check)
+elseif (($browser["name"] != "VeriCon" || version_compare($browser["version"], $version[1], '<')) && $server_name != "lb01.vericon.com.au")
 {
 	echo "<b>Error: </b>Unsupported browser. <a href=\"/\">Click here for more details.</a>";
 }
-elseif($maintenance->num_rows != 0)
+elseif ($tracker == "" || $tracker != $tracker_check)
+{
+	echo "<b>Error: </b>Unsupported browser. <a href=\"/\">Click here for more details.</a>";
+}
+elseif ($maintenance->num_rows != 0)
 {
 	echo "<b>Error: </b>VeriCon is currently under maintenance. <a href=\"/\">Click here for more details.</a>";
-}
-elseif ($username == "" || $password == "")
-{
-	echo "<b>Error: </b>Incorrect username or password.";
 }
 elseif ($attempts[0] >= 3)
 {
 	echo "<b>Error: </b>Exceeded allowed login attempts. Session locked for 2 minutes.";
 }
-elseif($q->num_rows != 1)
+elseif ($username == "" || $password == "" || $q->num_rows != 1)
+{
+	$attempts_count = $attempts_count + 1;
+	
+	$mysqli->query("INSERT INTO `vericon`.`invalid_login` (`tracker`, `attempts`, `timestamp`) VALUES ('" . $mysqli->real_escape_string($tracker) . "', '" . $mysqli->real_escape_string($attempts_count) . "', NOW()) ON DUPLICATE KEY UPDATE `attempts` = '" . $mysqli->real_escape_string($attempts_count) . "', `timestamp` = NOW()") or die($mysqli->error);
+	
+	if ($attempts_count >= 3) {
+		echo "<b>Error: </b>Exceeded allowed login attempts. Session locked for 2 minutes.";
+	}
+	else {
+		echo "<b>Error: </b>Incorrect username or password. Attempt " . $attempts_count . " of 3.";
+	}
+}
+elseif ($server_name == "lb01.vericon.com.au" && $data["type"] != "Admin")
 {
 	$attempts_count = $attempts_count + 1;
 	

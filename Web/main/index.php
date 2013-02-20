@@ -18,45 +18,47 @@ function CheckAccess()
 
 function browser($ua)
 {
-	/*if (preg_match('/vericon/i', $ua)) {
+	if (preg_match('/vericon/i', $ua)) {
 		preg_match('/VeriCon\/([0-9\.]+)(\+)?/i', $ua, $b);
 		$return['name'] = 'VeriCon';
 		unset($b[0]);
 		$return['version'] = implode('', $b);
 	} else {
 		$return['name'] = 'Other';
-		$return['version'] = 'Other';
-	}*/
-	//Temp for Development
-	if (preg_match('/firefox/i', $ua)) {
-		preg_match('/Firefox\/([0-9\.]+)(\+)?/i', $ua, $b);
-		$return['name'] = 'Firefox';
-		unset($b[0]);
-		$return['version'] = implode('', $b);
-	} else {
-		$return['name'] = 'Other';
-		$return['version'] = 'Other';
+		$return['version'] = '0';
 	}
-	//End Temp
 	return $return;
 }
 
 $token = $_COOKIE['vc_token'];
 
+$q = $mysqli->query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die($mysqli->error);
+$ver = $q->fetch_row();
+$q->free();
+$version = explode(" ", $ver[0]);
+
 $q = $mysqli->query("SELECT `auth`.`user`, `auth`.`type`, `auth`.`centre`, `auth`.`status`, `auth`.`first`, `auth`.`last`, `auth`.`alias`, `auth`.`pass_reset` FROM `vericon`.`auth`, `vericon`.`current_users` WHERE `current_users`.`token` = '" . $mysqli->real_escape_string($token) . "' AND `current_users`.`user` = `auth`.`user`") or die($mysqli->error);
 $ac = $q->fetch_assoc();
 
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
+$server_name = $_SERVER['SERVER_NAME'];
 $referer = $_SERVER['SERVER_NAME'] . "/login/";
 $referer_check = split("//", $_SERVER['HTTP_REFERER']);
 
-if (!CheckAccess() || $browser["name"] == "Other" || $browser["version"] == "Other" || $q->num_rows == 0 || $ac["status"] != "Enabled" || $referer_check[1] != $referer)
+if (($browser["name"] != "VeriCon" || version_compare($browser["version"], $version[1], '<')) && $server_name != "lb01.vericon.com.au")
+{
+	header('Location: /');
+	exit;
+}
+
+if (!CheckAccess() || $q->num_rows == 0 || $ac["status"] != "Enabled" || $referer_check[1] != $referer)
 {
 	header('Location: /');
 	exit;
 }
 
 $q->free();
+$mysqli->close();
 
 $dateTimeKolkata = new DateTime("now", new DateTimeZone("Asia/Kolkata"));
 ?>
@@ -459,12 +461,6 @@ if (date("Y-m-d", strtotime($ac["pass_reset"])) <= date("Y-m-d", strtotime("-90 
 <td class="left_f" align="left" valign="top">Copyrights 2011-<?php echo date("Y"); ?> | All Rights Reserved @ VeriCon<br />Designed &amp; Developed by Team VeriCon</td>
 <td class="right_f" align="right" valign="top">
 <img src="../images/footer_logo.png" border="0" />
-<?php
-$q = $mysqli->query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die($mysqli->error);
-$ver = $q->fetch_row();
-$q->free();
-$mysqli->close();
-?>
 <div style="width:133px; text-align:right; margin:-5px 30px 0 0;">
 <?php echo $ver[0]; ?>
 </div>
