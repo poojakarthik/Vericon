@@ -284,6 +284,8 @@ elseif ($method == "submit_au")
 	$position = trim(strtoupper($_GET["position"]));
 	$ongoing_credit = trim($_GET["ongoing_credit"]);
 	$onceoff_credit = trim($_GET["onceoff_credit"]);
+	$promo_code = $_GET["promo_code"];
+	$promo_cli = $_GET["promo_cli"];
 	$payway = trim($_GET["payway"]);
 	$dd_type = $_GET["dd_type"];
 	
@@ -291,6 +293,7 @@ elseif ($method == "submit_au")
 	$data = mysql_fetch_assoc($q);
 	
 	$type = $data["type"];
+	$campaign = $data["campaign"];
 	
 	$q1 = mysql_query("SELECT * FROM vericon.sales_packages WHERE sid = '$id'");
 	
@@ -419,6 +422,14 @@ elseif ($method == "submit_au")
 	{
 		echo "Please enter a valid once off credit amount";
 	}
+	elseif ($promo_code != "" && !preg_match("/^0[34679][0-9]{7}$/",$promo_cli))
+	{
+		echo "Please enter a valid promo cli";
+	}
+	elseif ($promo_code == "" && $promo_cli != "")
+	{
+		echo "Please select a promo code";
+	}
 	elseif ($payway != "" && !preg_match("/^SP0[2378][0-9]{8}$/",$payway))
 	{
 		echo "Please enter a valid payway ID (e.g. SP0312345678)";
@@ -431,7 +442,16 @@ elseif ($method == "submit_au")
 	{
 		if ($email == "N/A") { $billing = "post"; } else { $email = strtolower($email); $billing = "email"; }
 		
-		mysql_query("UPDATE vericon.sales_customers SET title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', ongoing_credit = '" . mysql_real_escape_string($ongoing_credit) . "', onceoff_credit = '" . mysql_real_escape_string($onceoff_credit) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
+		if ($promo_code != "") {
+			$q2 = mysql_query("SELECT `id` FROM `vericon`.`campaigns` WHERE `campaign` = '" . $campaign . "'") or die(mysql_error());
+			$campaign_id = mysql_fetch_row($q2);
+			
+			$promo_plan = "001Z" . substr($campaign_id[0], 0, 2) . substr($type, 0, 1) . "AX039";
+		} else {
+			$promo_plan = "";
+		}
+		
+		mysql_query("UPDATE vericon.sales_customers SET title = '$title', firstname = '" . mysql_real_escape_string($first) . "', middlename = '" . mysql_real_escape_string($middle) . "', lastname = '" . mysql_real_escape_string($last) . "', dob = '" . mysql_real_escape_string($dob) . "', email = '" . mysql_real_escape_string($email) . "', mobile = '" . mysql_real_escape_string($mobile) . "', billing = '$billing', welcome = '$billing', physical = '$physical', postal = '$postal', id_type = '" . mysql_real_escape_string($id_type) . "', id_num = '" . mysql_real_escape_string($id_num) . "', abn = '" . mysql_real_escape_string($abn) . "', position = '" . mysql_real_escape_string($position) . "', ongoing_credit = '" . mysql_real_escape_string($ongoing_credit) . "', onceoff_credit = '" . mysql_real_escape_string($onceoff_credit) . "', promo_code = '" . mysql_real_escape_string($promo_code) . "', promo_cli = '" . mysql_real_escape_string($promo_cli) . "', promo_plan = '" . mysql_real_escape_string($promo_plan) . "', payway = '" . mysql_real_escape_string($payway) . "', dd_type = '" . mysql_real_escape_string($dd_type) . "' WHERE id = '$id' LIMIT 1") or die(mysql_error());
 		
 		echo "submitted";
 	}

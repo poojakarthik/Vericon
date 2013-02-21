@@ -253,6 +253,8 @@ function Done()
 		position = $( "#position" ),
 		ongoing_credit = $( "#ongoing_credit" ),
 		onceoff_credit = $( "#onceoff_credit" ),
+		promo_code = $( "#promo_code" ),
+		promo_cli = $( "#promo_cli" ),
 		payway = $( "#payway" ),
 		dd_type = $( "#dd_type" );
 		
@@ -261,7 +263,7 @@ function Done()
 			postal = $( "#physical" );
 		}
 	
-	$.get("details_submit.php?method=submit_au", { id: id, title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), ongoing_credit: ongoing_credit.val(), onceoff_credit: onceoff_credit.val(), payway: payway.val(), dd_type: dd_type.val() },
+	$.get("details_submit.php?method=submit_au", { id: id, title: title.val(), first: first.val(), middle: middle.val(), last: last.val(), dob: dob.val(), email: email.val(), mobile: mobile.val(), physical: physical.val(), postal: postal.val(), id_type: id_type.val(), id_num: id_num.val(), abn: abn.val(), abn_status: abn_status.html(), position: position.val(), ongoing_credit: ongoing_credit.val(), onceoff_credit: onceoff_credit.val(), promo_code: promo_code.val(), promo_cli: promo_cli.val(), payway: payway.val(), dd_type: dd_type.val() },
 	function(data) {
 		if (data == "submitted")
 		{
@@ -2176,6 +2178,12 @@ switch ($data["dd_type"])
 	$visa="selected";
 	break;
 }
+
+if ($data["promo_code"] != "") {
+	$adsl_promo = "selected";
+} else {
+	$adsl_promo = "";
+}
 ?>
 <tr>
 <td colspan="2">
@@ -2197,6 +2205,26 @@ switch ($data["dd_type"])
 <td>Once Off Credit ($) </td>
 <td><input type="text" id="onceoff_credit" style="width:50px;" value="<?php echo $data["onceoff_credit"]; ?>" /></td>
 </tr>
+<?php
+if ($data["campaign"] == "Angle Telecom" || $data["campaign"] == "Passion Telecom" || $data["campaign"] == "Fonecube" || $data["campaign"] == "Blaze Telecom" || $data["campaign"] == "Zoom Talk")
+{
+?>
+<tr>
+<td>Promo Code </td>
+<td><select id="promo_code" style="width:150px;">
+<option></option>
+<option <?php echo $adsl_promo; ?>>13PPX001</option>
+</select></td>
+</tr>
+<?php
+}
+else
+{
+?>
+<input type="hidden" id="promo_code" value="" />
+<?php
+}
+?>
 </table>
 </td>
 <td width="50%" height="100%" valign="top">
@@ -2215,6 +2243,23 @@ switch ($data["dd_type"])
 <option <?php echo $visa; ?>>VISA</option>
 </select></td>
 </tr>
+<?php
+if ($data["campaign"] == "Angle Telecom" || $data["campaign"] == "Passion Telecom" || $data["campaign"] == "Fonecube" || $data["campaign"] == "Blaze Telecom" || $data["campaign"] == "Zoom Talk")
+{
+?>
+<tr>
+<td>Promo CLI </td>
+<td><input type="text" id="promo_cli" style="width:150px;" value="<?php echo $data["promo_cli"]; ?>" /></td>
+</tr>
+<?php
+}
+else
+{
+?>
+<input type="hidden" id="promo_cli" value="" />
+<?php
+}
+?>
 </table>
 </td>
 </tr>
