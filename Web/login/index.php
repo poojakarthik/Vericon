@@ -87,7 +87,7 @@ function Login()
 		password = $( "#password" ),
 		remember = 0;
 
-	if ($( "#checkbox" ).attr('checked'))
+	if ($( "#checkbox" ).is(":checked"))
 	{
 		remember = 1;
 	}
@@ -222,7 +222,7 @@ else
 	<?php if ($username != "") { ?>
 	$( "#login_username" ).html('<input id="username" type="text" class="input_form" autocomplete="off" placeholder="Enter your username" value="<?php echo $username; ?>" />');
 	<?php } else { ?>
-	$( "#login_username" ).html('<input id="username" type="text" class="input_form" autocomplete="off" placeholder="Enter your username" value="" />');
+	$( "#login_username" ).html('<input id="username" type="text" class="input_form" autocomplete="off" autofocus="autofocus" placeholder="Enter your username" value="" />');
 	<?php } ?>
 }
 </script>
@@ -274,7 +274,7 @@ if (cookie_check == 0)
 else
 {
 	<?php if ($username != "") { ?>
-	$( "#login_password" ).html('<input id="password" type="password" class="input_form" autocomplete="off" placeholder="Enter your password" />');
+	$( "#login_password" ).html('<input id="password" type="password" class="input_form" autocomplete="off" autofocus="autofocus" placeholder="Enter your password" />');
 	<?php } else { ?>
 	$( "#login_password" ).html('<input id="password" type="password" class="input_form" autocomplete="off" placeholder="Enter your password" />');
 	<?php } ?>
