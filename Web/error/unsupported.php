@@ -45,13 +45,21 @@ img {
 </style>
 </head>
 
+<?php
+$mysqli = new mysqli('localhost','vericon','18450be');
+$q = $mysqli->query("SELECT `subject` FROM `vericon`.`updates` ORDER BY `id` DESC LIMIT 1") or die($mysqli->error);
+$ver = $q->fetch_row();
+$q->free();
+$mysqli->close();
+$version = explode(" ",$ver[0]);
+?>
 <body>
 <div id="wrapper">
 <div id="content">
 <h1>Unsupported Browser</h1>
 <p>You're using a web browser we don't support.</p>
-<p>Try one of these options to have a better experience on VeriCon.</p>
-<h3 style="text-align:center;"><a href='http://www.mozilla.org/en-US/firefox/new/'><img src='/images/firefox.png'><br />Firefox 17+</a></h3>
+<p>Try the below option to have a better experience on VeriCon.</p>
+<h3 style="text-align:center;"><a href='#'><img src='/images/vericon_browser.png'><br />Download VeriCon Browser v<?php echo $version[1]; ?></a></h3>
 </div>
 </div>
 </body>
