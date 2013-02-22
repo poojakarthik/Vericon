@@ -33,12 +33,6 @@ h3{
 	font-size:14px; font-weight:normal; color:#165C80; padding:0; text-shadow:0 1px 0 #FFF;
 	font-family:SansationRegular;
 }
-a{
-	text-decoration:none; color:#165C80; outline:none; border:none;
-}
-a:hover{
-	text-decoration:underline; color:#165C80; outline:none; border:none;
-}
 img {
 	border:none;
 }
@@ -50,8 +44,6 @@ img {
 <div id="content">
 <h1>Forbidden</h1>
 <p>You unsuccessfully attempted to access a page, but were denied because this is a forbidden area. Off limits, like. Orbidden-fay, even. So just back away slowly and quietly and the large hungry bear won't hurt you.</p>
-<br>
-<h3><a href="/">Click here to go back home</a></h3>
 </div>
 </div>
 </body>

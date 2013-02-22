@@ -58,15 +58,15 @@ $version = explode(" ", $ver[0]);
 
 if (($browser["name"] != "VeriCon" || version_compare($browser["version"], $version[1], '<')) && $server_name != "lb01.vericon.com.au")
 {
-	header('HTTP/1.1 419 Unsupported Browser');
-	include("error/unsupported.php");
+	header('HTTP/1.1 403 Forbidden');
+	include("error/forbidden.php");
 	exit;
 }
 
 if ($tracker == "")
 {
-	header('HTTP/1.1 419 Unsupported Browser');
-	include("error/unsupported.php");
+	header('HTTP/1.1 403 Forbidden');
+	include("error/forbidden.php");
 	exit;
 }
 

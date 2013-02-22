@@ -33,12 +33,6 @@ h3{
 	font-size:14px; font-weight:normal; color:#165C80; padding:0; text-shadow:0 1px 0 #FFF;
 	font-family:SansationRegular;
 }
-a{
-	text-decoration:none; color:#165C80; outline:none; border:none;
-}
-a:hover{
-	text-decoration:underline; color:#165C80; outline:none; border:none;
-}
 img {
 	border:none;
 }
@@ -54,8 +48,6 @@ img {
 <p>Regarding the page you are currently looking for, one of our teams actually did find it, but it did not want to be found and a firefight ensued. This encounter is documented above.</p>
 
 <p>We are very sorry we are not able to display the page you were looking for. Please go back home and we’ll do our best to ensure this kind of mix up is resolved peacefully in the future.</p>
-<br>
-<h3><a href="/">Click here to go back home</a></h3>
 </div>
 </div>
 </body>
