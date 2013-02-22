@@ -422,7 +422,7 @@ elseif ($method == "submit_au")
 	{
 		echo "Please enter a valid once off credit amount";
 	}
-	elseif ($promo_code != "" && !preg_match("/^0[34679][0-9]{7}$/",$promo_cli))
+	elseif ($promo_code != "" && !preg_match("/^0[2378][0-9]{8}$/",$promo_cli))
 	{
 		echo "Please enter a valid promo cli";
 	}

@@ -481,7 +481,7 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . $data["ongoing_credit"] . '",';
 	$body .= '"' . $data["onceoff_credit"] . '",';
 	$body .= '"' . $data["promo_code"] . '",';
-	$body .= '"' . $data["promo_cli"] . '",';
+	$body .= '="' . $data["promo_cli"] . '",';
 	$body .= '"' . $data["promo_plan"] . '",';
 	$body .= '"' . $data["promotions"] . '",';
 	$body .= '"' . $welcome . '",';
