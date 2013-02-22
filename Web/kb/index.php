@@ -42,8 +42,6 @@ $ac = $q->fetch_assoc();
 
 $browser = browser($_SERVER['HTTP_USER_AGENT']);
 $server_name = $_SERVER['SERVER_NAME'];
-$referer = $_SERVER['SERVER_NAME'] . "/login/";
-$referer_check = split("//", $_SERVER['HTTP_REFERER']);
 
 if (($browser["name"] != "VeriCon" || version_compare($browser["version"], $version[1], '<')) && $server_name != "lb01.vericon.com.au")
 {
@@ -52,7 +50,7 @@ if (($browser["name"] != "VeriCon" || version_compare($browser["version"], $vers
 	exit;
 }
 
-if (!CheckAccess() || $q->num_rows == 0 || $ac["status"] != "Enabled" || $referer_check[1] != $referer)
+if (!CheckAccess() || $q->num_rows == 0 || $ac["status"] != "Enabled")
 {
 	header('HTTP/1.1 403 Forbidden');
 	include("../error/forbidden.php");
@@ -68,7 +66,7 @@ $dateTimeKolkata = new DateTime("now", new DateTimeZone("Asia/Kolkata"));
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-<title>Main</title>
+<title>Knowledge Base</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../jquery/css/vc-theme/jquery-ui.custom.min.css">
 <script type="text/javascript" src="../jquery/js/jquery.js"></script>
@@ -156,9 +154,8 @@ function V_Loading_End()
 
 var v_current_page_link = "";
 var v_current_page_id = "";
-var v_current_page_sub_id = "";
 
-function V_Page_Load(id, sub_id, page_link)
+function V_Page_Load(id, page_link)
 {
 	if (v_current_page_link != page_link)
 	{
@@ -184,17 +181,8 @@ function V_Page_Load(id, sub_id, page_link)
 				{
 					$( "#" + v_current_page_id ).removeClass("active");
 				}
-				if (v_current_page_sub_id != "")
-				{
-					$( "#" + v_current_page_sub_id ).removeClass("active");
-				}
 				$( "#" + id ).addClass("active");
-				if (sub_id != "")
-				{
-					$( "#" + sub_id ).addClass("active");
-				}
 				v_current_page_id = id;
-				v_current_page_sub_id = sub_id;
 				v_current_page_link = page_link;
 				V_Loading_End();
 			}
@@ -226,54 +214,6 @@ function V_Page_Reload()
 		}
 	});
 }
-
-var v_current_portal = "";
-
-function V_Menu_Load(portal)
-{
-	if (v_current_portal != portal)
-	{
-		$( "#ncv" ).load("/source/menu.php", { p: portal });
-		v_current_portal = portal;
-		
-		if (portal == "ma") {
-			$( "#header_logo" ).removeAttr("style");
-			$( "#header_logo" ).removeAttr("onclick");
-		} else {
-			$( "#header_logo" ).attr("style","cursor:pointer");
-			$( "#header_logo" ).attr("onclick","V_Page_Load('MA01','','/ma/index.php'); V_Menu_Load('ma');");
-		}
-	}
-}
-
-function V_Pass_Reset()
-{
-	if ($( ".blockUI" ).val() != "")
-	{
-		V_Loading_Start();
-	}
-	$( "#header_logo" ).removeAttr("style");
-	$( "#header_logo" ).removeAttr("onclick");
-	v_current_page_link = "/ma/pass_reset.php";
-	$( "#display" ).load("/ma/pass_reset.php", function(data, status, xhr){
-		if (status == "error")
-		{
-			$(".loading_message").html("<p><b>An error occurred while loading the page.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-			setTimeout(function() {
-				V_Loading_End();
-				if (xhr.status == 403 || xhr.status == 0)
-				{
-					V_Logout();
-				}
-			}, 2500);
-		}
-		else
-		{
-			V_Loading_End();
-		}
-	});
-	
-}
 </script>
 <script>
 function V_Logout()
@@ -296,7 +236,7 @@ function V_Logout()
 		}
 	});
 	
-	$.post("/auth/logout.php", function(data) {
+	$.post("/auth/logout_kb.php", function(data) {
 		setTimeout(function() {
 			V_Loading_End();
 			window.location = "/logout";
@@ -310,51 +250,11 @@ function V_Logout()
 }
 </script>
 <script>
-function V_Broadcast()
-{
-	$( "#broadcast" ).load("/source/broadcast.php", function(data, status, xhr) {
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				V_Logout();
-			}
-		}
-	});
-}
-
-var v_notification_count = 0;
-
-function V_Notification_Open()
-{
-	v_notification_count++;
-	if (v_notification_count == 0) {
-		window.document.title = "VeriCon :: Main";
-	} else {
-		window.document.title = "VeriCon :: Main (" + v_notification_count + ")";
-		$( "#broadcast" ).html('<audio autoplay src="/audio/notify.ogg"></audio>');
-	}
-}
-
-function V_Notification_Close()
-{
-	v_notification_count--;
-	if (v_notification_count == 0) {
-		window.document.title = "VeriCon :: Main";
-	} else {
-		window.document.title = "VeriCon :: Main (" + v_notification_count + ")";
-	}
-}
-</script>
-<script>
 Header_Time_EST();
 Header_Time_IST();
 setInterval("Header_Time_EST()", 1000);
 setInterval("Header_Time_IST()", 1000);
 setInterval("Update_Clock()", 900000);
-setInterval("V_Broadcast()", 120000);
-$.jGrowl.defaults.closer = false;
-$.jGrowl.defaults.closeTemplate = '<img src="/images/close_icon.png" width="16px" height="16px">';
 
 $(window).keydown(function(event) {
 	if((event.ctrlKey && event.keyCode == 82) || (event.ctrlKey && event.keyCode == 116) || event.keyCode == 116) {
@@ -387,21 +287,13 @@ $(document).unbind('keydown').bind('keydown', function (event) {
 <div id="preload">
 <img src="/images/v_loading.gif" /><img src="/images/next_btn.png" /><img src="/images/next_btn_hover.png" /><img src="/images/back_btn.png" /><img src="/images/back_btn_hover.png" /><img src="/images/older_btn.png" /><img src="/images/older_btn_hover.png" /><img src="/images/newer_btn.png" /><img src="/images/newer_btn_hover.png" /><img src="/images/change_password_icon.png" /><img src="/images/checkbox.png" /><img src="/images/checkbox_checked.png" /><img src="/images/close_icon.png" /><img src="/images/delete_icon.png" /><img src="/images/disable_icon.png" /><img src="/images/down.png" /><img src="/images/edit_icon.png" /><img src="/images/enable_icon.png" /><img src="/images/loading_icon.gif" /><img src="/images/logout_icon.png" /><img src="/images/notes_icon.png" /><img src="/images/radio.png" /><img src="/images/radio_checked.png" /><img src="/images/search_icon.png" /><img src="/images/up.png" /><img src="/images/logout.png" /><img src="/images/select.png" />
 </div>
-<div id="broadcast">
-<script>
-V_Broadcast();
-</script>
-</div>
 
 <div id="top_repeat"></div>
 <div id="wrapper">
 <div id="header_inner">
-<div class="logo"><img id="header_logo" src="../images/logo.png" border="0" onclick="V_Page_Load('MA01','','/ma/index.php'); V_Menu_Load('ma');" style="cursor:pointer;" /></div>
+<div class="logo"><img id="header_logo" src="../images/logo.png" border="0" /></div>
 <div class="rightSide">
-<ul style="padding-right:60px; padding-top:8px;">
-<li><a onclick="V_Logout()">logout</a></li>
-<li><img src="../images/next.jpg" style="margin-top:2px;" /></li>
-<li><img src="../images/top.jpg" /></li>
+<ul style="padding-right:100px; padding-top:8px;">
 <li><span style="color:#FFF;"><?php echo $ac["user"]; ?></span></li>
 <li><img src="../images/agency.jpg" style="margin-top:2px;" /></li>
 </ul>
@@ -418,26 +310,18 @@ V_Broadcast();
 </div>
 </div>
 <div id="ncv">
-<script>
-<?php
-if (date("Y-m-d", strtotime($ac["pass_reset"])) > date("Y-m-d", strtotime("-90 days")))
-{
-	echo 'V_Menu_Load("ma");';
-}
-?>
-</script>
+<ul id='menu'>
+<li><a id='KB01' onclick='V_Page_Load("KB01","/kb_pages/index.php")' class='active'><img border='0' src='/images/home.png'></a></li>
+<li><a id='KB02' onclick='V_Page_Load("KB02","/kb_pages/faq.php")'>FAQ</a></li>
+<li><a id='KB03' onclick='V_Page_Load("KB03","/kb_pages/rates.php")'>Rates</a></li>
+<li><a id='KB04' onclick='V_Page_Load("KB04","/kb_pages/manuals.php")'>User Manuals</a></li>
+</ul>
 </div>
 
 <div id="contents_inner">
 <div id="display">
 <script>
-<?php
-if (date("Y-m-d", strtotime($ac["pass_reset"])) <= date("Y-m-d", strtotime("-90 days"))) {
-	echo 'V_Pass_Reset()';
-} else {
-	echo 'V_Page_Load("MA01","","/ma/index.php");';
-}
-?>
+V_Page_Load("KB01","/kb_pages/index.php");
 </script>
 </div>
 </div>
