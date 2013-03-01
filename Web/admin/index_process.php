@@ -44,7 +44,7 @@ if ($method == "services")
 {
 ?>
 <tr>
-<td>Virtual Machine / Mail Server</td>
+<td>Load Balancer / Mail Server</td>
 <td style="text-align:center">-</td>
 <td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
 <td style="text-align:center">-</td>
@@ -70,7 +70,7 @@ if ($method == "services")
 <tr>
 <td>VeriCon Storage</td>
 <td style="text-align:center">-</td>
-<td style="text-align:center"><?php $checkport = fsockopen("storage.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("st01.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
 <td style="text-align:center">-</td>
 <td style="text-align:center">-</td>
 <td style="text-align:center">-</td>

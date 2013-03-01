@@ -99,7 +99,7 @@ div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .
 </thead>
 <tbody id="services">
 <tr>
-<td>Virtual Machine / Mail Server</td>
+<td>Load Balancer / Mail Server</td>
 <td style="text-align:center">-</td>
 <td style="text-align:center"><?php $checkport = fsockopen("lb01.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
 <td style="text-align:center">-</td>
@@ -125,7 +125,7 @@ div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .
 <tr>
 <td>VeriCon Storage</td>
 <td style="text-align:center">-</td>
-<td style="text-align:center"><?php $checkport = fsockopen("storage.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
+<td style="text-align:center"><?php $checkport = fsockopen("st01.vericon.com.au", "21119", $errnum, $errstr, 2); if(!$checkport) { echo "<img src='/images/down.png'>"; } else { echo "<img src='/images/up.png'>"; } ?></td>
 <td style="text-align:center">-</td>
 <td style="text-align:center">-</td>
 <td style="text-align:center">-</td>
@@ -136,9 +136,9 @@ div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .
 
 <center><table width="99%" style="margin-top:-10px; margin-bottom:-10px;">
 <tr>
-<td width="25%" height="100%" valign="top">
+<td width="25%" valign="top">
 <center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:125px;">
+<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:150px;">
 <thead>
 <tr class="ui-widget-header ">
 <th>Uptime</th>
@@ -161,9 +161,9 @@ doUptime();
 </table>
 </div></center>
 </td>
-<td width="25%" height="100%" valign="top">
+<td width="25%" valign="top">
 <center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:125px;">
+<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:150px;">
 <thead>
 <tr class="ui-widget-header ">
 <th>CPU Load</th>
@@ -184,9 +184,9 @@ doLoad();
 </table>
 </div></center>
 </td>
-<td width="25%" height="100%" valign="top">
+<td width="25%" valign="top">
 <center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:125px;">
+<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:150px;">
 <thead>
 <tr class="ui-widget-header ">
 <th>Memory</th>
@@ -207,9 +207,9 @@ doMem();
 </table>
 </div></center>
 </td>
-<td width="25%" height="100%" valign="top">
+<td width="25%" valign="top">
 <center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:125px;">
+<table id="users" class="ui-widget ui-widget-content" style="width:99%; height:150px;">
 <thead>
 <tr class="ui-widget-header ">
 <th>Swap</th>
@@ -242,19 +242,45 @@ doSwap();
 </thead>
 <tbody>
 <?php
-exec("df -h | tail -n +2 | awk '{print $2 \",\" $3 \",\" $5 \",\" $6}'",$drives);
+exec("df -h | tail -n +2 | awk '{print $1 \",\" $2 \",\" $3\",\" $4 \",\" $5 \",\" $6}'",$drives);
 foreach ($drives as $row)
 {
 	$disk_data = explode(",",$row);
-	if ($disk_data[3] != "" && $disk_data[2] != "" && $disk_data[1] != "" && $disk_data[0] != "")
+	if ($disk_data[5] != "" && $disk_data[4] != "" && $disk_data[3] != "" && $disk_data[2] != "" && $disk_data[1] != "")
 	{
 ?>
 <tr>
-<td width="10%"><?php echo $disk_data[3]; ?></td>
+<td width="10%"><?php echo $disk_data[5]; ?></td>
 <td width="63%"><div class="ui-progressbar ui-widget ui-widget-content ui-corner-all">
-<div style="width: <?php echo $disk_data[2]; ?>;" class="ui-progressbar-value ui-widget-header ui-corner-left"></div>
+<div style="width: <?php echo $disk_data[4]; ?>;" class="ui-progressbar-value ui-widget-header ui-corner-left"></div>
 </div></td>
-<td width="7%" style="text-align:center"><?php echo $disk_data[2]; ?></td>
+<td width="7%" style="text-align:center"><?php echo $disk_data[4]; ?></td>
+<td width="10%" style="text-align:center"><?php echo $disk_data[2] . "/" . $disk_data[1]; ?></td>
+</tr>
+<?php
+	}
+	elseif ($disk_data[4] == "/var/vericon")
+	{
+?>
+<tr>
+<td width="10%">/mnt/lb01</td>
+<td width="63%"><div class="ui-progressbar ui-widget ui-widget-content ui-corner-all">
+<div style="width: <?php echo $disk_data[3]; ?>;" class="ui-progressbar-value ui-widget-header ui-corner-left"></div>
+</div></td>
+<td width="7%" style="text-align:center"><?php echo $disk_data[3]; ?></td>
+<td width="10%" style="text-align:center"><?php echo $disk_data[1] . "/" . $disk_data[0]; ?></td>
+</tr>
+<?php
+	}
+	elseif ($disk_data[4] == "/var/rec")
+	{
+?>
+<tr>
+<td width="10%">/mnt/st01</td>
+<td width="63%"><div class="ui-progressbar ui-widget ui-widget-content ui-corner-all">
+<div style="width: <?php echo $disk_data[3]; ?>;" class="ui-progressbar-value ui-widget-header ui-corner-left"></div>
+</div></td>
+<td width="7%" style="text-align:center"><?php echo $disk_data[3]; ?></td>
 <td width="10%" style="text-align:center"><?php echo $disk_data[1] . "/" . $disk_data[0]; ?></td>
 </tr>
 <?php
