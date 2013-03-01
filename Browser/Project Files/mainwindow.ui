@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>660</width>
+    <height>513</height>
    </rect>
   </property>
   <property name="palette">
@@ -89,8 +89,8 @@
      <rect>
       <x>29</x>
       <y>16</y>
-      <width>351</width>
-      <height>261</height>
+      <width>371</width>
+      <height>191</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
@@ -110,9 +110,6 @@
          <family>Tahoma</family>
          <pointsize>8</pointsize>
         </font>
-       </property>
-       <property name="cursor">
-        <cursorShape>ArrowCursor</cursorShape>
        </property>
        <property name="contextMenuPolicy">
         <enum>Qt::NoContextMenu</enum>
@@ -172,10 +169,10 @@ QTabBar{
         <widget class="QWidget" name="verticalLayoutWidget_2">
          <property name="geometry">
           <rect>
-           <x>0</x>
-           <y>10</y>
-           <width>160</width>
-           <height>80</height>
+           <x>40</x>
+           <y>20</y>
+           <width>291</width>
+           <height>101</height>
           </rect>
          </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -197,6 +194,9 @@ QTabBar{
         </widget>
        </widget>
        <widget class="QWidget" name="tab_2">
+        <property name="cursor">
+         <cursorShape>PointingHandCursor</cursorShape>
+        </property>
         <attribute name="icon">
          <iconset resource="vericon.qrc">
           <normaloff>:/new/images/email.png</normaloff>:/new/images/email.png</iconset>
@@ -204,28 +204,49 @@ QTabBar{
         <attribute name="title">
          <string>VeriCon :: Mail</string>
         </attribute>
-        <widget class="QWidget" name="verticalLayoutWidget_3">
-         <property name="geometry">
-          <rect>
-           <x>10</x>
-           <y>0</y>
-           <width>160</width>
-           <height>80</height>
-          </rect>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_3">
-          <item>
-           <widget class="QWebView" name="webView_2">
-            <property name="url">
-             <url>
-              <string>about:blank</string>
-             </url>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
        </widget>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_3">
+    <property name="geometry">
+     <rect>
+      <x>100</x>
+      <y>310</y>
+      <width>160</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_3">
+     <item>
+      <widget class="QWebView" name="webView_2">
+       <property name="url">
+        <url>
+         <string>about:blank</string>
+        </url>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </widget>
+   <widget class="QWidget" name="verticalLayoutWidget_4">
+    <property name="geometry">
+     <rect>
+      <x>400</x>
+      <y>300</y>
+      <width>160</width>
+      <height>80</height>
+     </rect>
+    </property>
+    <layout class="QVBoxLayout" name="verticalLayout_4">
+     <item>
+      <widget class="QWebView" name="webView_3">
+       <property name="url">
+        <url>
+         <string>about:blank</string>
+        </url>
+       </property>
       </widget>
      </item>
     </layout>

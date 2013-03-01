@@ -5,13 +5,13 @@
 #define MyAppVersion "2.0.0"
 #define MyAppPublisher "Smart Business Telecom Pty Ltd"
 #define MyAppURL "https://www.vericon.com.au/"
-#define MyAppExeName "VeriCon_Browser.exe"
+#define MyAppExeName "VeriCon.exe"
 #define SourceFileDir "E:\VeriCon Install"
 
 [Setup]
 ; NOTE: The value of AppId uniquely identifies this application.
 ; Do not use the same AppId value in installers for other applications.
-; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
+; (To generate a new GUID, click Tools | Generate GUID inside the IDE.)
 AppId={{5BD04227-ADED-40B9-AB2B-2FB9648D7276}
 AppName={#MyAppName}
 AppVersion={#MyAppVersion}
@@ -23,7 +23,7 @@ AppUpdatesURL={#MyAppURL}
 DefaultDirName={pf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
-VersionInfoVersion=2.0.0.0
+VersionInfoVersion=2.0.0
 OutputBaseFilename="VeriCon Setup {#MyAppVersion}"
 OutputDir={#SourceFileDir}\setup
 SetupIconFile={#SourceFileDir}\vericon.ico
@@ -38,7 +38,7 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescription: "{cm:AdditionalIcons}"; Flags: unchecked; OnlyBelowVersion: 0,6.1
 
 [Files]
-Source: "{#SourceFileDir}\VeriCon_Browser.exe"; DestDir: "{app}"; Flags: ignoreversion
+Source: "{#SourceFileDir}\VeriCon.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\libeay32.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\libgcc_s_dw2-1.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\libssl32.dll"; DestDir: "{app}"; Flags: ignoreversion
@@ -48,10 +48,8 @@ Source: "{#SourceFileDir}\QtGui4.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\QtNetwork4.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\QtWebKit4.dll"; DestDir: "{app}"; Flags: ignoreversion
 Source: "{#SourceFileDir}\ssleay32.dll"; DestDir: "{app}"; Flags: ignoreversion
-Source: "{#SourceFileDir}\graphicssystems\*"; DestDir: "{app}\graphicssystems\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#SourceFileDir}\iconengines\*"; DestDir: "{app}\iconengines\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "{#SourceFileDir}\imageformats\*"; DestDir: "{app}\imageformats\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "{#SourceFileDir}\vcredist_x86.exe"; DestDir: "{tmp}"; Flags: ignoreversion
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -62,4 +60,3 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Fil
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"; Flags: nowait postinstall skipifsilent
-Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/q:a /c:""msiexec /i vcredist.msi /qn /l*v %temp%\vcredist_x86.log"; WorkingDir: {tmp}; Flags: skipifdoesntexist; StatusMsg: "Installing Visual C++ 2008 SP1 Redistributable. This may take several minutes..."
