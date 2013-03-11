@@ -1,5 +1,5 @@
 <?php
-$input = $_GET["input"];
+/*$input = $_GET["input"];
 
 if(!$input){die('null');}
 
@@ -11,5 +11,7 @@ $toJSON = array(
 	'addressIdentifier'=>$data->GeocodeResult->GeocoderAddress->addressIdentifier
 );
 
-echo $toJSON['addressIdentifier'];
+echo $toJSON['addressIdentifier'];*/
+
+echo 'null';
 ?>
