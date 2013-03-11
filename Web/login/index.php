@@ -48,19 +48,16 @@ if (document.cookie == "")
 <script>
 function V_Loading_Start()
 {
-	$.blockUI({ 
+	$.blockUI({
 		message: '<div class="loading_message"><p><img src="../images/v_loading.gif"></p><b>Loading...</b></div>',
 		overlayCSS: {
 			cursor: 'default'
 		},
-		css: { 
-			border: 'none', 
-			padding: '15px', 
-			backgroundColor: '#000', 
-			'border-radius': '10px', 
-			'-webkit-border-radius': '10px', 
-			'-moz-border-radius': '10px', 
-			opacity: .5, 
+		css: {
+			border: 'none',
+			padding: '15px',
+			backgroundColor: '#000',
+			opacity: .5,
 			color: '#fff',
 			cursor: 'default'
 		}
@@ -75,7 +72,7 @@ function V_Loading_End()
 <script>
 function Error(text)
 {
-	$( "#login_error" ).html('<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"><p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>' + text + '</p></div>');
+	$( "#login_error" ).html('<div class="ui-state-error" style="padding: 0 .7em;"><p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>' + text + '</p></div>');
 }
 </script>
 <script>
@@ -153,9 +150,9 @@ model used for the company.</p>
 <div class="right_side">
 <div class="login">
 <h1>Login here!</h1>
-<div class="ui-widget" id="login_error" style="margin-right: 25px;">
+<div class="ui-widget" id="login_error" style="margin-right: 22px;">
 <noscript>
-<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;">
+<div class="ui-state-error" style="padding: 0 .7em;">
 <p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>
 <strong>Error: </strong>Please enable Javascript.</p>
 </div>
@@ -163,7 +160,7 @@ model used for the company.</p>
 <script>
 if (cookie_check == 0)
 {
-	$( "#login_error" ).html('<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"><p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span><strong>Error: </strong>Please enable Cookies.</p></div>');
+	$( "#login_error" ).html('<div class="ui-state-error" style="padding: 0 .7em;"><p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span><strong>Error: </strong>Please enable Cookies.</p></div>');
 }
 else
 {
@@ -324,7 +321,7 @@ else
 }
 </script>
 </td>
-<td width="116" id="login_submit">
+<td align="right" width="116" id="login_submit">
 <noscript>
 <input name="Submit" type="submit" disabled="disabled" class="login_bu" value="Login" />
 </noscript>

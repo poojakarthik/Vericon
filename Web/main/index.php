@@ -139,9 +139,6 @@ function V_Loading_Start()
 			border: 'none',
 			padding: '15px',
 			backgroundColor: '#000',
-			'border-radius': '10px',
-			'-webkit-border-radius': '10px',
-			'-moz-border-radius': '10px',
 			opacity: .5,
 			color: '#fff',
 			cursor: 'default'
@@ -287,9 +284,6 @@ function V_Logout()
 			border: 'none',
 			padding: '15px',
 			backgroundColor: '#000',
-			'border-radius': '10px',
-			'-webkit-border-radius': '10px',
-			'-moz-border-radius': '10px',
 			opacity: .5,
 			color: '#fff',
 			cursor: 'default'
@@ -332,7 +326,7 @@ function V_Notification_Open()
 		window.document.title = "VeriCon :: Main";
 	} else {
 		window.document.title = "VeriCon :: Main (" + v_notification_count + ")";
-		$( "#broadcast" ).html('<audio autoplay src="/audio/notify.ogg"></audio>');
+		$( "#broadcast" ).html('<audio autoplay><source src="/audio/notify.ogg" type="audio/ogg"><source src="/audio/notify.mp3" type="audio/mpeg"></audio>');
 	}
 }
 

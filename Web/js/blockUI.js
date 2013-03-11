@@ -130,10 +130,7 @@
 				opacity:	0.6,
 				cursor:		'default',
 				color:		'#fff',
-				backgroundColor: '#000',
-				'-webkit-border-radius':'10px',
-				'-moz-border-radius':	'10px',
-				'border-radius':		'10px'
+				backgroundColor: '#000'
 			},
 
 			// IE issues: 'about:blank' fails on HTTPS and javascript:false is s-l-o-w

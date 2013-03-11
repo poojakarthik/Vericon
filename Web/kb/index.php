@@ -137,9 +137,6 @@ function V_Loading_Start()
 			border: 'none',
 			padding: '15px',
 			backgroundColor: '#000',
-			'border-radius': '10px',
-			'-webkit-border-radius': '10px',
-			'-moz-border-radius': '10px',
 			opacity: .5,
 			color: '#fff',
 			cursor: 'default'
@@ -227,9 +224,6 @@ function V_Logout()
 			border: 'none',
 			padding: '15px',
 			backgroundColor: '#000',
-			'border-radius': '10px',
-			'-webkit-border-radius': '10px',
-			'-moz-border-radius': '10px',
 			opacity: .5,
 			color: '#fff',
 			cursor: 'default'
