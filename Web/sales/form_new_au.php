@@ -11,6 +11,8 @@ div#users-contain table { border-collapse: collapse; background:none; }
 div#users-contain table th { border: 1px solid rgba(41,171,226,0.25); padding: .6em 10px; text-align: left; }
 div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .6em 5px; text-align: left; }
 div#users-contain table tbody tr:hover { background:rgba(255,255,255,0.25); }
+div#address_edit table td { padding:3px 0; }
+.ui-autocomplete-loading { background:white url('/images/loading_icon.gif') right center no-repeat; }
 </style>
 <script> //get ABN
 function getABN()
@@ -54,6 +56,35 @@ function getABN()
 }
 </script>
 <script>
+function Email()
+{
+	if ( $( "#no_email:checked" ).length == 1 )
+	{
+		$( "#email" ).val("N/A");
+		$( "#email" ).attr("readonly", "readonly" );
+	}
+	else
+	{
+		$( "#email" ).val("");
+		$( "#email" ).removeAttr("readonly");
+	}
+}
+
+function Mobile()
+{
+	if ( $( "#no_mobile:checked" ).length == 1 )
+	{
+		$( "#mobile" ).val("N/A");
+		$( "#mobile" ).attr("readonly", "readonly" );
+	}
+	else
+	{
+		$( "#mobile" ).val("");
+		$( "#mobile" ).removeAttr("readonly");
+	}
+}
+</script>
+<script>
 function Plan_Load(number)
 {
 	V_Loading_Start();
@@ -93,6 +124,115 @@ function Plan_Load(number)
 }
 </script>
 <script>
+function Postal_Same()
+{
+	if ( $( "#postal_same:checked" ).length == 1 )
+	{
+		$( "#postal_line1" ).val("Same as Physical");
+		$( "#postal_line2" ).val("");
+		$( "#postal_dpid " ).val("");
+		$( "#postal_barcode" ).val("");
+		$( "#postal_formattedAddress" ).val("");
+		$( "#postal_building_name" ).val("");
+		$( "#postal_sub_premise" ).val("");
+		$( "#postal_street_number" ).val("");
+		$( "#postal_street_name" ).val("");
+		$( "#postal_street_type" ).val("");
+		$( "#postal_street_type_suffix" ).val("");
+		$( "#postal_suburb_town" ).val("");
+		$( "#postal_state" ).val("");
+		$( "#postal_postcode" ).val("");
+		$( "#postal_edit" ).attr("disabled", "disabled");
+	}
+	else
+	{
+		$( "#postal_line1" ).val("");
+		$( "#postal_line2" ).val("");
+		$( "#postal_dpid " ).val("");
+		$( "#postal_barcode" ).val("");
+		$( "#postal_formattedAddress" ).val("");
+		$( "#postal_building_name" ).val("");
+		$( "#postal_sub_premise" ).val("");
+		$( "#postal_street_number" ).val("");
+		$( "#postal_street_name" ).val("");
+		$( "#postal_street_type" ).val("");
+		$( "#postal_street_type_suffix" ).val("");
+		$( "#postal_suburb_town" ).val("");
+		$( "#postal_state" ).val("");
+		$( "#postal_postcode" ).val("");
+		$( "#postal_edit" ).removeAttr("disabled");
+	}
+}
+
+function Edit_Address(type)
+{
+	V_Loading_Start();
+	$( "#address_edit" ).load("/source/address_au.php", { method: "auto", type: type }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 403 || xhr.status == 0)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			$( "#main_form" ).attr("style", "display:none;");
+			$( "#address_edit" ).removeAttr("style");
+			$( "#address_edit" ).attr("style", "width:98%; text-align:left;");
+			V_Loading_End();
+		}
+	});
+}
+
+function Edit_Address_Submit()
+{
+	V_Loading_Start();
+	if ( $( "#address_method" ).val() == "auto" )
+	{
+		var type = $( "#address_type" ).val(),
+			formattedAddress = $( "#formattedAddress" ).val(),
+			n = formattedAddress.lastIndexOf(',');
+		
+		$( "#" + type + "_line1" ).val(formattedAddress.substring(0, n));
+		$( "#" + type + "_line2" ).val(formattedAddress.substring(n + 2));
+		$( "#" + type + "_dpid " ).val($( "#dpid" ).val());
+		$( "#" + type + "_barcode" ).val($( "#barcode" ).val());
+		$( "#" + type + "_formattedAddress" ).val($( "#formattedAddress" ).val());
+		$( "#" + type + "_building_name" ).val($( "#building_name" ).html());
+		$( "#" + type + "_sub_premise" ).val($( "#sub_premise" ).html());
+		$( "#" + type + "_street_number" ).val($( "#street_number" ).html());
+		$( "#" + type + "_street_name" ).val($( "#street_name" ).html());
+		$( "#" + type + "_street_type" ).val($( "#street_type" ).html());
+		$( "#" + type + "_street_type_suffix" ).val($( "#street_type_suffix" ).html());
+		$( "#" + type + "_suburb_town" ).val($( "#suburb_town" ).html());
+		$( "#" + type + "_state" ).val($( "#state" ).html());
+		$( "#" + type + "_postcode" ).val($( "#postcode" ).html());
+		$( "#main_form" ).removeAttr("style");
+		$( "#address_edit" ).attr("style", "width:98%; text-align:left; display:none;");
+	}
+	V_Loading_End();
+}
+
+function Edit_Address_Cancel()
+{
+	V_Loading_Start();
+	$( "#main_form" ).removeAttr("style");
+	$( "#address_edit" ).attr("style", "width:98%; text-align:left; display:none;");
+	V_Loading_End();
+}
+</script>
+<script>
 package_count = 1;
 function Add_Package()
 {
@@ -115,7 +255,7 @@ function Delete_Package(number)
 </table>
 </div>
 
-<center><table width="98%">
+<center><table id="main_form" width="98%">
 <tr>
 <td width="50%" valign="top">
 <center><h2>Sale Details</h2></center>
@@ -198,6 +338,7 @@ elseif ($data["type"] == "Residential")
 </tr>
 </table>
 <table width="100%" style="margin-bottom:5px;">
+<tr>
 <td width="100px"><b>ID Type <span style="color:#ff0000;">*</span></b></td>
 <td><select id="id_type">
 <option></option>
@@ -242,7 +383,7 @@ elseif ($data["type"] == "Residential")
 </tr>
 <tr>
 <td><b>First Name <span style="color:#ff0000;">*</span></b></td>
-<td><input type="text" autocomplete="off" id="first" /></td>
+<td><input type="text" autocomplete="off" id="first" title="test" /></td>
 </tr>
 <tr>
 <td><b>Middle Name </b></td>
@@ -258,11 +399,11 @@ elseif ($data["type"] == "Residential")
 </tr>
 <tr>
 <td><b>E-Mail <span style="color:#ff0000;">*</span></b></td>
-<td><input type="text" autocomplete="off" id="email" /><input type="checkbox" id="no_email" onclick="Email()" /><label for="no_email"></label> N/A</td>
+<td><input type="text" autocomplete="off" id="email" /><input type="checkbox" id="no_email" onclick="Email()" /><label for="no_email"></label> <span style="vertical-align:middle;">N/A</span></td>
 </tr>
 <tr>
 <td><b>Mobile <span style="color:#ff0000;">*</span></b></td>
-<td><input type="text" autocomplete="off" id="mobile" /><input type="checkbox" id="no_mobile" onclick="Mobile()" /><label for="no_mobile"></label> N/A</td>
+<td><input type="text" autocomplete="off" id="mobile" /><input type="checkbox" id="no_mobile" onclick="Mobile()" /><label for="no_mobile"></label> <span style="vertical-align:middle;">N/A</span></td>
 </tr>
 </table>
 </td>
@@ -278,6 +419,40 @@ elseif ($data["type"] == "Residential")
 <table width="100%" style="margin-bottom:5px;">
 <tr>
 <td width="100px"><b>Physical <span style="color:#ff0000;">*</span></b></td>
+<td><input type="text" readonly="readonly" id="physical_line1" /></td>
+</tr>
+<tr>
+<td></td>
+<td><input type="text" id="physical_line2" readonly="readonly" /></td>
+</tr>
+<tr>
+<td></td>
+<td>
+<table width="272px">
+<tr>
+<td align="left"><button onclick="Edit_Address('physical')" class="btn">Edit</button></td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td><b>Postal <span style="color:#ff0000;">*</span></b></td>
+<td><input type="text" id="postal_line1" readonly="readonly" /></td>
+</tr>
+<tr>
+<td></td>
+<td><input type="text" id="postal_line2" readonly="readonly" /></td>
+</tr>
+<tr>
+<td></td>
+<td>
+<table width="272px">
+<tr>
+<td align="left"><button id="postal_edit" onclick="Edit_Address('postal')"  class="btn">Edit</button></td>
+<td align="right"><input type="checkbox" id="postal_same" onclick="Postal_Same()" /><label for="postal_same" style="margin-left: 0px;"></label> <span style="vertical-align:middle;">Same as Physical</span></td>
+</tr>
+</table>
+</td>
 </tr>
 </table>
 </td>
@@ -307,7 +482,7 @@ elseif ($data["type"] == "Residential")
 <td><select id="plan_1" disabled="disabled" style="width:100%;">
 <option></option>
 </select></td>
-<td style="text-align:center;"><button disabled="disabled" class="icon_delete" title="Can't Remove this Package"></button></th>
+<td style="text-align:center;"><button disabled="disabled" class="icon_delete" title="Can't Remove this Package"></button></td>
 </tr>
 </tbody>
 </table>
@@ -324,3 +499,36 @@ elseif ($data["type"] == "Residential")
 </td>
 </tr>
 </table></center>
+
+<input type="hidden" id="physical_dpid" value="" />
+<input type="hidden" id="physical_barcode" value="" />
+<input type="hidden" id="physical_formattedAddress" value="" />
+<input type="hidden" id="physical_building_name" value="" />
+<input type="hidden" id="physical_sub_premise" value="" />
+<input type="hidden" id="physical_street_number" value="" />
+<input type="hidden" id="physical_street_name" value="" />
+<input type="hidden" id="physical_street_type" value="" />
+<input type="hidden" id="physical_street_type_suffix" value="" />
+<input type="hidden" id="physical_suburb_town" value="" />
+<input type="hidden" id="physical_state" value="" />
+<input type="hidden" id="physical_postcode" value="" />
+<input type="hidden" id="postal_dpid" value="" />
+<input type="hidden" id="postal_barcode" value="" />
+<input type="hidden" id="postal_formattedAddress" value="" />
+<input type="hidden" id="postal_building_name" value="" />
+<input type="hidden" id="postal_sub_premise" value="" />
+<input type="hidden" id="postal_street_number" value="" />
+<input type="hidden" id="postal_street_name" value="" />
+<input type="hidden" id="postal_street_type" value="" />
+<input type="hidden" id="postal_street_type_suffix" value="" />
+<input type="hidden" id="postal_suburb_town" value="" />
+<input type="hidden" id="postal_state" value="" />
+<input type="hidden" id="postal_postcode" value="" />
+
+<center><div id="address_edit" style="width:98%; text-align:left; display:none;">
+<table>
+<tr>
+<td></td>
+</tr>
+</table>
+</div></center>
