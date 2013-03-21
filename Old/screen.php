@@ -6,7 +6,7 @@ $p = $_GET["p"];
 $date = date("Y-m-d");
 if ($p == "stats")
 {
-	$cen = "CC51,CC52,CC53,CC54,CC61,CC63,CC71,CC72,CC73,CC74";
+	$cen = "CC51,CC52,CC53,CC54,CC61,CC62,CC63,CC71,CC72,CC73,CC74";
 	$centre = explode(",", $cen);
 	
 	for ($i = 0; $i < count($centre); $i++)
@@ -18,16 +18,16 @@ if ($p == "stats")
 <center><table id="users" style="margin-top:-15px; width:99%; padding:0px;">
 <thead>
 <tr class="ui-widget-header ">
-<th colspan="4" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Koncept Marketing</th>
+<th colspan="5" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Koncept Marketing</th>
 </tr>
 </thead>
 <tr>
-<td width="25%" height="100%" valign="top">
+<td width="20%" height="100%" valign="top">
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC53 (Shaq)</th>
+<th>CC53</th>
 </tr>
 </thead>
 <tbody>
@@ -38,12 +38,12 @@ if ($p == "stats")
 </table>
 </div></center>
 </td>
-<td width="25%" height="100%" valign="top">
+<td width="20%" height="100%" valign="top">
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC54 (Ash)</th>
+<th>CC54</th>
 </tr>
 </thead>
 <tbody>
@@ -54,12 +54,12 @@ if ($p == "stats")
 </table>
 </div></center>
 </td>
-<td width="25%" height="100%" valign="top">
+<td width="20%" height="100%" valign="top">
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC61 (Daniel)</th>
+<th>CC61</th>
 </tr>
 </thead>
 <tbody>
@@ -70,12 +70,28 @@ if ($p == "stats")
 </table>
 </div></center>
 </td>
-<td width="25%" height="100%" valign="top">
+<td width="20%" height="100%" valign="top">
 <center><div id="users-contain" class="ui-widget">
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC63 (Damith)</th>
+<th>CC62</th>
+</tr>
+</thead>
+<tbody>
+<tr height="75%">
+<td><span style="font-size:36px"><?php echo $stats["CC62"]; ?></span></td>
+</tr>
+</tbody>
+</table>
+</div></center>
+</td>
+<td width="20%" height="100%" valign="top">
+<center><div id="users-contain" class="ui-widget">
+<table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
+<thead>
+<tr class="ui-widget-header ">
+<th>CC63</th>
 </tr>
 </thead>
 <tbody>
@@ -101,7 +117,7 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC71 (Will)</th>
+<th>CC71</th>
 </tr>
 </thead>
 <tbody>
@@ -117,7 +133,7 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC72 (Monika)</th>
+<th>CC72</th>
 </tr>
 </thead>
 <tbody>
@@ -133,7 +149,7 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC73 (Daniel)</th>
+<th>CC73</th>
 </tr>
 </thead>
 <tbody>
@@ -149,7 +165,7 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC74 (Alex)</th>
+<th>CC74</th>
 </tr>
 </thead>
 <tbody>
@@ -166,7 +182,7 @@ if ($p == "stats")
 <center><table id="users" style="margin-top:0px; width:99%;">
 <thead>
 <tr class="ui-widget-header ">
-<th colspan="2" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Vibe Solutions</th>
+<th colspan="2" style="border: 1px solid #eee; padding: .6em 10px; text-align: center;">Vibe Solutions (Residential)</th>
 </tr>
 </thead>
 <tr>
@@ -175,7 +191,7 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC51 (Sanu)</th>
+<th>CC51</th>
 </tr>
 </thead>
 <tbody>
@@ -191,7 +207,7 @@ if ($p == "stats")
 <table id="users" class="ui-widget ui-widget-content" style="width:100%; height:125px;">
 <thead>
 <tr class="ui-widget-header ">
-<th>CC52 (WinBack)</th>
+<th>CC52</th>
 </tr>
 </thead>
 <tbody>
