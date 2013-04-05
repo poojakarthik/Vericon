@@ -19,7 +19,7 @@ AppPublisher={#MyAppPublisher}
 AppPublisherURL={#MyAppURL}
 AppSupportURL={#MyAppURL}
 AppUpdatesURL={#MyAppURL}
-DefaultDirName={pf}\{#MyAppName}
+DefaultDirName=C:\{#MyAppName}
 DisableDirPage=yes
 DefaultGroupName={#MyAppName}
 DisableProgramGroupPage=yes
@@ -31,6 +31,7 @@ SolidCompression=yes
 MinVersion=0,5.01
 SetupIconFile=userdocs:Inno Setup\VeriCon\Files\setup.ico
 WizardImageFile=compiler:WizModernImage-IS.bmp
+PrivilegesRequired=none
 
 [Languages]
 Name: "english"; MessagesFile: "compiler:Default.isl"
@@ -74,7 +75,6 @@ Source: "C:\Users\Odai\Documents\Inno Setup\VeriCon\Files\playlistformats\*"; De
 Source: "C:\Users\Odai\Documents\Inno Setup\VeriCon\Files\printsupport\*"; DestDir: "{app}\printsupport\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\Odai\Documents\Inno Setup\VeriCon\Files\qmltooling\*"; DestDir: "{app}\qmltooling\"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: "C:\Users\Odai\Documents\Inno Setup\VeriCon\Files\sqldrivers\*"; DestDir: "{app}\sqldrivers\"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: "C:\Users\Odai\Documents\Inno Setup\VeriCon\Files\vcredist_x86.exe"; DestDir: {tmp}; Flags: deleteafterinstall
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]
@@ -84,4 +84,3 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Flags: nowait postinstall skipifsilent; Description: "{cm:LaunchProgram,{#StringChange(MyAppName, '&', '&&')}}"
-Filename: "{tmp}\vcredist_x86.exe"; Parameters: "/passive /norestart"; StatusMsg: "Installing Visual C++ 2010 Redistributable Packages..."
