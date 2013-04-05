@@ -1,7 +1,0 @@
-<RCC>
-    <qresource prefix="/new/images">
-        <file>email.png</file>
-        <file>home.png</file>
-        <file>kb.png</file>
-    </qresource>
-</RCC>
