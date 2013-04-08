@@ -151,6 +151,7 @@ else if (strlen($pid = get_input_value('_part', RCUBE_INPUT_GET))) {
       $disposition = !empty($plugin['download']) ? 'attachment' : 'inline';
 
       header("Content-Disposition: $disposition; filename=\"$filename\"");
+	  header("Content-Length: " . $part->size);
 
       // do content filtering to avoid XSS through fake images
       if (!empty($_REQUEST['_embed']) && $browser->ie && $browser->ver <= 8) {
