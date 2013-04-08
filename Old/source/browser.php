@@ -6,6 +6,13 @@ function browser($ua)
         $return['name'] = 'Bot';
         $return['version'] = 'Unknown';
     }
+	elseif (preg_match('/vericon/i', $ua))
+	{
+		preg_match('/VeriCon\/([0-9\.]+)(\+)?/i', $ua, $b);
+		$return['name'] = 'VeriCon';
+		unset($b[0]);
+		$return['version'] = implode('', $b);
+	}
     elseif (preg_match('/opera/i', $ua))
     {
         preg_match('/Opera(\/| )([0-9\.]+)(u)?(\d+)?/i', $ua, $b);

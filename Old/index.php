@@ -5,6 +5,14 @@ if ($browser["name"] == "Firefox" && $browser["version"] >= 11)
 {
 	
 }
+elseif ($browser["name"] == "VeriCon")
+{
+?>
+<script>
+window.location = '/login';
+</script>
+<?php
+}
 else
 {
 	echo "<h1>Sorry VeriCon is not supported by your web browser<br>Please use Firefox version 11 or above</h1><br>";
