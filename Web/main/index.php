@@ -114,18 +114,6 @@ function Header_Time_IST()
 	$( "#header_time_ist" ).html(time);
 	TS_IST++;
 }
-
-function Update_Clock()
-{
-	$.post("/source/clock.php", function(data)
-	{
-		clock = data.split(";");
-		$( "#header_date_est" ).html(clock[0]);
-		TS_EST = clock[1];
-		$( "#header_date_ist" ).html(clock[2]);
-		TS_IST = clock[3];
-	});
-}
 </script>
 <script>
 function V_Loading_Start()
@@ -304,19 +292,6 @@ function V_Logout()
 }
 </script>
 <script>
-function V_Broadcast()
-{
-	$( "#broadcast" ).load("/source/broadcast.php", function(data, status, xhr) {
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				V_Logout();
-			}
-		}
-	});
-}
-
 var v_notification_count = 0;
 
 function V_Notification_Open()
@@ -341,12 +316,31 @@ function V_Notification_Close()
 }
 </script>
 <script>
+function V_Update()
+{
+	$.post("/source/update.php", function(data)
+	{
+		var result = $.parseJSON(data);
+		
+		$( "#broadcast" ).html(result.notifications);
+		$( "#header_date_est" ).html(result.date_mel);
+		TS_EST = parseInt(result.time_mel);
+		$( "#header_date_ist" ).html(result.date_kol);
+		TS_IST = parseInt(result.time_kol);
+	}).error( function(xhr, text, err) {
+		if (xhr.status == 403 || xhr.status == 0)
+		{
+			V_Logout();
+		}
+	});
+}
+</script>
+<script>
 Header_Time_EST();
 Header_Time_IST();
 setInterval("Header_Time_EST()", 1000);
 setInterval("Header_Time_IST()", 1000);
-setInterval("Update_Clock()", 900000);
-setInterval("V_Broadcast()", 120000);
+setInterval("V_Update()", 30000);
 $.jGrowl.defaults.closer = false;
 $.jGrowl.defaults.closeTemplate = '<img src="/images/close_icon.png" width="16px" height="16px">';
 
@@ -383,7 +377,7 @@ $(document).unbind('keydown').bind('keydown', function (event) {
 </div>
 <div id="broadcast">
 <script>
-V_Broadcast();
+V_Update();
 </script>
 </div>
 

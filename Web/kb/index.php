@@ -112,18 +112,6 @@ function Header_Time_IST()
 	$( "#header_time_ist" ).html(time);
 	TS_IST++;
 }
-
-function Update_Clock()
-{
-	$.post("/source/clock.php", function(data)
-	{
-		clock = data.split(";");
-		$( "#header_date_est" ).html(clock[0]);
-		TS_EST = clock[1];
-		$( "#header_date_ist" ).html(clock[2]);
-		TS_IST = clock[3];
-	});
-}
 </script>
 <script>
 function V_Loading_Start()
@@ -248,7 +236,6 @@ Header_Time_EST();
 Header_Time_IST();
 setInterval("Header_Time_EST()", 1000);
 setInterval("Header_Time_IST()", 1000);
-setInterval("Update_Clock()", 900000);
 
 $(window).keydown(function(event) {
 	if((event.ctrlKey && event.keyCode == 82) || (event.ctrlKey && event.keyCode == 116) || event.keyCode == 116) {
