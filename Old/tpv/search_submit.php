@@ -108,8 +108,9 @@ elseif ($method == "add_au") //add package
 	$cli = $_GET["cli"];
 	$plan = $_GET["plan"];
 	$week = date("W");
+	$year = date("Y");
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week' AND YEAR(timestamp) = '$year'");
 	$check2 = mysql_fetch_row($ch2);
 	
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
@@ -141,8 +142,9 @@ elseif ($method == "add_nz") //add package
 	$provider = $_GET["provider"];
 	$ac_number = trim($_GET["ac_number"]);
 	$week = date("W");
+	$year = date("Y");
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week' AND YEAR(timestamp) = '$year'");
 	$check2 = mysql_fetch_row($ch2);
 	
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
@@ -181,8 +183,9 @@ elseif ($method == "edit_au") //edit package
 	$plan = $_GET["plan"];
 	$cli2 = $_GET["cli2"];
 	$week = date("W");
+	$year = date("Y");
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week' AND YEAR(timestamp) = '$year'");
 	$check2 = mysql_fetch_row($ch2);
 	
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
@@ -236,8 +239,9 @@ elseif ($method == "edit_nz") //edit package
 	$ac_number = trim($_GET["ac_number"]);
 	$cli2 = $_GET["cli2"];
 	$week = date("W");
+	$year = date("Y");
 	
-	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week'");
+	$ch2 = mysql_query("SELECT COUNT(cli) FROM vericon.sales_packages WHERE cli = '$cli' AND WEEK(timestamp,3) = '$week' AND YEAR(timestamp) = '$year'");
 	$check2 = mysql_fetch_row($ch2);
 	
 	$ch3 = mysql_query("SELECT COUNT(cli) FROM vericon.sct_dnc WHERE cli = '" . mysql_real_escape_string($cli) . "'");
