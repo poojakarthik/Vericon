@@ -102,7 +102,7 @@ $q = $mysqli->query("SELECT `last_action` FROM `vericon`.`current_users` WHERE `
 $last_action = $q->fetch_row();
 $q->free();
 
-if (strtotime($last_action[0]) < strtotime("-14 minutes"))
+if (strtotime($last_action[0]) < strtotime("-14 minutes 30 seconds"))
 {
 	$notification .= "$.jGrowl('Your session is about to expire, please perform an action to remain logged in.<hr style=\"width:75%; height:1px; margin-top:5px; border-style:dotted none none; border-width:1px; border-color:#3a65b4; background:none;\" />VeriCon | " . date("d/m/Y h:i A") . "', { sticky: true, theme: 'jgrowl_theme', header: 'Inactive Session Warning', open: function (e,m,o) { V_Notification_Open(); }, close: function (e,m,o) { V_Notification_Close(); } });";
 }
