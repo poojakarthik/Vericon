@@ -91,10 +91,10 @@ function Pass_Reset_Submit()
 	$.post("/ma/pass_reset_process.php", { m: "submit", current_pass: current_pass.val(), new_pass: new_pass.val(), new_pass2: new_pass2.val() }, function(data) {
 		if (data == "valid")
 		{
+			$(".loading_message").html("<p><b>Your password has been reset.</b></p><p><b>You will be required to log in again shortly.</b></p>");
 			setTimeout(function() {
-				$(window).unbind("beforeunload");
-				document.location.reload();
-			}, 500);
+				V_Logout();
+			}, 2500);
 		}
 		else
 		{
