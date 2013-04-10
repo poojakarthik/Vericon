@@ -47,7 +47,7 @@ if ($method == "search")
 {
 	$input = $_POST["input"];
 		
-	if($input == ""){die('');}
+	if($input == ""){die('[]');}
 
 	$client = new SoapClient('https://stage.totalcheck.sensis.com.au/service/enhanced?wsdl', array('trace' => 1));
 	$auth = '<wsse:Security SOAP-ENV:mustUnderstand="1" xmlns:wsse="http://docs.oasis-open.org/wss/2004/01/oasis-200401-wss-wssecurity-secext-1.0.xsd">
@@ -107,7 +107,7 @@ if ($method == "search")
 	}
 	else
 	{
-		echo '';
+		echo '[]';
 	}
 }
 elseif ($method == "select")
@@ -162,4 +162,45 @@ elseif ($method == "select")
 	
 	echo json_encode($data);
 }
+elseif ($method == "street_type")
+{
+	$input = $_POST["input"];
+	
+	$q = $mysqli->query("SELECT * FROM `aut`.`street_type` WHERE `code` LIKE '" . $mysqli->real_escape_string($input) . "%' OR `name` LIKE '" . $mysqli->real_escape_string($input) . "%'") or die($mysqli->error);
+	while ($data = $q->fetch_assoc())
+	{
+		$d[] = "{ \"id\": \"" . $data["code"] . "\", \"label\": \"" . $data["name"] . "\" }";
+	}
+	$q->free();
+	
+	echo "[" . implode(", ",$d) . "]";
+}
+elseif ($method == "street_type_suffix")
+{
+	$input = $_POST["input"];
+	
+	$q = $mysqli->query("SELECT * FROM `aut`.`street_type_suffix` WHERE `code` LIKE '" . $mysqli->real_escape_string($input) . "%' OR `name` LIKE '" . $mysqli->real_escape_string($input) . "%'") or die($mysqli->error);
+	while ($data = $q->fetch_assoc())
+	{
+		$d[] = "{ \"id\": \"" . $data["code"] . "\", \"value\": \"" . $data["code"] . "\", \"label\": \"" . $data["name"] . "\" }";
+	}
+	$q->free();
+	
+	echo "[" . implode(", ",$d) . "]";
+}
+elseif ($method == "suburb_town")
+{
+	$input = $_POST["input"];
+	
+	$q = $mysqli->query("SELECT * FROM `aut`.`locality` WHERE `name` LIKE '%" . $mysqli->real_escape_string($input) . "%'") or die($mysqli->error);
+	while ($data = $q->fetch_assoc())
+	{
+		$d[] = "{ \"id\": \"" . $data["id"] . "\", \"value\": \"" . $data["name"] . "\", \"label\": \"" . $data["name"] . " " . $data["state"] . " " . $data["postcode"] . "\", \"suburb_town\": \"" . $data["name"] . "\", \"state\": \"" . $data["state"] . "\", \"postcode\": \"" . $data["postcode"] . "\" }";
+	}
+	$q->free();
+	
+	echo "[" . implode(", ",$d) . "]";
+}
+
+$mysqli->close();
 ?>

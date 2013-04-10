@@ -195,32 +195,89 @@ function Edit_Address(type)
 	});
 }
 
+function Edit_Address_Manual(type)
+{
+	V_Loading_Start();
+	$( "#address_edit" ).load("/source/address_au.php", { method: "manual", type: type }, function(data, status, xhr){
+		if (status == "error")
+		{
+			if (xhr.status == 403 || xhr.status == 0)
+			{
+				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+				setTimeout(function() {
+					V_Logout();
+				}, 2500);
+			}
+			else
+			{
+				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+				setTimeout(function() {
+					V_Loading_End();
+				}, 2500);
+			}
+		}
+		else
+		{
+			$( "#main_form" ).attr("style", "display:none;");
+			$( "#address_edit" ).removeAttr("style");
+			$( "#address_edit" ).attr("style", "width:98%; text-align:left;");
+			V_Loading_End();
+		}
+	});
+}
+
 function Edit_Address_Submit()
 {
 	V_Loading_Start();
-	if ( $( "#address_method" ).val() == "auto" )
+	if ( $( "#address_method" ).val() == "manual" )
 	{
-		var type = $( "#address_type" ).val(),
-			formattedAddress = $( "#formattedAddress" ).val(),
-			n = formattedAddress.lastIndexOf(',');
+		var line_1 = "",
+			line_2 = "",
+			building_name = $( "#building_name" ).val(),
+			sub_premise = $( "#sub_premise" ).val(),
+			street_number = $( "#street_number" ).val(),
+			street_name = $( "#street_name" ).val(),
+			street_type = $( "#street_type" ).val(),
+			street_type_suffix = $( "#street_type_suffix" ).val(),
+			suburb_town = $( "#suburb_town" ).val(),
+			state = $( "#state" ).val(),
+			postcode = $( "#postcode" ).val();
+	
+		if (building_name != "") {
+			line_1 += building_name.trim() + ", ";
+		}
 		
-		$( "#" + type + "_line1" ).val(formattedAddress.substring(0, n));
-		$( "#" + type + "_line2" ).val(formattedAddress.substring(n + 2));
-		$( "#" + type + "_dpid " ).val($( "#dpid" ).val());
-		$( "#" + type + "_barcode" ).val($( "#barcode" ).val());
-		$( "#" + type + "_formattedAddress" ).val($( "#formattedAddress" ).val());
-		$( "#" + type + "_building_name" ).val($( "#building_name" ).html());
-		$( "#" + type + "_sub_premise" ).val($( "#sub_premise" ).html());
-		$( "#" + type + "_street_number" ).val($( "#street_number" ).html());
-		$( "#" + type + "_street_name" ).val($( "#street_name" ).html());
-		$( "#" + type + "_street_type" ).val($( "#street_type" ).html());
-		$( "#" + type + "_street_type_suffix" ).val($( "#street_type_suffix" ).html());
-		$( "#" + type + "_suburb_town" ).val($( "#suburb_town" ).html());
-		$( "#" + type + "_state" ).val($( "#state" ).html());
-		$( "#" + type + "_postcode" ).val($( "#postcode" ).html());
-		$( "#main_form" ).removeAttr("style");
-		$( "#address_edit" ).attr("style", "width:98%; text-align:left; display:none;");
+		line_1 += sub_premise.trim() + " " + street_number.trim() + " " + street_name.trim() + " " + street_type.trim() + " " + street_type_suffix.trim();
+		line_2 += suburb_town.trim() + " " + state.trim() + " " + postcode.trim();
+		
+		var formatted_address = line_1.trim() + ", " + line_2.trim();
+		formatted_address = formatted_address.replace(/\s{2,}/g, ' ');
+		formatted_address = formatted_address.trim();
 	}
+	else
+	{
+		var formattedAddress = $( "#formattedAddress" ).val();
+	}
+	
+	var type = $( "#address_type" ).val(),
+		n = formattedAddress.lastIndexOf(',');
+	
+	$( "#" + type + "_line1" ).val(formattedAddress.substring(0, n));
+	$( "#" + type + "_line2" ).val(formattedAddress.substring(n + 2));
+	$( "#" + type + "_dpid " ).val($( "#dpid" ).val());
+	$( "#" + type + "_barcode" ).val($( "#barcode" ).val());
+	$( "#" + type + "_formattedAddress" ).val($( "#formattedAddress" ).val());
+	$( "#" + type + "_building_name" ).val($( "#building_name" ).html());
+	$( "#" + type + "_sub_premise" ).val($( "#sub_premise" ).html());
+	$( "#" + type + "_street_number" ).val($( "#street_number" ).html());
+	$( "#" + type + "_street_name" ).val($( "#street_name" ).html());
+	$( "#" + type + "_street_type" ).val($( "#street_type" ).html());
+	$( "#" + type + "_street_type_suffix" ).val($( "#street_type_suffix" ).html());
+	$( "#" + type + "_suburb_town" ).val($( "#suburb_town" ).html());
+	$( "#" + type + "_state" ).val($( "#state" ).html());
+	$( "#" + type + "_postcode" ).val($( "#postcode" ).html());
+	$( "#main_form" ).removeAttr("style");
+	$( "#address_edit" ).attr("style", "width:98%; text-align:left; display:none;");
 	V_Loading_End();
 }
 

@@ -6,6 +6,14 @@ $type = $_POST["type"];
 $cli = $_POST["cli"];
 $zone = "ADSL Regional";
 
+if (!preg_match('/^0[2378][0-9]{8}$/',$cli))
+{
+	echo "error:=<option value=''>Invalid CLI</option>";
+	$mysqli->close();
+	exit;
+}
+// validation checks
+
 if (preg_match('/0([2378])([0-9]{8})/',$cli,$d))
 {
 	$q = $mysqli->query("SELECT * FROM `adsl`.`Enabled_Exchanges` WHERE `Range_From` <= " . $mysqli->real_escape_string($d[2]) . " AND `Range_To` >= " . $mysqli->real_escape_string($d[2]) . " AND `AC` = '" . $mysqli->real_escape_string($d[1]) . "'") or die($mysqli->error);
@@ -25,12 +33,6 @@ if (preg_match('/0([2378])([0-9]{8})/',$cli,$d))
 	}
 	
 	$q->free();
-}
-else
-{
-	echo "error:=<option value=''>Invalid CLI</option>";
-	$mysqli->close();
-	exit;
 }
 
 $sct = $mysqli->query("SELECT `cli` FROM `vericon`.`sct_dnc` WHERE `cli` = '" . $mysqli->real_escape_string($cli) . "'") or die($mysqli->error);
