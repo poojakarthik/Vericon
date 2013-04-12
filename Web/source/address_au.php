@@ -67,7 +67,7 @@ $(function() {
 <input type="hidden" id="formattedAddress" value="" />
 <table>
 <tr>
-<td colspan="2" id="addess_edit_error"><p>Enter the address below to begin the search.</p></td>
+<td colspan="2" id="address_edit_error"><p>Enter the address below to begin the search.</p></td>
 </tr>
 <tr>
 <td colspan="2"><input type="text" id="address_input" style="width:400px;" placeholder="Enter Address Here" /></td>
@@ -206,7 +206,6 @@ elseif ($method == "manual")
 				this.input.tooltip( "close" ).attr( "title", "" );
 			}, 2500 );
 			this.input.data( "ui-autocomplete" ).term = "";
-			Manual_Format();
 		},
 		_destroy: function() {
 			this.wrapper.remove();
@@ -251,7 +250,6 @@ $(function() {
 			$( "#suburb_town" ).val(ui.item.suburb_town);
 			$( "#state" ).val(ui.item.state);
 			$( "#postcode" ).val(ui.item.postcode);
-			Manual_Format();
 		}
 	});
 });
@@ -263,7 +261,7 @@ $(function() {
 <input type="hidden" id="formattedAddress" value="" />
 <table>
 <tr>
-<td colspan="2" id="addess_edit_error"><p>Enter the address below to store it manually.</p></td>
+<td colspan="2" id="address_edit_error"><p>Enter the address below to store it manually.</p></td>
 </tr>
 <tr>
 <td colspan="2"><input type="text" disabled="disabled" style="width:400px;" placeholder="Enter Address Manually Below" /></td>
@@ -295,7 +293,7 @@ $(function() {
 $q = $mysqli->query("SELECT * FROM `aut`.`street_type`") or die($mysqli->error);
 while ($data = $q->fetch_assoc())
 {
-	echo "<option value='" . $data["name"] . "'>" . $data["name"] . "</option>";
+	echo "<option value='" . $data["code"] . "'>" . $data["name"] . "</option>";
 }
 $q->free();
 ?>
@@ -317,11 +315,11 @@ $q->free();
 </td>
 </tr>
 <tr>
-<td><b>Suburb / Town </b></td>
+<td><b>Suburb / Town <span style="color:#ff0000;">*</span></b></td>
 <td><input type="text" id="suburb_town" /></td>
 </tr>
 <tr>
-<td><b>State </b></td>
+<td><b>State <span style="color:#ff0000;">*</span></b></td>
 <td><select id="state" style="width:72px;">
 <option></option>
 <option>ACT</option>
@@ -335,7 +333,7 @@ $q->free();
 </select></td>
 </tr>
 <tr>
-<td><b>Postcode </b></td>
+<td><b>Postcode <span style="color:#ff0000;">*</span></b></td>
 <td><input type="text" id="postcode" style="width:50px;" /></td>
 </tr>
 <tr>

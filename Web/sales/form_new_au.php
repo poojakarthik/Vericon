@@ -229,55 +229,81 @@ function Edit_Address_Manual(type)
 function Edit_Address_Submit()
 {
 	V_Loading_Start();
-	if ( $( "#address_method" ).val() == "manual" )
-	{
-		var line_1 = "",
-			line_2 = "",
-			building_name = $( "#building_name" ).val(),
-			sub_premise = $( "#sub_premise" ).val(),
-			street_number = $( "#street_number" ).val(),
-			street_name = $( "#street_name" ).val(),
-			street_type = $( "#street_type" ).val(),
-			street_type_suffix = $( "#street_type_suffix" ).val(),
-			suburb_town = $( "#suburb_town" ).val(),
-			state = $( "#state" ).val(),
-			postcode = $( "#postcode" ).val();
 	
-		if (building_name != "") {
-			line_1 += building_name.trim() + ", ";
-		}
+	if ( $( "#suburb_town" ).val() == "" && $( "#suburb_town" ).html() == "" )
+	{
+		var text = "<b>Error: </b>Please enter a suburb / town.";
 		
-		line_1 += sub_premise.trim() + " " + street_number.trim() + " " + street_name.trim() + " " + street_type.trim() + " " + street_type_suffix.trim();
-		line_2 += suburb_town.trim() + " " + state.trim() + " " + postcode.trim();
+		$( "#address_edit_error" ).html('<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"><p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>' + text + '</p></div>');
+	}
+	else if ( $( "#state" ).val() == "" && $( "#state" ).html() == "" )
+	{
+		var text = "<b>Error: </b>Please enter a state.";
 		
-		var formatted_address = line_1.trim() + ", " + line_2.trim();
-		formatted_address = formatted_address.replace(/\s{2,}/g, ' ');
-		formatted_address = formatted_address.trim();
+		$( "#address_edit_error" ).html('<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"><p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>' + text + '</p></div>');
+	}
+	else if ( $( "#postcode" ).val() == "" && $( "#postcode" ).html() == "" )
+	{
+		var text = "<b>Error: </b>Please enter a postcode.";
+		
+		$( "#address_edit_error" ).html('<div class="ui-state-error ui-corner-all" style="padding: 0 .7em;"><p style="padding: 9px 0;"><span class="ui-icon ui-icon-alert" style="float: left; margin-right: .3em;"></span>' + text + '</p></div>');
 	}
 	else
 	{
-		var formattedAddress = $( "#formattedAddress" ).val();
+		if ( $( "#address_method" ).val() == "manual" )
+		{
+			var line_1 = "",
+				line_2 = "",
+				building_name = $( "#building_name" ).val(),
+				sub_premise = $( "#sub_premise" ).val(),
+				street_number = $( "#street_number" ).val(),
+				street_name = $( "#street_name" ).val(),
+				street_type = $( "#street_type" ).val(),
+				street_type_suffix = $( "#street_type_suffix" ).val(),
+				suburb_town = $( "#suburb_town" ).val(),
+				state = $( "#state" ).val(),
+				postcode = $( "#postcode" ).val();
+		
+			if (building_name != "") {
+				line_1 += building_name.trim() + ", ";
+			}
+			
+			line_1 += sub_premise.trim() + " " + street_number.trim() + " " + street_name.trim() + " " + street_type.trim() + " " + street_type_suffix.trim();
+			line_1 = line_1.replace(/\w\S*/g, function(txt){
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
+			line_2 += suburb_town.trim() + " " + state.trim() + " " + postcode.trim();
+			line_2 = line_2.toUpperCase();
+			
+			var formattedAddress = line_1.trim() + ", " + line_2.trim();
+			formattedAddress = formattedAddress.replace(/\s{2,}/g, ' ');
+			formattedAddress = formattedAddress.trim();
+		}
+		else
+		{
+			var formattedAddress = $( "#formattedAddress" ).val();
+		}
+		
+		var type = $( "#address_type" ).val(),
+			n = formattedAddress.lastIndexOf(',');
+		
+		$( "#" + type + "_line1" ).val(formattedAddress.substring(0, n));
+		$( "#" + type + "_line2" ).val(formattedAddress.substring(n + 2));
+		$( "#" + type + "_dpid " ).val($( "#dpid" ).val());
+		$( "#" + type + "_barcode" ).val($( "#barcode" ).val());
+		$( "#" + type + "_formattedAddress" ).val($( "#formattedAddress" ).val());
+		$( "#" + type + "_building_name" ).val($( "#building_name" ).html());
+		$( "#" + type + "_sub_premise" ).val($( "#sub_premise" ).html());
+		$( "#" + type + "_street_number" ).val($( "#street_number" ).html());
+		$( "#" + type + "_street_name" ).val($( "#street_name" ).html());
+		$( "#" + type + "_street_type" ).val($( "#street_type" ).html());
+		$( "#" + type + "_street_type_suffix" ).val($( "#street_type_suffix" ).html());
+		$( "#" + type + "_suburb_town" ).val($( "#suburb_town" ).html());
+		$( "#" + type + "_state" ).val($( "#state" ).html());
+		$( "#" + type + "_postcode" ).val($( "#postcode" ).html());
+		$( "#main_form" ).removeAttr("style");
+		$( "#address_edit" ).attr("style", "width:98%; text-align:left; display:none;");
 	}
-	
-	var type = $( "#address_type" ).val(),
-		n = formattedAddress.lastIndexOf(',');
-	
-	$( "#" + type + "_line1" ).val(formattedAddress.substring(0, n));
-	$( "#" + type + "_line2" ).val(formattedAddress.substring(n + 2));
-	$( "#" + type + "_dpid " ).val($( "#dpid" ).val());
-	$( "#" + type + "_barcode" ).val($( "#barcode" ).val());
-	$( "#" + type + "_formattedAddress" ).val($( "#formattedAddress" ).val());
-	$( "#" + type + "_building_name" ).val($( "#building_name" ).html());
-	$( "#" + type + "_sub_premise" ).val($( "#sub_premise" ).html());
-	$( "#" + type + "_street_number" ).val($( "#street_number" ).html());
-	$( "#" + type + "_street_name" ).val($( "#street_name" ).html());
-	$( "#" + type + "_street_type" ).val($( "#street_type" ).html());
-	$( "#" + type + "_street_type_suffix" ).val($( "#street_type_suffix" ).html());
-	$( "#" + type + "_suburb_town" ).val($( "#suburb_town" ).html());
-	$( "#" + type + "_state" ).val($( "#state" ).html());
-	$( "#" + type + "_postcode" ).val($( "#postcode" ).html());
-	$( "#main_form" ).removeAttr("style");
-	$( "#address_edit" ).attr("style", "width:98%; text-align:left; display:none;");
 	V_Loading_End();
 }
 
