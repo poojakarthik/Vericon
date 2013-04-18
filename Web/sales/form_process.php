@@ -163,6 +163,16 @@ if ($method == "load_form")
 		$sct->free();
 	}
 }
+elseif ($method == "cancel")
+{
+	$lead = $_POST["lead"];
+	
+	$mysqli->query("DELETE FROM `vericon`.`sales_customers_temp` WHERE `id` = '" . $mysqli->real_escape_string($lead) . "'") or die($mysqli->error);
+	
+	$mysqli->query("DELETE FROM `vericon`.`sales_packages_temp` WHERE `id` = '" . $mysqli->real_escape_string($lead) . "'") or die($mysqli->error);
+	
+	echo "valid";
+}
 
 $mysqli->close();
 ?>

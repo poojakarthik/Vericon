@@ -165,7 +165,7 @@ elseif ($method == "manual")
 			});
 		},
 		_source: function( request, response ) {
-			var matcher = new RegExp( $.ui.autocomplete.escapeRegex(request.term), "i" );
+			var matcher = new RegExp( "^" + $.ui.autocomplete.escapeRegex(request.term), "i" );
 			response( this.element.children( "option" ).map(function() {
 			var text = $( this ).text();
 			var value = $( this ).val();
@@ -187,7 +187,7 @@ elseif ($method == "manual")
 				valueLowerCase = value.toLowerCase(),
 				valid = false;
 			this.element.children( "option" ).each(function() {
-				if ( $( this ).text().toLowerCase() === valueLowerCase ) {
+				if ( $( this ).val().toLowerCase() === valueLowerCase ) {
 					this.selected = valid = true;
 					return false;
 				}
@@ -268,19 +268,19 @@ $(function() {
 </tr>
 <tr>
 <td width="125px"><b>Building Name </b></td>
-<td><input type="text" id="building_name" /></td>
+<td><input type="text" id="building_name" /> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>'MARKS POINT PUBLIC SCHOOL'"></button></td>
 </tr>
 <tr>
 <td><b>Sub Premise </b></td>
-<td><input type="text" id="sub_premise" /></td>
+<td><input type="text" id="sub_premise" /> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>Physical: 'Level 5'<br>Mail Box: 'PO Box 321'"></button></td>
 </tr>
 <tr>
 <td><b>Street Number </b></td>
-<td><input type="text" id="street_number" style="width:60px;" /></td>
+<td><input type="text" id="street_number" style="width:60px;" /> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>'96-100'"></button></td>
 </tr>
 <tr>
 <td><b>Street Name </b></td>
-<td><input type="text" id="street_name" /></td>
+<td><input type="text" id="street_name" /> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>'Albert'"></button></td>
 </tr>
 <tr>
 <td><b>Street Type </b></td>
@@ -297,7 +297,7 @@ while ($data = $q->fetch_assoc())
 }
 $q->free();
 ?>
-</select></td>
+</select> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>'Road'"></button></td>
 <td width="50px" style="padding:0;"><b>Suffix </b></td>
 <td style="padding:0;"><select id="street_type_suffix" style="width:44px; display:none;">
 <option></option>
@@ -309,14 +309,14 @@ while ($data = $q->fetch_assoc())
 }
 $q->free();
 ?>
-</select></td>
+</select> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>'West'"></button></td>
 </tr>
 </table>
 </td>
 </tr>
 <tr>
 <td><b>Suburb / Town <span style="color:#ff0000;">*</span></b></td>
-<td><input type="text" id="suburb_town" /></td>
+<td><input type="text" id="suburb_town" /> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>'South Melbourne'"></button></td>
 </tr>
 <tr>
 <td><b>State <span style="color:#ff0000;">*</span></b></td>
@@ -334,7 +334,7 @@ $q->free();
 </tr>
 <tr>
 <td><b>Postcode <span style="color:#ff0000;">*</span></b></td>
-<td><input type="text" id="postcode" style="width:50px;" /></td>
+<td><input type="text" id="postcode" style="width:50px;" /> <button class="help" tabindex="-1" title="<b><u>Example</u></b><br>'3205'"></button></td>
 </tr>
 <tr>
 <td><button onclick='Edit_Address("<?php echo $type; ?>")' class="btn">Auto</button></td>

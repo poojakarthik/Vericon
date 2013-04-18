@@ -278,29 +278,47 @@ function Edit_Address_Submit()
 			var formattedAddress = line_1.trim() + ", " + line_2.trim();
 			formattedAddress = formattedAddress.replace(/\s{2,}/g, ' ');
 			formattedAddress = formattedAddress.trim();
+			
+			var type = $( "#address_type" ).val();
+			
+			sub_premise = sub_premise.replace(/\w\S*/g, function(txt){
+				return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+			});
+			
+			$( "#" + type + "_building_name" ).val( building_name.toUpperCase() );
+			$( "#" + type + "_sub_premise" ).val( sub_premise );
+			$( "#" + type + "_street_number" ).val( street_number );
+			$( "#" + type + "_street_name" ).val( street_name.toUpperCase() );
+			$( "#" + type + "_street_type" ).val( street_type.toUpperCase() );
+			$( "#" + type + "_street_type_suffix" ).val( street_type_suffix.toUpperCase() );
+			$( "#" + type + "_suburb_town" ).val( suburb_town.toUpperCase() );
+			$( "#" + type + "_state" ).val( state.toUpperCase() );
+			$( "#" + type + "_postcode" ).val( postcode );
 		}
 		else
 		{
 			var formattedAddress = $( "#formattedAddress" ).val();
+			
+			var type = $( "#address_type" ).val();
+			
+			$( "#" + type + "_building_name" ).val($( "#building_name" ).html());
+			$( "#" + type + "_sub_premise" ).val($( "#sub_premise" ).html());
+			$( "#" + type + "_street_number" ).val($( "#street_number" ).html());
+			$( "#" + type + "_street_name" ).val($( "#street_name" ).html());
+			$( "#" + type + "_street_type" ).val($( "#street_type" ).html());
+			$( "#" + type + "_street_type_suffix" ).val($( "#street_type_suffix" ).html());
+			$( "#" + type + "_suburb_town" ).val($( "#suburb_town" ).html());
+			$( "#" + type + "_state" ).val($( "#state" ).html());
+			$( "#" + type + "_postcode" ).val($( "#postcode" ).html());
 		}
 		
-		var type = $( "#address_type" ).val(),
-			n = formattedAddress.lastIndexOf(',');
+		var n = formattedAddress.lastIndexOf(',');
 		
 		$( "#" + type + "_line1" ).val(formattedAddress.substring(0, n));
 		$( "#" + type + "_line2" ).val(formattedAddress.substring(n + 2));
 		$( "#" + type + "_dpid " ).val($( "#dpid" ).val());
 		$( "#" + type + "_barcode" ).val($( "#barcode" ).val());
-		$( "#" + type + "_formattedAddress" ).val($( "#formattedAddress" ).val());
-		$( "#" + type + "_building_name" ).val($( "#building_name" ).html());
-		$( "#" + type + "_sub_premise" ).val($( "#sub_premise" ).html());
-		$( "#" + type + "_street_number" ).val($( "#street_number" ).html());
-		$( "#" + type + "_street_name" ).val($( "#street_name" ).html());
-		$( "#" + type + "_street_type" ).val($( "#street_type" ).html());
-		$( "#" + type + "_street_type_suffix" ).val($( "#street_type_suffix" ).html());
-		$( "#" + type + "_suburb_town" ).val($( "#suburb_town" ).html());
-		$( "#" + type + "_state" ).val($( "#state" ).html());
-		$( "#" + type + "_postcode" ).val($( "#postcode" ).html());
+		$( "#" + type + "_formattedAddress" ).val(formattedAddress);
 		$( "#main_form" ).removeAttr("style");
 		$( "#address_edit" ).attr("style", "width:98%; text-align:left; display:none;");
 	}
@@ -325,6 +343,41 @@ function Add_Package()
 function Delete_Package(number)
 {
 	$( "#package_" + number ).remove();
+}
+</script>
+<script>
+function Cancel()
+{
+	var lead = "<?php echo $id; ?>";
+	
+	$.post("/sales/form_process.php", { m: "cancel", lead: lead }, function(data) {
+		if (data == "valid")
+		{
+			V_Page_Reload();
+		}
+		else
+		{
+			$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + data + "</b></p>");
+			setTimeout(function() {
+				V_Loading_End();
+			}, 2500);
+		}
+	}).error( function(xhr, text, err) {
+		if (xhr.status == 403 || xhr.status == 0)
+		{
+			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
+			setTimeout(function() {
+				V_Logout();
+			}, 2500);
+		}
+		else
+		{
+			$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+			setTimeout(function() {
+				V_Loading_End();
+			}, 2500);
+		}
+	});
 }
 </script>
 
@@ -466,7 +519,7 @@ elseif ($data["type"] == "Residential")
 </tr>
 <tr>
 <td><b>First Name <span style="color:#ff0000;">*</span></b></td>
-<td><input type="text" autocomplete="off" id="first" title="test" /></td>
+<td><input type="text" autocomplete="off" id="first" /></td>
 </tr>
 <tr>
 <td><b>Middle Name </b></td>
@@ -577,6 +630,7 @@ elseif ($data["type"] == "Residential")
 <table width="100%">
 <tr>
 <td align="left"><button onclick="Add_Package()" class="btn">Add Package</button></td>
+<td align="right"><button onclick="Cancel()" class="btn">Cancel</button></td>
 </tr>
 </table>
 </td>

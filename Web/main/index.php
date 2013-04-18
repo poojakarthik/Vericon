@@ -368,6 +368,17 @@ $(document).unbind('keydown').bind('keydown', function (event) {
         event.preventDefault();
     }
 });
+
+$(function() {
+	$( document ).tooltip({
+		items: "[title]",
+		content: function() {
+			var element = $( this );
+			return element.attr( "title" );
+		},
+		track: true
+	});
+});
 </script>
 </head>
 
