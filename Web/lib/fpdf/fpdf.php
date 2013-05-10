@@ -378,7 +378,10 @@ function Header()
 
 function Footer()
 {
-	// To be implemented in your own inherited class
+	$this->SetY(-15);
+	$this->SetFont('Century Gothic','',7);
+	$this->SetTextColor(102,102,102);
+	$this->Cell(0, 10, 'Page ' . $this->PageNo() . ' of {nb}', 0, 0, 'R');
 }
 
 function PageNo()

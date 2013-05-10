@@ -83,7 +83,8 @@ if ($method == "search")
 				'value' => preg_replace('!\s+!', ' ', $results['list']->formattedAddress),
 				'postal' => $results['list']->postal,
 				'whitepages' => $results['list']->whitePages,
-				'search' => $results['list']->search->formattedAddress
+				'search' => $results['list']->search->formattedAddress,
+				'formattedAddress' => ''
 			);
 			echo "[" . json_encode($data) . "]";
 		}
@@ -98,7 +99,8 @@ if ($method == "search")
 					'value' => preg_replace('!\s+!', ' ', $row->formattedAddress),
 					'postal' => $row->postal,
 					'whitepages' => $row->whitePages,
-					'search' => $row->search->formattedAddress
+					'search' => $row->search->formattedAddress,
+					'formattedAddress' => ''
 				);
 				array_push($data, $data_push);
 			}
@@ -131,34 +133,95 @@ elseif ($method == "select")
 	$client->__setSoapHeaders($header);
 	
 	$da = $client->selectAddress( array('suggestion' => array(
-										'index' => $index,
-										'postal' => $postal,
-										'search' => array(
-												'formattedAddress' => $input,
-												'formattedAddressIncludesPostcode' => false,
-												'formattedAddressIncludesState' => true,
-												'formattedAddressIncludesSuburb' => true,
-												'searchType' => 'Both'
-										),
-										'whitePages' => $whitepages
-									)
+									'formattedAddress' => '',
+									'index' => $index,
+									'postal' => $postal,
+									'search' => array(
+											'formattedAddress' => $input,
+											'formattedAddressIncludesPostcode' => true,
+											'formattedAddressIncludesState' => true,
+											'formattedAddressIncludesSuburb' => true,
+											'name' => '',
+											'phoneNumber' => '',
+											'postcode' => '',
+											'searchType' => '',
+											'state' => '',
+											'streetName' => '',
+											'streetNumber' => '',
+											'streetType' => '',
+											'suburb' => ''
+									),
+									'secondaryName' => '',
+									'whitePages' => $whitepages
 								)
-							);
-	
-	$data = array(
-		'dpid' => $da->return->dpid,
-		'barcode' => $da->return->barcode,
-		'formattedAddress' => preg_replace('!\s+!', ' ', $da->return->formattedAddress),
-		'buildingName' => $da->return->buildingName,
-		'subPremise' => $da->return->subPremise,
-		'streetNumber' => $da->return->streetNumber,
-		'streetName' => $da->return->streetName,
-		'streetType' => $da->return->streetType,
-		'streetSuffix' => $da->return->streetSuffix,
-		'suburb' => $da->return->suburb,
-		'state' => $da->return->state,
-		'postcode' => $da->return->postcode
+							)
+						);
+
+	$results = array(
+		'list' => $da->return->detailList
 	);
+	
+	if (count($results['list']) < 1)
+	{
+		$data = array(
+			'dpid' => $da->return->dpid,
+			'barcode' => $da->return->barcode,
+			'formattedAddress' => preg_replace('!\s+!', ' ', $da->return->formattedAddress),
+			'buildingName' => $da->return->buildingName,
+			'subPremise' => $da->return->subPremise,
+			'streetNumber' => $da->return->streetNumber,
+			'streetName' => $da->return->streetName,
+			'streetType' => $da->return->streetType,
+			'streetSuffix' => $da->return->streetSuffix,
+			'suburb' => $da->return->suburb,
+			'state' => $da->return->state,
+			'postcode' => $da->return->postcode
+		);
+	}
+	else
+	{
+		$data = array();
+		
+		$data_push = array(
+			'label' => preg_replace('!\s+!', ' ', $da->return->formattedAddress),
+			'value' => preg_replace('!\s+!', ' ', $da->return->formattedAddress),
+			'dpid' => $da->return->dpid,
+			'barcode' => $da->return->barcode,
+			'formattedAddress' => preg_replace('!\s+!', ' ', $da->return->formattedAddress),
+			'buildingName' => $da->return->buildingName,
+			'subPremise' => $da->return->subPremise,
+			'streetNumber' => $da->return->streetNumber,
+			'streetName' => $da->return->streetName,
+			'streetType' => $da->return->streetType,
+			'streetSuffix' => $da->return->streetSuffix,
+			'suburb' => $da->return->suburb,
+			'state' => $da->return->state,
+			'postcode' => $da->return->postcode
+		);
+		
+		array_push($data, $data_push);
+		
+		foreach ($results['list'] as $row)
+		{
+			$data_push = array(
+				'label' => preg_replace('!\s+!', ' ', $row->formattedAddress),
+				'value' => preg_replace('!\s+!', ' ', $row->formattedAddress),
+				'dpid' => $row->dpid,
+				'barcode' => $row->barcode,
+				'formattedAddress' => preg_replace('!\s+!', ' ', $row->formattedAddress),
+				'buildingName' => $row->buildingName,
+				'subPremise' => $row->subPremise,
+				'streetNumber' => $row->streetNumber,
+				'streetName' => $row->streetName,
+				'streetType' => $row->streetType,
+				'streetSuffix' => $row->streetSuffix,
+				'suburb' => $row->suburb,
+				'state' => $row->state,
+				'postcode' => $row->postcode
+			);
+			array_push($data, $data_push);
+		}
+	}
 	
 	echo json_encode($data);
 }

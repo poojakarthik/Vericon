@@ -8,54 +8,102 @@ if ($method == "auto")
 {
 ?>
 <script>
+var select_multi = 0;
+var select_data;
+
 $(function() {
 	$( "#address_input" ).autocomplete({
 		source: function( request, response ) {
-			$.ajax({
-				url: "/source/tcGet.php",
-				dataType: "json",
-				type: "POST",
-				data: {
-					method: "search",
-					input: request.term
-				},
-				success: function( data ) {
-					response( data );
-				},
-				complete: function() {
-					$( "#address_input" ).removeClass("ui-autocomplete-loading");
-				}
-			});
+			if (select_multi == 1)
+			{
+				response( select_data );
+				select_multi = 0;
+				select_data = "";
+			}
+			else
+			{
+				$.ajax({
+					url: "/source/tcGet.php",
+					dataType: "json",
+					type: "POST",
+					data: {
+						method: "search",
+						input: request.term
+					},
+					success: function( data ) {
+						response( data );
+					},
+					complete: function() {
+						$( "#address_input" ).removeClass("ui-autocomplete-loading");
+					}
+				});
+			}
 		},
 		response: function( event, ui ) {
 			if (ui.content.length === 0) {
 				
             }
 		},
+		autoFocus: true,
 		minLength: 4,
 		delay: 200,
 		select: function( event, ui ) {
 			V_Loading_Start();
-			$.post("/source/tcGet.php", { method: "select", input: ui.item.search, index: ui.item.id, postal: ui.item.postal, whitepages: ui.item.whitepages }, function(data) {
-				$( "#dpid" ).val(data.dpid);
-				$( "#barcode" ).val(data.barcode);
-				$( "#formattedAddress" ).val(data.formattedAddress);
-				$( "#building_name" ).html(data.buildingName);
-				$( "#sub_premise" ).html(data.subPremise);
-				$( "#street_number" ).html(data.streetNumber);
-				$( "#street_name" ).html(data.streetName);
-				$( "#street_type" ).html(data.streetType);
-				$( "#street_type_suffix" ).html(data.streetSuffix);
-				$( "#suburb_town" ).html(data.suburb);
-				$( "#state" ).html(data.state);
-				$( "#postcode" ).html(data.postcode);
-				V_Loading_End();
-			}).error( function(xhr, text, err) {
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
+			if (ui.item.formattedAddress == "")
+			{
+				$.post("/source/tcGet.php", { method: "select", input: ui.item.search, index: ui.item.id, postal: ui.item.postal, whitepages: ui.item.whitepages }, function(data) {
+					if ( data.formattedAddress != null )
+					{
+						$( "#dpid" ).val( data.dpid );
+						$( "#barcode" ).val( data.barcode );
+						$( "#formattedAddress" ).val( data.formattedAddress );
+						$( "#building_name" ).html( data.buildingName );
+						$( "#sub_premise" ).html( data.subPremise );
+						$( "#street_number" ).html( data.streetNumber );
+						$( "#street_name" ).html( data.streetName );
+						$( "#street_type" ).html( data.streetType );
+						$( "#street_type_suffix" ).html( data.streetSuffix );
+						$( "#suburb_town" ).html( data.suburb );
+						$( "#state" ).html( data.state );
+						$( "#postcode" ).html( data.postcode );
+					}
+					else
+					{
+						var results = new Array();
+						
+						$.each(data, function(i, obj) {
+							results.push([obj.i]);
+						});
+						
+						select_multi = 1;
+						select_data = data;
+						
+						$( "#address_input" ).autocomplete('search');
+					}
 					V_Loading_End();
-				}, 2500);
-			});
+				}).error( function(xhr, text, err) {
+					$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
+					setTimeout(function() {
+						V_Loading_End();
+					}, 2500);
+				});
+			}
+			else
+			{
+				$( "#dpid" ).val( ui.item.dpid );
+				$( "#barcode" ).val( ui.item.barcode );
+				$( "#formattedAddress" ).val( ui.item.formattedAddress );
+				$( "#building_name" ).html( ui.item.buildingName );
+				$( "#sub_premise" ).html( ui.item.subPremise );
+				$( "#street_number" ).html( ui.item.streetNumber );
+				$( "#street_name" ).html( ui.item.streetName );
+				$( "#street_type" ).html( ui.item.streetType );
+				$( "#street_type_suffix" ).html( ui.item.streetSuffix );
+				$( "#suburb_town" ).html( ui.item.suburb );
+				$( "#state" ).html( ui.item.state );
+				$( "#postcode" ).html( ui.item.postcode );
+				V_Loading_End();
+			}
 		}
 	});
 });
