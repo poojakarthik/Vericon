@@ -1,96 +1,79 @@
 <?php
-include("../auth/restrict_inner.php");
+mysql_connect('localhost','vericon','18450be');
+mysql_select_db('vericon');
 
-$method = $_POST["m"];
+$method = $_GET["method"];
+$centre = trim($_GET["centre"]);
+$campaign = $_GET["campaign"];
+$type = $_GET["type"];
+$leads = $_GET["leads"];
 
-if ($method == "disable")
+if ($method == "add")
 {
-	$centre = $_POST["centre"];
+	$q = mysql_query("SELECT * FROM vericon.centres WHERE centre = '" . mysql_real_escape_string($centre) . "'") or die(mysql_error());
 	
-	$mysqli->query("UPDATE `vericon`.`centres` SET `status` = 'Disabled' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
-}
-elseif ($method == "enable")
-{
-	$centre = $_POST["centre"];
-	
-	$mysqli->query("UPDATE `vericon`.`centres` SET `status` = 'Enabled' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
-}
-elseif ($method == "add")
-{
-	$centre = strtoupper(trim($_POST["centre"]));
-	$campaign = implode(",", $_POST["campaign"]);
-	$type = $_POST["type"];
-	$leads = $_POST["leads"];
-	
-	$q = $mysqli->query("SELECT `id` FROM `vericon`.`centres` WHERE `id` = '" . $mysqli->real_escape_string($centre) . "'") or die($mysqli->error);
-	
-	if (!preg_match("/^CC[0-9]{2}$/", $centre))
+	if (!preg_match("/CC([0-9]{2})/", $centre))
 	{
-		echo "<b>Error: </b>Please enter a valid centre code.";
+		echo "Please enter a valid centre code";
 	}
-	elseif ($q->num_rows != 0)
+	elseif (mysql_num_rows($q) != 0)
 	{
-		echo "<b>Error: </b>Centre code is taken.";
+		echo "Centre already exists";
 	}
 	elseif ($campaign == "")
 	{
-		echo "<b>Error: </b>Please select a campaign.";
+		echo "Please select a campaign";
 	}
 	elseif ($type == "")
 	{
-		echo "<b>Error: </b>Please select a centre type.";
+		echo "Please select a centre type";
 	}
 	elseif ($leads == "")
 	{
-		echo "<b>Error: </b>Please select a lead validation status.";
+		echo "Please select a lead validation status";
 	}
 	else
 	{
-		$mysqli->query("INSERT INTO `vericon`.`centres` (`id`, `type`, `status`, `leads`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($type) . "', 'Enabled', '" . $mysqli->real_escape_string($leads) . "')") or die($mysqli->error);
+		mysql_query("INSERT INTO vericon.centres (centre, campaign, type, status, leads) VALUES ('" . mysql_real_escape_string($centre) . "', '" . mysql_real_escape_string($campaign) . "', '$type', 'Enabled', '$leads')") or die(mysql_error());
 		
-		$campaign = explode(",", $campaign);
-		for ($i = 0; $i < count($campaign); $i++)
-		{
-			$mysqli->query("INSERT INTO `vericon`.`centre_campaigns` (`centre`, `campaign`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($campaign[$i]) . "')") or die($mysqli->error);
-		}
-		
-		echo "valid";
+		echo "added";
 	}
-	$q->free();
 }
 elseif ($method == "edit")
 {
-	$centre = strtoupper(trim($_POST["centre"]));
-	$campaign = implode(",", $_POST["campaign"]);
-	$type = $_POST["type"];
-	$leads = $_POST["leads"];
+	mysql_query("UPDATE vericon.centres SET campaign = '" . mysql_real_escape_string($campaign) . "', type = '$type', leads = '$leads' WHERE centre = '" . mysql_real_escape_string($centre) . "'") or die(mysql_error());
 	
-	if ($campaign == "")
-	{
-		echo "<b>Error: </b>Please select a campaign.";
-	}
-	elseif ($type == "")
-	{
-		echo "<b>Error: </b>Please select a centre type.";
-	}
-	elseif ($leads == "")
-	{
-		echo "<b>Error: </b>Please select a lead validation status.";
-	}
-	else
-	{
-		$mysqli->query("UPDATE `vericon`.`centres` SET `type` = '" . $mysqli->real_escape_string($type) . "', `leads` = '" . $mysqli->real_escape_string($leads) . "' WHERE `id` = '" . $mysqli->real_escape_string($centre) . "' LIMIT 1") or die($mysqli->error);
-		
-		$mysqli->query("DELETE FROM `vericon`.`centre_campaigns` WHERE `centre` = '" . $mysqli->real_escape_string($centre) . "'") or die($mysqli->error);
-		
-		$campaign = explode(",", $campaign);
-		for ($i = 0; $i < count($campaign); $i++)
-		{
-			$mysqli->query("INSERT INTO `vericon`.`centre_campaigns` (`centre`, `campaign`) VALUES ('" . $mysqli->real_escape_string($centre) . "', '" . $mysqli->real_escape_string($campaign[$i]) . "')") or die($mysqli->error);
-		}
-		
-		echo "valid";
-	}
+	echo "editted";
 }
-$mysqli->close();
+elseif ($method == "campaign")
+{
+	$q = mysql_query("SELECT campaign FROM vericon.centres WHERE centre = '$centre'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "type")
+{
+	$q = mysql_query("SELECT type FROM vericon.centres WHERE centre = '$centre'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "leads")
+{
+	$q = mysql_query("SELECT leads FROM vericon.centres WHERE centre = '$centre'") or die(mysql_error());
+	$data = mysql_fetch_row($q);
+	
+	echo $data[0];
+}
+elseif ($method == "disable")
+{
+	mysql_query("UPDATE vericon.centres SET status = 'Disabled' WHERE centre = '" . mysql_real_escape_string($centre) . "'") or die(mysql_error());
+	
+	mysql_query("UPDATE vericon.auth SET status = 'Disabled' WHERE centre = '" . mysql_real_escape_string($centre) . "'") or die(mysql_error());
+}
+elseif ($method == "enable")
+{
+	mysql_query("UPDATE vericon.centres SET status = 'Enabled' WHERE centre = '" . mysql_real_escape_string($centre) . "'") or die(mysql_error());
+}
 ?>

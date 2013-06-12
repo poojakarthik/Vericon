@@ -1,62 +1,65 @@
 <?php
-include("../auth/restrict_inner.php");
-
-$page = $_POST["page"];
+mysql_connect('localhost','vericon','18450be');
 ?>
-<table width="100%" height="500px">
-<tr valign="top" height="95%">
-<td>
+
+<table width="100%">
+<tr>
+<td style="padding-left:5px;"><img src="../images/tpv_announcements_header.png" width="200" height="25" /></td>
+</tr>
+<tr>
+<td><img src="../images/line.png" width="100%" height="9" /></td>
+</tr>
+</table>
+
+<div style="width:98%; margin-left:auto; margin-right:auto;">
 <?php
-$check = $mysqli->query("SELECT * FROM `vericon`.`announcements` WHERE `department` = 'TPV' AND `status` = 'Enabled'") or die($mysqli->error);
-$rows = $check->num_rows;
-$check->free();
+$check = mysql_query("SELECT * FROM vericon.announcements WHERE (department = 'tpv' OR department = 'all') AND display = 'Yes'") or die(mysql_error());
+$rows = mysql_num_rows($check);
 
 if ($rows == 0)
 {
-	$st = 0;
-	echo "<p>No Announcements</p>";
+	echo "<p>No Announcements!</p>";
 }
 else
 {
-	$st = $page * 3;
-	$q = $mysqli->query("SELECT `announcements`.`subject`, `announcements`.`message`, `announcements`.`timestamp`, CONCAT(`auth`.`first`, ' ', `auth`.`last`) AS poster FROM `vericon`.`announcements`, `vericon`.`auth` WHERE `announcements`.`department` = 'TPV' AND `announcements`.`status` = 'Enabled' AND `announcements`.`poster` = `auth`.`user` ORDER BY `announcements`.`id` DESC LIMIT $st , 3") or die($mysqli->error);
-	while($r = $q->fetch_assoc())
+	$st = $_GET["page"]*4;
+	$q = mysql_query("SELECT * FROM vericon.announcements WHERE (department = 'tpv' OR department = 'all') AND display = 'Yes' ORDER BY id DESC LIMIT $st , 4") or die(mysql_error());
+
+	while($r = mysql_fetch_assoc($q))
 	{
-		echo "<p><span style='font-size:14px;'><b>" . $r["subject"] . "</b></span></p>";
-		echo $r["message"];
-		echo "<hr style='width:70%; height:1px; margin-top:10px; border-top:1px dotted #3a65b4; background:none;' />";
-		echo "<p style='font-size:9px;'>Posted by " . $r["poster"] . " | " . date("d F Y h:i A", strtotime($r["timestamp"])) . "</p><br>";
+		$icon = "";
+		if ($r["department"] == "all")
+		{
+			$icon = "&nbsp;<img src='../images/star.gif'>";
+		}
+		echo "<p><b>" . $r["subject"] . $icon . "</b></p>";
+		echo "<p>" . nl2br($r["message"]) . "</p>";
+		echo "<img src='../images/line.png' width='200' height='9'>";
+		echo "<p style='font-size:9px;'>Posted by " . $r["poster"] . " | " . $r["date"] . "</p><br>";
 	}
-	$q->free();
 }
-$mysqli->close();
 ?>
-</td>
-</tr>
-<tr valign="bottom">
-<td>
+
 <table width="100%">
 <tr>
 <td align="left" width="50%">
 <?php
-if (($st - 3) < $rows && $page > 0)
+if (($st - 4) < $rows && $_GET["page"] > 0)
 {
-    $page_newer = $page - 1;
-    echo "<button onClick='TPV01_More_Announcements(\"$page_newer\")' class='newer'></button>";
+    $page = $_GET["page"]-1;
+    echo "<input type='button' onClick='Display(\"$page\")' class='newer'>";
 }
 ?>
 </td>
 <td align="right" width="50%">
 <?php
-if (($st + 3) < $rows)
+if (($st + 4) < $rows)
 {
-	$page_older = $page + 1;
-	echo "<button onClick='TPV01_More_Announcements(\"$page_older\")' class='older'></button>";
+	$page = $_GET["page"]+1;
+	echo "<input type='button' onClick='Display(\"$page\")' class='older'>";
 }
 ?>
 </td>
 </tr>
 </table>
-</td>
-</tr>
-</table>
+</div>

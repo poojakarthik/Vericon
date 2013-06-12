@@ -1,165 +1,457 @@
 <?php
-include("../auth/restrict.php");
+include "../auth/iprestrict.php";
+include "../source/header.php";
 ?>
 <style>
-div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
-div#users-contain table th { border: 1px solid rgba(41,171,226,0.25); padding: .6em 10px; text-align: left; }
-div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .6em 5px; text-align: left; }
-div#users-contain table tbody tr:hover { background:rgba(255,255,255,0.25); }
-.ui-autocomplete { max-height: 150px; overflow-y: auto; overflow-x: hidden; }
-.ui-autocomplete-category { font-weight: bold; padding: .2em .4em; margin: .8em 0 .2em; line-height: 1.5; }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; width: 100%; }
+div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align: left; }
+div#users-contain table td { border: 1px solid #eee; padding: .6em 5px; text-align: left; }
+.ui-dialog .ui-state-highlight { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+.validateTips2  { border: 1px solid transparent; padding: 0.3em; }
+.validateTips3  { border: 1px solid transparent; padding: 0.3em; }
+.validateTips4  { border: 1px solid transparent; padding: 0.3em; }
+.ui-autocomplete-loading { background: white url('../images/ajax-loader.gif') right center no-repeat; }
 </style>
-
 <script>
-function Admin03_More_Users(page)
+function Display(page)
 {
-	var method = $( "#Admin03_method" ),
-		query = $( "#Admin03_query" );
+	$( "#display2" ).load("users_display2.php?page=" + page);
+}
+</script>
+<script> // create user modal
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
 	
-	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/users_display.php", { m: method.val(), page: page, query: query.val() }, function(data, status, xhr){
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else
-			{
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
-					V_Loading_End();
-				}, 2500);
-			}
-		}
-		else
-		{
-			V_Loading_End();
-		}
-	});
-}
+	var password = $( "#password" ),
+		password2 = $( "#password2" ),
+		first = $( "#first" ),
+		last = $( "#last" ),
+		access = $( "#access" ),
+		centre = $( "#centre" ),
+		designation = $( "#designation" ),
+		alias = $( "#alias" ),
+		allFields = $( [] ).add( password ).add( password2 ).add( first ).add( last ).add( access ).add( centre ).add( designation ).add( alias ),
+		tips = $( ".validateTips" );
 
-function Admin03_Search(category,id)
-{
-	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/users_display.php", { m: "search_" + category, query: id, page: 0 }, function(data, status, xhr){
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else
-			{
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
-					V_Loading_End();
-				}, 2500);
-			}
-		}
-		else
-		{
-			V_Loading_End();
-		}
-	});
-}
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
 
-function Admin03_Display_Reload()
-{
-	var method = $( "#Admin03_method" ),
-		page = $( "#Admin03_page" ),
-		query = $( "#Admin03_query" );
+	function checkLength( o, n, min, max ) {
+		if ( o.val().length > max || o.val().length < min ) {
+			updateTips( "Length of " + n + " must be between " +
+				min + " and " + max + "." );
+			return false;
+		} else {
+			return true;
+		}
+	}
 	
-	if ($( ".blockUI" ).val() != "")
-	{
-		V_Loading_Start();
-	}
-	$( "#display_inner" ).load("/admin/users_display.php", { m: method.val(), page: page.val(), query: query.val() }, function(data, status, xhr){
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else
-			{
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
-					V_Loading_End();
-				}, 2500);
-			}
+	function checkRegexp( o, regexp, n ) {
+		if ( !( regexp.test( o.val() ) ) ) {
+			updateTips( n );
+			return false;
+		} else {
+			return true;
 		}
-		else
-		{
-			V_Loading_End();
+	}
+	
+	$( "#dialog-form" ).dialog({
+		autoOpen: false,
+		height: 420,
+		width: 315,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				var bValid = true;
+				bValid = bValid && checkLength( first, "First Name", 2, 30 );
+				bValid = bValid && checkRegexp( first, /^[a-zA-Z '-]+$/i, "First Name may only contain letters, dashes, apostrophes and spaces." );
+				bValid = bValid && checkLength( last, "Last Name", 2, 30 );
+				bValid = bValid && checkRegexp( last, /^[a-zA-Z '-]+$/i, "Last Name may only contain letters, dashes, apostrophes and spaces." );
+				bValid = bValid && checkLength( password, "Password", 6, 16 );
+				
+				if ( bValid ) {
+					$.get("users_submit.php?method=create", { first: first.val(), last: last.val(), password: password.val(), password2: password2.val(), access: access.val(), centre: centre.val(), designation: designation.val(), alias: alias.val() },
+					function(data) {
+						if (data.substring(0,7) == "created")
+						{
+							allFields.val( "" );
+							tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+							$( "#dialog-form" ).dialog( "close" );
+							$( ".user-created" ).html(data.substring(7));
+							$( "#dialog-confirm" ).dialog( "open" );
+					   }
+					   else
+						{
+							updateTips(data);
+						}
+					});
+				}
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+				allFields.val( "" );
+				tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+			}
+		},
+		close: function() {
+			allFields.val( "" );
+			tips.html('<span style="color:#ff0000;">*</span> Required Fields');
 		}
 	});
-}
+});
 
-function Admin03_Create_User()
+function Create()
 {
-	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/users_new.php", { }, function(data, status, xhr){
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else
-			{
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
-					V_Loading_End();
-				}, 2500);
-			}
-		}
-		else
-		{
-			$( "#Admin03_search_bar" ).attr("style","display:none;");
-			$( "#Admin03_search" ).attr("disabled","disabled");
-			$( "#Admin03_create_user" ).attr("disabled","disabled");
-			$( "#Admin03_pending_users" ).attr("disabled","disabled");
-			V_Loading_End();
+	$( "#dialog-form" ).dialog( "open" );
+}
+</script>
+<script> // user created confirmation
+$(function() {
+	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
+
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:250,
+		height:100,
+		modal: true,
+		show: 'blind',
+		hide: 'blind',
+		close: function() {
+			var page_link = $( "#page_link" );
+			$( "#display2" ).load("users_display2.php" + page_link.val());
 		}
 	});
-}
+});
+</script>
+<script> // modify user modal
+$(function() {
+	$( "#dialog:ui-dialog3" ).dialog( "destroy" );
+	
+	var username = $( "#m_username" ),
+		access = $( "#m_access" ),
+		centre = $( "#m_centre" ),
+		designation = $( "#m_designation" ),
+		alias = $( "#m_alias" ),
+		tips = $( ".validateTips2" );
 
-$.widget( "custom.catcomplete", $.ui.autocomplete, {
-	_renderMenu: function( ul, items ) {
-		var that = this,
-			currentCategory = "";
-		$.each( items, function( index, item ) {
-			if ( item.category != currentCategory ) {
-				ul.append( "<li class='ui-autocomplete-category'>" + item.category + "</li>" );
-				currentCategory = item.category;
-			}
-			that._renderItemData( ul, item );
-		});
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
 	}
+
+	function checkLength( o, n, min, max ) {
+		if ( o.val().length > max || o.val().length < min ) {
+			updateTips( "Length of " + n + " must be between " +
+				min + " and " + max + "." );
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	$( "#dialog-form2" ).dialog({
+		autoOpen: false,
+		height: 360,
+		width: 315,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				$.get("users_submit.php?method=modify", { username: username.val(), access: access.val(), centre: centre.val(), designation: designation.val(), alias: alias.val() },
+				function(data) {
+					if (data == "modified")
+					{
+						$( "#dialog-form2" ).dialog( "close" );
+						tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+						var page_link = $( "#page_link" );
+						$( "#display2" ).load("users_display2.php" + page_link.val());
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+				$( this ).dialog( "close" );
+			}
+		},
+		close: function() {
+			tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+		}
+	});
+});
+
+function Modify(user)
+{
+	$("#m_access option:selected").removeAttr("selected");
+	$( "#m_username" ).val(user);
+	$.get("users_submit.php", { method: "first", user: user }, function(data) { $( "#m_first" ).val(data); });
+	$.get("users_submit.php", { method: "last", user: user }, function(data) { $( "#m_last" ).val(data); });
+	$.get("users_submit.php", { method: "access", user: user }, function(data) {
+		var acc_type = data.split(',');
+		
+		for (i = 0; i < acc_type.length; i++)
+		{
+			l = "#m_access option[value='" + acc_type[i] + "']";
+			$( l ).attr("selected","selected");
+		}
+	});
+	$.get("users_submit.php", { method: "centre", user: user }, function(data) { $( "#m_centre" ).val(data); });
+	$.get("users_submit.php", { method: "designation", user: user }, function(data) { $( "#m_designation" ).val(data); });
+	$.get("users_submit.php", { method: "alias", user: user }, function(data) { $( "#m_alias" ).val(data); });
+	$( "#dialog-form2" ).dialog( "open" );
+}
+</script>
+<script> // modify password modal
+$(function() {
+	$( "#dialog:ui-dialog6" ).dialog( "destroy" );
+	
+	var username = $( "#m_username2" ),
+		password = $( "#m_password" ),
+		password2 = $( "#m_password2" ),
+		tips = $( ".validateTips4" );
+
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	function checkLength( o, n, min, max ) {
+		if ( o.val().length > max || o.val().length < min ) {
+			updateTips( "Length of " + n + " must be between " +
+				min + " and " + max + "." );
+			return false;
+		} else {
+			return true;
+		}
+	}
+	
+	$( "#dialog-form4" ).dialog({
+		autoOpen: false,
+		height: 240,
+		width: 315,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				var bValid = true;
+				bValid = bValid && checkLength( password, "Password", 6, 16 );
+				
+				if (bValid)
+				{
+					$.get("users_submit.php?method=modify_pw", { username: username.val(), password: password.val(), password2: password2.val() },
+					function(data) {
+						if (data == "modified")
+						{
+							$( "#dialog-form4" ).dialog( "close" );
+							tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+							var page_link = $( "#page_link" );
+							$( "#display2" ).load("users_display2.php" + page_link.val());
+						}
+						else
+						{
+							updateTips(data);
+						}
+					});
+				}
+			},
+			Cancel: function() {
+				tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+				$( this ).dialog( "close" );
+			}
+		},
+		close: function() {
+			tips.html('<span style="color:#ff0000;">*</span> Required Fields');
+		}
+	});
+});
+
+function Modify_PW(user)
+{
+	$( "#m_username2" ).val(user);
+	$.get("users_submit.php", { method: "first", user: user }, function(data) { $( "#m_first2" ).val(data); });
+	$.get("users_submit.php", { method: "last", user: user }, function(data) { $( "#m_last2" ).val(data); });
+	$( "#m_password" ).val("");
+	$( "#m_password2" ).val("");
+	$( "#dialog-form4" ).dialog( "open" );
+}
+</script>
+<script> // modify access modal
+$(function() {
+	$( "#dialog:ui-dialog7" ).dialog( "destroy" );
+	
+	var username = $( "#m_username3" );
+
+	$( "#dialog-form5" ).dialog({
+		autoOpen: false,
+		height: 450,
+		width: 500,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				var pages = new Array();
+
+				$('#access_pages input:checked').each(function() {
+					page = $(this).val();
+					pages.push(page);
+				});
+				
+				$.get("users_submit.php?method=modify_access", { username: username.val(), pages: pages }, function(data) {
+					if (data == "modified")
+					{
+						$( "#dialog-form5" ).dialog( "close" );
+						var page_link = $( "#page_link" );
+						$( "#display2" ).load("users_display2.php" + page_link.val());
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+
+function Modify_Access(user)
+{
+	$( "#m_username3" ).val(user);
+	$( "#access_pages" ).load("users_submit.php?method=pages&username=" + user, function() {
+		$( "#dialog-form5" ).dialog( "open" );
+	});
+}
+</script>
+<script> // disable confirmation
+$(function() {
+	$( "#dialog:ui-dialog4" ).dialog( "destroy" );
+
+	$( "#dialog-confirm2" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		height:140,
+		modal: true,
+		buttons: {
+			"Disable User": function() {
+				var disable_user = $( "#disable_user" ).val();
+				$.get("users_submit.php?method=disable", { username: disable_user }, function (data) {
+					$( "#dialog-confirm2" ).dialog( "close" );
+					var page_link = $( "#page_link" );
+					$( "#display2" ).load("users_display2.php" + page_link.val());
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+function Disable(user)
+{
+	$( "#disable_user" ).val(user);
+	$( "#dialog-confirm2" ).dialog( "open" );
+}
+</script>
+<script> // enable confirmation
+$(function() {
+	$( "#dialog:ui-dialog5" ).dialog( "destroy" );
+
+	$( "#dialog-confirm3" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		height:140,
+		modal: true,
+		buttons: {
+			"Enable User": function() {
+				var enable_user = $( "#enable_user" ).val();
+				$.get("users_submit.php?p=users&method=enable", { username: enable_user }, function (data) {
+					$( "#dialog-confirm3" ).dialog( "close" );
+					var page_link = $( "#page_link" );
+					$( "#display2" ).load("users_display2.php" + page_link.val());
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+function Enable(user)
+{
+	$( "#enable_user" ).val(user);
+	$( "#dialog-confirm3" ).dialog( "open" );
+}
+</script>
+<script> // search users
+$(function() {
+	$( "#dialog:ui-dialog6" ).dialog( "destroy" );
+	
+	var agent = $( "#search_agent" ),
+		tips = $( ".validateTips3" );
+	
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-form3" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		width:250,
+		height:125,
+		modal: true,
+		show: 'blind',
+		hide: 'blind'
+	});
 });
 
 $(function() {
-	$( "#Admin03_search" ).catcomplete({
+	$( "#search_box" ).autocomplete({
 		source: function(request, response) {
 			$.ajax({
-				url: "/admin/users_search.php",
+				url: "users_submit.php",
 				dataType: "json",
-				type: "POST",
 				data: {
-					term: request.term
+					method: "search",
+					term : request.term
 				},
 				success: function(data) {
 					response(data);
@@ -167,199 +459,209 @@ $(function() {
 			});
 		},
 		minLength: 2,
-		select: function (event, ui) {
-			Admin03_Search(ui.item.category, ui.item.id);
+		select: function( event, ui ) {
+			$( "#search_agent" ).val(ui.item.id);
+			$( "#dialog-form3" ).dialog( "close" );
+			$( "#display2" ).load("users_display2.php?query=" + ui.item.id);
 		}
 	});
 });
 
-function Admin03_Edit_User(user)
+function Search()
 {
-	var method = $( "#Admin03_method" ),
-		page = $( "#Admin03_page" ),
-		query = $( "#Admin03_query" );
-	
-	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/users_edit.php", { user: user, method: method.val(), page: page.val(), query: query.val() }, function(data, status, xhr){
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
-			}
-			else
-			{
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
-					V_Loading_End();
-				}, 2500);
-			}
-		}
-		else
-		{
-			$( "#Admin03_search_bar" ).attr("style","display:none;");
-			$( "#Admin03_search" ).attr("disabled","disabled");
-			$( "#Admin03_create_user" ).attr("disabled","disabled");
-			$( "#Admin03_pending_users" ).attr("disabled","disabled");
-			V_Loading_End();
-		}
-	});
-}
-
-function Admin03_Toggle_Status(user,method)
-{
-	V_Loading_Start();
-	$.post("/admin/users_process.php", { m: method, user: user }, function(data) {
-		Admin03_Display_Reload();
-	}).error( function(xhr, text, err) {
-		if (xhr.status == 403 || xhr.status == 0)
-		{
-			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-			setTimeout(function() {
-				V_Logout();
-			}, 2500);
-		}
-		else
-		{
-			$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-			setTimeout(function() {
-				V_Loading_End();
-			}, 2500);
-		}
-	});
+	$( "#search_agent" ).val("");
+	$( "#search_box" ).val("");
+	$( "#dialog-form3" ).dialog( "open" );
 }
 </script>
 
-<div class="head">
+<div id="dialog-form" title="Create User">
+	<p class="validateTips"><span style="color:#ff0000;">*</span> Required Fields</p>
 <table>
 <tr>
-<td style="width:90px;"><div class="dotted"></div></td>
-<td valign="middle" nowrap="nowrap" width="1px"><h1>VeriCon Users</h1></td>
-<td><div class="dotted"></div></td>
+<td width="105px">Username </td>
+<td><input type="text" style="width:150px;" value="Automatically Generated" disabled="disabled"></td>
 </tr>
-</table>
-</div>
-
-<div id="Admin03_search_bar" style="width:98%; margin:0 auto 10px;">
-<table width="100%">
 <tr>
-<td><input type="text" id="Admin03_search" style="padding:5px 10px 5px 25px; background:url('/images/search_icon.png') no-repeat scroll 5px center #FFFFFF;" placeholder="Search..."></td>
-<td align="right"><button onclick="Admin03_Create_User()" id="Admin03_create_user" class="btn">Create User</button>
-<?php
-$q = $mysqli->query("SELECT `first` FROM `vericon`.`auth_temp`") or die($mysqli->error);
-if ($q->num_rows == 0)
-{
-	echo "<button disabled='disabled' class='btn' style='margin-left:10px;'>Pending Users</button>";
-}
-else
-{
-	echo "<button onclick='Admin03_Pending_Users()' id='Admin03_pending_users' class='btn' style='margin-left:10px;'>Pending Users</button>";
-}
-$q->free();
-?></td>
+<td>First Name<span style="color:#ff0000;">*</span> </td>
+<td><input id="first" type="text" style="width:150px;"></td>
 </tr>
-</table>
-</div>
-
-<div id="display_inner">
-<center><table width="98%" height="500px">
-<tr valign="top" height="95%">
-<td>
-<div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" style="width:100%; margin-top:0px;">
-<thead>
-<tr class="ui-widget-header ">
-<th width="10%">Username</th>
-<th width="18%">Full Name</th>
-<th width="18%" style='text-align:center;'>Department</th>
-<th width="8%" style='text-align:center;'>Centre</th>
-<th width="13%" style='text-align:center;'>Joining Date</th>
-<th width="13%" style='text-align:center;'>Last Login</th>
-<th width="10%" style='text-align:center;'>Status</th>
-<th width="10%" style='text-align:center;' colspan="2">Edit User</th>
-</tr>
-</thead>
-<tbody>
-<?php
-$check = $mysqli->query("SELECT * FROM `vericon`.`auth`") or die($mysqli->error);
-$rows = $check->num_rows;
-$check->free();
-
-if($rows == 0)
-{
-	$st = 0;
-	echo "<tr>";
-	echo "<td colspan='9'>No Users?!?!?!</td>";
-	echo "</tr>";
-}
-else
-{
-	$st = 0;
-	$q = $mysqli->query("SELECT * FROM `vericon`.`auth` ORDER BY `user` ASC LIMIT 0 , 13") or die($mysqli->error);
-	while($r = $q->fetch_assoc())
-	{
-		$q1 = $mysqli->query("SELECT MAX(`timestamp`) FROM `logs`.`login` WHERE `user` = '" . $mysqli->real_escape_string($r["user"]) . "'") or die($mysqli->error);
-		$l = $q1->fetch_row();
-		$q1->free();
-		if ($l[0] == null) {
-			$last_login = "Never";
-		} else {
-			$last_login = date("d/m/Y H:i:s", strtotime($l[0]));
-		}
-		echo "<tr>";
-		echo "<td>" . $r["user"] . "</td>";
-		echo "<td>" . $r["first"] . " " . $r["last"] . "</td>";
-		echo "<td style='text-align:center;'>" . $r["type"] . "</td>";
-		echo "<td style='text-align:center;'>" . $r["centre"] . "</td>";
-		echo "<td style='text-align:center;'>" . date("d/m/Y H:i:s", strtotime($r["timestamp"])) . "</td>";
-		echo "<td style='text-align:center;'>" . $last_login . "</td>";
-		echo "<td style='text-align:center;'>" . $r["status"] . "</td>";
-		echo "<td style='text-align:center;'><button onclick='Admin03_Edit_User(\"$r[user]\")' class='icon_edit' title='Edit'></button></td>";
-		if($r["status"] == "Enabled") {
-			echo "<td style='text-align:center;'><button onclick='Admin03_Toggle_Status(\"$r[user]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
-		} else {
-			echo "<td style='text-align:center;'><button onclick='Admin03_Toggle_Status(\"$r[user]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
-		}
-		echo "</tr>";
-	}
-	$q->free();
-}
-$mysqli->close();
-?>
-</tbody>
-</table>
-</div>
-</td>
-</tr>
-<tr valign="bottom">
-<td>
-<table width="100%">
 <tr>
-<td align="left" width="40%"></td>
-<td align="center" width="20%">
+<td>Last Name<span style="color:#ff0000;">*</span> </td>
+<td><input id="last" type="text" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="password" type="password" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="password2" type="password" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Access<span style="color:#ff0000;">*</span> </td>
+<td><select id="access" multiple="multiple" style="width:152px; height:100px;">
 <?php
-$p_t = ceil($rows / 13);
-echo "1 of " . $p_t;
-?>
-</td>
-<td align="right" width="40%">
-<?php
-if (($st + 13) < $rows)
+$q = mysql_query("SELECT id,name FROM vericon.portals WHERE status = '1' AND id != 'MA' ORDER BY name ASC") or die(mysql_error());
+while($portals = mysql_fetch_row($q))
 {
-	$page = 1;
-	echo "<button onClick='Admin03_More_Users(\"$page\")' class='next'></button>";
+	echo "<option value='$portals[0]'>" . $portals[1] . "</option>";
 }
 ?>
-</td>
+</select></td>
+</tr>
+<tr>
+<td>Centre </td>
+<td><select id="centre" style="width:152px;">
+<option></option>
+<?php
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+while($centres = mysql_fetch_row($q))
+{
+	echo "<option>" . $centres[0] . "</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td>Designation </td>
+<td><select id="designation" style="width:152px;">
+<option></option>
+<option>Team Leader</option>
+<option>Closer</option>
+<option>Agent</option>
+<option>Probation</option>
+</select></td>
+</tr>
+<tr>
+<td>Alias </td>
+<td><input id="alias" type="text" style="width:150px;"></td>
 </tr>
 </table>
-</td>
-</tr>
-</table></center>
-<input type="hidden" id="Admin03_method" value="display" />
-<input type="hidden" id="Admin03_page" value="0" />
-<input type="hidden" id="Admin03_query" value="" />
 </div>
+
+<div id="dialog-confirm" title="User Created">
+	<p class="user-created"></p>
+</div>
+
+<div id="dialog-form2" title="Edit User">
+	<p class="validateTips2"><span style="color:#ff0000;">*</span> Required Fields</p>
+<table>
+<tr>
+<td width="105px">Username </td>
+<td><input id="m_username" type="text" style="width:150px;" disabled="disabled" value=""></td>
+</tr>
+<tr>
+<td>First Name </td>
+<td><input id="m_first" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Last Name </td>
+<td><input id="m_last" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Access<span style="color:#ff0000;">*</span> </td>
+<td><select id="m_access" multiple="multiple" style="width:152px; height:100px;">
+<?php
+$q = mysql_query("SELECT id,name FROM vericon.portals WHERE status = '1' AND id != 'MA' ORDER BY name ASC") or die(mysql_error());
+while($portals = mysql_fetch_row($q))
+{
+	echo "<option value='$portals[0]'>" . $portals[1] . "</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td>Centre </td>
+<td><select id="m_centre" style="width:152px;">
+<option></option>
+<?php
+$q = mysql_query("SELECT centre FROM vericon.centres WHERE status = 'Enabled' ORDER BY centre ASC") or die(mysql_error());
+while($centres = mysql_fetch_row($q))
+{
+	echo "<option>" . $centres[0] . "</option>";
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td>Designation </td>
+<td><select id="m_designation" style="width:152px;">
+<option></option>
+<option>Team Leader</option>
+<option>Closer</option>
+<option>Agent</option>
+<option>Probation</option>
+</select></td>
+</tr>
+<tr>
+<td>Alias </td>
+<td><input id="m_alias" type="text" style="width:150px;"></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-form4" title="Edit Password">
+	<p class="validateTips4"><span style="color:#ff0000;">*</span> Required Fields</p>
+<table>
+<tr>
+<td width="105px">Username </td>
+<td><input id="m_username2" type="text" style="width:150px;" disabled="disabled" value=""></td>
+</tr>
+<tr>
+<td>First Name </td>
+<td><input id="m_first2" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Last Name </td>
+<td><input id="m_last2" type="text" style="width:150px;" disabled="disabled"></td>
+</tr>
+<tr>
+<td>Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="m_password" type="password" style="width:150px;"></td>
+</tr>
+<tr>
+<td>Re-Type Password<span style="color:#ff0000;">*</span> </td>
+<td><input id="m_password2" type="password" style="width:150px;"></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-form5" title="Edit Access">
+<input id="m_username3" type="hidden" value="">
+<div id="access_pages">
+</div>
+</div>
+
+<div id="dialog-confirm2" title="Disable User?">
+	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure you would like to disable this user?</p>
+    <input type="hidden" id="disable_user" value="" />
+</div>
+
+<div id="dialog-confirm3" title="Enable User?">
+	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure you would like to enable this user?</p>
+    <input type="hidden" id="enable_user" value="" />
+</div>
+
+<div id="dialog-form3" title="Search">
+<p class="validateTips3">Please Type the Agent's Name Below</p><br />
+Agent: <input type="text" id="search_box" size="25" />
+<input type="hidden" id="search_agent" value="" />
+</div>
+
+<div id="display">
+<script>
+$( "#display" ).hide();
+$( "#display" ).load('users_display.php',
+function() {
+	$( "#display2" ).load('users_display2.php?page=0',
+	function() {
+		$( "#display" ).show('blind', '' , 'slow');
+	});
+});
+</script>
+</div>
+
+<?php
+include "../source/footer.php";
+?>

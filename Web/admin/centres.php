@@ -1,161 +1,322 @@
 <?php
-include("../auth/restrict.php");
+include "../auth/iprestrict.php";
+include "../source/header.php";
 ?>
 <style>
-div#users-contain table { margin: 1em 0; border-collapse: collapse; background:none; }
-div#users-contain table th { border: 1px solid rgba(41,171,226,0.25); padding: .6em 10px; text-align: center; }
-div#users-contain table td { border: 1px solid rgba(41,171,226,0.25); padding: .6em 5px; text-align: center; }
-div#users-contain table tbody tr:hover { background:rgba(255,255,255,0.25); }
+div#users-contain table { margin: 1em 0; border-collapse: collapse; }
+div#users-contain table th { border: 1px solid #eee; padding: .6em 10px; text-align:left }
+div#users-contain table td { border: 1px solid #eee; padding: .3em 5px; text-align:left }
+.ui-dialog .ui-state-highlight { padding: .3em; }
+.validateTips { border: 1px solid transparent; padding: 0.3em; }
+.validateTips2 { border: 1px solid transparent; padding: 0.3em; }
 </style>
+<script> //add centre
+$(function() {
+	$( "#dialog:ui-dialog" ).dialog( "destroy" );
+	
+	var centre = $( "#centre" ),
+		campaign = $( "#campaign" ),
+		type = $( "#type" ),
+		leads = $( "#leads" ),
+		tips = $( ".validateTips" );
 
-<script>
-function Admin05_Toggle_Status(centre,method)
-{
-	V_Loading_Start();
-	$.post("/admin/centres_process.php", { m: method, centre: centre }, function(data) {
-		V_Page_Reload();
-	}).error( function(xhr, text, err) {
-		if (xhr.status == 403 || xhr.status == 0)
-		{
-			$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-			setTimeout(function() {
-				V_Logout();
-			}, 2500);
-		}
-		else
-		{
-			$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-			setTimeout(function() {
-				V_Loading_End();
-			}, 2500);
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-form" ).dialog({
+		autoOpen: false,
+		height: 210,
+		width: 275,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				$.get("centres_process.php?method=add", { centre: centre.val(), campaign: campaign.val(), type: type.val(), leads: leads.val() }, function(data) {
+					if (data == "added")
+					{
+						$( "#dialog-form" ).dialog( "close" );
+						$( "#display" ).hide('blind', '' , 'slow',
+						function() {
+							$( "#display" ).load('centres_display.php',
+							function() {
+								$( "#display" ).show('blind', '' , 'slow');
+							});
+						});
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
 		}
 	});
+});
+
+function Add_Centre()
+{
+	$( "#dialog-form" ).dialog( "open" );
 }
+</script>
+<script> //edit centre
+$(function() {
+	$( "#dialog:ui-dialog2" ).dialog( "destroy" );
+	
+	var centre = $( "#e_centre" ),
+		campaign = $( "#e_campaign" ),
+		type = $( "#e_type" ),
+		leads = $( "#e_leads" ),
+		tips = $( ".validateTips2" );
 
-function Admin05_Add_Centre()
-{
-	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/centres_new.php", { }, function(data, status, xhr){
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
+	function updateTips( t ) {
+		tips
+			.text( t )
+			.addClass( "ui-state-highlight" );
+		setTimeout(function() {
+			tips.removeClass( "ui-state-highlight", 1500 );
+		}, 500 );
+	}
+
+	$( "#dialog-form2" ).dialog({
+		autoOpen: false,
+		height: 210,
+		width: 275,
+		modal: true,
+		resizable: false,
+		draggable: false,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Submit": function() {
+				$.get("centres_process.php?method=edit", { centre: centre.val(), campaign: campaign.val(), type: type.val(), leads: leads.val() }, function(data) {
+					if (data == "editted")
+					{
+						$( "#dialog-form2" ).dialog( "close" );
+						$( "#display" ).hide('blind', '' , 'slow',
+						function() {
+							$( "#display" ).load('centres_display.php',
+							function() {
+								$( "#display" ).show('blind', '' , 'slow');
+							});
+						});
+					}
+					else
+					{
+						updateTips(data);
+					}
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
 			}
-			else
-			{
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
-					V_Loading_End();
-				}, 2500);
-			}
-		}
-		else
-		{
-			V_Loading_End();
 		}
 	});
+});
+
+function Edit(centre)
+{
+	$( "#e_centre" ).val(centre);
+	$.get("centres_process.php", { method: "campaign", centre: centre }, function(data) { $( "#e_campaign" ).val(data); });
+	$.get("centres_process.php", { method: "type", centre: centre }, function(data) { $( "#e_type" ).val(data); });
+	$.get("centres_process.php", { method: "leads", centre: centre }, function(data) { $( "#e_leads" ).val(data); });
+	$( "#dialog-form2" ).dialog( "open" );
 }
+</script>
+<script> //disable confirmation
+$(function() {
+	$( "#dialog:ui-dialog3" ).dialog( "destroy" );
 
-function Admin05_Edit_Centre(centre)
-{
-	V_Loading_Start();
-	$( "#display_inner" ).load("/admin/centres_edit.php", { centre: centre }, function(data, status, xhr){
-		if (status == "error")
-		{
-			if (xhr.status == 403 || xhr.status == 0)
-			{
-				$(".loading_message").html("<p><b>Your session has expired.</b></p><p><b>You will be logged out shortly.</b></p>");
-				setTimeout(function() {
-					V_Logout();
-				}, 2500);
+	$( "#dialog-confirm" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		height:140,
+		modal: true,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Disable": function() {
+				var disable_centre = $( "#disable_centre" ).val();
+				$.get("centres_process.php?method=disable", { centre: disable_centre }, function (data) {
+					$( "#dialog-confirm" ).dialog( "close" );
+					$( "#display" ).hide('blind', '' , 'slow',
+					function() {
+						$( "#display" ).load('centres_display.php',
+						function() {
+							$( "#display" ).show('blind', '' , 'slow');
+						});
+					});
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
 			}
-			else
-			{
-				$(".loading_message").html("<p><b>An error occurred while performing this action.</b></p><p><b>Error: " + xhr.status + " " + xhr.statusText + "</b></p>");
-				setTimeout(function() {
-					V_Loading_End();
-				}, 2500);
-			}
-		}
-		else
-		{
-			V_Loading_End();
 		}
 	});
+});
+function Disable(centre)
+{
+	$( "#disable_centre" ).val(centre);
+	$( "#dialog-confirm" ).dialog( "open" );
+}
+</script>
+<script> //enable confirmation
+$(function() {
+	$( "#dialog:ui-dialog4" ).dialog( "destroy" );
+
+	$( "#dialog-confirm2" ).dialog({
+		autoOpen: false,
+		resizable: false,
+		draggable: false,
+		height:140,
+		modal: true,
+		show: 'blind',
+		hide: 'blind',
+		buttons: {
+			"Enable": function() {
+				var enable_centre = $( "#enable_centre" ).val();
+				$.get("centres_process.php?p=users&method=enable", { centre: enable_centre }, function (data) {
+					$( "#dialog-confirm2" ).dialog( "close" );
+					$( "#display" ).hide('blind', '' , 'slow',
+					function() {
+						$( "#display" ).load('centres_display.php',
+						function() {
+							$( "#display" ).show('blind', '' , 'slow');
+						});
+					});
+				});
+			},
+			Cancel: function() {
+				$( this ).dialog( "close" );
+			}
+		}
+	});
+});
+function Enable(centre)
+{
+	$( "#enable_centre" ).val(centre);
+	$( "#dialog-confirm2" ).dialog( "open" );
 }
 </script>
 
-<div class="head">
+<div id="dialog-form" title="Add Centre">
+<p class="validateTips">All fields required</p>
 <table>
 <tr>
-<td style="width:90px;"><div class="dotted"></div></td>
-<td valign="middle" nowrap="nowrap" width="1px"><h1>Call Centres</h1></td>
-<td><div class="dotted"></div></td>
+<td width="85px">Centre Code<span style="color:#ff0000;">*</span> </td>
+<td><input type="text" id="centre" style="width:130px;" /></td>
 </tr>
-</table>
-</div>
-
-<div id="display_inner">
-<center><div style="width:98%">
-<table width="100%">
 <tr>
-<td align="right"><button onclick="Admin05_Add_Centre()" id="Admin05_add_centre" class="btn">Add Centre</button></td>
-</tr>
-</table>
-</div></center>
-
-<center><div id="users-contain" class="ui-widget">
-<table id="users" class="ui-widget ui-widget-content" width="98%">
-<thead>
-<tr class="ui-widget-header ">
-<th style="text-align:center;" width="8%">Centre</th>
-<th style="text-align:center;" width="56%">Campaign</th>
-<th style="text-align:center;" width="8%">Type</th>
-<th style="text-align:center;" width="12%">Lead Validation</th>
-<th style="text-align:center;" width="8%">Status</th>
-<th style="text-align:center;" width="8%" colspan="2">Edit</th>
-</tr>
-</thead>
-<tbody>
+<td width="85px">Campaign<span style="color:#ff0000;">*</span> </td>
+<td><select id="campaign" style="width:132px;">
+<option></option>
 <?php
-$q = $mysqli->query("SELECT * FROM `vericon`.`centres` WHERE `centres`.`id` != '' ORDER BY `id` ASC") or die($mysqli->error);
-while ($centre = $q->fetch_assoc())
+$q = mysql_query("SELECT id,name FROM vericon.groups ORDER BY id ASC") or die(mysql_error());
+while ($group = mysql_fetch_row($q))
 {
-	$campaign = array();
-	$q1 = $mysqli->query("SELECT `campaigns`.`campaign` FROM `vericon`.`campaigns`, `vericon`.`centre_campaigns` WHERE `centre_campaigns`.`centre` = '" . $mysqli->real_escape_string($centre["id"]) . "' AND `centre_campaigns`.`campaign` = `campaigns`.`id`") or die($mysqli->error);
-	while ($data = $q1->fetch_row())
+	echo "<option disabled='disabled'>--- $group[1] ---</option>";
+	$q1 = mysql_query("SELECT campaign FROM vericon.campaigns WHERE `group` = '$group[0]' ORDER BY id ASC") or die(mysql_error());
+	while ($campaign = mysql_fetch_row($q1))
 	{
-		array_push($campaign, $data[0]);
+		echo "<option>$campaign[0]</option>";
 	}
-	$q1->free();
-	$campaign = implode(", ", $campaign);
-	
-	echo "<tr>";
-	echo "<td style='text-align:center'>" . $centre["id"] . "</td>";
-	echo "<td style='text-align:center'>" . $campaign . "</td>";
-	echo "<td style='text-align:center'>" . $centre["type"] . "</td>";
-	echo "<td style='text-align:center'>" . $centre["leads"] . "</td>";
-	echo "<td style='text-align:center'>" . $centre["status"] . "</td>";
-	echo "<td style='text-align:center'><button onclick='Admin05_Edit_Centre(\"$centre[id]\")' class='icon_edit' title='Edit'></button></td>";
-	if($centre["status"] == "Enabled")
-	{
-		echo "<td style='text-align:center;'><button onclick='Admin05_Toggle_Status(\"$centre[id]\",\"disable\")' class='icon_disable' title='Disable'></button></td>";
-	}
-	else
-	{
-		echo "<td style='text-align:center;'><button onclick='Admin05_Toggle_Status(\"$centre[id]\",\"enable\")' class='icon_enable' title='Enable'></button></td>";
-	}
-	echo "</tr>";
 }
-$q->free();
-$mysqli->close();
 ?>
-</tbody>
+</select></td>
+</tr>
+<tr>
+<td width="85px">Type<span style="color:#ff0000;">*</span> </td>
+<td><select id="type" style="width:132px;">
+<option></option>
+<option>Captive</option>
+<option>Outsourced</option>
+<option>Self</option>
+</select></td>
+</tr>
+<tr>
+<td width="85px">Lead Validation<span style="color:#ff0000;">*</span> </td>
+<td><select id="leads" style="width:132px;">
+<option></option>
+<option value="1">Active</option>
+<option value="0">Inactive</option>
+</select></td>
+</tr>
 </table>
-</div></center>
-
 </div>
+
+<div id="dialog-form2" title="Edit Centre">
+<p class="validateTips2">All fields required</p>
+<table>
+<tr>
+<td width="85px">Centre Code </td>
+<td><input type="text" id="e_centre" style="width:130px;" disabled="disabled" /></td>
+</tr>
+<tr>
+<td width="85px">Campaign<span style="color:#ff0000;">*</span> </td>
+<td><select id="e_campaign" style="width:132px;">
+<?php
+$q = mysql_query("SELECT id,name FROM vericon.groups ORDER BY id ASC") or die(mysql_error());
+while ($group = mysql_fetch_row($q))
+{
+	echo "<option disabled='disabled'>--- $group[1] ---</option>";
+	$q1 = mysql_query("SELECT campaign FROM vericon.campaigns WHERE `group` = '$group[0]' ORDER BY id ASC") or die(mysql_error());
+	while ($campaign = mysql_fetch_row($q1))
+	{
+		echo "<option>$campaign[0]</option>";
+	}
+}
+?>
+</select></td>
+</tr>
+<tr>
+<td width="85px">Type<span style="color:#ff0000;">*</span> </td>
+<td><select id="e_type" style="width:132px;">
+<option>Captive</option>
+<option>Outsourced</option>
+<option>Self</option>
+</select></td>
+</tr>
+<tr>
+<td width="85px">Lead Validation<span style="color:#ff0000;">*</span> </td>
+<td><select id="e_leads" style="width:132px;">
+<option value="1">Active</option>
+<option value="0">Inactive</option>
+</select></td>
+</tr>
+</table>
+</div>
+
+<div id="dialog-confirm" title="Disable Centre?">
+	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure you would like to disable this centre and all it's users?</p>
+    <input type="hidden" id="disable_centre" value="" />
+</div>
+
+<div id="dialog-confirm2" title="Enable Centre?">
+	<p><span class="ui-icon ui-icon-alert" style="float:left; margin:0 7px 20px 0;"></span>Are you sure you would like to enable this centre?</p>
+    <input type="hidden" id="enable_centre" value="" />
+</div>
+
+<div id="display">
+<script>
+$( "#display" ).load('centres_display.php',
+function() {
+	$( "#display" ).show('blind', '' , 'slow');
+});
+</script>
+</div>
+
+<?php
+include "../source/footer.php";
+?>
