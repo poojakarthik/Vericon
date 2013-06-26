@@ -7,7 +7,7 @@ require_once('lib/fpdi/fpdi.php');
 require_once ("Mail.php");
 require_once ("Mail/mime.php");
 
-$q = $mysqli->query("SELECT * FROM `letters`.`temp`") or die($mysqli->error);
+$q = $mysqli->query("SELECT * FROM `letters`.`customers` WHERE `wl_date` = '0000-00-00'") or die($mysqli->error);
 while($data = $q->fetch_assoc())
 {
 	$group = $data["group"];
@@ -43,7 +43,6 @@ while($data = $q->fetch_assoc())
 	$sale_date = date("d/m/Y", strtotime($data["sale_date"]));
 	$vericon_id = $data["id"];
 	$address = $data["address_line1"] . ", " . $data["address_line2"];
-	$plans = split(";", $data["plans"]);
 	$spend = 0;
 	
 	$pdf = new FPDI();
@@ -99,38 +98,33 @@ while($data = $q->fetch_assoc())
 	// CIS
 	$pl = array();
 	
-	foreach($plans as $plan_code)
+	$q1 = $mysqli->query("SELECT * FROM `letters`.`packages` WHERE `id` = '" . $data["id"] . "'") or die($mysqli->error);
+	while ($plan = $q1->fetch_assoc())
 	{
-		$q1 = $mysqli->query("SELECT `cost` FROM `letters`.`plan_matrix` WHERE `id` = '" . $plan_code . "' AND `campaign` = '" . $campaign . "'") or die($mysqli->error);
-		$da = $q1->fetch_row();
-		$q1->free();
-		$spend += $da[0];
+		// page 1
+		$pdf->AddPage();
 		
-		if($pl[$plan_code] == 0)
-		{
-			// page 1
-			$pdf->AddPage();
-			
-			$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan_code . '.pdf');
-			
-			$tplIdx = $pdf->importPage(1);
-			
-			$pdf->useTemplate($tplIdx, 0, 0);
-			
-			// page 2
-			$pdf->AddPage();
-			
-			$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan_code . '.pdf');
-			
-			$tplIdx = $pdf->importPage(2);
-			
-			$pdf->useTemplate($tplIdx, 0, 0);
-			
-			$pl[$plan_code] = 1;
-		}
+		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan["plan"] . '.pdf');
+		
+		$tplIdx = $pdf->importPage(1);
+		
+		$pdf->useTemplate($tplIdx, 0, 0);
+		
+		$pdf->SetFont('Century Gothic','',11);
+		$pdf->SetTextColor(232,108,38);
+		$pdf->SetXY(81, 64);
+		$pdf->Write(0, "(0" . substr($plan["cli"],0,1) . ") " . substr($plan["cli"],1,4) . " " . substr($plan["cli"],-4));
+		
+		// page 2
+		$pdf->AddPage();
+		
+		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan["plan"] . '.pdf');
+		
+		$tplIdx = $pdf->importPage(2);
+		
+		$pdf->useTemplate($tplIdx, 0, 0);
 	}
-	
-	$min_spend = "Minimum cost of \$" . round($spend, 2) . " per month";
+	$q1->free();
 	
 	// DD
 	$pdf->AddPage();
@@ -158,13 +152,50 @@ while($data = $q->fetch_assoc())
 	
 	$pdf->useTemplate($tplIdx, 0, 0);
 	
-	// Blank Page
+	// Service Details
 	$pdf->AddPage();
 	
-	$pdf->SetXY(0, 145);
-	$pdf->SetTextColor(102,102,102);
-	$pdf->MultiCell(210, 0, "Blank Page", 0, 'C', false);
+	$pdf->setSourceFile('/var/letters/templates/' . $group . '/services.pdf');
 	
+	$tplIdx = $pdf->importPage(1);
+	
+	$pdf->useTemplate($tplIdx, 0, 0);
+	
+	$pdf->SetFont('Century Gothic','',9);
+	$pdf->SetTextColor(0,0,0);
+	$y = 42.5;
+	
+	$q1 = $mysqli->query("SELECT * FROM `letters`.`packages` WHERE `id` = '" . $data["id"] . "'") or die($mysqli->error);
+	while ($plan = $q1->fetch_assoc())
+	{
+		$q2 = $mysqli->query("SELECT `name`, `cost` FROM `letters`.`plan_matrix` WHERE `id` = '" . $plan["plan"] . "' AND `campaign` = '" . $campaign . "'") or die($mysqli->error);
+		$da = $q2->fetch_row();
+		$q2->free();
+		$spend += $da[1];
+		
+		$pdf->SetXY(21, $y);
+		$pdf->Write(0, "(0" . substr($plan["cli"],0,1) . ") " . substr($plan["cli"],1,4) . " " . substr($plan["cli"],-4));
+		$pdf->SetXY(58, $y);
+		$pdf->Write(0, $da[0]);
+		$pdf->SetXY(133, $y);
+		$pdf->Write(0, "\$" . round($da[1],2));
+		
+		$y = $y + 7.5;
+	}
+	$q1->free();
+	
+	$y = $y - 2.5;
+	$pdf->SetDrawColor(232,108,38);
+	$pdf->SetLineWidth(0.4);
+	$pdf->Line(19.25, $y, 191.75, $y);
+	$pdf->Line(19.25, ($y + 10), 191.75, ($y + 10));
+	
+	$y = $y + 5;
+	$pdf->SetXY(21, $y);
+	$pdf->Write(0, "Total minimum cost of goods or services");
+	$pdf->SetXY(133, $y);
+	$pdf->Write(0, "\$" . round($spend, 2) . " per Month (Inc. GST)");
+
 	// Section 82
 	$pdf->AddPage();
 	
@@ -174,11 +205,10 @@ while($data = $q->fetch_assoc())
 	
 	$pdf->useTemplate($tplIdx, 0, 0);
 	
-	$pdf->SetTextColor(0,0,0);
 	$pdf->SetXY(69, 162.5);
 	$pdf->Write(0, $service);
 	$pdf->SetXY(69, 170);
-	$pdf->Write(0, $min_spend);
+	$pdf->Write(0, "Minimum cost of \$" . round($spend, 2) . " per month (as explained in the previous page)");
 	$pdf->SetXY(69, 177.5);
 	$pdf->Write(0, $sale_date);
 	$pdf->SetXY(69, 185);
@@ -201,57 +231,74 @@ while($data = $q->fetch_assoc())
 		
 		$text_body = "Hello " . $first_name . ",
 		
-		Welcome to " . $campaign_name . ". Please find your attached Welcome Pack, containing the full details of your great new plan.
-		
-		If you encounter any service difficulties or faults then you simply need to contact us and we will arrange the appropriate Telstra technicians and linesmen to get your problem fixed ASAP. Just call us and we'll do the lot!
-		
-		If you have any problems opening the attachment, please make sure you have the latest version of Acrobat Reader, or view the Acrobat Reader Help Site. If you are still unable to view your Welcome Letter, please contact us via care@" . str_replace("www.","",$website) . " or on " . $number . ".";
+We are so pleased that you have chosen to move your services to " . $campaign_name . ", and we look forward to providing you with great service for years to come.
+
+Please find your attached Welcome Pack, containing the full details and terms of your great new plan.
+
+If you have any problems opening the attachment, please make sure you have the latest version of Acrobat Reader, or view the Acrobat Reader Help Site. If you are still unable to view your Welcome Letter, please contact us via care@" . str_replace("www.","",$website) . " or on " . $number . ".
+
+Thanks again and enjoy the service.
+
+-----------------------------------
+THIS IS A SYSTEM GENERATED EMAIL.
+PLEASE DO NOT REPLY TO THIS EMAIL";
 		
 		$html_body = '<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
-		<html>
-		<head>
-		<meta http-equiv="content-type" content="text/html; charset=UTF-8">
-		<title>Welcome Letter</title>
-		</head>
-		<body>
-		<table width="100%" border="0" cellspacing="1" cellpadding="1" align="center">
-		  <tr>
-			<td align="center"><table width="620" cellpadding="1" cellspacing="0" style="background-image:url(http://' . $website . '/images/wl_emails/shade.jpg); background-repeat:repeat-y;">
-				<tr>
-				  <td align="center" style="border-top:1px #CCCCCC solid;"><img src="http://' . $website . '/images/wl_emails/header.jpg" align="middle" alt="Header" /></td>
-				</tr>
-				<tr>
-				  <td>&nbsp;</td>
-				</tr>
-				<tr>
-				  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">Hello ' . $first_name . ',</font></td>
-				</tr>
-				<tr>
-				  <td>&nbsp;</td>
-				</tr>
-				<tr>
-				  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">Welcome to ' . $campaign_name . '. Please find your attached Welcome Pack, containing the full details of your great new plan.</font></td>
-				</tr>
-				<tr>
-				  <td>&nbsp;</td>
-				</tr>
-				<tr>
-				  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">If you encounter any service difficulties or faults then you simply need to contact us and we will arrange the appropriate Telstra technicians and linesmen to get <b>your</b> problem fixed ASAP. Just call us and we&acute;ll do the lot!</font></td>
-				</tr>
-				<tr>
-				  <td>&nbsp;</td>
-				</tr>
-				<tr>
-				  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">If you have any problems opening the attachment, please make sure you have the latest version of <a href="http://get.adobe.com/reader/">Acrobat Reader</a>, or view the <a href="http://helpx.adobe.com/reader.html">Acrobat Reader Help Site</a>. If you are still unable to view your Welcome Letter, please contact us via <a href="mailto:care@' . str_replace("www.","",$website) . '">care@' . str_replace("www.","",$website) . '</a> or on <b>' . $number . '</b>.</font></td>
-				</tr>
-				<tr>
-				  <td align="center" style="border-bottom:1px #CCCCCC solid;"><img src="http://' . $website . '/images/wl_emails/footer.jpg" align="middle" alt="Footer" /></td>
-				</tr>
-			  </table></td>
-		  </tr>
-		</table>
-		</body>
-		</html>';
+<html>
+<head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<title>Welcome Letter</title>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="1" cellpadding="1" align="center">
+  <tr>
+	<td align="center"><table width="620" cellpadding="1" cellspacing="0" style="background-image:url(http://' . $website . '/images/wl_emails/shade.jpg); background-repeat:repeat-y;">
+		<tr>
+		  <td align="center" style="border-top:1px #CCCCCC solid;"><img src="http://' . $website . '/images/wl_emails/header.jpg" align="middle" alt="Header" /></td>
+		</tr>
+		<tr>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">Hello ' . $first_name . ',</font></td>
+		</tr>
+		<tr>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">We are so pleased that you have chosen to move your services to ' . $campaign_name . ', and we look forward to providing you with great service for years to come.</font></td>
+		</tr>
+		<tr>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">Please find your attached Welcome Pack, containing the full details and terms of your great new plan.</font></td>
+		</tr>
+		<tr>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">If you have any problems opening the attachment, please make sure you have the latest version of <a href="http://get.adobe.com/reader/">Acrobat Reader</a>, or view the <a href="http://helpx.adobe.com/reader.html">Acrobat Reader Help Site</a>. If you are still unable to view your Welcome Letter, please contact us via <a href="mailto:care@' . str_replace("www.","",$website) . '">care@' . str_replace("www.","",$website) . '</a> or on <b>' . $number . '</b>.</font></td>
+		</tr>
+		<tr>
+		  <td>&nbsp;</td>
+		</tr>
+		<tr>
+		  <td align="left" style="padding-left:25px; padding-right:25px;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-1">Thanks again and enjoy the service.</font></td>
+		</tr>
+		<tr>
+		  <td align="center" style="border-bottom:1px #CCCCCC solid;"><img src="http://' . $website . '/images/wl_emails/footer.jpg" align="middle" alt="Footer" /></td>
+		</tr>
+	  </td>
+  </tr>
+</table>
+<table width="100%" border="0">
+  <tr>
+    <td style="padding-top:10px;text-align:center;"><font face="Tahoma, Geneva, sans-serif" color="#666666" size="-2"><b>THIS IS A SYSTEM GENERATED EMAIL. PLEASE DO NOT REPLY TO THIS EMAIL</b></font></td>
+  </tr>
+</table>
+</body>
+</html>';
 		
 		$file = $file_name;
 		
@@ -276,19 +323,44 @@ while($data = $q->fetch_assoc())
 		$headers = $mime->headers($headers);
 		$page_content = "Mail now.";
 		
-		$smtpinfo["host"] = "mail.customercareteam.com.au";
-		$smtpinfo["port"] = "25";
+		$smtpinfo["host"] = 'relay.jangosmtp.net';
+		$smtpinfo["port"] = '25';
 		$smtpinfo["auth"] = true;
-		$smtpinfo["username"] = "sys.alerts@customercareteam.com.au";
-		$smtpinfo["password"] = "!Qwer$321";
+		$smtpinfo["username"] = 'sbt';
+		$smtpinfo["password"] = '$mart5100';
 		
 		$mail=& Mail::factory("smtp", $smtpinfo);
 		$mail->send($to, $headers, $body);
 	}
 	else
 	{
-		//copy to print folder
+		$print_dir = '/var/letters/new_letters/pending/' . $campaign_name . '/';
+		if (!file_exists($print_dir)) {
+			mkdir($print_dir);
+		}
+		$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd") . '.pdf'), 'F');
+		
+		$headCount = "/var/letters/new_letters/pending/headCount.csv";
+		
+		if (!file_exists($headCount)) {
+			$content = "File Name,Pages\n";
+			$content .= '"WL_' . $data["id"] . '_' . date("Ymd") . '.pdf",';
+			$content .= '"' . $campaign_name . '"';
+			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
+			$content .= "\n";
+		} else {
+			$content = '"WL_' . $data["id"] . '_' . date("Ymd") . '.pdf",';
+			$content .= '"' . $campaign_name . '"';
+			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
+			$content .= "\n";
+		}
+		
+		$fh = fopen($headCount, 'a') or die("can't open file");
+		fwrite($fh, $content);
+		fclose($fh);
 	}
+	
+	$mysqli->query("UPDATE `letters`.`customers` SET `wl_date` = '" . date("Y-m-d") . "', `file_name` = '" . str_replace('/var/letters/new_letters/', '', $file_name) . "' WHERE `id` = '" . $data["id"] . "'") or die($mysqli->error);
 }
 $q->free();
 
