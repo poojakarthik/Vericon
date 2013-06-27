@@ -343,14 +343,14 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 		$headCount = "/var/letters/new_letters/pending/headCount.csv";
 		
 		if (!file_exists($headCount)) {
-			$content = "File Name,Pages\n";
+			$content = "File Name,Campaign,Pages\n";
 			$content .= '"WL_' . $data["id"] . '_' . date("Ymd") . '.pdf",';
-			$content .= '"' . $campaign_name . '"';
+			$content .= '"' . $campaign_name . '",';
 			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 			$content .= "\n";
 		} else {
 			$content = '"WL_' . $data["id"] . '_' . date("Ymd") . '.pdf",';
-			$content .= '"' . $campaign_name . '"';
+			$content .= '"' . $campaign_name . '",';
 			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 			$content .= "\n";
 		}
