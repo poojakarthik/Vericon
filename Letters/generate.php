@@ -1,9 +1,9 @@
 <?php
 $mysqli = new mysqli('localhost','letters','18450be');
 
-define('FPDF_FONTPATH','lib/fpdf/fonts');
-require_once('lib/fpdf/fpdf.php');
-require_once('lib/fpdi/fpdi.php');
+define('FPDF_FONTPATH','/var/letters/lib/fpdf/fonts');
+require_once('/var/letters/lib/fpdf/fpdf.php');
+require_once('/var/letters/lib/fpdi/fpdi.php');
 require_once ("Mail.php");
 require_once ("Mail/mime.php");
 
@@ -334,7 +334,11 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 	}
 	else
 	{
-		$print_dir = '/var/letters/new_letters/pending/' . $campaign_name . '/';
+		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/';
+		if (!file_exists($print_dir)) {
+			mkdir($print_dir);
+		}
+		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/' . $campaign_name . '/';
 		if (!file_exists($print_dir)) {
 			mkdir($print_dir);
 		}
