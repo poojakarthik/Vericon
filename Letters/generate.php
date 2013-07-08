@@ -7,9 +7,15 @@ require_once('/var/letters/lib/fpdi/fpdi.php');
 require_once ("Mail.php");
 require_once ("Mail/mime.php");
 
+$total_letters = 0;
+$email_letters = 0;
+$posted_letters = 0;
+
 $q = $mysqli->query("SELECT * FROM `letters`.`customers` WHERE `wl_date` = '0000-00-00'") or die($mysqli->error);
 while($data = $q->fetch_assoc())
 {
+	$total_letters++;
+	
 	$group = $data["group"];
 	$campaign = $data["campaign"];
 	$q1 = $mysqli->query("SELECT `campaign`, `number`, `website` FROM `letters`.`campaigns` WHERE `id` = '" . $data["campaign"] . "'") or die($mysqli->error);
@@ -226,6 +232,8 @@ while($data = $q->fetch_assoc())
 	// Email or Post Welcome Letter	
 	if ($data["delivery"] == "E")
 	{
+		$email_letters++;
+		
 		$to = array();
 		$to[] = $first_name . " " . $last_name . " <" . $email . ">";
 		
@@ -334,6 +342,8 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 	}
 	else
 	{
+		$posted_letters++;
+		
 		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/';
 		if (!file_exists($print_dir)) {
 			mkdir($print_dir);
@@ -367,6 +377,73 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 	$mysqli->query("UPDATE `letters`.`customers` SET `wl_date` = '" . date("Y-m-d") . "', `file_name` = '" . str_replace('/var/letters/new_letters/', '', $file_name) . "' WHERE `id` = '" . $data["id"] . "'") or die($mysqli->error);
 }
 $q->free();
+
+if ($total_letters > 0)
+{
+	$letter_count = "";
+	$q = $mysqli->query("SELECT `customers`.`campaign`, `campaigns`.`campaign` FROM `letters`.`customers`, `letters`.`campaigns` WHERE `customers`.`wl_date` = '" . date("Y-m-d") . "' AND `campaigns`.`id` = `customers`.`campaign` GROUP BY `customers`.`campaign`") or die($mysqli->error);
+	while ($campaign = $q->fetch_row())
+	{
+		$email_count = 0;
+		$post_count = 0;
+		
+		$q1 = $mysqli->query("SELECT COUNT(`id`), `customers`.`delivery` FROM `letters`.`customers` WHERE `wl_date` = '" . date("Y-m-d") . "' AND `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
+		while ($data = $q1->fetch_row())
+		{
+			if ($data[1] == "E") {
+				$email_count = $data[0];
+			} elseif($data[1] == "E") {
+				$post_count = $data[0];
+			}
+		}
+		$q1->free();
+		
+		$letter_count .= "
+--- " . $campaign[1] . " ---
+- Email: " . $email_count . " (" . number_format($email_count/($email_count + $post_count), 2) . "%)
+- Post:  " . $post_count . " (" . number_format($post_count/($email_count + $post_count), 2) . "%)
+";
+	}
+	$q->free();
+	
+	
+	$to = array();
+	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Muralli <muralli@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Rowan <rowan@smartbusinesstelecom.com.au>";
+
+	$text_body = "Hi All,
+
+" . $total_letters . " have been generated today of which " . $email_letters . " (" . number_format($email_letters/$total_letters, 2) . "%) have been emailed.
+" . $letter_count . "
+Thanks";
+	
+	$headers["From"] = "VeriCon Reports <reports@vericon.com.au>";
+	$headers["To"] = $to;
+	$headers["Subject"] = "Welcome Letter Report";
+	$headers["Content-Type"] = 'text/html; charset=UTF-8';
+	$headers["Content-Transfer-Encoding"]= "8bit";
+	
+	$mime = new Mail_mime;
+	$mime->setTXTBody($text_body);
+	
+	$mimeparams=array();
+	$mimeparams['text_encoding']="8bit";
+	$mimeparams['text_charset']="UTF-8";
+	$mimeparams['html_charset']="UTF-8";
+	$mimeparams['head_charset']="UTF-8";
+	
+	$body = $mime->get($mimeparams);
+	$headers = $mime->headers($headers);
+	$page_content = "Mail now.";
+	
+	$smtpinfo["host"] = 'relay.jangosmtp.net';
+	$smtpinfo["port"] = '25';
+	$smtpinfo["auth"] = true;
+	$smtpinfo["username"] = 'sbt';
+	$smtpinfo["password"] = '$mart5100';
+	
+	$mail=& Mail::factory("smtp", $smtpinfo);
+	$mail->send($to, $headers, $body);
+}
 
 $mysqli->close();
 ?>
