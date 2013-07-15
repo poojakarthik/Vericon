@@ -408,7 +408,7 @@ if ($total_letters > 0)
 	
 	
 	$to = array();
-	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Muralli <muralli@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Rowan <rowan@smartbusinesstelecom.com.au>";
+	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Muralli <muralli@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Rowan <rowan@smartbusinesstelecom.com.au>, Printing <printing.report@smartbusinesstelecom.com.au>";
 
 	$text_body = "Hi All,
 
