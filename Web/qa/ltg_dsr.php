@@ -4,7 +4,7 @@ mysql_connect('localhost','vericon','18450be');
 $date = date("Y-m-d");
 $type = $argv[1];
 
-if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/SBT/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
+if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/LTG/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
 {
 	exit;
 }
@@ -13,9 +13,9 @@ $header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account S
 
 $body = "";
 
-$campaign_query = "campaign = 'Speed Telecom' OR campaign = 'Magnum Telecom' OR campaign = 'Precise Telecom' OR campaign = 'Oasis Telecom' OR campaign = 'Spiral Communications' OR campaign = 'Telcoshare'";
+$campaign_query = "campaign = 'Sleektel' OR campaign = 'Go Fone' OR campaign = 'Figo Telecom' OR campaign = 'Spacio Telecom'";
 
-$dsr_num = "1" . date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
+$dsr_num = "5" . date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
 if ($type == "Business")
 {
 	$sale_id = $dsr_num . "001";
@@ -509,7 +509,7 @@ while ($qa = mysql_fetch_assoc($q))
 $year_path = "/var/dsr/" . date("Y", strtotime($date));
 $month_path = $year_path . "/" . date("F", strtotime($date));
 $day_path = $month_path . "/" . date("d.m.Y", strtotime($date));
-$new_path = $day_path . "/SBT";
+$new_path = $day_path . "/LTG";
 $filename = $new_path . "/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv";
 
 if (!file_exists($year_path))
