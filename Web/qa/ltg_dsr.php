@@ -9,7 +9,7 @@ if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/LTG/DSR_" 
 	exit;
 }
 
-$header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account Status,ADSL Status,Wireless Status,Agent,Centre,Date of Sale,Group,Whoisit,Telco Name,Rating,Industry,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,ABN,CLI 1,Plan 1,CLI 2,Plan 2,CLI 3,Plan 3,CLI 4,Plan 4,CLI 5,Plan 5,CLI 6,Plan 6,CLI 7,Plan 7,CLI 8,Plan 8,CLI 9,Plan 9,CLI 10,Plan 10,MSN 1,Mplan 1,MSN 2,Mplan 2,MSN 3,Mplan 3,WMSN 1,Wplan 1,WMSN 2,Wplan 2,ACLI,APLAN,Bundle,Building Type,Building Number,Building Number Suffix,Building Name,Street Number Start,Street Number End,Street Name,Street Type,Suburb,State,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail State,Mail Post Code,Contract Months,Credit Offered,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Sale Type,Mobile Contact,Home Number,Current Provider,Email Address ,Transaction Number,Welcome Letter,iWelcome Letter,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment";
+$header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account Status,ADSL Status,Wireless Status,Agent,Centre,Date of Sale,Group,Whoisit,Telco Name,Rating,Industry,Title,First Name,Middle Name,Last Name,Position,DOB,Account Name,ABN,CLI 1,Plan 1,CLI 2,Plan 2,CLI 3,Plan 3,CLI 4,Plan 4,CLI 5,Plan 5,CLI 6,Plan 6,CLI 7,Plan 7,CLI 8,Plan 8,CLI 9,Plan 9,CLI 10,Plan 10,MSN 1,Mplan 1,MSN 2,Mplan 2,MSN 3,Mplan 3,WMSN 1,Wplan 1,WMSN 2,Wplan 2,ACLI,APLAN,Bundle,Building Type,Building Number,Building Number Suffix,Building Name,Street Number Start,Street Number End,Street Name,Street Type,Suburb,State,Post Code,PO Box Number Only,Mail Street Number,Mail Street,Mail Suburb,Mail State,Mail Post Code,Contract Months,Credit Offered,Ongoing Credit,Once Off Credit,Promotions,Welcome Email,PayWay,Direct Debit,E-Bill,Sale Type,Mobile Contact,Home Number,Current Provider,Email Address ,Welcome Letter,iWelcome Letter,WL Path,Additional Information,Billing Comment,Provisioning Comment,Mobile Comment,Other Comment";
 
 $body = "";
 
@@ -414,7 +414,7 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . $dsr_num . '",';
 	$body .= '"' . '",';
 	$body .= '"' . '",';
-	$body .= '"' . $data["id"] . '",';
+	$body .= '"' . $qa["id"] . '",';
 	$body .= '="' . $p_cli[1] . '.gsm",';
 	$body .= '"' . $sale_id . '",';
 	$body .= '"' . $data["status"] . '",';
@@ -485,13 +485,13 @@ while ($qa = mysql_fetch_assoc($q))
 	$body .= '"' . '",';
 	$body .= '"' . "Telstra" . '",';
 	$body .= '"' . $email . '",';
-	$body .= '"' . $qa["id"] . '",';
 	$body .= '"' . $date . '",';
 	if ($b_type != "PSTN") {
 		$body .= '"' . $date . '",';
 	} else {
 		$body .= '"' . '",';
 	}
+	$body .= '"' . "VeriCon" . '",';
 	$body .= '"' . $resi_id_info . '",';
 	$body .= '"' . $data["billing_comments"] . '",';
 	$body .= '"';
