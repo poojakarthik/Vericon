@@ -360,7 +360,7 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 		}
 		$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd") . '.pdf'), 'F');
 		
-		$headCount = "/var/letters/new_letters/pending/headCount.csv";
+		$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/headCount.csv';
 		
 		if (!file_exists($headCount)) {
 			$content = "File Name,Campaign,Pages\n";
@@ -414,7 +414,7 @@ if ($total_letters > 0)
 	
 	
 	$to = array();
-	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Printing <printing.report@smartbusinesstelecom.com.au>";
+	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Odai <odai@smartbusinesstelecom.com.au>, Printing <printing.report@smartbusinesstelecom.com.au>";
 
 	$text_body = "Hi All,
 
