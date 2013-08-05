@@ -11,6 +11,8 @@ $total_letters = 0;
 $email_letters = 0;
 $posted_letters = 0;
 
+$date = date("Y-m-d");
+
 $q = $mysqli->query("SELECT * FROM `letters`.`customers` WHERE `wl_date` = '0000-00-00'") or die($mysqli->error);
 while($data = $q->fetch_assoc())
 {
@@ -69,7 +71,7 @@ while($data = $q->fetch_assoc())
 	$pdf->SetFont('Century Gothic','',9);
 	$pdf->SetTextColor(0,0,0);
 	$pdf->SetXY(18, 35);
-	$pdf->MultiCell(0, 0, date("d F Y"), 0, 'L', false);
+	$pdf->MultiCell(0, 0, date("d F Y", strtotime($date)), 0, 'L', false);
 	
 	$pdf->SetFont('Barcode','',16);
 	$pdf->SetXY(33, 58);
@@ -225,7 +227,7 @@ while($data = $q->fetch_assoc())
 	$pdf->SetXY(69, 217.25);
 	$pdf->Write(0, $address);
 	
-	$file_name = '/var/letters/new_letters/' . md5($data["id"] . date("Y-m-d H:i:s")) . '.pdf';
+	$file_name = '/var/letters/new_letters/' . md5($data["id"] . date("Y-m-d H:i:s", strtotime($date))) . '.pdf';
 	
 	$pdf->Output($file_name, 'F');
 	
@@ -319,7 +321,7 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 		$mime = new Mail_mime;
 		$mime->setTXTBody($text_body);
 		$mime->setHTMLBody($html_body);
-		$mime->addAttachment($file, 'application/pdf', "WL_" . $vericon_id . "_" . date("Ymd") . ".pdf");
+		$mime->addAttachment($file, 'application/pdf', "WL_" . $vericon_id . "_" . date("Ymd", strtotime($date)) . ".pdf");
 		
 		$mimeparams=array();
 		$mimeparams['text_encoding']="8bit";
@@ -344,32 +346,32 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 	{
 		$posted_letters++;
 		
-		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/';
+		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/';
 		if (!file_exists($print_dir)) {
 			mkdir($print_dir);
 		}
-		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/' . $campaign_name . '/';
+		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $campaign_name . '/';
 		if (!file_exists($print_dir)) {
 			mkdir($print_dir);
 		}
 		if (ceil($pdf->PageNo() / 2) == 7) {
-			$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/' . $campaign_name . '/The_Big_7/';
+			$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $campaign_name . '/The_Big_7/';
 			if (!file_exists($print_dir)) {
 				mkdir($print_dir);
 			}
 		}
-		$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd") . '.pdf'), 'F');
+		$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf'), 'F');
 		
-		$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd") . '/headCount.csv';
+		$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/headCount.csv';
 		
 		if (!file_exists($headCount)) {
 			$content = "File Name,Campaign,Pages\n";
-			$content .= '"WL_' . $data["id"] . '_' . date("Ymd") . '.pdf",';
+			$content .= '"WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
 			$content .= '"' . $campaign_name . '",';
 			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 			$content .= "\n";
 		} else {
-			$content = '"WL_' . $data["id"] . '_' . date("Ymd") . '.pdf",';
+			$content = '"WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
 			$content .= '"' . $campaign_name . '",';
 			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 			$content .= "\n";
@@ -380,7 +382,7 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 		fclose($fh);
 	}
 	
-	$mysqli->query("UPDATE `letters`.`customers` SET `wl_date` = '" . date("Y-m-d") . "', `file_name` = '" . str_replace('/var/letters/new_letters/', '', $file_name) . "' WHERE `id` = '" . $data["id"] . "'") or die($mysqli->error);
+	$mysqli->query("UPDATE `letters`.`customers` SET `wl_date` = '" . date("Y-m-d", strtotime($date)) . "', `file_name` = '" . str_replace('/var/letters/new_letters/', '', $file_name) . "' WHERE `id` = '" . $data["id"] . "'") or die($mysqli->error);
 }
 $q->free();
 
@@ -393,7 +395,7 @@ if ($total_letters > 0)
 		$email_count = 0;
 		$post_count = 0;
 		
-		$q1 = $mysqli->query("SELECT COUNT(`id`), `customers`.`delivery` FROM `letters`.`customers` WHERE `wl_date` = '" . date("Y-m-d") . "' AND `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
+		$q1 = $mysqli->query("SELECT COUNT(`id`), `customers`.`delivery` FROM `letters`.`customers` WHERE `wl_date` = '" . date("Y-m-d", strtotime($date)) . "' AND `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
 		while ($data = $q1->fetch_row())
 		{
 			if ($data[1] == "E") {
@@ -406,8 +408,8 @@ if ($total_letters > 0)
 		
 		$letter_count .= "
 --- " . $campaign[1] . " ---
-- Email: " . $email_count . " (" . number_format($email_count/($email_count + $post_count), 2) . "%)
-- Post:  " . $post_count . " (" . number_format($post_count/($email_count + $post_count), 2) . "%)
+- Email: " . $email_count . " (" . number_format(($email_count/($email_count + $post_count)) * 100, 2) . "%)
+- Post:  " . $post_count . " (" . number_format(($post_count/($email_count + $post_count)) * 100, 2) . "%)
 ";
 	}
 	$q->free();
@@ -418,7 +420,7 @@ if ($total_letters > 0)
 
 	$text_body = "Hi All,
 
-" . $total_letters . " have been generated today of which " . $email_letters . " (" . number_format($email_letters/$total_letters, 2) . "%) have been emailed.
+" . $total_letters . " have been generated today of which " . $email_letters . " (" . number_format(($email_letters/$total_letters) * 100, 2) . "%) have been emailed.
 " . $letter_count . "
 Thanks";
 	
