@@ -394,7 +394,7 @@ if ($total_letters > 0)
 		{
 			if ($data[1] == "E") {
 				$email_count = $data[0];
-			} elseif($data[1] == "E") {
+			} elseif($data[1] == "P") {
 				$post_count = $data[0];
 			}
 		}
