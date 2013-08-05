@@ -350,22 +350,26 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 		if (!file_exists($print_dir)) {
 			mkdir($print_dir);
 		}
-		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $campaign_name . '/';
+		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/';
+		if (!file_exists($print_dir)) {
+			mkdir($print_dir);
+		}
+		$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/';
 		if (!file_exists($print_dir)) {
 			mkdir($print_dir);
 		}
 		$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf'), 'F');
 		
-		$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/headCount.csv';
+		$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/headCount.csv';
 		
 		if (!file_exists($headCount)) {
-			$content = "File Name,Campaign,Pages\n";
-			$content .= '"WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
+			$content = "File Path,Campaign,Pages\n";
+			$content .= '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
 			$content .= '"' . $campaign_name . '",';
 			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 			$content .= "\n";
 		} else {
-			$content = '"WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
+			$content .= '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
 			$content .= '"' . $campaign_name . '",';
 			$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 			$content .= "\n";
