@@ -354,12 +354,6 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 		if (!file_exists($print_dir)) {
 			mkdir($print_dir);
 		}
-		if (ceil($pdf->PageNo() / 2) == 7) {
-			$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $campaign_name . '/The_Big_7/';
-			if (!file_exists($print_dir)) {
-				mkdir($print_dir);
-			}
-		}
 		$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf'), 'F');
 		
 		$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/headCount.csv';
