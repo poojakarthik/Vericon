@@ -9,12 +9,12 @@ require_once ("Mail/mime.php");
 
 $date = date("Y-m-d");
 
-// NEW LETTERS - START
+// WELCOME LETTERS - START
 $total_letters = 0;
 $email_letters = 0;
 $posted_letters = 0;
 
-$q = $mysqli->query("SELECT * FROM `letters`.`customers` WHERE `wl_date` = '0000-00-00' AND `letter_type` = 'N'") or die($mysqli->error);
+$q = $mysqli->query("SELECT * FROM `letters`.`customers` WHERE `wl_date` = '0000-00-00'") or die($mysqli->error);
 while($data = $q->fetch_assoc())
 {
 	$q1 = $mysqli->query("SELECT `campaign`, `number`, `website` FROM `letters`.`campaigns` WHERE `id` = '" . $data["campaign"] . "'") or die($mysqli->error);
@@ -63,7 +63,7 @@ while($data = $q->fetch_assoc())
 		// Front Page
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/wl.pdf');
+		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/wl-' . strtolower($data["letter_type"]) . '.pdf');
 		
 		$tplIdx = $pdf->importPage(1);
 		
@@ -389,6 +389,8 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 }
 $q->free();
 
+exec("chown -R letters:letters /var/letters/new_letters/pending/");
+
 if ($total_letters > 0)
 {
 	$letter_count = "";
@@ -455,7 +457,7 @@ Thanks";
 	$mail=& Mail::factory("smtp", $smtpinfo);
 	$mail->send($to, $headers, $body);
 }
-// NEW LETTERS - END
+// WELCOME LETTERS - END
 
 $mysqli->close();
 ?>
