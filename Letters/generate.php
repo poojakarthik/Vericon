@@ -14,7 +14,33 @@ $total_letters = 0;
 $email_letters = 0;
 $posted_letters = 0;
 
-$q = $mysqli->query("SELECT * FROM `letters`.`customers` WHERE `wl_date` = '0000-00-00'") or die($mysqli->error);
+$letter_count = "";
+$q = $mysqli->query("SELECT `customers`.`campaign`, `campaigns`.`campaign` FROM `letters`.`customers`, `letters`.`campaigns` WHERE `campaigns`.`id` = `customers`.`campaign` GROUP BY `customers`.`campaign`") or die($mysqli->error);
+while ($campaign = $q->fetch_row())
+{
+	$email_count = 0;
+	$post_count = 0;
+	
+	$q1 = $mysqli->query("SELECT COUNT(`id`), `customers`.`delivery` FROM `letters`.`customers` WHERE `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
+	while ($data = $q1->fetch_row())
+	{
+		if ($data[1] == "E") {
+			$email_count = $data[0];
+		} elseif($data[1] == "P") {
+			$post_count = $data[0];
+		}
+	}
+	$q1->free();
+	
+	$letter_count .= "
+--- " . $campaign[1] . " ---
+- Email: " . $email_count . " (" . number_format(($email_count/($email_count + $post_count)) * 100, 2) . "%)
+- Post:  " . $post_count . " (" . number_format(($post_count/($email_count + $post_count)) * 100, 2) . "%)
+";
+}
+$q->free();
+
+$q = $mysqli->query("SELECT * FROM `letters`.`customers`") or die($mysqli->error);
 while($data = $q->fetch_assoc())
 {
 	$q1 = $mysqli->query("SELECT `campaign`, `number`, `website` FROM `letters`.`campaigns` WHERE `id` = '" . $data["campaign"] . "'") or die($mysqli->error);
@@ -373,7 +399,7 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 				$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 				$content .= "\n";
 			} else {
-				$content .= '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
+				$content = '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
 				$content .= '"' . $campaign_name . '",';
 				$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
 				$content .= "\n";
@@ -384,7 +410,10 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 			fclose($fh);
 		}
 		
-		$mysqli->query("UPDATE `letters`.`customers` SET `wl_date` = '" . date("Y-m-d", strtotime($date)) . "', `file_name` = '" . str_replace('/var/letters/new_letters/', '', $file_name) . "' WHERE `id` = '" . $data["id"] . "'") or die($mysqli->error);
+		$mysqli->query("INSERT INTO `letters`.`log` (`id`, `wl_date`, `file_name`) VALUES ('" . $mysqli->real_escape_string($data["id"]) . "', '" . date("Y-m-d", strtotime($date)) . "', '" . str_replace('/var/letters/new_letters/', '', $file_name) . "'") or die($mysqli->error);
+		
+		$mysqli->query("DELETE FROM `letters`.`customers` WHERE `id` = '" . $mysqli->real_escape_string($data["id"]) . "'") or die($mysqli->error);
+		$mysqli->query("DELETE FROM `letters`.`packages` WHERE `id` = '" . $mysqli->real_escape_string($data["id"]) . "'") or die($mysqli->error);
 	}
 }
 $q->free();
@@ -393,33 +422,6 @@ exec("chown -R letters:letters /var/letters/new_letters/pending/");
 
 if ($total_letters > 0)
 {
-	$letter_count = "";
-	$q = $mysqli->query("SELECT `customers`.`campaign`, `campaigns`.`campaign` FROM `letters`.`customers`, `letters`.`campaigns` WHERE `customers`.`wl_date` = '" . date("Y-m-d") . "' AND `campaigns`.`id` = `customers`.`campaign` GROUP BY `customers`.`campaign`") or die($mysqli->error);
-	while ($campaign = $q->fetch_row())
-	{
-		$email_count = 0;
-		$post_count = 0;
-		
-		$q1 = $mysqli->query("SELECT COUNT(`id`), `customers`.`delivery` FROM `letters`.`customers` WHERE `wl_date` = '" . date("Y-m-d", strtotime($date)) . "' AND `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
-		while ($data = $q1->fetch_row())
-		{
-			if ($data[1] == "E") {
-				$email_count = $data[0];
-			} elseif($data[1] == "P") {
-				$post_count = $data[0];
-			}
-		}
-		$q1->free();
-		
-		$letter_count .= "
---- " . $campaign[1] . " ---
-- Email: " . $email_count . " (" . number_format(($email_count/($email_count + $post_count)) * 100, 2) . "%)
-- Post:  " . $post_count . " (" . number_format(($post_count/($email_count + $post_count)) * 100, 2) . "%)
-";
-	}
-	$q->free();
-	
-	
 	$to = array();
 	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Odai <odai@smartbusinesstelecom.com.au>, Printing <printing.report@smartbusinesstelecom.com.au>";
 

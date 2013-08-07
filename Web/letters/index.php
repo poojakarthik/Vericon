@@ -3,6 +3,19 @@
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 <title>VeriCon :: Letters</title>
+<script>
+function Download(file, filename)
+{
+	window.location = "download.php?file=" + file + "&filename=" + filename;
+}
+</script>
+<style>
+a {
+	color: blue;
+	text-decoration: underline;
+	cursor: pointer;
+}
+</style>
 </head>
 
 <body>
@@ -29,34 +42,31 @@ if (!CheckAccess())
 }
 
 $id = $_POST["id"];
-$form = '<form method="post">
+
+echo '<form method="post">
 <input name="id" value="" placeholder="Transaction Number" />
 <button type="submit">Submit</button>
 </form>';
 
 if ($id != "")
 {
-	$q = mysql_query("SELECT `wl_date`,`file_name` FROM `letters`.`customers` WHERE `id` = '" . mysql_real_escape_string($id) . "'") or die(mysql_error());
+	$q = mysql_query("SELECT `wl_date`, `file_name` FROM `letters`.`log` WHERE `id` = '" . mysql_real_escape_string($id) . "'") or die(mysql_error());
 	
 	if (mysql_num_rows($q) == 0)
 	{
-		echo $form . "<br>Incorrect Transaction Number";
+		echo "<br>Incorrect Transaction Number or Letter Does Not Exist";
 	}
 	else
 	{
-		$file = mysql_fetch_row($q);
-		$filename = "WL_" . $id . "_" . $file[0] . ".pdf";
-		
-		header("Content-type: application/pdf");
-		header("Content-Disposition: attachment; filename=$filename");
-		header("Pragma: no-cache");
-		header("Expires: 0");
-		readfile("/var/letters/new_letters/" . $file[1]);
+		$i = 1;
+		while ($file = mysql_fetch_row($q))
+		{
+			$filename = "WL_" . $id . "_" . $file[0] . ".pdf";
+			
+			echo "<br>" . $i . " - <a onclick='Download(\"$file[1]\",\"$filename\")'>" . $filename . "</a>";
+			$i++;
+		}
 	}
-}
-else
-{
-	echo $form;
 }
 ?>
 </body>
