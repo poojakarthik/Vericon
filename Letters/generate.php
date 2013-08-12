@@ -410,7 +410,7 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 			fclose($fh);
 		}
 		
-		$mysqli->query("INSERT INTO `letters`.`log` (`id`, `wl_date`, `file_name`) VALUES ('" . $mysqli->real_escape_string($data["id"]) . "', '" . date("Y-m-d", strtotime($date)) . "', '" . str_replace('/var/letters/new_letters/', '', $file_name) . "'") or die($mysqli->error);
+		$mysqli->query("INSERT INTO `letters`.`log` (`id`, `wl_date`, `file_name`) VALUES ('" . $mysqli->real_escape_string($data["id"]) . "', '" . date("Y-m-d", strtotime($date)) . "', '" . str_replace('/var/letters/new_letters/', '', $file_name) . "')") or die($mysqli->error);
 		
 		$mysqli->query("DELETE FROM `letters`.`customers` WHERE `id` = '" . $mysqli->real_escape_string($data["id"]) . "'") or die($mysqli->error);
 		$mysqli->query("DELETE FROM `letters`.`packages` WHERE `id` = '" . $mysqli->real_escape_string($data["id"]) . "'") or die($mysqli->error);
