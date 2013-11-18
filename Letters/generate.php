@@ -20,6 +20,7 @@ while ($campaign = $q->fetch_row())
 {
 	$email_count = 0;
 	$post_count = 0;
+	$headCountContent = "Campaign,Count\n";
 	
 	$q1 = $mysqli->query("SELECT COUNT(`id`), `customers`.`delivery` FROM `letters`.`customers` WHERE `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
 	while ($data = $q1->fetch_row())
@@ -29,6 +30,10 @@ while ($campaign = $q->fetch_row())
 		} elseif($data[1] == "P") {
 			$post_count = $data[0];
 		}
+		
+		$headCountContent .= '"' . $campaign_name . '",';
+		$headCountContent .= '"' . $post_count . '"';
+		$headCountContent .= "\n";
 	}
 	$q1->free();
 	
@@ -389,25 +394,6 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 				mkdir($print_dir);
 			}
 			$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf'), 'F');
-			
-			$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/headCount.csv';
-			
-			if (!file_exists($headCount)) {
-				$content = "File Path,Campaign,Pages\n";
-				$content .= '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
-				$content .= '"' . $campaign_name . '",';
-				$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
-				$content .= "\n";
-			} else {
-				$content = '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
-				$content .= '"' . $campaign_name . '",';
-				$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
-				$content .= "\n";
-			}
-			
-			$fh = fopen($headCount, 'a') or die("can't open file");
-			fwrite($fh, $content);
-			fclose($fh);
 		}
 		
 		$mysqli->query("INSERT INTO `letters`.`log` (`id`, `wl_date`, `file_name`) VALUES ('" . $mysqli->real_escape_string($data["id"]) . "', '" . date("Y-m-d", strtotime($date)) . "', '" . str_replace('/var/letters/new_letters/', '', $file_name) . "')") or die($mysqli->error);
@@ -422,6 +408,12 @@ exec("chown -R letters:letters /var/letters/new_letters/pending/");
 
 if ($total_letters > 0)
 {
+	$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/headCount.csv';
+	
+	$fh = fopen($headCount, 'a') or die("can't open file");
+	fwrite($fh, $headCountContent);
+	fclose($fh);
+	
 	$to = array();
 	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Odai <odai@smartbusinesstelecom.com.au>, Printing <printing.report@smartbusinesstelecom.com.au>";
 
