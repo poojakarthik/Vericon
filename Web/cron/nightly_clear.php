@@ -11,5 +11,5 @@ mysql_query("TRUNCATE TABLE vericon.sales_customers_temp") or die(mysql_error())
 mysql_query("TRUNCATE TABLE vericon.sales_packages_temp") or die(mysql_error());
 
 //chown DSR to www-data
-exec("chown -R www-data:www-data /var/dsr/");
+exec("chown -R www-data:www-data /var/vericon/dsr/");
 ?>

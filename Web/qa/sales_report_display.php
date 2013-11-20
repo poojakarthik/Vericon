@@ -176,7 +176,7 @@ else
 <div id="display2" style="padding-left:10px;">
 <?php
 $date_path = date("Y/F/d.m.Y", strtotime($date));
-$dir = "/var/dsr/" . $date_path . "/";
+$dir = "/var/vericon/dsr/" . $date_path . "/";
 $dh = opendir($dir);
 $count = 0;
 
@@ -210,7 +210,7 @@ if ($count < 1)
 	{
 		echo "No DSR Found";
 	}
-	elseif (!file_exists("/var/vtmp/dsr_loading.txt"))
+	elseif (!file_exists("/var/vericon/temp/dsr_loading.txt"))
 	{
 		echo "<button onclick='Generate()' class='btn'>Generate</button>";
 	}

@@ -2,7 +2,7 @@
 $mysqli = new mysqli('localhost','vericon','18450be');
 $date = date("Y-m-d");
 
-$q = $mysqli->query("SELECT * FROM `vericon`.`qa_customers` WHERE `status` = 'Approved' AND DATE(`timestamp`) = '$date' ORDER BY `sale_timestamp` ASC") or die($mysqli->error);
+$q = $mysqli->query("SELECT * FROM `vericon`.`qa_customers` WHERE `status` = 'Approved' AND (`centre` != 'CC91' OR `centre` != 'CC92') AND DATE(`timestamp`) = '$date' ORDER BY `sale_timestamp` ASC") or die($mysqli->error);
 while ($qa = $q->fetch_assoc())
 {
 	$q1 = $mysqli->query("SELECT * FROM `vericon`.`sales_customers` WHERE `id` = '" . $qa["id"] . "'") or die($mysqli->error);

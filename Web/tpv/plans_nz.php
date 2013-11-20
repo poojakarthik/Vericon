@@ -18,7 +18,7 @@ if (!preg_match("/^0[34679][0-9]{7}$/",$cli))
 	exit;
 }
 
-$check = exec("perl /var/vericon/source/nz_legacy.pl " . $cli);
+$check = exec("perl /var/vericon/www/source/nz_legacy.pl " . $cli);
 
 if ($check == "invalid")
 {

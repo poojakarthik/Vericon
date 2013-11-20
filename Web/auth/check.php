@@ -10,7 +10,7 @@ function CheckAccess()
 	{
 		$allowedip[$iplist['IP']] = $iplist['status'];
 	}
-  	$ip = $_SERVER['REMOTE_ADDR'];
+  	$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
   	return ($allowedip[$ip]);
 }
 
@@ -26,7 +26,7 @@ if(mysql_num_rows($q) != 1){die(header("Location: ../index.php?attempt=fail"));}
 // check if IP allowed - Log unauthorised
 if (!CheckAccess())
 {
-	mysql_query("INSERT INTO log_unauthorised (ip,user) VALUES ('$_SERVER[REMOTE_ADDR]','" . mysql_escape_string($_POST["username"]) . "')");
+	mysql_query("INSERT INTO log_unauthorised (ip,user) VALUES ('$_SERVER[HTTP_X_FORWARDED_FOR]','" . mysql_escape_string($_POST["username"]) . "')");
 	header("Location: ../index.php?attempt=badip");
 	exit;
 }
@@ -48,7 +48,7 @@ else
 	mysql_query("INSERT INTO currentuser (hash, user, timestamp) VALUES ('$hash','" . mysql_escape_string($_POST["username"]) . "', NOW())") or die(mysql_error());
 }
 
-mysql_query("INSERT INTO log_login (ip,user) VALUES ('$_SERVER[REMOTE_ADDR]','" . mysql_escape_string($_POST["username"]) . "')");
+mysql_query("INSERT INTO log_login (ip,user) VALUES ('$_SERVER[HTTP_X_FORWARDED_FOR]','" . mysql_escape_string($_POST["username"]) . "')");
 
 setcookie("hash", $hash, time()+(86400),'/');
 

@@ -2,7 +2,7 @@
 mysql_connect('localhost','vericon','18450be');
 $file = $_GET["file"];
 
-$path = "/var/vtmp/" . $file["name"];
+$path = "/var/vericon/temp/" . $file["name"];
 $timestamp = date("Y-m-d H:i:s");
 
 exec("dos2unix " . $path);

@@ -17,13 +17,13 @@ elseif ($method == "rename_rec")
 	$lead_id = $_GET["lead_id"];
 	$file = $_GET["file"];
 	
-	if (file_exists("/var/vtmp/" . $file["name"]))
+	if (file_exists("/var/vericon/temp/" . $file["name"]))
 	{
 		if ($file["size"] > 102400)
 		{
-			exec("mv /var/vtmp/" . $file["name"] . " /var/vtmp/ns_" . $lead_id . ".gsm");
+			exec("mv /var/vericon/temp/" . $file["name"] . " /var/vericon/temp/ns_" . $lead_id . ".gsm");
 			
-			if (file_exists("/var/vtmp/ns_" . $lead_id . ".gsm"))
+			if (file_exists("/var/vericon/temp/ns_" . $lead_id . ".gsm"))
 			{
 				echo 1;
 			}
@@ -57,7 +57,7 @@ elseif ($method == "approve_au")
 	$data = mysql_fetch_assoc($q);
 	
 	$lead_id = $data["lead_id"];
-	$filename = "/var/vtmp/ns_" . $lead_id . ".gsm";
+	$filename = "/var/vericon/temp/ns_" . $lead_id . ".gsm";
 	
 	$q1 = mysql_query("SELECT * FROM vericon.recordings WHERE sale_id = '$id'") or die(mysql_error());
 	
@@ -112,7 +112,7 @@ elseif ($method == "approve_au")
 			mysql_query("INSERT INTO vericon.packages_log (id, cli, plan, status, edit_by) VALUES ('$account_number', '$packages[cli]', '$packages[plan]', 'P', '$verifier')") or die(mysql_error());
 		}
 		
-		$command = "mv " . $filename . " /var/rec/" . md5($account_number . date("Y-m-d H:i:s")) . ".gsm";
+		$command = "mv " . $filename . " /var/vericon/rec/" . md5($account_number . date("Y-m-d H:i:s")) . ".gsm";
 		exec($command);
 		
 		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$account_number', '$data[id]', 'New Sale',  '" . mysql_real_escape_string(md5($account_number . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());
@@ -124,7 +124,7 @@ elseif ($method == "nz_address_check")
 {
 	$cli = $_GET["cli"];
 	
-	$data = exec("perl /var/vericon/source/nz_address.pl " . $cli);
+	$data = exec("perl /var/vericon/www/source/nz_address.pl " . $cli);
 	
 	echo $data;
 }
@@ -143,7 +143,7 @@ elseif ($method == "approve_nz")
 	$data = mysql_fetch_assoc($q);
 	
 	$lead_id = $data["lead_id"];
-	$filename = "/var/vtmp/ns_" . $lead_id . ".gsm";
+	$filename = "/var/vericon/temp/ns_" . $lead_id . ".gsm";
 	
 	$q1 = mysql_query("SELECT * FROM vericon.recordings WHERE sale_id = '$id'") or die(mysql_error());
 	
@@ -198,7 +198,7 @@ elseif ($method == "approve_nz")
 			mysql_query("INSERT INTO vericon.packages_log (id, cli, plan, provider, ac_number, adsl_provider, adsl_ac_number, status, edit_by) VALUES ('$account_number', '$packages[cli]', '$packages[plan]', '$packages[provider]', '$packages[ac_number]', '$packages[adsl_provider]', '$packages[adsl_ac_number]', 'P', '$verifier')") or die(mysql_error());
 		}
 		
-		$command = "mv " . $filename . " /var/rec/" . md5($account_number . date("Y-m-d H:i:s")) . ".gsm";
+		$command = "mv " . $filename . " /var/vericon/rec/" . md5($account_number . date("Y-m-d H:i:s")) . ".gsm";
 		exec($command);
 		
 		mysql_query("INSERT INTO vericon.recordings (id, sale_id, type, name) VALUES ('$account_number', '$data[id]', 'New Sale',  '" . mysql_real_escape_string(md5($account_number . date("Y-m-d H:i:s")) . ".gsm") . "')") or die(mysql_error());

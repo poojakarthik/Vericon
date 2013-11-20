@@ -6,11 +6,11 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 */
 
 // Define a destination
-$targetFolder = '/accounts/tmp'; // Relative to the root
+$targetFolder = '/var/vericon/temp'; // Relative to the root
 
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];
-	$targetPath = $_SERVER['DOCUMENT_ROOT'] . $targetFolder;
+	$targetPath = $targetFolder;
 	$targetFile = rtrim($targetPath,'/') . '/' . "hours.csv";
 	
 	// Validate the file type

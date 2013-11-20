@@ -31,7 +31,7 @@ function CheckAccess()
 	{
 		$allowedip[$iplist['IP']] = $iplist['status'];
 	}
-  	$ip = $_SERVER['REMOTE_ADDR'];
+  	$ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
 	return ($allowedip[$ip]);
 }
 

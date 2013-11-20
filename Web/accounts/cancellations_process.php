@@ -37,9 +37,9 @@ if ($method == "export_cancellations")
 }
 elseif ($method == "import_cancellations")
 {
-	exec("dos2unix /var/vericon/accounts/tmp/cancellations.csv");
+	exec("dos2unix /var/vericon/temp/cancellations.csv");
 	
-	$lines = file("/var/vericon/accounts/tmp/cancellations.csv");
+	$lines = file("/var/vericon/temp/cancellations.csv");
 	$i = 0;
 	
 	foreach ($lines as $row)
@@ -52,7 +52,7 @@ elseif ($method == "import_cancellations")
 		$i++;
 	}
 	
-	unlink("/var/vericon/accounts/tmp/cancellations.csv");
+	unlink("/var/vericon/temp/cancellations.csv");
 	
 	echo "done";
 }

@@ -7,5 +7,5 @@ header("Content-type: application/x-msdownload");
 header("Content-Disposition: attachment; filename=$file");
 header("Pragma: no-cache");
 header("Expires: 0");
-readfile("/var/dsr/" . date("Y/F", strtotime($_GET["date"])) . "/" . $date . "/" . $folder . "/" . $file);
+readfile("/var/vericon/dsr/" . date("Y/F", strtotime($_GET["date"])) . "/" . $date . "/" . $folder . "/" . $file);
 ?>

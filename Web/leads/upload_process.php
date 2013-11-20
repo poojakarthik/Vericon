@@ -1,33 +1,33 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
 
-$reportFile = "/var/vtmp/leads_report.txt";
+$reportFile = "/var/vericon/temp/leads_report.txt";
 $fh = fopen($reportFile, 'a') or die("can't open file");
 
-$LeadsTmp = "/var/vtmp/leads_tmp.csv";
+$LeadsTmp = "/var/vericon/temp/leads_tmp.csv";
 $fh0 = fopen($LeadsTmp, 'w+') or die("can't open file");
 
-$LeadsCountFile = "/var/vtmp/leads_count.txt";
+$LeadsCountFile = "/var/vericon/temp/leads_count.txt";
 $fh1 = fopen($LeadsCountFile, 'a') or die("can't open file");
 
-$LeadsTmpCountFile = "/var/vtmp/leads_tmp_count.txt";
+$LeadsTmpCountFile = "/var/vericon/temp/leads_tmp_count.txt";
 $fh2 = fopen($LeadsTmpCountFile, 'a') or die("can't open file");
 
 // Begin Report File
 fwrite($fh, "<-- " . date("Y-m-d H:i:s") . " -->\n");
 
 // Dos2Unix
-exec("dos2unix /var/vtmp/leads.csv");
+exec("dos2unix /var/vericon/temp/leads.csv");
 fwrite($fh, "Dos2Unix Completed\n");
 
 // Remove Blanks and Move to Temporary CSV
-$lines = file("/var/vtmp/leads.csv");
+$lines = file("/var/vericon/temp/leads.csv");
 $i = 0;
 $data = "";
 
 foreach ($lines as $row)
 {
-	if (!file_exists("/var/vtmp/leads_cancel.txt"))
+	if (!file_exists("/var/vericon/temp/leads_cancel.txt"))
 	{
 		$da = explode(",", $row);
 		if ((preg_match('/([2378])([0-9]{8})/', $da[0]) || preg_match('/([34679])([0-9]{7})/', $da[0])) && $da[1] != "")
@@ -48,12 +48,12 @@ fclose($fh0);
 fwrite($fh, "Copied to Temporary Leads CSV\n");
 
 // Upload Leads
-$lines = file("/var/vtmp/leads_tmp.csv");
+$lines = file("/var/vericon/temp/leads_tmp.csv");
 $i = 0;
 
 foreach ($lines as $row)
 {
-	if (!file_exists("/var/vtmp/leads_cancel.txt"))
+	if (!file_exists("/var/vericon/temp/leads_cancel.txt"))
 	{
 		$da = explode(",", $row);
 		// check centre format
@@ -102,26 +102,26 @@ fwrite($fh, "Uploaded " . $i . " Leads\n");
 // Remove tmp Files
 unlink($LeadsCountFile);
 unlink($LeadsTmpCountFile);
-unlink("/var/vtmp/leads_tmp.csv");
+unlink("/var/vericon/temp/leads_tmp.csv");
 fwrite($fh, "Removed tmp Files\n");
 
 // Move leads File to Archive
-exec("mv /var/vtmp/leads.csv /home/leads/archive/" . date("Y_m_d-H_i_s") . ".csv");
+exec("mv /var/vericon/temp/leads.csv /var/vericon/leads/archive/" . date("Y_m_d-H_i_s") . ".csv");
 fwrite($fh, "Moved leads File to Archive\n");
 
 // Check if cancelled
-if (!file_exists("/var/vtmp/leads_cancel.txt"))
+if (!file_exists("/var/vericon/temp/leads_cancel.txt"))
 {
 	fwrite($fh, "Successfully Uploaded Leads\n");
 }
 else
 {
 	fwrite($fh, "Leads Upload was Cancelled\n");
-	unlink("/var/vtmp/leads_cancel.txt");
+	unlink("/var/vericon/temp/leads_cancel.txt");
 }
 
 // Complete Report
 fwrite($fh, "<-- " . date("Y-m-d H:i:s") . " -->");
 fclose($fh);
-exec("mv /var/vtmp/leads_report.txt /home/leads/log/" . date("Y_m_d-H_i_s") . ".txt");
+exec("mv /var/vericon/temp/leads_report.txt /var/vericon/leads/log/" . date("Y_m_d-H_i_s") . ".txt");
 ?>

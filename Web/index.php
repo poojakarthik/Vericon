@@ -77,7 +77,7 @@ if ($ac["status"] == "Disabled")
 if($_GET["attempt"] == "badip")
 {
 	echo "<h1>Access Denied!</h1>";
-	echo "The IP " . $_SERVER['REMOTE_ADDR'] . " does not have the ability to view this website!";
+	echo "The IP " . $_SERVER['HTTP_X_FORWARDED_FOR'] . " does not have the ability to view this website!";
 	exit;
 }
 ?>
