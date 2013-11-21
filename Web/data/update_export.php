@@ -8,5 +8,5 @@ header("Content-type: application/x-msdownload");
 header("Content-Disposition: attachment; filename=$filename");
 header("Pragma: no-cache");
 header("Expires: 0");
-readfile("/var/dsr/" . date("Y/F", strtotime($d)) . "/" . $date . "/Update/" . $filename);
+readfile("/var/vericon/dsr/" . date("Y/F", strtotime($d)) . "/" . $date . "/Update/" . $filename);
 ?>

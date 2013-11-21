@@ -1,7 +1,7 @@
 <?php
 $date = $_GET["date"];
 $date_path = date("Y/F/d.m.Y", strtotime($date));
-$dir = "/var/dsr/" . $date_path . "/";
+$dir = "/var/vericon/dsr/" . $date_path . "/";
 $dh = opendir($dir);
 $count = 0;
 

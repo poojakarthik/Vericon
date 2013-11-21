@@ -8,7 +8,7 @@
 </table>
 
 <?php
-if (!file_exists("/var/vtmp/leads_report.txt"))
+if (!file_exists("/var/vericon/temp/leads_report.txt"))
 {
 ?>
 <script>
@@ -64,16 +64,16 @@ else
 	header("Cache-Control: no-store, must-revalidate");
 	header("Expires: 0");
 	
-	$progress = count(file("/var/vtmp/leads_report.txt"));
+	$progress = count(file("/var/vericon/temp/leads_report.txt"));
 	
-	$init_lines = count(file("/var/vtmp/leads.csv"));
-	$total_lines = count(file("/var/vtmp/leads_tmp.csv"));
-	$tmp_lines = count(file("/var/vtmp/leads_tmp_count.txt"));
+	$init_lines = count(file("/var/vericon/temp/leads.csv"));
+	$total_lines = count(file("/var/vericon/temp/leads_tmp.csv"));
+	$tmp_lines = count(file("/var/vericon/temp/leads_tmp_count.txt"));
 	if ($tmp_lines != 0)
 	{
 		$tmp_lines--;
 	}
-	$leads_lines = count(file("/var/vtmp/leads_count.txt"));
+	$leads_lines = count(file("/var/vericon/temp/leads_count.txt"));
 	if ($leads_lines != 0)
 	{
 		$leads_lines--;

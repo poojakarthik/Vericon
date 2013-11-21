@@ -27,7 +27,7 @@ $(function() {
 
 <div id="upload" style="min-height:225px;">
 <?php
-if (file_exists("/var/vtmp/leads_report.txt"))
+if (file_exists("/var/vericon/temp/leads_report.txt"))
 {
 ?>
 <script>

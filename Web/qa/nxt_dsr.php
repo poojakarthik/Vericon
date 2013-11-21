@@ -4,12 +4,12 @@ mysql_connect('localhost','vericon','18450be');
 $date = date("Y-m-d");
 $type = $argv[1];
 
-if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/NXT/DSR_Accounts_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
+if (file_exists("/var/vericon/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/NXT/DSR_Accounts_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
 {
 	exit;
 }
 
-if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/NXT/DSR_Services_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
+if (file_exists("/var/vericon/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/NXT/DSR_Services_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
 {
 	exit;
 }
@@ -399,7 +399,7 @@ while ($qa = mysql_fetch_assoc($q))
 }
 
 //Save DSR
-$year_path = "/var/dsr/" . date("Y", strtotime($date));
+$year_path = "/var/vericon/dsr/" . date("Y", strtotime($date));
 $month_path = $year_path . "/" . date("F", strtotime($date));
 $day_path = $month_path . "/" . date("d.m.Y", strtotime($date));
 $new_path = $day_path . "/NXT";
@@ -444,5 +444,5 @@ if (!file_exists($filename1))
 	fclose($fh1);
 }
 
-exec("rm /var/vtmp/dsr_loading.txt");
+exec("rm /var/vericon/temp/dsr_loading.txt");
 ?>

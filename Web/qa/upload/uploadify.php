@@ -6,7 +6,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 */
 
 // Define a destination
-$targetFolder = '/var/vtmp'; // Relative to the root
+$targetFolder = '/var/vericon/temp'; // Relative to the root
 
 if (!empty($_FILES)) {
 	$tempFile = $_FILES['Filedata']['tmp_name'];

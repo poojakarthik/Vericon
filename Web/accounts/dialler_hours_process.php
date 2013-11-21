@@ -32,9 +32,9 @@ if ($method == "export_hours")
 }
 elseif ($method == "import_hours")
 {
-	exec("dos2unix /var/vericon/accounts/tmp/hours.csv");
+	exec("dos2unix /var/vericon/temp/hours.csv");
 	
-	$lines = file("/var/vericon/accounts/tmp/hours.csv");
+	$lines = file("/var/vericon/temp/hours.csv");
 	$i = 0;
 	
 	foreach ($lines as $row)
@@ -47,7 +47,7 @@ elseif ($method == "import_hours")
 		$i++;
 	}
 	
-	unlink("/var/vericon/accounts/tmp/hours.csv");
+	unlink("/var/vericon/temp/hours.csv");
 	
 	echo "done";
 }

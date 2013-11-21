@@ -4,7 +4,7 @@ mysql_connect('localhost','vericon','18450be');
 $date = date("Y-m-d");
 $type = $argv[1];
 
-if (file_exists("/var/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/SBT/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
+if (file_exists("/var/vericon/dsr/" . date("Y/F/d.m.Y", strtotime($date)) . "/SBT/DSR_" . date("d.m.Y", strtotime($date)) . "_" . $type . ".csv"))
 {
 	exit;
 }
@@ -13,7 +13,7 @@ $header = "DSR#,Account ID,Account Number,VeriCon ID,Recording,Sale ID,Account S
 
 $body = "";
 
-$campaign_query = "campaign = 'Speed Telecom' OR campaign = 'Magnum Telecom' OR campaign = 'Precise Telecom' OR campaign = 'Oasis Telecom' OR campaign = 'Spiral Communications' OR campaign = 'Telcoshare'";
+$campaign_query = "campaign = 'Speed Telecom' OR campaign = 'Magnum Telecom' OR campaign = 'Precise Telecom' OR campaign = 'Oasis Telecom' OR campaign = 'Spiral Communications' OR campaign = 'Telcoshare' OR campaign = 'Trinity Telecom'";
 
 $dsr_num = "1" . date("y", strtotime($date)) . str_pad(date("z", strtotime($date)),3,"0",STR_PAD_LEFT);
 if ($type == "Business")
@@ -506,7 +506,7 @@ while ($qa = mysql_fetch_assoc($q))
 }
 
 //Save DSR
-$year_path = "/var/dsr/" . date("Y", strtotime($date));
+$year_path = "/var/vericon/dsr/" . date("Y", strtotime($date));
 $month_path = $year_path . "/" . date("F", strtotime($date));
 $day_path = $month_path . "/" . date("d.m.Y", strtotime($date));
 $new_path = $day_path . "/SBT";
@@ -541,5 +541,5 @@ if (!file_exists($filename))
 	fclose($fh);
 }
 
-exec("rm /var/vtmp/dsr_loading.txt");
+exec("rm /var/vericon/temp/dsr_loading.txt");
 ?>

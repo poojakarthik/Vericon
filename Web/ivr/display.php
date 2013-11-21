@@ -1,26 +1,19 @@
 <?php
 mysql_connect('localhost','vericon','18450be');
-mysql_select_db('vericon');
 
-if (substr($_GET["sale_id"],0,2) == "12")
+if (strlen($_GET["id"]) == 9)
 {
-	$id = $_GET["sale_id"];
+	$id = $_GET["id"];
 	
-	$q = mysql_query("SELECT * FROM sales_customers WHERE id = '$id'") or die(mysql_error());
+	$q = mysql_query("SELECT `sales_customers`.`id`, `sales_customers`.`centre`,`sales_customers`.`campaign`,`sales_customers`.`type`, CONCAT(`sales_customers`.`title`,' ',`sales_customers`.`firstname`,' ',`sales_customers`.`middlename`,' ',`sales_customers`.`lastname`) as name, CONCAT(`auth`.`first`,' ',`auth`.`last`) as agent, `auth`.`alias` FROM `vericon`.`sales_customers`,`vericon`.`auth` WHERE `sales_customers`.`id` = '" . mysql_real_escape_string($id) . "' AND `sales_customers`.`agent` = `auth`.`user`") or die(mysql_error());
 	$data = mysql_fetch_assoc($q);
 	
-	$q1 = mysql_query("SELECT alias FROM auth WHERE user = '$data[agent]'") or die (mysql_error());
-	$salias = mysql_fetch_row($q1);
-	
-	$sale_id = $data["id"];
-	$centre = $data["centre"];
-	$campaign = $data["campaign"] . " " . $data["type"];
-	$name = $data["firstname"] . " " . $data["middlename"] . " " . $data["lastname"];
+	$q = mysql_query("SELECT `id` FROM `vericon`.`campaigns` WHERE `campaign` = '" . mysql_real_escape_string($data["campaign"]) . "'") or die(mysql_error());
+	$c_id = mysql_fetch_row($q);
 }
 else
 {
-	$ext = $_GET["sale_id"];
-	$centre = $ext;
+	$ext = $_GET["id"];
 }
 ?>
 
@@ -30,26 +23,8 @@ else
 <title>VeriCon :: IVR :: Sale Details</title>
 <link rel="shortcut icon" href="../images/vericon.ico">
 <link rel="stylesheet" href="../css/style.css" type="text/css"/>
-<style>
-.get_sale_btn
-{
-	background-image:url('../images/get_sale_btn.png');
-	background-repeat:no-repeat;
-	height:30px;
-	width:102px;
-	border:none;
-	background-color:transparent;
-	display:block;
-}
-
-.get_sale_btn:hover
-{
-	background-image:url('../images/get_sale_btn_hover.png');
-	cursor:pointer;
-}
-</style>
 </head>
-<body style="min-height:400px; background-image:url(../images/ivr_body_bg.jpg);">
+<body style="min-height:400px; background-image:none; background-color:rgb(255,245,236);">
 <div id="wrapper" style="width:600px;">
 <div id="logo" style="margin-top:10px;">
 <img src="../images/logo.png"  width="252" height="65" alt="logo" />
@@ -67,34 +42,31 @@ if (mysql_num_rows($q) != 0)
 <table class="table_style" style="margin-left:50px;">
 <tr>
 <td width="100px"><b>Sale Code</b></td>
-<td><?php echo $sale_id; ?></td>
+<td><?php echo $data["id"]; ?></td>
 </tr>
 <tr>
 <td><b>Agent</b></td>
-<td><?php echo $data["agent"] . " (" . $salias[0] . ")"; ?></td>
+<td><?php echo $data["agent"] . " (" . $data["alias"] . ")"; ?></td>
 </tr>
 <tr>
 <td><b>Centre</b></td>
-<td><?php echo $centre; ?></td>
+<td><?php echo $data["centre"]; ?></td>
 </tr>
 <tr>
 <td><b>Campaign</b></td>
-<td><?php echo $campaign; ?></td>
+<td><?php echo $data["campaign"] . " " . $data["type"]; ?></td>
 </tr>
 <tr>
 <td><b>Customer Name</b></td>
-<td><?php echo $name; ?></td>
+<td><?php echo str_replace("  ", " ", $data["name"]); ?></td>
 </tr>
 <tr>
 <td><b>Main Line</b></td>
 <?php
-$q2 = mysql_query("SELECT * FROM sales_packages WHERE sid = '$id' LIMIT 1") or die(mysql_error());
-$lines = mysql_fetch_assoc($q2);
+$q = mysql_query("SELECT `sales_packages`.`cli`,`plan_matrix`.`name` FROM `vericon`.`sales_packages`,`vericon`.`plan_matrix` WHERE `sales_packages`.`sid` = '" . $data["id"] . "' AND `plan_matrix`.`id` = `sales_packages`.`plan` AND `plan_matrix`.`campaign` = '" . mysql_real_escape_string($c_id[0]) . "' ORDER BY `sales_packages`.`timestamp` ASC LIMIT 1") or die(mysql_error());
+$lines = mysql_fetch_assoc($q);
 
-$q3 = mysql_query("SELECT name FROM plan_matrix WHERE id = '$lines[plan]'") or die(mysql_error());
-$package_name = mysql_fetch_row($q3);
-
-echo "<td>" . $lines["cli"] . " -- " . $package_name[0] . "</td>";
+echo "<td>" . $lines["cli"] . " -- " . $lines["name"] . "</td>";
 ?>
 </tr>
 </td>
@@ -128,7 +100,7 @@ elseif (substr($ext,0,2) == "CC")
 </tr>
 <tr>
 <td><b>Centre</b></td>
-<td><?php echo $centre; ?></td>
+<td><?php echo $ext; ?></td>
 </tr>
 <tr>
 <td><b>Campaign</b></td>
@@ -152,7 +124,6 @@ elseif (substr($ext,0,2) == "CC")
 else
 {
 	echo "<br><br><center><h2>Incorrect Sale ID!</h2>";
-	exit;
 }
 ?>
 </div>

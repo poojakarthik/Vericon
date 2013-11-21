@@ -6,7 +6,7 @@ Released under the MIT License <http://www.opensource.org/licenses/mit-license.p
 */
 
 // Define a destination
-$targetFolder = '/var/vtmp'; // Relative to the root and should match the upload folder in the uploader script
+$targetFolder = '/var/vericon/temp'; // Relative to the root and should match the upload folder in the uploader script
 
 if (file_exists($targetFolder . '/wc_' . $_POST['filename'])) {
 	echo 1;

@@ -1,11 +1,28 @@
 <?php
-$mysqli = new mysqli('localhost','letters','18450be');
+$mysqli = new mysqli('localhost','vericon','18450be');
 
-define('FPDF_FONTPATH','/var/letters/lib/fpdf/fonts');
-require_once('/var/letters/lib/fpdf/fpdf.php');
-require_once('/var/letters/lib/fpdi/fpdi.php');
+define('FPDF_FONTPATH','/var/vericon/letters/lib/fpdf/fonts');
+require_once('/var/vericon/letters/lib/fpdf/fpdf.php');
+require_once('/var/vericon/letters/lib/fpdi/fpdi.php');
 require_once ("Mail.php");
 require_once ("Mail/mime.php");
+
+function ftp_putAll($conn_id, $src_dir, $dst_dir) {
+   $d = dir($src_dir);
+   while($file = $d->read()) { // do this for each file in the directory
+       if ($file != "." && $file != "..") { // to prevent an infinite loop
+           if (is_dir($src_dir."/".$file)) { // do the following if it is a directory
+               if (!@ftp_nlist($conn_id, $dst_dir."/".$file)) {
+                   ftp_mkdir($conn_id, $dst_dir."/".$file); // create directories that do not yet exist
+               }
+               ftp_putAll($conn_id, $src_dir."/".$file, $dst_dir."/".$file); // recursive part
+           } else {
+               $upload = ftp_put($conn_id, $dst_dir."/".$file, $src_dir."/".$file, FTP_BINARY); // put the files
+           }
+       }
+   }
+   $d->close();
+}
 
 $date = date("Y-m-d");
 
@@ -15,13 +32,14 @@ $email_letters = 0;
 $posted_letters = 0;
 
 $letter_count = "";
+$headCountContent = "Campaign,Count\n";
 $q = $mysqli->query("SELECT `customers`.`campaign`, `campaigns`.`campaign` FROM `letters`.`customers`, `letters`.`campaigns` WHERE `campaigns`.`id` = `customers`.`campaign` GROUP BY `customers`.`campaign`") or die($mysqli->error);
 while ($campaign = $q->fetch_row())
 {
 	$email_count = 0;
 	$post_count = 0;
 	
-	$q1 = $mysqli->query("SELECT COUNT(`id`), `customers`.`delivery` FROM `letters`.`customers` WHERE `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
+	$q1 = $mysqli->query("SELECT COUNT(`id`), `delivery` FROM `letters`.`customers` WHERE `campaign` = '" . $campaign[0] . "' GROUP BY `delivery`") or die($mysqli->error);
 	while ($data = $q1->fetch_row())
 	{
 		if ($data[1] == "E") {
@@ -29,6 +47,15 @@ while ($campaign = $q->fetch_row())
 		} elseif($data[1] == "P") {
 			$post_count = $data[0];
 		}
+	}
+	$q1->free();
+	
+	$q1 = $mysqli->query("SELECT COUNT(`id`) FROM `letters`.`customers` WHERE `campaign` = '" . $campaign[0] . "' AND `delivery` = 'P'") or die($mysqli->error);
+	while ($data = $q1->fetch_row())
+	{
+		$headCountContent .= '"' . $campaign[1] . '",';
+		$headCountContent .= '"' . $data[0] . '"';
+		$headCountContent .= "\n";
 	}
 	$q1->free();
 	
@@ -89,7 +116,7 @@ while($data = $q->fetch_assoc())
 		// Front Page
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/wl-' . strtolower($data["letter_type"]) . '.pdf');
+		$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/' . $campaign . '/wl-' . strtolower($data["letter_type"]) . '.pdf');
 		
 		$tplIdx = $pdf->importPage(1);
 		
@@ -127,7 +154,7 @@ while($data = $q->fetch_assoc())
 		// ProRata
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/prorata.pdf');
+		$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/prorata.pdf');
 		
 		$tplIdx = $pdf->importPage(1);
 		
@@ -142,7 +169,7 @@ while($data = $q->fetch_assoc())
 			// page 1
 			$pdf->AddPage();
 			
-			$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan["plan"] . '.pdf');
+			$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan["plan"] . '.pdf');
 			
 			$tplIdx = $pdf->importPage(1);
 			
@@ -151,12 +178,16 @@ while($data = $q->fetch_assoc())
 			$pdf->SetFont('Century Gothic','',11);
 			$pdf->SetTextColor(232,108,38);
 			$pdf->SetXY(81, 64);
-			$pdf->Write(0, "(0" . substr($plan["cli"],0,1) . ") " . substr($plan["cli"],1,4) . " " . substr($plan["cli"],-4));
+			if (preg_match("/^[2378][0-9]{8}$/",$plan["cli"])) {
+				$pdf->Write(0, "(0" . substr($plan["cli"],0,1) . ") " . substr($plan["cli"],1,4) . " " . substr($plan["cli"],-4));
+			} else {
+				$pdf->Write(0, "New Connection");
+			}
 			
 			// page 2
 			$pdf->AddPage();
 			
-			$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan["plan"] . '.pdf');
+			$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/' . $campaign . '/cis/' . $plan["plan"] . '.pdf');
 			
 			$tplIdx = $pdf->importPage(2);
 			
@@ -167,7 +198,7 @@ while($data = $q->fetch_assoc())
 		// DD
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/dd.pdf');
+		$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/' . $campaign . '/dd.pdf');
 		
 		$tplIdx = $pdf->importPage(1);
 		
@@ -175,7 +206,7 @@ while($data = $q->fetch_assoc())
 		
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/dd.pdf');
+		$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/' . $campaign . '/dd.pdf');
 		
 		$tplIdx = $pdf->importPage(2);
 		
@@ -184,7 +215,7 @@ while($data = $q->fetch_assoc())
 		// SFOA
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/sfoa.pdf');
+		$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/' . $campaign . '/sfoa.pdf');
 		
 		$tplIdx = $pdf->importPage(1);
 		
@@ -193,7 +224,7 @@ while($data = $q->fetch_assoc())
 		// Service Details
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/services.pdf');
+		$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/services.pdf');
 		
 		$tplIdx = $pdf->importPage(1);
 		
@@ -212,7 +243,11 @@ while($data = $q->fetch_assoc())
 			$spend += $da[1];
 			
 			$pdf->SetXY(21, $y);
-			$pdf->Write(0, "(0" . substr($plan["cli"],0,1) . ") " . substr($plan["cli"],1,4) . " " . substr($plan["cli"],-4));
+			if (preg_match("/^[2378][0-9]{8}$/",$plan["cli"])) {
+				$pdf->Write(0, "(0" . substr($plan["cli"],0,1) . ") " . substr($plan["cli"],1,4) . " " . substr($plan["cli"],-4));
+			} else {
+				$pdf->Write(0, "New Connection");
+			}
 			$pdf->SetXY(58, $y);
 			$pdf->Write(0, $da[0]);
 			$pdf->SetXY(133, $y);
@@ -237,7 +272,7 @@ while($data = $q->fetch_assoc())
 		// Section 82
 		$pdf->AddPage();
 		
-		$pdf->setSourceFile('/var/letters/templates/' . $group . '/' . $campaign . '/section82.pdf');
+		$pdf->setSourceFile('/var/vericon/letters/templates/' . $group . '/' . $campaign . '/section82.pdf');
 		
 		$tplIdx = $pdf->importPage(1);
 		
@@ -257,7 +292,7 @@ while($data = $q->fetch_assoc())
 		$pdf->SetXY(69, 217.25);
 		$pdf->Write(0, $address);
 		
-		$file_name = '/var/letters/new_letters/' . md5($data["id"] . date("Y-m-d H:i:s", strtotime($date))) . '.pdf';
+		$file_name = '/var/vericon/letters/new_letters/' . md5($data["id"] . date("Y-m-d H:i:s", strtotime($date))) . '.pdf';
 		
 		$pdf->Output($file_name, 'F');
 		
@@ -376,41 +411,22 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 		{
 			$posted_letters++;
 			
-			$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/';
+			$print_dir = '/var/vericon/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/';
 			if (!file_exists($print_dir)) {
 				mkdir($print_dir);
 			}
-			$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/';
+			$print_dir = '/var/vericon/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/';
 			if (!file_exists($print_dir)) {
 				mkdir($print_dir);
 			}
-			$print_dir = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/';
+			$print_dir = '/var/vericon/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/';
 			if (!file_exists($print_dir)) {
 				mkdir($print_dir);
 			}
 			$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf'), 'F');
-			
-			$headCount = '/var/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/headCount.csv';
-			
-			if (!file_exists($headCount)) {
-				$content = "File Path,Campaign,Pages\n";
-				$content .= '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
-				$content .= '"' . $campaign_name . '",';
-				$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
-				$content .= "\n";
-			} else {
-				$content = '"VeriCon_' . date("Ymd", strtotime($date)) . '/' . $group . '/' . $campaign_name . '/WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '.pdf",';
-				$content .= '"' . $campaign_name . '",';
-				$content .= '"' . ceil($pdf->PageNo() / 2) . '"';
-				$content .= "\n";
-			}
-			
-			$fh = fopen($headCount, 'a') or die("can't open file");
-			fwrite($fh, $content);
-			fclose($fh);
 		}
 		
-		$mysqli->query("INSERT INTO `letters`.`log` (`id`, `wl_date`, `file_name`) VALUES ('" . $mysqli->real_escape_string($data["id"]) . "', '" . date("Y-m-d", strtotime($date)) . "', '" . str_replace('/var/letters/new_letters/', '', $file_name) . "')") or die($mysqli->error);
+		$mysqli->query("INSERT INTO `letters`.`log` (`id`, `wl_date`, `file_name`) VALUES ('" . $mysqli->real_escape_string($data["id"]) . "', '" . date("Y-m-d", strtotime($date)) . "', '" . str_replace('/var/vericon/letters/new_letters/', '', $file_name) . "')") or die($mysqli->error);
 		
 		$mysqli->query("DELETE FROM `letters`.`customers` WHERE `id` = '" . $mysqli->real_escape_string($data["id"]) . "'") or die($mysqli->error);
 		$mysqli->query("DELETE FROM `letters`.`packages` WHERE `id` = '" . $mysqli->real_escape_string($data["id"]) . "'") or die($mysqli->error);
@@ -418,16 +434,40 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 }
 $q->free();
 
-exec("chown -R letters:letters /var/letters/new_letters/pending/");
-
 if ($total_letters > 0)
 {
+	$headCount = '/var/vericon/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/headCount.csv';
+	
+	$fh = fopen($headCount, 'a') or die("can't open file");
+	fwrite($fh, $headCountContent);
+	fclose($fh);
+	
+	$ftp_server = "internal.telgroup.com.au";
+	$ftp_port = 5151;
+	$ftp_user_name = "vericon";
+	$ftp_user_pass = "18450be";
+	
+	$destination = "/FTP/SBT_Welcome_Letters/To_Check/";
+	$source = "/var/vericon/letters/new_letters/pending/";
+	
+	$ftp_conn = ftp_connect($ftp_server, $ftp_port);
+	$ftp_login = ftp_login($ftp_conn, $ftp_user_name, $ftp_user_pass);
+	if ((!$ftp_conn) || (!$ftp_login)) {
+		$email_ftp_result = "FTP Status: Couldn't Connect to FTP";
+	} else {
+		ftp_putAll($ftp_conn, $source, $destination);
+		exec('rm -R /var/vericon/letters/new_letters/pending/VeriCon_' . date("Ymd", strtotime($date)) . '/');
+		$email_ftp_result = "FTP Status: All Files Uploaded";
+	}
+	ftp_close($ftp_conn);
+	
 	$to = array();
-	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Odai <odai@smartbusinesstelecom.com.au>, Printing <printing.report@smartbusinesstelecom.com.au>";
+	$to[] = "Sanjay <sanjay@smartbusinesstelecom.com.au>, Sachin <sachin@smartbusinesstelecom.com.au>, Sushma <sushma@smartbusinesstelecom.com.au>, Narayan <narayan@smartbusinesstelecom.com.au>, Kamal <kamal@smartbusinesstelecom.com.au>, Odai <odai@smartbusinesstelecom.com.au>, Printing <printing.reports@smartbusinesstelecom.com.au>";
 
 	$text_body = "Hi All,
 
 " . $total_letters . " have been generated today of which " . $email_letters . " (" . number_format(($email_letters/$total_letters) * 100, 2) . "%) have been emailed.
+" . $email_ftp_result . "
 " . $letter_count . "
 Thanks";
 	

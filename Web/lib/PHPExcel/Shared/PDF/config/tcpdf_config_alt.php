@@ -37,7 +37,7 @@ if ((!isset($_SERVER['DOCUMENT_ROOT'])) OR (empty($_SERVER['DOCUMENT_ROOT']))) {
 		$_SERVER['DOCUMENT_ROOT'] = str_replace( '\\', '/', substr(str_replace('\\\\', '\\', $_SERVER['PATH_TRANSLATED']), 0, 0-strlen($_SERVER['PHP_SELF'])));
 	}	else {
 		// define here your DOCUMENT_ROOT path if the previous fails
-		$_SERVER['DOCUMENT_ROOT'] = '/var/www';
+		$_SERVER['DOCUMENT_ROOT'] = '/var/vericon/www';
 	}
 }
 

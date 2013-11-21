@@ -11,7 +11,7 @@ $(function() {
 </script>
 <center><div id="accordion" style="width:98%;">
 <?php
-$path = '/home/leads/log';
+$path = '/var/vericon/leads/log';
 $t = 0;
 $f = 0;
 $file_arr['name'] = array();
