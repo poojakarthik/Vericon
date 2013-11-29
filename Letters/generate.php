@@ -292,7 +292,7 @@ while($data = $q->fetch_assoc())
 		$pdf->SetXY(69, 217.25);
 		$pdf->Write(0, $address);
 		
-		$file_name = '/var/vericon/letters/new_letters/' . md5($data["id"] . date("Y-m-d H:i:s", strtotime($date))) . '.pdf';
+		$file_name = '/var/vericon/letters/new_letters/' . md5($data["id"] . date("Y-m-d", strtotime($date)) . date("H:i:s")) . '.pdf';
 		
 		$pdf->Output($file_name, 'F');
 		
@@ -423,7 +423,7 @@ PLEASE DO NOT REPLY TO THIS EMAIL";
 			if (!file_exists($print_dir)) {
 				mkdir($print_dir);
 			}
-			$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd_His", strtotime($date)) . '.pdf'), 'F');
+			$pdf->Output(($print_dir . 'WL_' . $data["id"] . '_' . date("Ymd", strtotime($date)) . '_' . date("His") . '.pdf'), 'F');
 		}
 		
 		$mysqli->query("INSERT INTO `letters`.`log` (`id`, `wl_date`, `file_name`) VALUES ('" . $mysqli->real_escape_string($data["id"]) . "', '" . date("Y-m-d", strtotime($date)) . "', '" . str_replace('/var/vericon/letters/new_letters/', '', $file_name) . "')") or die($mysqli->error);
